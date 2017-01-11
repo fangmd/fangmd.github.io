@@ -96,9 +96,214 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/01/11/hello-world/" data-id="cixsn6zot0000ktw4cnl10nmb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/01/11/hello-world/" data-id="cixsn9p9q0000n0w4o5ph43ly" class="article-share-link">Share</a>
       
       
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/第三方/retrofit/Retrofit缓存" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/29/Android/第三方/retrofit/Retrofit缓存/" class="article-date">
+  <time datetime="2016-12-29T03:38:14.000Z" itemprop="datePublished">2016-12-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/29/Android/第三方/retrofit/Retrofit缓存/">Retrofit 缓存</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="类型一：有网没网都先读缓存"><a href="#类型一：有网没网都先读缓存" class="headerlink" title="类型一：有网没网都先读缓存"></a>类型一：有网没网都先读缓存</h1><blockquote>
+<p>(60s内)</p>
+</blockquote>
+<p>拦截器：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Interceptor mCacheInterceptor = <span class="keyword">new</span> Interceptor() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Request request = chain.request();</div><div class="line">        Log.d(TAG, <span class="string">"request="</span>+request);</div><div class="line">        Response response = chain.proceed(request);</div><div class="line">        Log.d(TAG, <span class="string">"response="</span>+response);</div><div class="line"></div><div class="line">        String cacheControl = request.cacheControl().toString();</div><div class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(cacheControl)) &#123;</div><div class="line">            cacheControl = <span class="string">"public, max-age=60"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> response.newBuilder()</div><div class="line">                .header(<span class="string">"Cache-Control"</span>, cacheControl)</div><div class="line">                .removeHeader(<span class="string">"Pragma"</span>)</div><div class="line">                .build();</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>设置max-age为60s之后，这60s之内不管你有没有网,都读缓存</li>
+<li>max-stale设置为4周，意思是，网络未连接的情况下设置缓存时间为4周</li>
+</ul>
+<p>client 设置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">File cacheFile = <span class="keyword">new</span> File(context.getCacheDir(), <span class="string">"[缓存目录]"</span>);</div><div class="line">Cache cache = <span class="keyword">new</span> Cache(cacheFile, <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">100</span>); <span class="comment">//100Mb</span></div><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient.Builder()</div><div class="line">                ...</div><div class="line">                .addNetworkInterceptor(interceptor)</div><div class="line">                .cache(cache)</div><div class="line">                .build();</div><div class="line"></div><div class="line">retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">            .client(client)</div><div class="line">            ...</div></pre></td></tr></table></figure></p>
+<p><strong><em>注意：</em></strong>这里要使用 <code>addNetworkInterceptor</code></p>
+<h1 id="类型二-无网使用缓存，有网就获取最新数据"><a href="#类型二-无网使用缓存，有网就获取最新数据" class="headerlink" title="类型二 无网使用缓存，有网就获取最新数据"></a>类型二 无网使用缓存，有网就获取最新数据</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 云端响应头拦截器，用来配置缓存策略</div><div class="line"> * Dangerous interceptor that rewrites the server's cache-control header.</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = chain -&gt; &#123;</div><div class="line">    Request request = chain.request();</div><div class="line">    <span class="keyword">if</span>(!NetUtils.hasNetwork(context))&#123;</div><div class="line">        request = request.newBuilder()</div><div class="line">                .cacheControl(CacheControl.FORCE_CACHE)</div><div class="line">                .build();</div><div class="line">        Log.d(TAG, <span class="string">"no network"</span>);</div><div class="line">    &#125;</div><div class="line">    Response originalResponse = chain.proceed(request);</div><div class="line">    <span class="keyword">if</span>(NetUtils.hasNetwork(context))&#123;</div><div class="line">        <span class="comment">//有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置</span></div><div class="line">        String cacheControl = request.cacheControl().toString();</div><div class="line">        <span class="keyword">return</span> originalResponse.newBuilder()</div><div class="line">                .header(<span class="string">"Cache-Control"</span>, cacheControl)</div><div class="line">                .removeHeader(<span class="string">"Pragma"</span>)</div><div class="line">                .build();</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        <span class="keyword">return</span> originalResponse.newBuilder()</div><div class="line">                .header(<span class="string">"Cache-Control"</span>, <span class="string">"public, only-if-cached, max-stale=2419200"</span>)</div><div class="line">                .removeHeader(<span class="string">"Pragma"</span>)</div><div class="line">                .build();</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong><em>注意</em></strong>这个 interceptor 需要使用 <code>.addInterceptor(mCacheInterceptor)</code></p>
+<p>参考：</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/9c3b4ea108a7" target="_blank" rel="external">http://www.jianshu.com/p/9c3b4ea108a7</a></li>
+<li><a href="http://blog.csdn.net/picasso_l/article/details/50579884" target="_blank" rel="external">http://blog.csdn.net/picasso_l/article/details/50579884</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/29/Android/第三方/retrofit/Retrofit缓存/" data-id="cixsn9pny00k8n0w4gxijl7iw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓存/">缓存</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/自定义View/自定义View-自定义属性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" class="article-date">
+  <time datetime="2016-12-28T01:23:14.000Z" itemprop="datePublished">2016-12-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">自定义View -- 自定义属性</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="创建按照正常步骤创建-自定义View"><a href="#创建按照正常步骤创建-自定义View" class="headerlink" title="创建按照正常步骤创建 自定义View"></a>创建按照正常步骤创建 自定义View</h2><h2 id="在-values-attrs-xml-中创建自定义属性"><a href="#在-values-attrs-xml-中创建自定义属性" class="headerlink" title="在 values/attrs.xml 中创建自定义属性"></a>在 values/attrs.xml 中创建自定义属性</h2><p>例子：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyView"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_center_color"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_text_size"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Note：</p>
+<ul>
+<li>属性命名添加前缀防止重复</li>
+</ul>
+<h2 id="在布局中使用自定义属性"><a href="#在布局中使用自定义属性" class="headerlink" title="在布局中使用自定义属性"></a>在布局中使用自定义属性</h2><p>例子：</p>
+<p>需要在跟布局中加入命名空间：<code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.waytone.animationdemo.indicate.MyView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/status_indicate_view"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></div><div class="line">    <span class="attr">app:siv_center_color</span>=<span class="string">"#f23"</span></div><div class="line">    <span class="attr">app:siv_text_size</span>=<span class="string">"12"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span>/&gt;</div></pre></td></tr></table></figure>
+<h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" data-id="cixsn9pn100iun0w405chv90a" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自定义View/">自定义View</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自定义属性/">自定义属性</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/自定义View/自定义View-方法流程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/" class="article-date">
+  <time datetime="2016-12-28T01:23:14.000Z" itemprop="datePublished">2016-12-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/">自定义View-方法流程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="自定义View-整体流程"><a href="#自定义View-整体流程" class="headerlink" title="自定义View 整体流程"></a>自定义View 整体流程</h1><p><img src="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png" alt="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png"></p>
+<h2 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h2><p>构造方法：在这里做 view 的各种初始化操作：</p>
+<ol>
+<li>初始化一些值，从 style 中取值</li>
+<li>初始化画笔</li>
+</ol>
+<h2 id="onAttachedToWindow"><a href="#onAttachedToWindow" class="headerlink" title="onAttachedToWindow"></a>onAttachedToWindow</h2><p>控件显示在界面上的使用调用这个方法。</p>
+<h2 id="onMeasure"><a href="#onMeasure" class="headerlink" title="onMeasure"></a>onMeasure</h2><p>测量方法</p>
+<p>通常在这里可以做两种操作：</p>
+<ol>
+<li>获取控件的宽高</li>
+<li>设置控件的宽高</li>
+</ol>
+<p>自定义测量方法，结尾要<code>setMeasuredDimension(widthSize,heightSize);</code></p>
+<pre><code>protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+</code></pre><p>两个参数封装了宽高的模式和宽高的值：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> widthMode = MeasureSpec.getMode(widthMeasureSpec);</div><div class="line"><span class="keyword">int</span> widthSize = MeasureSpec.getSize(widthMeasureSpec);<span class="comment">//在不动的模式下Size有不同的意义</span></div></pre></td></tr></table></figure></p>
+<p>三种模式：</p>
+<ol>
+<li><p><code>MeasureSpec.UNSPECIFIED</code>：表示默认值，父控件没有给子view任何限制。</p>
+<pre><code>// size 没有意义
+</code></pre></li>
+<li><p><code>MeasureSpec.AT_MOST</code>：表示父控件给子view一个最大的特定值，而子view不能超过这个值的大小；子控件设置成<code>wrap_content</code>是这个模式；即specSize是view最大的尺寸。</p>
+<pre><code>// size表示不能超过的值，这里的200表示父控件能提供的最大宽度值
+widthSize = Math.min(200, widthSize);
+</code></pre></li>
+<li><p><code>MeasureSpec.EXACTLY</code>：表示父控件给子view一个具体的值，子view要设置成这些值的大小；子控件宽高设置为<code>match_parent</code>或者<code>具体的值</code>时候是这个模式;即子View的大小由specSize决定。</p>
+<p> // size 表示宽度或者高度具体值</p>
+</li>
+</ol>
+<p>参考：<a href="http://blog.csdn.net/cyp331203/article/details/45027641" target="_blank" rel="external">http://blog.csdn.net/cyp331203/article/details/45027641</a></p>
+<h4 id="MeasureSpe"><a href="#MeasureSpe" class="headerlink" title="MeasureSpe"></a>MeasureSpe</h4><blockquote>
+<p>描述了父View对子View大小的期望.里面包含了测量模式和大小</p>
+</blockquote>
+<p>通过一个静态方法将大小和模式合成：方法内部知识简单的相加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">MeasureSpec.makeMeasureSpec(specSize,specMode);</div></pre></td></tr></table></figure>
+<h2 id="onLayout"><a href="#onLayout" class="headerlink" title="onLayout"></a>onLayout</h2><blockquote>
+<p>决定子控件在布局中如何放置</p>
+</blockquote>
+<p>控件中如果有子控件，通过这个方法确定自控件的位置。</p>
+<p>onLayout方法:在measure过程结束后，视图大小确定后，接下来就是layout的过程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span></span></div></pre></td></tr></table></figure>
+<h3 id="流式布局"><a href="#流式布局" class="headerlink" title="流式布局"></a>流式布局</h3><p>一排放满，放下一排</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> l, <span class="keyword">int</span> t, <span class="keyword">int</span> r, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> groupWidth = getMeasuredWidth();</div><div class="line">    <span class="keyword">int</span> groupHeight = getMeasuredHeight();</div><div class="line">    <span class="keyword">int</span> posLeft = l;</div><div class="line">    <span class="keyword">int</span> posTop = t;</div><div class="line">    <span class="keyword">int</span> rowHeight = <span class="number">0</span>; <span class="comment">// 获取单前行中最高的控件的高度</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; getChildCount(); i++) &#123;</div><div class="line">        View child = getChildAt(i);</div><div class="line">        <span class="keyword">int</span> childWidth = child.getMeasuredWidth();</div><div class="line">        <span class="keyword">int</span> childHeight = child.getMeasuredHeight();</div><div class="line">        rowHeight = Math.max(rowHeight, childHeight);</div><div class="line">        <span class="keyword">if</span> (posLeft + childWidth &gt; groupWidth) &#123;</div><div class="line">            posLeft = l;</div><div class="line">            posTop += rowHeight;</div><div class="line">            rowHeight = <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">        child.layout(posLeft, posTop, posLeft + childWidth, posTop + childHeight); <span class="comment">// 放置子控件</span></div><div class="line">        posLeft += child.getMeasuredWidth();</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>还需要重写测量方法onMeasure，可以让布局文件继承<code>FrameLayout</code>来使用它的测量方法</p>
+<h1 id="onDraw"><a href="#onDraw" class="headerlink" title="onDraw"></a>onDraw</h1><p>在view的<code>onLayout()</code>方法后执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span></span></div></pre></td></tr></table></figure>
+<p>绘制条件：画笔– paint，画布 canvas</p>
+<p>由两种情况不需要画笔：drawARGB ， drawColor</p>
+<h1 id="更新视图"><a href="#更新视图" class="headerlink" title="更新视图"></a>更新视图</h1><ul>
+<li><code>invalidate()</code>: 这个触发 <code>dispatchDraw() -&gt; draw() -&gt; onDraw()</code></li>
+<li><code>requestLayout()</code>: 这个方法会触发自定义View重新测量，触发 <code>mesure()-&gt;onMesure()-&gt;...</code></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-方法流程/" data-id="cixsn9pmt00iln0w4ek6sz0k8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自定义View/">自定义View</a></li></ul>
+
     </footer>
   </div>
   
@@ -137,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/12/27/产品/App 产品开发/" data-id="cixsn6zpk0001ktw4y5upzfpi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/27/产品/App 产品开发/" data-id="cixsn9pbl0002n0w43cknom2z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/App/">App</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/铲平/">铲平</a></li></ul>
@@ -149,14 +354,14 @@
 
 
   
-    <article id="post-产品/App版本升级" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Android/features/退出应用实现" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/04/03/产品/App版本升级/" class="article-date">
-  <time datetime="2016-04-03T05:18:12.000Z" itemprop="datePublished">2016-04-03</time>
+    <a href="/2016/12/27/Android/features/退出应用实现/" class="article-date">
+  <time datetime="2016-12-27T01:23:14.000Z" itemprop="datePublished">2016-12-27</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/android/">android</a>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
   </div>
 
   </div>
@@ -167,7 +372,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/03/产品/App版本升级/">App版本升级</a>
+      <a class="article-title" href="/2016/12/27/Android/features/退出应用实现/">Android 退出应用</a>
     </h1>
   
 
@@ -175,30 +380,671 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="App版本升级"><a href="#App版本升级" class="headerlink" title="App版本升级"></a>App版本升级</h1><h2 id="渠道升级–渠道号"><a href="#渠道升级–渠道号" class="headerlink" title="渠道升级–渠道号"></a>渠道升级–渠道号</h2><p>每个渠道包作唯一标识：</p>
-<p>1001001</p>
-<ul>
-<li>首位标识：1 安卓，2 ios</li>
-<li>2-4位代表：推广渠道</li>
-<li>最后3位：代表各渠道版本的自推广版本</li>
-</ul>
-<h2 id="版本名"><a href="#版本名" class="headerlink" title="版本名"></a>版本名</h2><ul>
-<li>正式版</li>
-<li>预览版</li>
-<li>测试版</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2016/04/03/产品/App版本升级/#more">Read More</a>
-          </p>
-        
+        <h1 id="容器式"><a href="#容器式" class="headerlink" title="容器式"></a>容器式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;Activity&gt; activityList = <span class="keyword">new</span> LinkedList&lt;Activity&gt;();<span class="comment">//LinkedList便于删除和增加</span></div><div class="line"></div><div class="line">    <span class="comment">// 省略了单例代码...</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeActivity</span><span class="params">(Activity activity)</span></span></div><div class="line">    &#123;</div><div class="line">        activityList.remove(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addActivity</span><span class="params">(Activity activity)</span></span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">        activityList.add(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exit</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (Activity activity : activityList)</div><div class="line">        &#123;</div><div class="line">            activity.finish();</div><div class="line">        &#125;</div><div class="line">        System.exit(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        MyApplication.getInstance().addActivity(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">  <span class="comment">//...</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        MyApplication.getInstance().removeActivity(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"> <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="广播式"><a href="#广播式" class="headerlink" title="广播式"></a>广播式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXITACTION = <span class="string">"action.exit"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ExitReceiver exitReceiver = <span class="keyword">new</span> ExitReceiver();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        IntentFilter filter = <span class="keyword">new</span> IntentFilter();</div><div class="line">        filter.addAction(EXITACTION);</div><div class="line">        LocalBroadcastManager.getInstance(<span class="keyword">this</span>).registerReceiver(exitReceiver, <span class="keyword">new</span> IntentFilter(EXITACTION));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        LocalBroadcastManager.getInstance(<span class="keyword">this</span>).unregisterReceiver(exitReceiver);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ExitReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">            BaseActivity.<span class="keyword">this</span>.finish();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="标志式"><a href="#标志式" class="headerlink" title="标志式"></a>标志式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Boolean isExit =<span class="keyword">false</span>;</div><div class="line"><span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  onResume() &#123;</div><div class="line">     <span class="keyword">super</span>.onResume();</div><div class="line">     <span class="keyword">if</span>(Config.isExit) finish();</div><div class="line">  &#125;</div><div class="line"><span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExitAcitivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        finish();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span></div><div class="line">&#123;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, ExitAcitivity .class);</div><div class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);</div><div class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">    startActivity(intent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/03/产品/App版本升级/" data-id="cixsn6zpm0002ktw4btv1u6i5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/12/27/Android/features/退出应用实现/" data-id="cixsn9pgu0070n0w4w8rrksgl" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/App/">App</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/版本/">版本</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/features/">features</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/自定义View/自定义View-动画" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/26/Android/view/自定义View/自定义View-动画/" class="article-date">
+  <time datetime="2016-12-26T01:23:14.000Z" itemprop="datePublished">2016-12-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/26/Android/view/自定义View/自定义View-动画/">自定义View -- 动画</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="利用-ValueAnimation-实现动画"><a href="#利用-ValueAnimation-实现动画" class="headerlink" title="利用 ValueAnimation 实现动画"></a>利用 ValueAnimation 实现动画</h1><p>在自定义View 中添加下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">private</span> ValueAnimator mValueAnimator;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mProgress;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mAnimationTime;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">        mValueAnimator = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mValueAnimator.setDuration(<span class="number">2000</span>);</div><div class="line"><span class="comment">//        mValueAnimator.setRepeatCount(ValueAnimator.RESTART);</span></div><div class="line">        mValueAnimator.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line"></div><div class="line">        mValueAnimator.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = (<span class="keyword">int</span>) animation.getAnimatedValue();</div><div class="line">            Log.d(TAG, <span class="string">"run: mProgress"</span> + mProgress);</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        mValueAnimator.addListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">                <span class="keyword">if</span> (((<span class="keyword">int</span>) mValueAnimator.getAnimatedValue()) &gt;= <span class="number">98</span>) &#123;</div><div class="line">                    mAnimationTime = <span class="number">0</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mValueAnimator != <span class="keyword">null</span>) &#123;</div><div class="line">            mAnimationTime = mValueAnimator.getCurrentPlayTime();</div><div class="line">            mValueAnimator.cancel();  <span class="comment">// 保持停止状态</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mValueAnimator != <span class="keyword">null</span>) &#123;</div><div class="line">            mValueAnimator.start();</div><div class="line">            mValueAnimator.setCurrentPlayTime(mAnimationTime);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">repeatStart</span><span class="params">()</span> </span>&#123;</div><div class="line">        repeatStart(ValueAnimator.REVERSE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">repeatStart</span><span class="params">(<span class="keyword">int</span> repeatMode)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (repeatMode == ValueAnimator.RESTART || repeatMode == ValueAnimator.REVERSE) &#123;</div><div class="line">            mValueAnimator.setRepeatMode(repeatMode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Log.e(TAG, <span class="string">"repeatStart: repeatMode error"</span>);</div><div class="line">            mValueAnimator.setRepeatMode(ValueAnimator.RESTART);</div><div class="line">        &#125;</div><div class="line">        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);</div><div class="line">        start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDetachedFromWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDetachedFromWindow();</div><div class="line">        stop();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onAttachedToWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onAttachedToWindow();</div><div class="line"><span class="comment">//        run();</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><code>initAnimate()</code> 需要在 View 初始化中调用。</p>
+<h2 id="分步动画例子"><a href="#分步动画例子" class="headerlink" title="分步动画例子"></a>分步动画例子</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 绘制方法</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCenter</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStep == <span class="number">0</span> || mStep == <span class="number">1</span>) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">4</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStep == <span class="number">2</span>) &#123;</div><div class="line">        <span class="keyword">int</span> radius = mProgress * (mWidth / <span class="number">3</span> - mWidth / <span class="number">4</span>) / <span class="number">100</span> + mWidth / <span class="number">4</span>;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius, mCenterPaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">circleLoading</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStep == <span class="number">0</span> || mStep == <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">int</span> startAngle = mProgress * <span class="number">720</span> / <span class="number">100</span>;</div><div class="line">        RectF rectF = <span class="keyword">new</span> RectF(<span class="number">0</span> + <span class="number">10</span>, <span class="number">0</span> + <span class="number">10</span>, mWidth - <span class="number">10</span>, mHeight - <span class="number">10</span>);</div><div class="line">        canvas.drawArc(rectF, startAngle, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint); <span class="comment">// 120 - 200</span></div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStep == <span class="number">2</span>) &#123;</div><div class="line">        <span class="comment">// 矩形框：（10，10）（mWidth-10，mHeight-10）--》 （30，30）（mWidth-30，mHeight-30）</span></div><div class="line">        <span class="keyword">int</span> differ = mProgress * <span class="number">20</span> / <span class="number">100</span>;</div><div class="line">        <span class="comment">// 圆弧： 80 --》 120</span></div><div class="line">        <span class="keyword">int</span> angleDiffer = mProgress * <span class="number">40</span> / <span class="number">100</span>;</div><div class="line">        <span class="keyword">int</span> startAngle = mProgress * <span class="number">360</span> / <span class="number">100</span>;</div><div class="line">        RectF rectF = <span class="keyword">new</span> RectF(<span class="number">0</span> + <span class="number">10</span> + differ, <span class="number">0</span> + <span class="number">10</span> + differ, mWidth - <span class="number">10</span> - differ, mHeight - <span class="number">10</span> - differ);</div><div class="line">        canvas.drawArc(rectF, startAngle, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint); <span class="comment">// 120 - 200</span></div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// ------------ 分步动画</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 动画阶段</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mStep;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">end</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// progress 0 -&gt; 100 (100=0 的状态) 收尾动画</span></div><div class="line">    ValueAnimator valueAnimator1 = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">    valueAnimator1.setDuration(<span class="number">300</span>);</div><div class="line">    valueAnimator1.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line">    valueAnimator1.addUpdateListener(animation -&gt; &#123;</div><div class="line">        mStep = <span class="number">2</span>;</div><div class="line">        mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">        invalidate();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// progress 收尾 ( 如果收尾调用的时候 mProgress 不在 100 的位置)</span></div><div class="line">    ValueAnimator valueAnimator = ValueAnimator.ofInt(mProgress, <span class="number">100</span>);</div><div class="line">    valueAnimator.setDuration(<span class="number">100</span>);</div><div class="line">    valueAnimator.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line">    valueAnimator.addUpdateListener(animation -&gt; &#123;</div><div class="line">        mStep = <span class="number">1</span>;</div><div class="line">        mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">        invalidate();</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.addListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">            stopStepOneAnimator();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">            valueAnimator1.start();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopStepOneAnimator</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStepOneAnimator != <span class="keyword">null</span> &amp;&amp; mStepOneAnimator.isStarted()) &#123;</div><div class="line">        mStepOneAnimator.cancel();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="分状态动画"><a href="#分状态动画" class="headerlink" title="分状态动画"></a>分状态动画</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// draw</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCenter</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    mCenterPaint.setColor(mIDLEColor);</div><div class="line">    <span class="keyword">if</span> (mStatus == LoadingViewStatus.IDLE) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.SELECTED) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.LOADING) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.OK) &#123;</div><div class="line">        mCenterPaint.setColor(mOkColor);</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">circleLoading</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            <span class="keyword">int</span> angleDiffer = mProgress * <span class="number">180</span> / <span class="number">100</span>;</div><div class="line">            RectF rectF = <span class="keyword">new</span> RectF(<span class="number">10</span>, <span class="number">10</span>, mWidth - <span class="number">10</span>, mHeight - <span class="number">10</span>);</div><div class="line">            canvas.drawArc(rectF, <span class="number">0</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            <span class="keyword">int</span> radius = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            <span class="keyword">int</span> radius2 = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius2, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// loading view mStatus --------------------------------</span></div><div class="line"><span class="comment">// color</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mOkColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mIDLEColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mSelectedColor;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToIDLEAniamte;</div><div class="line"><span class="keyword">private</span> ValueAnimator mLoadingAnimate;</div><div class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> mAnimating;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToSelectedAnimate;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToOkAnimate;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mProgress;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mStatus = <span class="number">0</span>; <span class="comment">// 0:idle , 1:loading , 2 selected</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> lastStatus = mStatus;</div><div class="line">    mStatus = status;</div><div class="line">    stopAllAnimate();</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            startToIDLEAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            startLoadingAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            startToSelectedAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            startToOkAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToOkAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToOkAnimate = ValueAnimator.ofInt(<span class="number">100</span>, <span class="number">0</span>);</div><div class="line">        mToOkAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToOkAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToOkAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">100</span>;</div><div class="line">    mToOkAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToSelectedAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToSelectedAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToSelectedAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToSelectedAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToSelectedAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToSelectedAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startLoadingAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mLoadingAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mLoadingAnimate.setRepeatMode(ValueAnimator.RESTART);</div><div class="line">        mLoadingAnimate.setRepeatCount(ValueAnimator.INFINITE);</div><div class="line">        mLoadingAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mLoadingAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mLoadingAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToIDLEAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte == <span class="keyword">null</span>) &#123;</div><div class="line">        mToIDLEAniamte = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToIDLEAniamte.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToIDLEAniamte.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToIDLEAniamte.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopAllAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate != <span class="keyword">null</span> &amp;&amp; mLoadingAnimate.isStarted()) &#123;</div><div class="line">        mLoadingAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte != <span class="keyword">null</span> &amp;&amp; mToIDLEAniamte.isStarted()) &#123;</div><div class="line">        mToIDLEAniamte.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate != <span class="keyword">null</span> &amp;&amp; mToSelectedAnimate.isStarted()) &#123;</div><div class="line">        mToSelectedAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate != <span class="keyword">null</span> &amp;&amp; mToOkAnimate.isStarted()) &#123;</div><div class="line">        mToOkAnimate.end();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">Animator.AnimatorListener listener = <span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingViewStatus</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> IDLE = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LOADING = <span class="number">1</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SELECTED = <span class="number">2</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OK = <span class="number">3</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>效果：</p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/26/Android/view/自定义View/自定义View-动画/" data-id="cixsn9pmv00inn0w4tbwjk81p" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Animation/">Animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自定义View/">自定义View</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/Android7.0/FileProvider" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/13/Android/Android7.0/FileProvider/" class="article-date">
+  <time datetime="2016-12-13T14:38:14.000Z" itemprop="datePublished">2016-12-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/13/Android/Android7.0/FileProvider/">FileProvider</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h1><p>FileProvider 继承自 ContentProvider ,它会创建一个格式为 <code>content://</code> 的 Uri 而不是 <code>file:///</code>。</p>
+<p>内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity 或者 Service 的生命周期。</p>
+<h2 id="Defining-a-FileProvider"><a href="#Defining-a-FileProvider" class="headerlink" title="Defining a FileProvider"></a>Defining a FileProvider</h2><p>不需要继承 FileProvider 直接在 AndroidManifest 中注册就可以：</p>
+<pre><code>&lt;manifest&gt;
+    ...
+    &lt;application&gt;
+        ...
+        &lt;provider
+            android:name=&quot;android.support.v4.content.FileProvider&quot;
+            android:authorities=&quot;com.mydomain.fileprovider&quot;
+            android:exported=&quot;false&quot;
+            android:grantUriPermissions=&quot;true&quot;&gt;
+            ...
+        &lt;/provider&gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre><p>如果要做从写里面的方法，也可以继承他，然后注册。</p>
+<h2 id="Specifying-Available-Files"><a href="#Specifying-Available-Files" class="headerlink" title="Specifying Available Files"></a>Specifying Available Files</h2><p>FileProvider 只会生成指向预先指定的目录的 content URI.</p>
+<p>定义目录：</p>
+<pre><code>&lt;paths xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;files-path name=&quot;my_images&quot; path=&quot;images/&quot;/&gt;
+    ...
+&lt;/paths&gt;
+</code></pre><p><code>paths</code> 必须包含一个以上的下列子标签：</p>
+<ul>
+<li><code>file-path</code>:可以通过 <code>Context.getFileDir()</code> 获取地址</li>
+<li><code>cache-path</code>:可以通过 <code>Context.getCacheDir()</code> 获取地址</li>
+<li><code>external-path</code>:可以通过 <code>Environment.getExternalStorageDirectory()</code> 获取地址</li>
+<li><code>external-files-path</code>:可以通过 <code>Context.getExternalFilesDir(String)</code> 获取地址</li>
+<li><code>external-cache-path</code>:可以通过 <code>Context.getExternalCacheDir()</code> 获取地址</li>
+</ul>
+<p>把 <code>path</code> 标签写入到 xml 文件，比如<code>res/xml/file_paths.xml</code>,在 AndroidManifest 中定义 <code>meta-data</code>：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.mydomain.fileprovider&quot;
+    android:exported=&quot;false&quot;
+    android:grantUriPermissions=&quot;true&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><h2 id="Generating-the-Content-URI-for-a-File"><a href="#Generating-the-Content-URI-for-a-File" class="headerlink" title="Generating the Content URI for a File"></a>Generating the Content URI for a File</h2><pre><code>File imagePath = new File(Context.getFilesDir(), &quot;images&quot;);
+File newFile = new File(imagePath, &quot;default_image.jpg&quot;);
+Uri contentUri = getUriForFile(getContext(), &quot;com.mydomain.fileprovider&quot;, newFile);
+//content://com.mydomain.fileprovider/my_images/default_image.jpg.
+</code></pre><h1 id="调用系统相机方法"><a href="#调用系统相机方法" class="headerlink" title="调用系统相机方法"></a>调用系统相机方法</h1><h2 id="添加-FileProvider"><a href="#添加-FileProvider" class="headerlink" title="添加 FileProvider"></a>添加 FileProvider</h2><p>AndroidManifest：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.waytone.normal&quot;
+    android:grantUriPermissions=&quot;true&quot;
+    android:exported=&quot;false&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><p>res/xml/file_paths.xml:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;paths&gt;
+        &lt;external-path path=&quot;&quot; name=&quot;camera_photos&quot; /&gt;
+    &lt;/paths&gt;
+&lt;/resources&gt;
+</code></pre><p>Activity:</p>
+<pre><code>@Override
+public void getPhotoFromSysCamera(long photoName) {
+    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    String photoFilePath = FileUtils.getPhotoFilePath(photoName);
+    File file = new File(photoFilePath);
+    if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+    Uri imageUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file);//通过FileProvider创建一个content类型的Uri
+    openCameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+    Logger.d(&quot;图片文件存储在：&quot; + photoFilePath);
+    openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+    startActivityForResult(openCameraIntent, REQUEST_CODE_TAKE_PHOTO_FROM_CAMERA);
+}
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/support/v4/content/FileProvider.html" target="_blank" rel="external">官方API</a></li>
+<li><a href="https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en" target="_blank" rel="external">https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/13/Android/Android7.0/FileProvider/" data-id="cixsn9pfh0054n0w4fh1e8cv9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android7-0/">Android7.0</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FileProvider/">FileProvider</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/进程保活" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/12/Android/进程保活/" class="article-date">
+  <time datetime="2016-12-12T13:38:14.000Z" itemprop="datePublished">2016-12-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/12/Android/进程保活/">进程保活</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文地址：<a href="http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8" target="_blank" rel="external">http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8</a></p>
+<p>进程保活包括两个层面：</p>
+<ol>
+<li>提高进程的优先级，降低其被杀死的概率</li>
+<li>在进程被杀死后，进行拉活</li>
+</ol>
+<h1 id="进程的优先级"><a href="#进程的优先级" class="headerlink" title="进程的优先级"></a>进程的优先级</h1><p>进程重要性分 5 级：</p>
+<ol>
+<li>前台进程(Foreground process)</li>
+<li>可见进程(Visible process)</li>
+<li>服务进程(Service process)</li>
+<li>后台进程(Background process)</li>
+<li>空进程(Empty process)</li>
+</ol>
+<h2 id="Foreground-process"><a href="#Foreground-process" class="headerlink" title="Foreground process"></a>Foreground process</h2><p>只有在内存不足的时候才会被回收</p>
+<p>实现前台进程的情况：</p>
+<ul>
+<li>拥有用户正在交互的 Activity（已调用 onResume()）</li>
+<li>拥有某个 Service，后者绑定到用户正在交互的 Activity</li>
+<li>拥有正在“前台”运行的 Service（服务已调用 startForeground()）</li>
+<li>拥有正执行一个生命周期回调的 Service（onCreate()、onStart() 或 onDestroy()）</li>
+<li>拥有正执行其 onReceive() 方法的 BroadcastReceiver</li>
+</ul>
+<h2 id="Visible-process"><a href="#Visible-process" class="headerlink" title="Visible process"></a>Visible process</h2><ul>
+<li>拥有不在前台、但仍对用户可见的 Activity（已调用 onPause()）。</li>
+<li>拥有绑定到可见（或前台）Activity 的 Service</li>
+</ul>
+<h2 id="Service-process"><a href="#Service-process" class="headerlink" title="Service process"></a>Service process</h2><ul>
+<li>正在运行 startService() 方法启动的服务，且不属于上述两个更高类别进程的进程。</li>
+</ul>
+<h2 id="Background-process"><a href="#Background-process" class="headerlink" title="Background process"></a>Background process</h2><p>后台进程对用户体验没有直接影响，系统可能直接随时终止它。</p>
+<ul>
+<li>对用户不可见的 Activity 的进程（已调用 Activity的onStop() 方法）</li>
+</ul>
+<h2 id="Empty-process"><a href="#Empty-process" class="headerlink" title="Empty process"></a>Empty process</h2><p>保留这种进程的的唯一目的是用作缓存，以缩短下次在其中运行组件所需的启动时间。</p>
+<h1 id="Android-进程回收策略"><a href="#Android-进程回收策略" class="headerlink" title="Android 进程回收策略"></a>Android 进程回收策略</h1><p>Android 中对于内存的回收，主要依靠 Lowmemorykiller 来完成，是一种根据 OOM_ADJ 阈值级别触发相应力度的内存回收的机制。</p>
+<p><img src="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg" alt="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg"></p>
+<h1 id="提升进程优先级的方案"><a href="#提升进程优先级的方案" class="headerlink" title="提升进程优先级的方案"></a>提升进程优先级的方案</h1><h2 id="利用-Activity-提升权限"><a href="#利用-Activity-提升权限" class="headerlink" title="利用 Activity 提升权限"></a>利用 Activity 提升权限</h2><h3 id="方案设计思路"><a href="#方案设计思路" class="headerlink" title="方案设计思路"></a>方案设计思路</h3><p>监控手机锁屏／解锁事件，在屏幕锁屏时启动1个像素的 Activity，在用户解锁时将 Activity 销毁掉。（该 Activity 需设计成用户无感知）</p>
+<p>通过这个方案可以让进程优先级在屏幕锁屏时由4提升为最高优先级1.</p>
+<h3 id="方案适用范围"><a href="#方案适用范围" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p><strong>适用场景：</strong> 本方案主要解决第三方应用及系统管理工具在检测到锁屏事件后一段时间（一般为5分钟以内）内会杀死后台进程，已达到省电的目的问题。</p>
+<p><strong>适用版本：</strong> 适用于所有的 Android 版本。</p>
+<h3 id="方案具体实现"><a href="#方案具体实现" class="headerlink" title="方案具体实现"></a>方案具体实现</h3><p>定义一个大小为 1像素的 Activity：</p>
+<pre><code>// onCreate:
+
+Window window = getWindow();
+window.setGravity(Gravity.LEFT | Gravity.TOP);
+WindowManager.LayoutParams params = window.getAttributes();
+params.x = 0;
+params.y = 0;
+params.height = 1;
+params.width = 1;
+window.setAttributes(params);
+</code></pre><p>AndroidManifest 中设置下面的属性，防止 Activity 在 RecentTask 中显示：</p>
+<pre><code>android:excludeFromRecents=&quot;true&quot;
+android:exported=&quot;false&quot;
+android:finishOnTaskLaunch=&quot;false&quot;
+android:theme=&quot;@style/LiveActivityStyle&quot;
+</code></pre><p>最后，控制 Activity 为透明：</p>
+<pre><code>&lt;style name=&quot;LiveActivityStyle&quot;&gt;
+    &lt;item name=&quot;android:windowBackground&quot;&gt;@android:color/transparent&lt;/item&gt;
+    &lt;item name=&quot;android:windowBackground&quot;&gt;@null&lt;/item&gt;
+    &lt;item name=&quot;android:windowIsTranslucent&quot;&gt;true&lt;/item&gt;
+
+&lt;/style&gt;
+</code></pre><p>Activity 启动和销毁时机控制：</p>
+<pre><code>// onReceive 在广播内
+if(action.equals(Intent.ACTION_SCREEN_OFF)){
+    KeepLiveManager.getInstance().startKeepLiveActivity();
+} else if(action.equals(Intent.ACTION_USER_PRESENT)){
+    KeepLiveManager.getInstance.finishKeepLiveActivity();
+}
+KeepLiveManager.getInstance().startKeepServiceLive();
+</code></pre><h2 id="利用-Notification-提升权限"><a href="#利用-Notification-提升权限" class="headerlink" title="利用 Notification 提升权限"></a>利用 Notification 提升权限</h2><h3 id="方案设计思路-1"><a href="#方案设计思路-1" class="headerlink" title="方案设计思路"></a>方案设计思路</h3><p>Android 中 Service 的优先级为4，通过 setForeground 接口可以将后台 Service 设置为前台 Service，使进程的优先级由4提升为2，从而使进程的优先级仅仅低于用户当前正在交互的进程，与可见进程优先级一致，使进程被杀死的概率大大降低。</p>
+<h3 id="方案实现挑战"><a href="#方案实现挑战" class="headerlink" title="方案实现挑战"></a>方案实现挑战</h3><p>从 Android2.3 开始调用 setForeground 将后台 Service 设置为后台 Service 时，必须在系统的通知栏发送一条通知，也就是前台 Service 与一条可见的通知时绑定在一起的。</p>
+<p>对于不需要常驻通知栏的应用来说，方案虽好，但却是用户感知的，无法直接使用。</p>
+<h3 id="方案挑战应对措施"><a href="#方案挑战应对措施" class="headerlink" title="方案挑战应对措施"></a>方案挑战应对措施</h3><p>通过实现一个内部 Service，在 LiveService 和其内部 Service 中同时发送具有相同 ID 的 Notification，然后将内部 Service 结束掉。随着内部 Service 的结束，Notification 将会消失，但系统优先级依然保持为2。</p>
+<h3 id="方案使用范围"><a href="#方案使用范围" class="headerlink" title="方案使用范围"></a>方案使用范围</h3><p>Android 所有版本</p>
+<h3 id="方案具体实现-1"><a href="#方案具体实现-1" class="headerlink" title="方案具体实现"></a>方案具体实现</h3><p>KeepLiveService：</p>
+<pre><code>//InnerService onStartCommand
+KeepLiveManager.getInstance().setForeground(mKeepLiveService, this);
+</code></pre><p>KeepLiveManager:</p>
+<pre><code>public void setForeeground(final Service keepLiveService, fianl Service innerService){
+
+    if(keepLiveService != null){
+        if(Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.JELLY_BEAN_MR2){
+            keepLiveService.startForeground(foregroundPushId, new Notification());
+        } else{
+            keepLiveService.startForeground(foregroundPushId, new Notification());
+            if(innerService != null){
+                innerService.startForeground(foregroundPushId, new Notification());
+                innerService.stopSelf();
+            }
+        }
+    }
+}
+</code></pre><h1 id="进程死后拉活方案"><a href="#进程死后拉活方案" class="headerlink" title="进程死后拉活方案"></a>进程死后拉活方案</h1><h2 id="利用系统广播拉活"><a href="#利用系统广播拉活" class="headerlink" title="利用系统广播拉活"></a>利用系统广播拉活</h2><h3 id="常用于拉活的广播"><a href="#常用于拉活的广播" class="headerlink" title="常用于拉活的广播"></a>常用于拉活的广播</h3><ul>
+<li>开机</li>
+<li>网络变化</li>
+<li>文件挂载</li>
+<li>屏幕亮灭</li>
+<li>屏幕解锁</li>
+<li>应用安装卸载</li>
+</ul>
+<h3 id="方案适用范围-1"><a href="#方案适用范围-1" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>使用于全部 Android 平台，但是由如下缺点：</p>
+<ol>
+<li>广播接收管理器被管理软件，系统软件通过“自启管理”等功能禁用的场景无法接收广播，从而无法自启</li>
+<li>系统广播事件不可控，只能保证发生事件时拉活进程，但是无法保证进程挂掉后立即拉活</li>
+</ol>
+<p>因此这个方案主要作为备用手段</p>
+<h3 id="利用第三方应用广播拉活"><a href="#利用第三方应用广播拉活" class="headerlink" title="利用第三方应用广播拉活"></a>利用第三方应用广播拉活</h3><h4 id="方案设计思路-2"><a href="#方案设计思路-2" class="headerlink" title="方案设计思路"></a>方案设计思路</h4><p>思路和接收系统广播类似，不过是接收第三方 Top 应用的广播</p>
+<p>通过反编译第三方 Top 应用：比如 QQ，微信，支付宝，淘宝，友盟，百度，高德等</p>
+<h4 id="方案适用范围-2"><a href="#方案适用范围-2" class="headerlink" title="方案适用范围"></a>方案适用范围</h4><p>困难点：</p>
+<ol>
+<li>反编译分析困难</li>
+<li>第三方的应用广播会改变</li>
+</ol>
+<h2 id="利用系统-Service-机制拉活"><a href="#利用系统-Service-机制拉活" class="headerlink" title="利用系统 Service 机制拉活"></a>利用系统 Service 机制拉活</h2><h3 id="方案设计思想"><a href="#方案设计思想" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>将 Service 设置为 START_STICKY</p>
+<pre><code>// onStartCommand
+return Service.START_STICKY;
+</code></pre><h3 id="方案适用范围-3"><a href="#方案适用范围-3" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>有两种情况无法拉活：</p>
+<ol>
+<li>Service 第一次被异常杀死后会在5秒内重启，第二次被杀死会在10秒内重启，第三次会在20秒内重启，一旦在短时间内 Service 被杀死达到5次，则系统不再拉起。</li>
+<li>进程被取得 Root 权限的管理工具或系统工具通过 forestop 停止掉，无法重启。</li>
+</ol>
+<h2 id="利用Native进程拉活"><a href="#利用Native进程拉活" class="headerlink" title="利用Native进程拉活"></a>利用Native进程拉活</h2><h3 id="方案设计思想-1"><a href="#方案设计思想-1" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p><strong>主要思想：</strong>利用 Linux 中的 fork 机制创建 Native 进程，在 Native 进程中监控主进程的存活，当主进程挂掉后，在 Native 进程中立即对主进程进行拉活。</p>
+<p><strong>原理：</strong>在 Android 中所有进程和系统组件的生命周期受 ActivityManagerService 的统一管理。而且，通过 Linux 的 fork 机制创建的进程为纯 Linux 进程，其生命周期不受 Android 的管理。</p>
+<p>。。。。</p>
+<h3 id="方案适用范围-4"><a href="#方案适用范围-4" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>适用于 Android5.0 以下版本手机</p>
+<h2 id="利用-JobScheduler-机制拉活"><a href="#利用-JobScheduler-机制拉活" class="headerlink" title="利用 JobScheduler 机制拉活"></a>利用 JobScheduler 机制拉活</h2><h3 id="方案设计思想-2"><a href="#方案设计思想-2" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>Android5.0 以后系统对 Native 进程等加强了管理，Native 拉活方式失效。系统在 Android5.0 以上版本提供了 JobScheduler 接口，系统会定时调用该进程以使应用进行一些逻辑操作。</p>
+<h3 id="方案适用范围-5"><a href="#方案适用范围-5" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>该方案主要适用于 Android5.0 以上版本手机。</p>
+<p>该方案在 Android5.0 以上版本中不受 forcestop 影响，被强制停止的应用依然可以被拉活，在 Android5.0 以上版本拉活效果非常好。</p>
+<p>仅在小米手机可能会出现有时无法拉活的问题。</p>
+<h2 id="利用账号同步机制拉活"><a href="#利用账号同步机制拉活" class="headerlink" title="利用账号同步机制拉活"></a>利用账号同步机制拉活</h2><h3 id="方案设计思想-3"><a href="#方案设计思想-3" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>Android 系统的账号同步机制会定期同步账号进行，该方案目的在于利用同步机制进行进程的拉活。</p>
+<p>。。。。</p>
+<h1 id="其他有效拉活方案"><a href="#其他有效拉活方案" class="headerlink" title="其他有效拉活方案"></a>其他有效拉活方案</h1><ol>
+<li>利用系统通知管理权限进行拉活</li>
+<li>利用辅助功能拉活，将应用加入厂商或管理软件白名单。</li>
+</ol>
+<p>应用内 Push 通道：</p>
+<ol>
+<li>国外版应用：接入 Google 的 GCM。</li>
+<li>国内版应用：根据终端不同，在小米手机（包括 MIUI）接入小米推送、华为手机接入华为推送；其他手机可以考虑接入腾讯信鸽或极光推送与小米推送做 A/B Test。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/12/Android/进程保活/" data-id="cixsn9pe50038n0w4k43jr76a" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进程保活/">进程保活</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/后台任务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/12/Android/后台任务/" class="article-date">
+  <time datetime="2016-12-12T05:18:12.000Z" itemprop="datePublished">2016-12-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/12/Android/后台任务/">后台任务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Keeping-the-Device-Awake-保持设备唤醒"><a href="#Keeping-the-Device-Awake-保持设备唤醒" class="headerlink" title="Keeping the Device Awake 保持设备唤醒"></a>Keeping the Device Awake 保持设备唤醒</h1><h2 id="方式一：让屏幕一直点亮-Keep-the-Screen-On"><a href="#方式一：让屏幕一直点亮-Keep-the-Screen-On" class="headerlink" title="方式一：让屏幕一直点亮 Keep the Screen On"></a>方式一：让屏幕一直点亮 Keep the Screen On</h2><h3 id="在-Activity-中"><a href="#在-Activity-中" class="headerlink" title="在 Activity 中"></a>在 Activity 中</h3><pre><code>public class MainActivity extends Activity {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+  }
+</code></pre><h3 id="Manifest-中"><a href="#Manifest-中" class="headerlink" title="Manifest 中"></a>Manifest 中</h3><pre><code>&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:keepScreenOn=&quot;true&quot;&gt;
+    ...
+&lt;/RelativeLayout&gt;
+</code></pre><h2 id="Keep-the-CPU-On"><a href="#Keep-the-CPU-On" class="headerlink" title="Keep the CPU On"></a>Keep the CPU On</h2><h3 id="Use-PowerManager"><a href="#Use-PowerManager" class="headerlink" title="Use PowerManager"></a>Use PowerManager</h3><p>添加权限：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.WAKE_LOCK&quot; /&gt;
+</code></pre><p>获取锁：</p>
+<pre><code>PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+        &quot;MyWakelockTag&quot;);
+wakeLock.acquire();
+</code></pre><p>在必要的时候释放锁：</p>
+<pre><code>wakelock.release()
+</code></pre><h3 id="Using-WakefulBroadcastReceiver"><a href="#Using-WakefulBroadcastReceiver" class="headerlink" title="Using WakefulBroadcastReceiver"></a>Using WakefulBroadcastReceiver</h3><blockquote>
+<p>A WakefulBroadcastReceiver is a special type of broadcast receiver that takes care of creating and managing a PARTIAL_WAKE_LOCK for your app.</p>
+</blockquote>
+<p>创建 BroadcastReceiver：</p>
+<pre><code>public class MyWakefulReceiver extends WakefulBroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        // Start the service, keeping the device awake while the service is
+        // launching. This is the Intent to deliver to the service.
+        Intent service = new Intent(context, MyIntentService.class);
+        startWakefulService(context, service);
+    }
+}
+</code></pre><p>注册：</p>
+<pre><code>&lt;receiver android:name=&quot;.MyWakefulReceiver&quot;&gt;&lt;/receiver&gt;
+</code></pre><p>Service：</p>
+<pre><code>public class MyIntentService extends IntentService {
+    public static final int NOTIFICATION_ID = 1;
+    private NotificationManager mNotificationManager;
+    NotificationCompat.Builder builder;
+    public MyIntentService() {
+        super(&quot;MyIntentService&quot;);
+    }
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        // Do the work that requires your app to keep the CPU running.
+        // ...
+        // Release the wake lock provided by the WakefulBroadcastReceiver.
+        MyWakefulReceiver.completeWakefulIntent(intent);
+    }
+}
+</code></pre><h1 id="Scheduling-Repeating-Alarms-使用-Alarms"><a href="#Scheduling-Repeating-Alarms-使用-Alarms" class="headerlink" title="Scheduling Repeating Alarms 使用 Alarms"></a>Scheduling Repeating Alarms 使用 Alarms</h1><p>Alarms 可以让你脱离应用的生命周期来执行某段代码。</p>
+<p>它有下面的特点／作用：</p>
+<ul>
+<li>它需要你在设置 Alarms 的时候输入时间（事件执行的时间）</li>
+<li>可以用它和广播配合开启 Service 或者执行其他的操作</li>
+<li>它是脱离应用操作的，所以在应用没有运行或者设备休眠的时候它也能执行</li>
+<li>它可以减少应用对设备资源的占用，因为你不用为了在未来执行某个事件而创建一个需要一直运行的 Service</li>
+</ul>
+<p><strong>注意：</strong>如果使用应用内需要进行一些定时操作，不建议使用这个。</p>
+<h2 id="Understand-the-Trade-offs-了解权衡"><a href="#Understand-the-Trade-offs-了解权衡" class="headerlink" title="Understand the Trade-offs 了解权衡"></a>Understand the Trade-offs 了解权衡</h2><p>循环的 Alarm 内部的机制很简单但是不够灵活，在大多数情况下它并不是最好的解决方案，比如应用要铺货手机网络改变如果定义一个 Alarm 来检测就会消耗过多的资源而且达不到很好的效果。</p>
+<p>如果要在应用的生命周期外做和服务器的数据同步操作，最好的方式不是 Alarm 而是 Google Cloud Message （GCM）配合 sync Adapter 做数据同步。</p>
+<h3 id="Best-practices"><a href="#Best-practices" class="headerlink" title="Best practices"></a>Best practices</h3><ul>
+<li>考虑循环 Alarm 的不准确性，Alarm触发的时间可能会不准确<ul>
+<li>做任何的本地操作在每次 Alarm 触发的时候</li>
+<li>调度包含网络请求的警报在某些随机时间段。</li>
+</ul>
+</li>
+<li>尽量减少 Alarm 的触发频率</li>
+<li>不要在不需要的时候唤醒设备（是否会唤醒设备由 alarm 的类型决定）</li>
+<li><p>Don’t make your alarm’s trigger time any more precise than it has to be.</p>
+<p>  使用 <code>setInexactRepeating()</code> 代替 <code>setRepeating()</code>, 当使用 <code>setInexactRepeating()</code> 的时候 Android 系统会同步其他的应用的 Alarm 在同一时刻执行。<br>  在 Android 4.4 (API Level 19) 之后所有的 repeat Alarm 都是不准确的。</p>
+</li>
+<li><p>Avoid basing your alarm on clock time if possible.</p>
+</li>
+</ul>
+<h2 id="Set-a-Repeating-Alarm-设置循环-Alarm"><a href="#Set-a-Repeating-Alarm-设置循环-Alarm" class="headerlink" title="Set a Repeating Alarm 设置循环 Alarm"></a>Set a Repeating Alarm 设置循环 Alarm</h2><p>Repeate Alarm 有以下特性：</p>
+<ol>
+<li>A alarm type. 类型</li>
+<li>A trigger time. 触发时间</li>
+<li>The alarm’s interval. 间隔</li>
+<li>A pending intent that fires when the alarm is triggered. 一个会被执行的 pending intent</li>
+</ol>
+<h3 id="Choose-an-alarm-type"><a href="#Choose-an-alarm-type" class="headerlink" title="Choose an alarm type"></a>Choose an alarm type</h3><p>Alarm 类型分两大类：</p>
+<ol>
+<li><p>elapsed real time</p>
+<p> 使用 the “time since system boot” 作为参考，不受时区／区域的设置</p>
+<p> 如果要 Alarm 每隔一段时间触发一次建议使用</p>
+</li>
+<li><p>real time clock（RTC）</p>
+<p> 使用 UTC (wall clock) time 作为参考</p>
+<p> 如果要 Alarm 在每天的某个时间触发建议使用。</p>
+</li>
+</ol>
+<p>两种类型都有个 WAKEUP 版本（如果屏幕是熄灭的它会唤醒 CPU）：</p>
+<ol>
+<li>ELAPSED_REALTIME</li>
+<li>ELAPSED_REALTIME_WAKEUP</li>
+<li>RTC</li>
+<li>RTC_WAKEUP</li>
+</ol>
+<h4 id="ELAPSED-REALTIME-WAKEUP-examples"><a href="#ELAPSED-REALTIME-WAKEUP-examples" class="headerlink" title="ELAPSED_REALTIME_WAKEUP examples"></a>ELAPSED_REALTIME_WAKEUP examples</h4><p>Wake up the device to fire the alarm in 30 minutes, and every 30 minutes after that:</p>
+<pre><code>// Hopefully your alarm will have a lower frequency than this!
+alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_HALF_HOUR,
+        AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
+</code></pre><p>Wake up the device to fire a one-time (non-repeating) alarm in one minute:</p>
+<pre><code>private AlarmManager alarmMgr;
+private PendingIntent alarmIntent;
+...
+alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+Intent intent = new Intent(context, AlarmReceiver.class);
+alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        SystemClock.elapsedRealtime() +
+        60 * 1000, alarmIntent);
+</code></pre><h4 id="RTC-examples"><a href="#RTC-examples" class="headerlink" title="RTC examples"></a>RTC examples</h4><p>Wake up the device to fire the alarm at approximately 2:00 p.m., and repeat once a day at the same time:</p>
+<pre><code>// Set the alarm to start at approximately 2:00 p.m.
+Calendar calendar = Calendar.getInstance();
+calendar.setTimeInMillis(System.currentTimeMillis());
+calendar.set(Calendar.HOUR_OF_DAY, 14);
+
+// With setInexactRepeating(), you have to use one of the AlarmManager interval
+// constants--in this case, AlarmManager.INTERVAL_DAY.
+alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        AlarmManager.INTERVAL_DAY, alarmIntent);
+</code></pre><p>Wake up the device to fire the alarm at precisely 8:30 a.m., and every 20 minutes thereafter:</p>
+<pre><code>private AlarmManager alarmMgr;
+private PendingIntent alarmIntent;
+...
+alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+Intent intent = new Intent(context, AlarmReceiver.class);
+alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+// Set the alarm to start at 8:30 a.m.
+Calendar calendar = Calendar.getInstance();
+calendar.setTimeInMillis(System.currentTimeMillis());
+calendar.set(Calendar.HOUR_OF_DAY, 8);
+calendar.set(Calendar.MINUTE, 30);
+
+// setRepeating() lets you specify a precise custom interval--in this case,
+// 20 minutes.
+alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        1000 * 60 * 20, alarmIntent);
+</code></pre><h3 id="Decide-how-precise-your-alarm-needs-to-be-确定-alarm-的精准度"><a href="#Decide-how-precise-your-alarm-needs-to-be-确定-alarm-的精准度" class="headerlink" title="Decide how precise your alarm needs to be 确定 alarm 的精准度"></a>Decide how precise your alarm needs to be 确定 alarm 的精准度</h3><h2 id="Cancel-an-Alarm-取消-Alarm"><a href="#Cancel-an-Alarm-取消-Alarm" class="headerlink" title="Cancel an Alarm 取消 Alarm"></a>Cancel an Alarm 取消 Alarm</h2><pre><code>// If the alarm has been set, cancel it.
+if (alarmMgr!= null) {
+    alarmMgr.cancel(alarmIntent);
+}
+</code></pre><h2 id="Start-an-Alarm-When-the-Device-Boots"><a href="#Start-an-Alarm-When-the-Device-Boots" class="headerlink" title="Start an Alarm When the Device Boots"></a>Start an Alarm When the Device Boots</h2><h3 id="创建开机广播"><a href="#创建开机广播" class="headerlink" title="创建开机广播"></a>创建开机广播</h3><p>。。。</p>
+<p>注册：</p>
+<pre><code>&lt;receiver android:name=&quot;.SampleBootReceiver&quot;
+        android:enabled=&quot;false&quot;&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=&quot;android.intent.action.BOOT_COMPLETED&quot;&gt;&lt;/action&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;
+</code></pre><p>这里 <code>android:enabled=&quot;false&quot;</code> ，意味着需要在应用内启动它，否则它不会接收广播。</p>
+<p>启动这个广播：（开启后就是永久生效，即使是手机重启）</p>
+<pre><code>ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
+PackageManager pm = context.getPackageManager();
+
+pm.setComponentEnabledSetting(receiver,
+        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+        PackageManager.DONT_KILL_APP);
+</code></pre><p>关闭这个广播：</p>
+<pre><code>ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
+PackageManager pm = context.getPackageManager();
+
+pm.setComponentEnabledSetting(receiver,
+        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        PackageManager.DONT_KILL_APP);
+</code></pre><h1 id="Android5-0"><a href="#Android5-0" class="headerlink" title="Android5.0"></a>Android5.0</h1><h2 id="JobScheduler，JobService"><a href="#JobScheduler，JobService" class="headerlink" title="JobScheduler，JobService"></a>JobScheduler，JobService</h2><h3 id="创建-JobService"><a href="#创建-JobService" class="headerlink" title="创建 JobService"></a>创建 JobService</h3><pre><code>@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+public class Job extends JobService {
+
+    @Override
+    public boolean onStartJob(JobParameters params) {
+        // 需要执行的任务，执行线程在 Main Thread
+        // ....
+
+        // 返回 True：表示这个 Job 还在继续（开启了子线程处理事件），后续需要自己调用 jobFinished 来结束 Job
+        //      False：表示没有异步操作， Job 结束
+        return false;
+    }
+
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        // * 如果 onStartJob 返回 True，这个方法不会被调用
+        return false;
+    }
+
+}
+</code></pre><h3 id="注册："><a href="#注册：" class="headerlink" title="注册："></a>注册：</h3><pre><code>&lt;service android:name=&quot;.Job&quot;
+    android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot; /&gt;
+</code></pre><h3 id="应用如何和-JobService-交互"><a href="#应用如何和-JobService-交互" class="headerlink" title="应用如何和 JobService 交互"></a>应用如何和 JobService 交互</h3><h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><p>JobScheduler 对象创建：</p>
+<pre><code>mJobScheduler = (JobScheduler)
+    getSystemService( Context.JOB_SCHEDULER_SERVICE );
+</code></pre><p>创建定时任务：（JobInfo）</p>
+<pre><code>JobInfo.Builder builder = new JobInfo.Builder( 1,
+        new ComponentName( getPackageName(),
+            JobSchedulerService.class.getName() ) );
+</code></pre><p>设置时间间隔：</p>
+<pre><code>builder.setPeriodic( 3000 );
+</code></pre><p>JobInfo 其他设置：</p>
+<ul>
+<li>setMinimumLatency(long minLatencyMillis): 这个函数能让你设置任务的延迟执行时间(单位是毫秒),这个函数与setPeriodic(long time)方法不兼容，如果这两个方法同时调用了就会引起异常；</li>
+<li>setOverrideDeadline(long maxExecutionDelayMillis)：这个方法让你可以设置任务最晚的延迟时间。如果到了规定的时间时其他条件还未满足，你的任务也会被启动。与setMinimumLatency(long time)一样，这个方法也会与setPeriodic(long time)，同时调用这两个方法会引发异常。</li>
+<li>setPersisted(boolean isPersisted): 这个方法告诉系统当你的设备重启之后你的任务是否还要继续执行。</li>
+<li>setRequiredNetworkType(int networkType): 这个方法让你这个任务只有在满足指定的网络条件时才会被执行。默认条件是JobInfo.NETWORK_TYPE_NONE，这意味着不管是否有网络这个任务都会被执行。另外两个可选类型，一种是JobInfo.NETWORK_TYPE_ANY，它表明需要任意一种网络才使得任务可以执行。另一种是JobInfo.NETWORK_TYPE_UNMETERED，它表示设备不是蜂窝网络( 比如在WIFI连接时 )时任务才会被执行。</li>
+<li>setRequiresCharging(boolean requiresCharging): 这个方法告诉你的应用，只有当设备在充电时这个任务才会被执行。</li>
+<li>setRequiresDeviceIdle(boolean requiresDeviceIdle): 这个方法告诉你的任务只有当用户没有在使用该设备且有一段时间没有使用时才会启动该任务。</li>
+</ul>
+<p>一旦你预置的条件被设置，你就可以构建一个JobInfo对象，然后通过如下所示的代码将它发送到你的JobScheduler中：</p>
+<pre><code>if( mJobScheduler.schedule( builder.build() ) &lt;= 0 ) {
+    //If something goes wrong
+}
+</code></pre><p>停止某个任务：</p>
+<pre><code>mJobScheduler.cancel(int jobId)
+mJobScheduler.cancelAll();
+</code></pre><h4 id="JobInfo"><a href="#JobInfo" class="headerlink" title="JobInfo"></a>JobInfo</h4><h5 id="JobInfo-Builder"><a href="#JobInfo-Builder" class="headerlink" title="JobInfo.Builder"></a>JobInfo.Builder</h5><pre><code>JobInfo.Builder(int jobId, ComponentName jobService)
+</code></pre><ul>
+<li>jobId: 要求 uid</li>
+</ul>
+<h1 id="Android-7-0-电池-内存变化"><a href="#Android-7-0-电池-内存变化" class="headerlink" title="Android 7.0 电池 内存变化"></a>Android 7.0 电池 内存变化</h1><h2 id="Doze"><a href="#Doze" class="headerlink" title="Doze"></a>Doze</h2><blockquote>
+<p>Introduced in Android 6.0 (API level 23), Doze improves battery life by deferring CPU and network activities when a user leaves a device unplugged, stationary, and with the screen turned off.</p>
+</blockquote>
+<p>Android6.0 中当手机没有在充电，静止，屏幕关闭的时候会进入 Doze 模式限制 CPU， 网络任务来减少电池的消耗。</p>
+<p>Doze 限制规则</p>
+<ul>
+<li>当手机在充电，屏幕关闭一段时间，设备会进入 Doze 模式并开启第一阶段的限制：关闭 app 的网络请求，推出作业和同步。</li>
+<li>当手机处于静止状态一段时间后，Doze 模式开启下一阶段的限制：PowerManager.WakeLock, AlarmManager alarms, GPS, and Wi-Fi scans。</li>
+</ul>
+<p>但是无论是处在哪种阶段的限制，系统都会提供一个时间点允许应用获取网络和执行 jobs／syncs。</p>
+<p><img src="https://developer.android.google.cn/images/android-7.0/doze-diagram-2.png" alt="Doze 模式"></p>
+<p>当手机连接其他设备或者屏幕开启的时候，Doze 模式自动关闭，限制解除。</p>
+<h2 id="Background-Optimizations-后台优化"><a href="#Background-Optimizations-后台优化" class="headerlink" title="Background Optimizations 后台优化"></a>Background Optimizations 后台优化</h2><p>Android.70 移除了 3 个隐式的广播为了帮助优化内存和电量的消耗，因为隐式的广播会频繁启动已经注册它的 app。</p>
+<p>手机通常会不断的产生连接改变，比如 wifi和数据网络 的改变，如果注册了隐私的 CONNECTIVITY_ACTION 广播。还有 ACTION_NEW_PICTURE， ACTION_NEW_VIDEO。</p>
+<p>为了避免这个问题，Android7.0 做了以下优化：</p>
+<ul>
+<li>如果 app target 设置的是 Android7.0 ,通过 Manifest 注册的 CONNECTIVITY_ACTION 广播不会触发。不过在 main thread 中动态注册还是有效的。</li>
+<li>应用不能就收 ACTION_NEW_PICTURE 和 ACTION_NEW_VIDEO 的广播，这个优化影响所有的应用即使它的 target 不是 Android7.0 。</li>
+</ul>
+<p>建议使用 JobScheduler 来检测 Net 变化和手机中 文件的变化。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://developer.android.google.cn/training/scheduling/index.html" target="_blank" rel="external">官方文档</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/12/12/Android/后台任务/" data-id="cixsn9pdw002tn0w4zlbxsqqx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/后台任务/">后台任务</a></li></ul>
 
     </footer>
   </div>
@@ -208,6 +1054,10 @@
 
   
 
+
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  </nav>
 </section>
         
           <aside id="sidebar">
@@ -216,7 +1066,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/program/">program</a></li></ul>
     </div>
   </div>
 
@@ -226,7 +1076,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/App/">App</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本/">版本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/铲平/">铲平</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ADB/">ADB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AIDL/">AIDL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android5-0/">Android5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android7-0/">Android7.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android内存优化/">Android内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/App/">App</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/App更新/">App更新</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bmob/">Bmob</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast/">Broadcast</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Build类/">Build类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bundle/">Bundle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CardView/">CardView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/">Configuration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ContentProvider/">ContentProvider</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ContentResolver/">ContentResolver</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CoordinatorLayout/">CoordinatorLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DBFlow/">DBFlow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dagger/">Dagger</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataBinding/">DataBinding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataUtils/">DataUtils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dialog/">Dialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DialogFragment/">DialogFragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/">EventBus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileProvider/">FileProvider</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Glide/">Glide</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intent/">Intent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/">Lambda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LayoutInflater/">LayoutInflater</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LayoutManager/">LayoutManager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Material-design/">Material design</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MediaPlayer/">MediaPlayer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Notification/">Notification</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OKHttp/">OKHttp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pocket/">Pocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rxjava/">Rxjava</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rxjava2/">Rxjava2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN-GIT/">SVN GIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ShareSDK/">ShareSDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SharedPreferences/">SharedPreferences</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SurfaceView/">SurfaceView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SwipeRefreshLayout/">SwipeRefreshLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TabLayout/">TabLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ThreadPoll/">ThreadPoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tips/">Tips</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Toast/">Toast</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ToolBar/">ToolBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Transition/">Transition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ViewPager/">ViewPager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebView/">WebView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZXing/">ZXing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/adb/">adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aidl/">aidl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android-5-0/">android 5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android-studio/">android studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android5-0/">android5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android悬浮窗/">android悬浮窗</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android适配，屏幕适配/">android适配，屏幕适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/async/">async</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/behavior/">behavior</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bitmap-drawable/">bitmap,drawable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/context/">context</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/drawable/">drawable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/drawableLeft/">drawableLeft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/eventBus/">eventBus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/feature/">feature</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/features/">features</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ignore/">ignore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javaScripe/">javaScripe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/menu/">menu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mockito/">mockito</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ndk/">ndk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nfc/">nfc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/path/">path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/permission/">permission</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/permission，官方文档/">permission，官方文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sensor/">sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/style/">style</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tips/">tips</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/view/">view</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml-pull/">xml,pull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码优化/">代码优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化/">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/传值/">传值</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/依赖重复/">依赖重复</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/共享元素/">共享元素</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存优化/">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存基础/">内存基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄露/">内存泄露</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分享/">分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/加解密/">加解密</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/单元测试/">单元测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/后台任务/">后台任务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图片/">图片</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多点触控/">多点触控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字体/">字体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习记录/">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安全/">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/官方文档/">官方文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时任务/">定时任务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实例/">实例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕适配/">屏幕适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/崩溃日志/">崩溃日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工具/">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布局/">布局</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布局优化/">布局优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/广播/">广播</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用市场/">应用市场</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/打包/">打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付宝/">支付宝</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文字/">文字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/机型适配/">机型适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/极光推送/">极光推送</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/波纹效果/">波纹效果</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本/">版本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/界面侧滑/">界面侧滑</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相册/">相册</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相机/">相机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方/">第三方</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方框架/">第三方框架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方登入/">第三方登入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络协议/">网络协议</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义View/">自定义View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义属性/">自定义属性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/规范/">规范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/视频播放/">视频播放</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/触摸事件分发/">触摸事件分发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计时/">计时</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/贝塞尔曲线/">贝塞尔曲线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/资源文件/">资源文件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件打包/">软件打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件的统计分析/">软件的统计分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程保活/">进程保活</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/适配/">适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/铲平/">铲平</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高斯模糊/">高斯模糊</a></li></ul>
     </div>
   </div>
 
@@ -236,7 +1086,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/App/" style="font-size: 20px;">App</a> <a href="/tags/版本/" style="font-size: 10px;">版本</a> <a href="/tags/铲平/" style="font-size: 10px;">铲平</a>
+      <a href="/tags/ADB/" style="font-size: 10px;">ADB</a> <a href="/tags/AIDL/" style="font-size: 10px;">AIDL</a> <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Android5-0/" style="font-size: 10px;">Android5.0</a> <a href="/tags/Android7-0/" style="font-size: 10px;">Android7.0</a> <a href="/tags/Android内存优化/" style="font-size: 18.33px;">Android内存优化</a> <a href="/tags/Animation/" style="font-size: 13.33px;">Animation</a> <a href="/tags/App/" style="font-size: 11.67px;">App</a> <a href="/tags/App更新/" style="font-size: 10px;">App更新</a> <a href="/tags/Bmob/" style="font-size: 10px;">Bmob</a> <a href="/tags/Broadcast/" style="font-size: 10px;">Broadcast</a> <a href="/tags/Build类/" style="font-size: 10px;">Build类</a> <a href="/tags/Bundle/" style="font-size: 10px;">Bundle</a> <a href="/tags/CardView/" style="font-size: 10px;">CardView</a> <a href="/tags/Configuration/" style="font-size: 10px;">Configuration</a> <a href="/tags/ContentProvider/" style="font-size: 10px;">ContentProvider</a> <a href="/tags/ContentResolver/" style="font-size: 10px;">ContentResolver</a> <a href="/tags/CoordinatorLayout/" style="font-size: 11.67px;">CoordinatorLayout</a> <a href="/tags/DBFlow/" style="font-size: 10px;">DBFlow</a> <a href="/tags/Dagger/" style="font-size: 10px;">Dagger</a> <a href="/tags/DataBinding/" style="font-size: 10px;">DataBinding</a> <a href="/tags/DataUtils/" style="font-size: 10px;">DataUtils</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Dialog/" style="font-size: 10px;">Dialog</a> <a href="/tags/DialogFragment/" style="font-size: 10px;">DialogFragment</a> <a href="/tags/EditText/" style="font-size: 10px;">EditText</a> <a href="/tags/EventBus/" style="font-size: 10px;">EventBus</a> <a href="/tags/FileProvider/" style="font-size: 10px;">FileProvider</a> <a href="/tags/Fragment/" style="font-size: 13.33px;">Fragment</a> <a href="/tags/Glide/" style="font-size: 11.67px;">Glide</a> <a href="/tags/Gradle/" style="font-size: 11.67px;">Gradle</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/Intent/" style="font-size: 11.67px;">Intent</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/LayoutInflater/" style="font-size: 11.67px;">LayoutInflater</a> <a href="/tags/LayoutManager/" style="font-size: 10px;">LayoutManager</a> <a href="/tags/ListView/" style="font-size: 15px;">ListView</a> <a href="/tags/Material-design/" style="font-size: 10px;">Material design</a> <a href="/tags/MediaPlayer/" style="font-size: 10px;">MediaPlayer</a> <a href="/tags/Notification/" style="font-size: 10px;">Notification</a> <a href="/tags/OAuth/" style="font-size: 10px;">OAuth</a> <a href="/tags/OKHttp/" style="font-size: 10px;">OKHttp</a> <a href="/tags/Pocket/" style="font-size: 10px;">Pocket</a> <a href="/tags/PopupWindow/" style="font-size: 10px;">PopupWindow</a> <a href="/tags/RecyclerView/" style="font-size: 18.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13.33px;">Retrofit</a> <a href="/tags/Rxjava/" style="font-size: 13.33px;">Rxjava</a> <a href="/tags/Rxjava2/" style="font-size: 11.67px;">Rxjava2</a> <a href="/tags/SVN-GIT/" style="font-size: 10px;">SVN GIT</a> <a href="/tags/Service/" style="font-size: 10px;">Service</a> <a href="/tags/ShareSDK/" style="font-size: 10px;">ShareSDK</a> <a href="/tags/SharedPreferences/" style="font-size: 10px;">SharedPreferences</a> <a href="/tags/SurfaceView/" style="font-size: 10px;">SurfaceView</a> <a href="/tags/SwipeRefreshLayout/" style="font-size: 10px;">SwipeRefreshLayout</a> <a href="/tags/TabLayout/" style="font-size: 10px;">TabLayout</a> <a href="/tags/ThreadPoll/" style="font-size: 10px;">ThreadPoll</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/Toast/" style="font-size: 10px;">Toast</a> <a href="/tags/ToolBar/" style="font-size: 10px;">ToolBar</a> <a href="/tags/Transition/" style="font-size: 10px;">Transition</a> <a href="/tags/View/" style="font-size: 16.67px;">View</a> <a href="/tags/ViewPager/" style="font-size: 11.67px;">ViewPager</a> <a href="/tags/WebView/" style="font-size: 11.67px;">WebView</a> <a href="/tags/ZXing/" style="font-size: 10px;">ZXing</a> <a href="/tags/adb/" style="font-size: 10px;">adb</a> <a href="/tags/aidl/" style="font-size: 10px;">aidl</a> <a href="/tags/android/" style="font-size: 13.33px;">android</a> <a href="/tags/android-5-0/" style="font-size: 10px;">android 5.0</a> <a href="/tags/android-studio/" style="font-size: 10px;">android studio</a> <a href="/tags/android5-0/" style="font-size: 10px;">android5.0</a> <a href="/tags/android悬浮窗/" style="font-size: 10px;">android悬浮窗</a> <a href="/tags/android适配，屏幕适配/" style="font-size: 10px;">android适配，屏幕适配</a> <a href="/tags/async/" style="font-size: 10px;">async</a> <a href="/tags/behavior/" style="font-size: 10px;">behavior</a> <a href="/tags/bitmap-drawable/" style="font-size: 10px;">bitmap,drawable</a> <a href="/tags/context/" style="font-size: 10px;">context</a> <a href="/tags/drawable/" style="font-size: 10px;">drawable</a> <a href="/tags/drawableLeft/" style="font-size: 10px;">drawableLeft</a> <a href="/tags/eventBus/" style="font-size: 10px;">eventBus</a> <a href="/tags/feature/" style="font-size: 10px;">feature</a> <a href="/tags/features/" style="font-size: 13.33px;">features</a> <a href="/tags/ignore/" style="font-size: 10px;">ignore</a> <a href="/tags/javaScripe/" style="font-size: 10px;">javaScripe</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/menu/" style="font-size: 10px;">menu</a> <a href="/tags/mockito/" style="font-size: 10px;">mockito</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/ndk/" style="font-size: 11.67px;">ndk</a> <a href="/tags/nfc/" style="font-size: 10px;">nfc</a> <a href="/tags/path/" style="font-size: 10px;">path</a> <a href="/tags/permission/" style="font-size: 10px;">permission</a> <a href="/tags/permission，官方文档/" style="font-size: 11.67px;">permission，官方文档</a> <a href="/tags/sensor/" style="font-size: 10px;">sensor</a> <a href="/tags/shape/" style="font-size: 10px;">shape</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/style/" style="font-size: 13.33px;">style</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/view/" style="font-size: 16.67px;">view</a> <a href="/tags/xml-pull/" style="font-size: 10px;">xml,pull</a> <a href="/tags/代码优化/" style="font-size: 10px;">代码优化</a> <a href="/tags/代码混淆/" style="font-size: 10px;">代码混淆</a> <a href="/tags/优化/" style="font-size: 10px;">优化</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/依赖重复/" style="font-size: 10px;">依赖重复</a> <a href="/tags/共享元素/" style="font-size: 10px;">共享元素</a> <a href="/tags/内存优化/" style="font-size: 10px;">内存优化</a> <a href="/tags/内存基础/" style="font-size: 10px;">内存基础</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/分享/" style="font-size: 10px;">分享</a> <a href="/tags/加解密/" style="font-size: 10px;">加解密</a> <a href="/tags/单元测试/" style="font-size: 11.67px;">单元测试</a> <a href="/tags/后台任务/" style="font-size: 10px;">后台任务</a> <a href="/tags/图片/" style="font-size: 15px;">图片</a> <a href="/tags/多点触控/" style="font-size: 10px;">多点触控</a> <a href="/tags/字体/" style="font-size: 10px;">字体</a> <a href="/tags/学习记录/" style="font-size: 10px;">学习记录</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/官方文档/" style="font-size: 11.67px;">官方文档</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/实例/" style="font-size: 10px;">实例</a> <a href="/tags/屏幕适配/" style="font-size: 11.67px;">屏幕适配</a> <a href="/tags/崩溃日志/" style="font-size: 10px;">崩溃日志</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/布局优化/" style="font-size: 10px;">布局优化</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/序列化/" style="font-size: 10px;">序列化</a> <a href="/tags/应用市场/" style="font-size: 10px;">应用市场</a> <a href="/tags/打包/" style="font-size: 11.67px;">打包</a> <a href="/tags/支付宝/" style="font-size: 10px;">支付宝</a> <a href="/tags/数据存储/" style="font-size: 11.67px;">数据存储</a> <a href="/tags/文字/" style="font-size: 10px;">文字</a> <a href="/tags/机型适配/" style="font-size: 11.67px;">机型适配</a> <a href="/tags/极光推送/" style="font-size: 11.67px;">极光推送</a> <a href="/tags/波纹效果/" style="font-size: 10px;">波纹效果</a> <a href="/tags/版本/" style="font-size: 10px;">版本</a> <a href="/tags/界面侧滑/" style="font-size: 10px;">界面侧滑</a> <a href="/tags/相册/" style="font-size: 10px;">相册</a> <a href="/tags/相机/" style="font-size: 11.67px;">相机</a> <a href="/tags/第三方/" style="font-size: 10px;">第三方</a> <a href="/tags/第三方框架/" style="font-size: 10px;">第三方框架</a> <a href="/tags/第三方登入/" style="font-size: 10px;">第三方登入</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a> <a href="/tags/网络协议/" style="font-size: 11.67px;">网络协议</a> <a href="/tags/自定义View/" style="font-size: 20px;">自定义View</a> <a href="/tags/自定义属性/" style="font-size: 10px;">自定义属性</a> <a href="/tags/规范/" style="font-size: 10px;">规范</a> <a href="/tags/视频播放/" style="font-size: 10px;">视频播放</a> <a href="/tags/触摸事件分发/" style="font-size: 10px;">触摸事件分发</a> <a href="/tags/计时/" style="font-size: 10px;">计时</a> <a href="/tags/贝塞尔曲线/" style="font-size: 10px;">贝塞尔曲线</a> <a href="/tags/资源文件/" style="font-size: 10px;">资源文件</a> <a href="/tags/软件打包/" style="font-size: 10px;">软件打包</a> <a href="/tags/软件的统计分析/" style="font-size: 10px;">软件的统计分析</a> <a href="/tags/进程保活/" style="font-size: 10px;">进程保活</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/铲平/" style="font-size: 10px;">铲平</a> <a href="/tags/高斯模糊/" style="font-size: 10px;">高斯模糊</a>
     </div>
   </div>
 
@@ -245,7 +1095,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li></ul>
     </div>
   </div>
 
@@ -262,11 +1112,19 @@
           </li>
         
           <li>
-            <a href="/2016/12/27/产品/App 产品开发/">App版本升级</a>
+            <a href="/2016/12/29/Android/第三方/retrofit/Retrofit缓存/">Retrofit 缓存</a>
           </li>
         
           <li>
-            <a href="/2016/04/03/产品/App版本升级/">App版本升级</a>
+            <a href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">自定义View -- 自定义属性</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/">自定义View-方法流程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/27/产品/App 产品开发/">App版本升级</a>
           </li>
         
       </ul>
