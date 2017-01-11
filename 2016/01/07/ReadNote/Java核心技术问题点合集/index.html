@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Java核心技术回顾 30 - 75P43：基本数据类型在计算时的转换问题：
+如果两个操作数总有一个是double ，则另一个操作数转成double
+否则，如果一个操作数是float，则另一个操作数转成float
+否则，如果一个操作数是long，则另一个操作数转成long
+否则，两个操作数转成int类型。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Double">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Java核心技术回顾"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Double"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>Java核心技术回顾 - Double</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+    <!-- favicon -->
+    
+	
+</head>
+
+
+<body>
+
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Configurable Title</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/archives">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/klugjo/hexo-theme-clean-blog">
+                            
+                                <i class="fa fa-github fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('http://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Java核心技术回顾</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        2016-01-07
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 post-tags">
+                    
+                        
+
+
+<a href="/tags/java基础/">#java基础</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                        
+
+<a href="/categories/读书笔记/">读书笔记</a>
+
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h2 id="Java核心技术回顾-30-75"><a href="#Java核心技术回顾-30-75" class="headerlink" title="Java核心技术回顾 30 - 75"></a>Java核心技术回顾 30 - 75</h2><h3 id="P43：基本数据类型在计算时的转换问题："><a href="#P43：基本数据类型在计算时的转换问题：" class="headerlink" title="P43：基本数据类型在计算时的转换问题："></a>P43：基本数据类型在计算时的转换问题：</h3><ul>
+<li>如果两个操作数总有一个是double ，则另一个操作数转成double</li>
+<li>否则，如果一个操作数是float，则另一个操作数转成float</li>
+<li>否则，如果一个操作数是long，则另一个操作数转成long</li>
+<li>否则，两个操作数转成int类型。</li>
+</ul>
+<a id="more"></a>
+<pre><code>在没有double float long时数据转成int计算，在有这些数据类型时，优先级为：double&gt;float&gt;long
+
+如何查看一个数据的类型：
+
+    class Demo
+    {
+        public static void main(String[] args)
+        {
+            int i;
+            System.out.pritnln(getType(i));
+        }
+        public static getType(Object o)
+        {
+            return o.getClass().toString();
+        }    
+    }
+</code></pre><h3 id="P44-amp-amp-运算符的优先级比-高"><a href="#P44-amp-amp-运算符的优先级比-高" class="headerlink" title="P44 &amp;&amp;运算符的优先级比||高"></a>P44 &amp;&amp;运算符的优先级比||高</h3><p>验证code：</p>
+<h3 id="P46拼接-String类"><a href="#P46拼接-String类" class="headerlink" title="P46拼接 + String类"></a>P46拼接 + <strong>String类</strong></h3><p>任何Java对象都有可以转换成字符串，将第一个字符串与一个非字符串拼接时后者会转换成字符串。</p>
+<pre><code>int age=13;
+String rating = &quot;PG&quot; + age; 
+rating 为 &quot;PG13“
+这种特性一般用在输出语句中。
+System.out.println(&quot;the&quot;+任何数据类型);
+</code></pre><p>将substring方法和拼接符一起使用可以对字符串进行修改。</p>
+<p>String类称为<strong>不可变字符串</strong>，不过可以修改字符串变量让它引用另一个字符串。<strong>优点：</strong>让字符串共享。</p>
+<h3 id="P49-代码点与代码单元"><a href="#P49-代码点与代码单元" class="headerlink" title="P49 代码点与代码单元"></a>P49 代码点与代码单元</h3><blockquote>
+<p>char类型是一个采用UTF-16编码表示Unicode代码点的代码单元。大多数Unicode字符使用一个代码单元就可以表示了，而<strong>辅助字符</strong>需要一对代码单元表示。</p>
+</blockquote>
+<p>char –&gt; 代码单元:用length获得</p>
+<p>理解代码点和代码单元</p>
+<pre><code>import java.io.UnsupportedEncodingException;
+
+public class CharactersetTest {
+public static void main(String[] args) throws UnsupportedEncodingException {
+    String str = &quot;中&quot;;
+    int codepoint = str.codePointAt(0);
+
+    System.out.println(&quot;&apos;&quot; + str + &quot;&apos;的UNICODE编号(编码点,Unicode code point)=&quot; + codepoint + &quot;[0x&quot;
+            + Integer.toHexString(codepoint) + &quot;]&quot;);
+    System.out.println();
+
+    byte[] bytes = str.getBytes(&quot;utf32&quot;);
+    System.out.println(&quot;&apos;中&apos;的UTF-32编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;utf16&quot;);
+    System.out.println(&quot;&apos;中&apos;的UTF-16编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;UTF-16BE&quot;);
+    System.out.println(&quot;&apos;中&apos;的UTF-16BE编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;UTF-16LE&quot;);
+    System.out.println(&quot;&apos;中&apos;的UTF-16LE编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;utf8&quot;);
+    System.out.println(&quot;&apos;中&apos;的UTF-8编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    byte b = bytes[0];
+    System.out.println(&quot;3字节UTF8的第1个字节:&quot; + toBinaryString(b) + &quot;[1110xxxx]&quot;);
+    b = bytes[1];
+    System.out.println(&quot;3字节UTF8的第2个字节:&quot; + toBinaryString(b) + &quot;[10xxxxxx]&quot;);
+    b = bytes[2];
+    System.out.println(&quot;3字节UTF8的第3个字节:&quot; + toBinaryString(b) + &quot;[10xxxxxx]&quot;);
+    bytes = str.getBytes(&quot;GBK&quot;);
+    System.out.println(&quot;&apos;中&apos;的gbk编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;GB2312&quot;);
+    System.out.println(&quot;&apos;中&apos;的GB2312编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;US-ASCII&quot;);
+    System.out.println(&quot;&apos;中&apos;的US-ASCII编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;ISO-8859-1&quot;);
+    System.out.println(&quot;&apos;中&apos;的ISO-8859-1编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes) + &quot;,可以看出被丢了一半&quot;);
+    System.out.println();
+
+    str = &quot;A&quot;;
+    bytes = str.getBytes(&quot;utf32&quot;);
+    System.out.println(&quot;&apos;A&apos;的UTF-32编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;utf16&quot;);
+    System.out.println(&quot;&apos;A&apos;的UTF-16编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;UTF-16BE&quot;);
+    System.out.println(&quot;&apos;A&apos;的UTF-16BE编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;UTF-16LE&quot;);
+    System.out.println(&quot;&apos;A&apos;的UTF-16LE编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;utf8&quot;);
+    System.out.println(&quot;&apos;A&apos;的UTF-8编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;GBK&quot;);
+    System.out.println(&quot;&apos;A&apos;的gbk编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+    bytes = str.getBytes(&quot;GB2312&quot;);
+    System.out.println(&quot;&apos;A&apos;的GB2312编码单元长度为：&quot; + bytes.length + &quot;,内容为：&quot; + toHexString(bytes));
+
+    System.out.println();
+
+    byte[] bytes2 = { 0x4E, 0x2D };
+    String str2 = new String(bytes2, &quot;UTF-16&quot;);
+    System.out.println(&quot;从0x4E2D 按UTF-16 转出来的：&quot; + str2);
+
+    byte[] bytes4 = { (byte) 0xfe, (byte) 0xff, 0x4E, 0x2D };
+    String str4 = new String(bytes4, &quot;UTF-16&quot;);
+    System.out.println(&quot;从0xFEFF4E2D 按UTF-16 转出来的：&quot; + str4);
+
+    byte[] bytes3 = { (byte) 0xE4, (byte) 0xB8, (byte) 0xAD };
+    String str3 = new String(bytes3, &quot;UTF8&quot;);
+    System.out.println(&quot;从0xE4B8AD 按UTF-8 转出来的：&quot; + str3);
+
+}
+
+public static String toBinaryString(byte b) {
+    StringBuilder sb = new StringBuilder(&quot;&quot;);
+    String temp = Integer.toBinaryString(b &amp; 0xff);
+    sb.append(&quot;00000000&quot;.substring(temp.length())).append(temp);
+    return sb.toString();
+}
+
+public static String toHexString(byte[] bytes) {
+    StringBuilder sb = new StringBuilder(&quot;0x&quot;);
+    for (int i = 0; i &lt; bytes.length; i++) {
+        String temp = Integer.toHexString(bytes[i] &amp; 0xff);
+        sb.append((temp.length() == 1) ? &quot;0&quot; + temp : temp);
+    }
+    return sb.toString();
+}
+</code></pre><p>}</p>
+<h3 id="P55-控制台密码输入-Console类"><a href="#P55-控制台密码输入-Console类" class="headerlink" title="P55 控制台密码输入 Console类"></a>P55 控制台密码输入 Console类</h3><pre><code>Console cons = System.console();
+String username = cons.raedLine(&quot;User name:&quot;);
+char[] passwd = cons.readPassword(&quot;Password:&quot;);
+</code></pre><p>-</p>
+<pre><code>public class Main {    
+        public static void main(String[] args){  
+            Console console = System.console();  
+            String password ;  
+            password = new String(console.readPassword());  
+           System.out.println(&quot;password=&quot;+password);  
+    }  
+} 
+</code></pre><h3 id="P57-格式化输出"><a href="#P57-格式化输出" class="headerlink" title="P57 格式化输出"></a>P57 格式化输出</h3><blockquote>
+<p>JDK5.0后引入了printf方法 </p>
+</blockquote>
+<p>可以使用多个参数：每一个以%字符开始的格式说明符都应用相应的参数替换。格式说明符尾部的转换符指被格式化的数值类型。</p>
+<pre><code>System.out.printf(&quot;Hello,%s.Next year,you&apos;ll be %d&quot;,name,age);
+注：这里%s与后面的字符串可以不隔开；d代表十进制；
+</code></pre><ol>
+<li>printf的转换符；</li>
+<li><p>printf的标志；</p>
+<pre><code>System.out.printf(%,.2f,10000.0/3.0);
+结果为：3，333.33
+保留2位小数并且用逗号分隔，逗号为printf的标志，f为printf的转换符。
+</code></pre><p>格式化字符串的另一个方法：静态的<code>String.format</code></p>
+<pre><code>String message = String.format(&quot;Hello,%s.Next year,you&apos;ll be %d&quot;,name,age);
+</code></pre><p>日期时间的转换符：两个字符格式以t开始</p>
+<pre><code>System.out.printf(&quot;%tc&quot;,new Date());
+</code></pre></li>
+</ol>
+<p>格式说明符的语法：</p>
+
+
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/klugjo/hexo-theme-clean-blog" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2017 Double<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

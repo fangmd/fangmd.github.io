@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="Renderers
+Before a TemplateResponse instance can be returned to the client, it must be rendered. The rendering process takes the intermediate represen">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Double">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="7. django-rest-framework -- Renderers"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Double"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>7. django-rest-framework -- Renderers - Double</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+    <!-- favicon -->
+    
+	
+</head>
+
+
+<body>
+
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Configurable Title</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/archives">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/klugjo/hexo-theme-clean-blog">
+                            
+                                <i class="fa fa-github fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('http://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>7. django-rest-framework -- Renderers</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        2016-11-13
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 post-tags">
+                    
+                        
+
+
+<a href="/tags/Django/">#Django</a> <a href="/tags/django-rest-framework/">#django-rest-framework</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                        
+
+<a href="/categories/Python/">Python</a>
+
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h1 id="Renderers"><a href="#Renderers" class="headerlink" title="Renderers"></a>Renderers</h1><blockquote>
+<p>Before a TemplateResponse instance can be returned to the client, it must be rendered. The rendering process takes the intermediate representation of template and context, and turns it into the final byte stream that can be served to the client.<br>— Django documentation</p>
+</blockquote>
+<h2 id="How-the-renderer-is-determined"><a href="#How-the-renderer-is-determined" class="headerlink" title="How the renderer is determined"></a>How the renderer is determined</h2><ol>
+<li><p>决定：请求头 <code>Accept</code></p>
+</li>
+<li><p>URL 的后缀（优先）</p>
+</li>
+</ol>
+<h2 id="Setting-the-renderers"><a href="#Setting-the-renderers" class="headerlink" title="Setting the renderers"></a>Setting the renderers</h2><pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
+        &apos;rest_framework.renderers.JSONRenderer&apos;,
+        &apos;rest_framework.renderers.BrowsableAPIRenderer&apos;,
+    )
+}
+</code></pre><p>也可以为视图独立设置：</p>
+<pre><code>from django.contrib.auth.models import User
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class UserCountView(APIView):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        user_count = User.objects.filter(active=True).count()
+        content = {&apos;user_count&apos;: user_count}
+        return Response(content)
+</code></pre><p>方法视图；</p>
+<pre><code>@api_view([&apos;GET&apos;])
+@renderer_classes((JSONRenderer,))
+def user_count_view(request, format=None):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    user_count = User.objects.filter(active=True).count()
+    content = {&apos;user_count&apos;: user_count}
+    return Response(content)
+</code></pre><h2 id="Ordering-of-renderer-classes"><a href="#Ordering-of-renderer-classes" class="headerlink" title="Ordering of renderer classes"></a>Ordering of renderer classes</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONRenderer"><a href="#JSONRenderer" class="headerlink" title="JSONRenderer"></a>JSONRenderer</h2><h2 id="TemplateHTMLRenderer"><a href="#TemplateHTMLRenderer" class="headerlink" title="TemplateHTMLRenderer"></a>TemplateHTMLRenderer</h2><h2 id="StaticHTMLRenderer"><a href="#StaticHTMLRenderer" class="headerlink" title="StaticHTMLRenderer"></a>StaticHTMLRenderer</h2><h2 id="BrowsableAPIRenderer"><a href="#BrowsableAPIRenderer" class="headerlink" title="BrowsableAPIRenderer"></a>BrowsableAPIRenderer</h2><p>渲染成一个网页可操作的API接口</p>
+<ul>
+<li>.media_type: text/html</li>
+<li>.format: ‘.api’</li>
+<li>.charset: utf-8</li>
+<li>.template: ‘rest_framework/api.html’</li>
+</ul>
+<h2 id="AdminRenderer"><a href="#AdminRenderer" class="headerlink" title="AdminRenderer"></a>AdminRenderer</h2><p>Renders data into HTML for an admin-like display:</p>
+<h2 id="HTMLFormRenderer"><a href="#HTMLFormRenderer" class="headerlink" title="HTMLFormRenderer"></a>HTMLFormRenderer</h2><p>使用 html 模版生产结果</p>
+<h2 id="MultiPartRenderer"><a href="#MultiPartRenderer" class="headerlink" title="MultiPartRenderer"></a>MultiPartRenderer</h2><h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2>
+
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/klugjo/hexo-theme-clean-blog" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2017 Double<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
