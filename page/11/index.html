@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Double</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Double">
+<meta property="og:url" content="http://yoursite.com/page/11/index.html">
+<meta property="og:site_name" content="Double">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Double">
+  
+    <link rel="alternate" href="/atom.xml" title="Double" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Double</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Android/视屏播放/SurfaceView" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/18/Android/视屏播放/SurfaceView/" class="article-date">
+  <time datetime="2016-04-18T03:38:14.000Z" itemprop="datePublished">2016-04-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/18/Android/视屏播放/SurfaceView/">SurfaceView</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><h2 id="和自定义view比较"><a href="#和自定义view比较" class="headerlink" title="和自定义view比较"></a>和自定义view比较</h2><p>自定义View：</p>
+<ol>
+<li>只能在主线程中绘制</li>
+<li>绘制效率低</li>
+<li>封装性好，便于复用</li>
+<li>可以通过自定义属性配置</li>
+</ol>
+<p>SurfaceView：</p>
+<ol>
+<li>封装性差</li>
+<li>可以在子线程中绘制</li>
+<li>绘制速度是普通view绘制的5倍，主要用于游戏和视频播放</li>
+<li>不可配置</li>
+</ol>
+<h2 id="一个基本的使用"><a href="#一个基本的使用" class="headerlink" title="一个基本的使用"></a>一个基本的使用</h2><h3 id="run接口实现类"><a href="#run接口实现类" class="headerlink" title="run接口实现类"></a>run接口实现类</h3><pre><code>public class DrawRunnable implements Runnable {
+    private static final String TAG = DrawRunnable.class.getName();
+    private SurfaceHolder mHolder;
+    private boolean running;
+    private final Paint mPaint;
+
+    public DrawRunnable(SurfaceHolder holder) {
+        mHolder = holder;
+        running = true;
+        mPaint = new Paint(); // 创建画笔耗时
+        mPaint.setTextSize(100);
+        mPaint.setColor(Color.BLUE);
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            Canvas canvas = mHolder.lockCanvas();
+            if (canvas != null) {
+                canvas.drawColor(Color.WHITE);
+                canvas.drawText(&quot;Surface绘制&quot;, 200, 200, mPaint);
+                mHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    }
+
+    public void setRunning(boolean runable) {
+        running = runable;
+    }
+}
+</code></pre><h3 id="mainactivity"><a href="#mainactivity" class="headerlink" title="mainactivity"></a>mainactivity</h3><pre><code>mSurface = (SurfaceView) findViewById(R.id.main_surface);
+SurfaceHolder holder = mSurface.getHolder();
+holder.addCallback(this);
+mDrawRunnable = new DrawRunnable(holder);
+new Thread(mDrawRunnable).start();
+</code></pre><h3 id="holder-addCallback-this-接口方法"><a href="#holder-addCallback-this-接口方法" class="headerlink" title="holder.addCallback(this);接口方法"></a>holder.addCallback(this);接口方法</h3><pre><code>@Override
+public void surfaceCreated(SurfaceHolder holder) {
+
+}
+
+@Override
+public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+}
+
+@Override
+public void surfaceDestroyed(SurfaceHolder holder) {
+    mDrawRunnable.setRunning(false); // 结束绘制
+}
+</code></pre><h2 id="播放视频"><a href="#播放视频" class="headerlink" title="播放视频"></a>播放视频</h2><pre><code>try {
+    mMediaPlayer = new MediaPlayer();
+    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;);
+    File externalStorageDirectory = Environment.getExternalStorageDirectory();
+    mMediaPlayer.setDataSource(file.getAbsolutePath());
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+@Override
+public void surfaceCreated(SurfaceHolder holder) {
+    mMediaPlayer.setDisplay(holder); // 设定展示平台
+    mMediaPlayer.setOnPreparedListener(this);
+    mMediaPlayer.prepareAsync();
+}
+
+@Override
+public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+}
+
+@Override
+public void surfaceDestroyed(SurfaceHolder holder) {
+    // 及时关闭
+    mMediaPlayer.stop();
+    mMediaPlayer.release();
+}
+
+@Override
+public void onPrepared(MediaPlayer mp) {
+    int videoWidth = mMediaPlayer.getVideoWidth();
+    int videoHeight = mMediaPlayer.getVideoHeight();
+    ViewGroup.LayoutParams layoutParams = mSurface.getLayoutParams();
+    layoutParams.height = videoHeight;
+    layoutParams.width = videoWidth;
+    mSurface.setLayoutParams(layoutParams);
+    //mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+    mMediaPlayer.start();
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/18/Android/视屏播放/SurfaceView/" data-id="cixsncd5k00bkp5w4znticly6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SurfaceView/">SurfaceView</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/RecyclerView/RecyclerViewLayoutManager" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/" class="article-date">
+  <time datetime="2016-04-17T10:38:14.000Z" itemprop="datePublished">2016-04-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/">RecyclerView LayoutManager</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="RecyclerView-LayoutManager"><a href="#RecyclerView-LayoutManager" class="headerlink" title="RecyclerView LayoutManager"></a>RecyclerView LayoutManager</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/" data-id="cixsncd8h00hvp5w4chwz5nsv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LayoutManager/">LayoutManager</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/RecyclerView/RecyclerView拖动和滑动" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/" class="article-date">
+  <time datetime="2016-04-17T10:38:14.000Z" itemprop="datePublished">2016-04-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/">RecyclerView简单拖动和滑动</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="RecyclerView简单拖动和滑动"><a href="#RecyclerView简单拖动和滑动" class="headerlink" title="RecyclerView简单拖动和滑动"></a>RecyclerView简单拖动和滑动</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/" data-id="cixsncd8n00i5p5w4v8prcb69" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/view/ListView/ListView 添加HeaderView" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/17/Android/view/ListView/ListView 添加HeaderView/" class="article-date">
+  <time datetime="2016-04-17T03:38:14.000Z" itemprop="datePublished">2016-04-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/17/Android/view/ListView/ListView 添加HeaderView/">ListView 添加HeaderView</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ListView-添加HeaderView"><a href="#ListView-添加HeaderView" class="headerlink" title="ListView 添加HeaderView"></a>ListView 添加HeaderView</h1><h2 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h2><pre><code>ViewPager viewPager = new ViewPager(getActivity());
+ArrayList&lt;FocusImageAlbumInfo&gt; data = new ArrayList&lt;&gt;();
+mFocesImgAdapter = new TopAdPageAdapter(getActivity(), data);
+viewPager.setAdapter(mFocesImgAdapter);
+
+DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+int density = displayMetrics.density;
+int px = 220 * density;
+viewPager.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, px));
+mListView.addHeaderView(viewPager);
+</code></pre><h2 id="viewpager-adapter代码"><a href="#viewpager-adapter代码" class="headerlink" title="viewpager adapter代码"></a>viewpager adapter代码</h2><pre><code>@Override
+public Object instantiateItem(ViewGroup container, int position) {
+    ImageView imageView = new ImageView(mContext);
+    imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    container.addView(imageView);
+    initImageData();
+    Picasso.with(mContext).load(mData.get(position).getPic()).into(imageView);
+    return imageView;
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/17/Android/view/ListView/ListView 添加HeaderView/" data-id="cixsncd8200h5p5w45dqytrhx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ListView/">ListView</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/多点触控" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/16/Android/多点触控/" class="article-date">
+  <time datetime="2016-04-16T01:38:14.000Z" itemprop="datePublished">2016-04-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/16/Android/多点触控/">多点触控</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="多点触控"><a href="#多点触控" class="headerlink" title="多点触控"></a>多点触控</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/16/Android/多点触控/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/16/Android/多点触控/" data-id="cixsncczp0031p5w4mwz7bkbf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多点触控/">多点触控</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/加解密" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/15/Android/加解密/" class="article-date">
+  <time datetime="2016-04-15T04:18:12.000Z" itemprop="datePublished">2016-04-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/15/Android/加解密/">加解密</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="加解密"><a href="#加解密" class="headerlink" title="加解密"></a>加解密</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/15/Android/加解密/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/15/Android/加解密/" data-id="cixsncczl002vp5w4a8gflx0y" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/加解密/">加解密</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/触摸事件分发" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/15/Android/触摸事件分发/" class="article-date">
+  <time datetime="2016-04-15T01:13:12.000Z" itemprop="datePublished">2016-04-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/15/Android/触摸事件分发/">触摸事件分发</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="触摸事件分发"><a href="#触摸事件分发" class="headerlink" title="触摸事件分发"></a>触摸事件分发</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/15/Android/触摸事件分发/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/15/Android/触摸事件分发/" data-id="cixsncczs0037p5w4hfrd998h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/触摸事件分发/">触摸事件分发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/drawableLeft等类似属性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/14/Android/drawableLeft等类似属性/" class="article-date">
+  <time datetime="2016-04-14T13:38:14.000Z" itemprop="datePublished">2016-04-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/14/Android/drawableLeft等类似属性/">drawableLeft</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="drawableLeft等类似属性"><a href="#drawableLeft等类似属性" class="headerlink" title="drawableLeft等类似属性"></a>drawableLeft等类似属性</h1><p>转自：<a href="http://bbs.csdn.net/topics/390383463" target="_blank" rel="external">http://bbs.csdn.net/topics/390383463</a></p>
+<h2 id="code"><a href="#code" class="headerlink" title="code"></a>code</h2><pre><code>public void  setCompoundDrawables  (Drawable left, Drawable top, Drawable right, Drawable bottom);
+public void setCompoundDrawablesWithIntrinsicBounds (Drawable left,Drawable top, Drawable right, Drawable bottom)
+</code></pre><p>。</p>
+<pre><code>Drawable drawable = resources.getDrawable(drawablesDown[i]);
+drawable.setBounds(0, 0, px, px); // 做适配
+radioButton.setCompoundDrawables(null, drawable, null, null);
+</code></pre><h2 id="xml"><a href="#xml" class="headerlink" title="xml"></a>xml</h2><pre><code>android:drawableLeft=&quot;@drawable/icon&quot;
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/14/Android/drawableLeft等类似属性/" data-id="cixsnccz7002ap5w4m4qsephw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/drawableLeft/">drawableLeft</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/Bitmap和Drawable" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/14/Android/Bitmap和Drawable/" class="article-date">
+  <time datetime="2016-04-14T13:38:14.000Z" itemprop="datePublished">2016-04-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/14/Android/Bitmap和Drawable/">Bitmap和Drawable</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Bitmap和Drawable"><a href="#Bitmap和Drawable" class="headerlink" title="Bitmap和Drawable"></a>Bitmap和Drawable</h1><p>转自：<a href="http://dyh7077063.iteye.com/blog/970672">http://dyh7077063.iteye.com/blog/970672</a></p>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/14/Android/Bitmap和Drawable/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/14/Android/Bitmap和Drawable/" data-id="cixsnccxr000op5w4k3e54392" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bitmap-drawable/">bitmap,drawable</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Android/features/高斯模糊" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/13/Android/features/高斯模糊/" class="article-date">
+  <time datetime="2016-04-13T06:38:14.000Z" itemprop="datePublished">2016-04-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/android/">android</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/13/Android/features/高斯模糊/">高斯模糊</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="高斯模糊"><a href="#高斯模糊" class="headerlink" title="高斯模糊"></a>高斯模糊</h1>
+        
+          <p class="article-more-link">
+            <a href="/2016/04/13/Android/features/高斯模糊/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/13/Android/features/高斯模糊/" data-id="cixsncd2r0074p5w4vimr9wrz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/高斯模糊/">高斯模糊</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/10/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/12/">__('next') &raquo;</a>
+  </nav>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/program/">program</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ADB/">ADB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AIDL/">AIDL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Activity/">Activity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android5-0/">Android5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android7-0/">Android7.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android内存优化/">Android内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Animation/">Animation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/App/">App</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/App更新/">App更新</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bmob/">Bmob</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Broadcast/">Broadcast</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Build类/">Build类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bundle/">Bundle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CardView/">CardView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Configuration/">Configuration</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ContentProvider/">ContentProvider</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ContentResolver/">ContentResolver</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CoordinatorLayout/">CoordinatorLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DBFlow/">DBFlow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dagger/">Dagger</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataBinding/">DataBinding</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DataUtils/">DataUtils</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug/">Debug</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dialog/">Dialog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DialogFragment/">DialogFragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EditText/">EditText</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EventBus/">EventBus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FileProvider/">FileProvider</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fragment/">Fragment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Glide/">Glide</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/">Handler</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intent/">Intent</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lambda/">Lambda</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LayoutInflater/">LayoutInflater</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LayoutManager/">LayoutManager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ListView/">ListView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Material-design/">Material design</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MediaPlayer/">MediaPlayer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Notification/">Notification</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OKHttp/">OKHttp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pocket/">Pocket</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PopupWindow/">PopupWindow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/">RecyclerView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rxjava/">Rxjava</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rxjava2/">Rxjava2</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN-GIT/">SVN GIT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Service/">Service</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ShareSDK/">ShareSDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SharedPreferences/">SharedPreferences</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SurfaceView/">SurfaceView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SwipeRefreshLayout/">SwipeRefreshLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TabLayout/">TabLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ThreadPoll/">ThreadPoll</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tips/">Tips</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Toast/">Toast</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ToolBar/">ToolBar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Transition/">Transition</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/">View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ViewPager/">ViewPager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebView/">WebView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ZXing/">ZXing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/adb/">adb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aidl/">aidl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android-5-0/">android 5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android-studio/">android studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android5-0/">android5.0</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android悬浮窗/">android悬浮窗</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android适配，屏幕适配/">android适配，屏幕适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/async/">async</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/behavior/">behavior</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bitmap-drawable/">bitmap,drawable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/context/">context</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/drawable/">drawable</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/drawableLeft/">drawableLeft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/eventBus/">eventBus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/feature/">feature</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/features/">features</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ignore/">ignore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javaScripe/">javaScripe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/menu/">menu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mockito/">mockito</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ndk/">ndk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nfc/">nfc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/path/">path</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/permission/">permission</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/permission，官方文档/">permission，官方文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sensor/">sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shape/">shape</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/style/">style</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tips/">tips</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/view/">view</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xml-pull/">xml,pull</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码优化/">代码优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码混淆/">代码混淆</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/优化/">优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/传值/">传值</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/依赖重复/">依赖重复</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/共享元素/">共享元素</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存优化/">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存基础/">内存基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存泄露/">内存泄露</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分享/">分享</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/加解密/">加解密</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/单元测试/">单元测试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/后台任务/">后台任务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图片/">图片</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多点触控/">多点触控</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字体/">字体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习记录/">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安全/">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/官方文档/">官方文档</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时任务/">定时任务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实例/">实例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏幕适配/">屏幕适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/崩溃日志/">崩溃日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工具/">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布局/">布局</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/布局优化/">布局优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/广播/">广播</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/序列化/">序列化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用市场/">应用市场</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/打包/">打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付宝/">支付宝</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据存储/">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文字/">文字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/机型适配/">机型适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/极光推送/">极光推送</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/波纹效果/">波纹效果</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本/">版本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/界面侧滑/">界面侧滑</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相册/">相册</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/相机/">相机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方/">第三方</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方框架/">第三方框架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/第三方登入/">第三方登入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/缓存/">缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络协议/">网络协议</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义View/">自定义View</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义属性/">自定义属性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/规范/">规范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/视频播放/">视频播放</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/触摸事件分发/">触摸事件分发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计时/">计时</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/贝塞尔曲线/">贝塞尔曲线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/资源文件/">资源文件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件打包/">软件打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/软件的统计分析/">软件的统计分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程保活/">进程保活</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/适配/">适配</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/铲平/">铲平</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高斯模糊/">高斯模糊</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ADB/" style="font-size: 10px;">ADB</a> <a href="/tags/AIDL/" style="font-size: 10px;">AIDL</a> <a href="/tags/Activity/" style="font-size: 10px;">Activity</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Android5-0/" style="font-size: 10px;">Android5.0</a> <a href="/tags/Android7-0/" style="font-size: 10px;">Android7.0</a> <a href="/tags/Android内存优化/" style="font-size: 18.33px;">Android内存优化</a> <a href="/tags/Animation/" style="font-size: 13.33px;">Animation</a> <a href="/tags/App/" style="font-size: 11.67px;">App</a> <a href="/tags/App更新/" style="font-size: 10px;">App更新</a> <a href="/tags/Bmob/" style="font-size: 10px;">Bmob</a> <a href="/tags/Broadcast/" style="font-size: 10px;">Broadcast</a> <a href="/tags/Build类/" style="font-size: 10px;">Build类</a> <a href="/tags/Bundle/" style="font-size: 10px;">Bundle</a> <a href="/tags/CardView/" style="font-size: 10px;">CardView</a> <a href="/tags/Configuration/" style="font-size: 10px;">Configuration</a> <a href="/tags/ContentProvider/" style="font-size: 10px;">ContentProvider</a> <a href="/tags/ContentResolver/" style="font-size: 10px;">ContentResolver</a> <a href="/tags/CoordinatorLayout/" style="font-size: 11.67px;">CoordinatorLayout</a> <a href="/tags/DBFlow/" style="font-size: 10px;">DBFlow</a> <a href="/tags/Dagger/" style="font-size: 10px;">Dagger</a> <a href="/tags/DataBinding/" style="font-size: 10px;">DataBinding</a> <a href="/tags/DataUtils/" style="font-size: 10px;">DataUtils</a> <a href="/tags/Debug/" style="font-size: 10px;">Debug</a> <a href="/tags/Dialog/" style="font-size: 10px;">Dialog</a> <a href="/tags/DialogFragment/" style="font-size: 10px;">DialogFragment</a> <a href="/tags/EditText/" style="font-size: 10px;">EditText</a> <a href="/tags/EventBus/" style="font-size: 10px;">EventBus</a> <a href="/tags/FileProvider/" style="font-size: 10px;">FileProvider</a> <a href="/tags/Fragment/" style="font-size: 13.33px;">Fragment</a> <a href="/tags/Glide/" style="font-size: 11.67px;">Glide</a> <a href="/tags/Gradle/" style="font-size: 11.67px;">Gradle</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/Intent/" style="font-size: 11.67px;">Intent</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Lambda/" style="font-size: 10px;">Lambda</a> <a href="/tags/LayoutInflater/" style="font-size: 11.67px;">LayoutInflater</a> <a href="/tags/LayoutManager/" style="font-size: 10px;">LayoutManager</a> <a href="/tags/ListView/" style="font-size: 15px;">ListView</a> <a href="/tags/Material-design/" style="font-size: 10px;">Material design</a> <a href="/tags/MediaPlayer/" style="font-size: 10px;">MediaPlayer</a> <a href="/tags/Notification/" style="font-size: 10px;">Notification</a> <a href="/tags/OAuth/" style="font-size: 10px;">OAuth</a> <a href="/tags/OKHttp/" style="font-size: 10px;">OKHttp</a> <a href="/tags/Pocket/" style="font-size: 10px;">Pocket</a> <a href="/tags/PopupWindow/" style="font-size: 10px;">PopupWindow</a> <a href="/tags/RecyclerView/" style="font-size: 18.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13.33px;">Retrofit</a> <a href="/tags/Rxjava/" style="font-size: 13.33px;">Rxjava</a> <a href="/tags/Rxjava2/" style="font-size: 11.67px;">Rxjava2</a> <a href="/tags/SVN-GIT/" style="font-size: 10px;">SVN GIT</a> <a href="/tags/Service/" style="font-size: 10px;">Service</a> <a href="/tags/ShareSDK/" style="font-size: 10px;">ShareSDK</a> <a href="/tags/SharedPreferences/" style="font-size: 10px;">SharedPreferences</a> <a href="/tags/SurfaceView/" style="font-size: 10px;">SurfaceView</a> <a href="/tags/SwipeRefreshLayout/" style="font-size: 10px;">SwipeRefreshLayout</a> <a href="/tags/TabLayout/" style="font-size: 10px;">TabLayout</a> <a href="/tags/ThreadPoll/" style="font-size: 10px;">ThreadPoll</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/Toast/" style="font-size: 10px;">Toast</a> <a href="/tags/ToolBar/" style="font-size: 10px;">ToolBar</a> <a href="/tags/Transition/" style="font-size: 10px;">Transition</a> <a href="/tags/View/" style="font-size: 16.67px;">View</a> <a href="/tags/ViewPager/" style="font-size: 11.67px;">ViewPager</a> <a href="/tags/WebView/" style="font-size: 11.67px;">WebView</a> <a href="/tags/ZXing/" style="font-size: 10px;">ZXing</a> <a href="/tags/adb/" style="font-size: 10px;">adb</a> <a href="/tags/aidl/" style="font-size: 10px;">aidl</a> <a href="/tags/android/" style="font-size: 13.33px;">android</a> <a href="/tags/android-5-0/" style="font-size: 10px;">android 5.0</a> <a href="/tags/android-studio/" style="font-size: 10px;">android studio</a> <a href="/tags/android5-0/" style="font-size: 10px;">android5.0</a> <a href="/tags/android悬浮窗/" style="font-size: 10px;">android悬浮窗</a> <a href="/tags/android适配，屏幕适配/" style="font-size: 10px;">android适配，屏幕适配</a> <a href="/tags/async/" style="font-size: 10px;">async</a> <a href="/tags/behavior/" style="font-size: 10px;">behavior</a> <a href="/tags/bitmap-drawable/" style="font-size: 10px;">bitmap,drawable</a> <a href="/tags/context/" style="font-size: 10px;">context</a> <a href="/tags/drawable/" style="font-size: 10px;">drawable</a> <a href="/tags/drawableLeft/" style="font-size: 10px;">drawableLeft</a> <a href="/tags/eventBus/" style="font-size: 10px;">eventBus</a> <a href="/tags/feature/" style="font-size: 10px;">feature</a> <a href="/tags/features/" style="font-size: 13.33px;">features</a> <a href="/tags/ignore/" style="font-size: 10px;">ignore</a> <a href="/tags/javaScripe/" style="font-size: 10px;">javaScripe</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/menu/" style="font-size: 10px;">menu</a> <a href="/tags/mockito/" style="font-size: 10px;">mockito</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/ndk/" style="font-size: 11.67px;">ndk</a> <a href="/tags/nfc/" style="font-size: 10px;">nfc</a> <a href="/tags/path/" style="font-size: 10px;">path</a> <a href="/tags/permission/" style="font-size: 10px;">permission</a> <a href="/tags/permission，官方文档/" style="font-size: 11.67px;">permission，官方文档</a> <a href="/tags/sensor/" style="font-size: 10px;">sensor</a> <a href="/tags/shape/" style="font-size: 10px;">shape</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/style/" style="font-size: 13.33px;">style</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/view/" style="font-size: 16.67px;">view</a> <a href="/tags/xml-pull/" style="font-size: 10px;">xml,pull</a> <a href="/tags/代码优化/" style="font-size: 10px;">代码优化</a> <a href="/tags/代码混淆/" style="font-size: 10px;">代码混淆</a> <a href="/tags/优化/" style="font-size: 10px;">优化</a> <a href="/tags/传值/" style="font-size: 10px;">传值</a> <a href="/tags/依赖重复/" style="font-size: 10px;">依赖重复</a> <a href="/tags/共享元素/" style="font-size: 10px;">共享元素</a> <a href="/tags/内存优化/" style="font-size: 10px;">内存优化</a> <a href="/tags/内存基础/" style="font-size: 10px;">内存基础</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/分享/" style="font-size: 10px;">分享</a> <a href="/tags/加解密/" style="font-size: 10px;">加解密</a> <a href="/tags/单元测试/" style="font-size: 11.67px;">单元测试</a> <a href="/tags/后台任务/" style="font-size: 10px;">后台任务</a> <a href="/tags/图片/" style="font-size: 15px;">图片</a> <a href="/tags/多点触控/" style="font-size: 10px;">多点触控</a> <a href="/tags/字体/" style="font-size: 10px;">字体</a> <a href="/tags/学习记录/" style="font-size: 10px;">学习记录</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/官方文档/" style="font-size: 11.67px;">官方文档</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/实例/" style="font-size: 10px;">实例</a> <a href="/tags/屏幕适配/" style="font-size: 11.67px;">屏幕适配</a> <a href="/tags/崩溃日志/" style="font-size: 10px;">崩溃日志</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/布局优化/" style="font-size: 10px;">布局优化</a> <a href="/tags/广播/" style="font-size: 10px;">广播</a> <a href="/tags/序列化/" style="font-size: 10px;">序列化</a> <a href="/tags/应用市场/" style="font-size: 10px;">应用市场</a> <a href="/tags/打包/" style="font-size: 11.67px;">打包</a> <a href="/tags/支付宝/" style="font-size: 10px;">支付宝</a> <a href="/tags/数据存储/" style="font-size: 11.67px;">数据存储</a> <a href="/tags/文字/" style="font-size: 10px;">文字</a> <a href="/tags/机型适配/" style="font-size: 11.67px;">机型适配</a> <a href="/tags/极光推送/" style="font-size: 11.67px;">极光推送</a> <a href="/tags/波纹效果/" style="font-size: 10px;">波纹效果</a> <a href="/tags/版本/" style="font-size: 10px;">版本</a> <a href="/tags/界面侧滑/" style="font-size: 10px;">界面侧滑</a> <a href="/tags/相册/" style="font-size: 10px;">相册</a> <a href="/tags/相机/" style="font-size: 11.67px;">相机</a> <a href="/tags/第三方/" style="font-size: 10px;">第三方</a> <a href="/tags/第三方框架/" style="font-size: 10px;">第三方框架</a> <a href="/tags/第三方登入/" style="font-size: 10px;">第三方登入</a> <a href="/tags/缓存/" style="font-size: 10px;">缓存</a> <a href="/tags/网络协议/" style="font-size: 11.67px;">网络协议</a> <a href="/tags/自定义View/" style="font-size: 20px;">自定义View</a> <a href="/tags/自定义属性/" style="font-size: 10px;">自定义属性</a> <a href="/tags/规范/" style="font-size: 10px;">规范</a> <a href="/tags/视频播放/" style="font-size: 10px;">视频播放</a> <a href="/tags/触摸事件分发/" style="font-size: 10px;">触摸事件分发</a> <a href="/tags/计时/" style="font-size: 10px;">计时</a> <a href="/tags/贝塞尔曲线/" style="font-size: 10px;">贝塞尔曲线</a> <a href="/tags/资源文件/" style="font-size: 10px;">资源文件</a> <a href="/tags/软件打包/" style="font-size: 10px;">软件打包</a> <a href="/tags/软件的统计分析/" style="font-size: 10px;">软件的统计分析</a> <a href="/tags/进程保活/" style="font-size: 10px;">进程保活</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/铲平/" style="font-size: 10px;">铲平</a> <a href="/tags/高斯模糊/" style="font-size: 10px;">高斯模糊</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">October 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/01/11/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/29/Android/第三方/retrofit/Retrofit缓存/">Retrofit 缓存</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">自定义View -- 自定义属性</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/">自定义View-方法流程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/27/产品/App 产品开发/">App版本升级</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Double<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
