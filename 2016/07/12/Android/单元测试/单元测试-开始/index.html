@@ -10,7 +10,13 @@
 
     <!--Description-->
     
-        <meta name="description" content="什么是单元测试参考:http://www.jianshu.com/p/b2717dc245da">
+        <meta name="description" content="什么是单元测试单元测试是为了测试某一个代码单元而写的测试代码。
+单元测试，是为了测试某一个类的某一个方法能否正常工作，而写的测试代码。
+测试通常分3步骤：
+
+setup: 准备前提条件，比如 创建需要被测试的对象
+执行操作：使用被测试对象的测试方法
+验证结果：测试对象的测试方法执行结果是不是和我们期">
     
 
     <!--Author-->
@@ -181,7 +187,79 @@
 
             <!-- Post Main Content -->
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <h1 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h1><p>参考:<a href="http://www.jianshu.com/p/b2717dc245da" target="_blank" rel="external">http://www.jianshu.com/p/b2717dc245da</a></p>
+                <h1 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h1><p>单元测试是为了测试某一个代码单元而写的测试代码。</p>
+<p>单元测试，是为了测试某一个类的某一个方法能否正常工作，而写的测试代码。</p>
+<p>测试通常分3步骤：</p>
+<ol>
+<li>setup: 准备前提条件，比如 创建需要被测试的对象</li>
+<li>执行操作：使用被测试对象的测试方法</li>
+<li>验证结果：测试对象的测试方法执行结果是不是和我们期望的一样</li>
+</ol>
+<p>常见的 java 单元测试框架： JUnit，TestNG 等</p>
+<h1 id="JUnit单元测试框架的使用"><a href="#JUnit单元测试框架的使用" class="headerlink" title="JUnit单元测试框架的使用"></a>JUnit单元测试框架的使用</h1><p>测试有返回值的方法，对于没有返回值的方法使用 Mockito</p>
+<h2 id="方法修饰符"><a href="#方法修饰符" class="headerlink" title="方法修饰符"></a>方法修饰符</h2><ul>
+<li><code>@Before</code>: 每个测试方法执行前都会执行一次</li>
+<li><p><code>@Test</code></p>
+<p>  添加允许的异常，比如：<code>@Test(expected = IllegalArgumentException.class)</code> 表示测试方法抛出 IllegalArgumentException 属于正常现象</p>
+</li>
+<li><p><code>@After</code></p>
+</li>
+<li><code>@BeforeClass</code>: 只能修饰静态方法，在测试类测试开始时执行一次</li>
+<li><p><code>@AfterClass</code>: 只能修饰静态方法</p>
+</li>
+<li><p><code>@Ignore(String s)</code>: 表示这个测试方法不进行测试，比如 “not implemented yet”，方法未实现的时候</p>
+<h2 id="断言方法验证结果"><a href="#断言方法验证结果" class="headerlink" title="断言方法验证结果"></a>断言方法验证结果</h2></li>
+<li><p><code>assertEquals(expected, actual)</code></p>
+</li>
+<li><code>assertEquals(expexted, actual, tolerance)</code>: 参数3表示两个数的允许偏差值</li>
+<li><code>assertTrue(boolean condition)</code></li>
+<li><code>assertFalse(boolean condition</code></li>
+<li><code>assertNull(Object obj)</code></li>
+<li><code>assertNotNull(Object obj)</code></li>
+<li><code>assertSame(expected, actual)</code></li>
+<li><code>assertNotSame(experted, actual)</code></li>
+<li><code>fail()</code>: 让测试方法失败</li>
+</ul>
+<p><strong><em>注意：</em></strong>上面的所有方法都有一个重载方法，可以在前面加个 String 参数作为错误提示。 比如：<code>assertEquals(&quot;Current user Id should be 1&quot;, 1, currentUser.id());</code></p>
+<h1 id="Mockito-使用"><a href="#Mockito-使用" class="headerlink" title="Mockito 使用"></a>Mockito 使用</h1><p>mock：创建一个类的虚假的对象，在测试环境中，用来替换掉真实的对象</p>
+<p>Mock 通常作用：</p>
+<ol>
+<li>验证这个对象的某些方法的调用情况，调用了多少次，参数是什么等等</li>
+<li>指定这个对象的某些方法的行为，返回特定的值，或者是执行特定的动作</li>
+</ol>
+<p>Mockito 是一个 Mock 框架</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>需要测试的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">if</span> (password == <span class="keyword">null</span> || password.length() &lt; <span class="number">6</span>) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    mUserManager.performLogin(username, password);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>需要验证 <code>performLogin</code> 是否执行了</p>
+<p>测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLogin</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    UserManager mockUserManager = Mockito.mock(UserManager.class);</div><div class="line">    LoginPresenter loginPresenter = <span class="keyword">new</span> LoginPresenter();</div><div class="line">    loginPresenter.setUserManager(mockUserManager);  <span class="comment">//&lt;==</span></div><div class="line"></div><div class="line">    loginPresenter.login(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div><div class="line"></div><div class="line">    Mockito.verify(mockUserManager).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用 Mockito 验证对象方法调用情况的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(userManager).performLogin(<span class="string">"name"</span>, <span class="string">"password"</span>)</div></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="验证方法调用"><a href="#验证方法调用" class="headerlink" title="验证方法调用"></a>验证方法调用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div></pre></td></tr></table></figure>
+<p>验证方法调用次数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager, Mockito.times(<span class="number">1</span>)).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div></pre></td></tr></table></figure>
+<p>验证次数：最多，最少，不执行：<code>atMost(count)</code>, <code>atLeast(count)</code>, <code>nerver()</code></p>
+<p>不管参数的验证：<code>any</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager).performLogin(Mockito.anyString(), Mockito.anyString());</div></pre></td></tr></table></figure>
+<ul>
+<li><code>anyString()</code></li>
+<li><code>anyInt</code></li>
+<li>….</li>
+</ul>
+<h3 id="指定-mock-对象的某些方法的行为"><a href="#指定-mock-对象的某些方法的行为" class="headerlink" title="指定 mock 对象的某些方法的行为"></a>指定 mock 对象的某些方法的行为</h3><h4 id="执行方法返回值"><a href="#执行方法返回值" class="headerlink" title="执行方法返回值"></a>执行方法返回值</h4><p>例子：测试代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="comment">//假设我们对密码强度有一定要求，使用一个专门的validator来验证密码的有效性</span></div><div class="line">    <span class="keyword">if</span> (mPasswordValidator.verifyPassword(password)) <span class="keyword">return</span>;  <span class="comment">//&lt;==</span></div><div class="line"></div><div class="line">    mUserManager.performLogin(<span class="keyword">null</span>, password);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面的代码中需要考虑：密码的验证方法可能需要联网，我们通过 mock 让这个方法返回 true／false</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.when(mockObject.targetMethod(args)).thenReturn(desiredReturnValue);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//先创建一个mock对象</span></div><div class="line">PasswordValidator mockValidator = Mockito.mock(PasswordValidator.class);</div><div class="line"></div><div class="line"><span class="comment">//当调用mockValidator的verifyPassword方法，同时传入"xiaochuang_is_handsome"时，返回true</span></div><div class="line">Mockito.when(mockValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>)).thenReturn(<span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="comment">//当调用mockValidator的verifyPassword方法，同时传入"xiaochuang_is_not_handsome"时，返回false</span></div><div class="line">Mockito.when(validator.verifyPassword(<span class="string">"xiaochuang_is_not_handsome"</span>)).thenReturn(<span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+<h4 id="指定方法执行特定动作"><a href="#指定方法执行特定动作" class="headerlink" title="指定方法执行特定动作"></a>指定方法执行特定动作</h4><p>例子：测试代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loginCallbackVersion</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="comment">//假设我们对密码强度有一定要求，使用一个专门的validator来验证密码的有效性</span></div><div class="line">    <span class="keyword">if</span> (mPasswordValidator.verifyPassword(password)) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    <span class="comment">//login的结果将通过callback传递回来。</span></div><div class="line">    mUserManager.performLogin(username, password, <span class="keyword">new</span> NetworkCallback() &#123;  <span class="comment">//&lt;==</span></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(Object data)</span> </span>&#123;</div><div class="line">            <span class="comment">//update view with data</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(<span class="keyword">int</span> code, String msg)</span> </span>&#123;</div><div class="line">            <span class="comment">//show error msg</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>指定 mock 对象执行特定的动作的写法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.doAnswer(desiredAnswer).when(mockObject).targetMethod(args);</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> Mockito.doAnswer(<span class="keyword">new</span> Answer() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">answer</span><span class="params">(InvocationOnMock invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        <span class="comment">//这里可以获得传给performLogin的参数</span></div><div class="line">        Object[] arguments = invocation.getArguments();</div><div class="line"></div><div class="line">        <span class="comment">//callback是第三个参数</span></div><div class="line">        NetworkCallback callback = (NetworkCallback) arguments[<span class="number">2</span>];</div><div class="line"></div><div class="line">        callback.onFailure(<span class="number">500</span>, <span class="string">"Server error"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="number">500</span>;</div><div class="line">    &#125;</div><div class="line">&#125;).when(mockUserManager).performLogin(anyString(), anyString(), any(NetworkCallback.class));</div></pre></td></tr></table></figure>
+<h3 id="Spy"><a href="#Spy" class="headerlink" title="Spy"></a>Spy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//假设目标类的实现是这样的</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PasswordValidator</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">verifyPassword</span><span class="params">(String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"xiaochuang_is_handsome"</span>.equals(password);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSpy</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//跟创建mock类似，只不过调用的是spy方法，而不是mock方法。spy的用法</span></div><div class="line">    PasswordValidator spyValidator = Mockito.spy(PasswordValidator.class);</div><div class="line"></div><div class="line">    <span class="comment">//在默认情况下，spy对象会调用这个类的真实逻辑，并返回相应的返回值，这可以对照上面的真实逻辑</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>); <span class="comment">//true</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_not_handsome"</span>); <span class="comment">//false</span></div><div class="line"></div><div class="line">    <span class="comment">//spy对象的方法也可以指定特定的行为</span></div><div class="line">    Mockito.when(spyValidator.verifyPassword(anyString())).thenReturn(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">//同样的，可以验证spy对象的方法调用情况</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>);</div><div class="line">    Mockito.verify(spyValidator).verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>); <span class="comment">//pass</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>spy与mock的唯一区别就是默认行为不一样：spy对象的方法默认调用真实的逻辑，mock对象的方法默认什么都不做，或直接返回默认值。</p>
+<h1 id="Robolectric"><a href="#Robolectric" class="headerlink" title="Robolectric"></a>Robolectric</h1><p>测试 Activity</p>
+<p>参考:</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/b2717dc245da" target="_blank" rel="external">http://www.jianshu.com/p/b2717dc245da</a></li>
+<li><a href="http://www.jianshu.com/p/1d52fde638cf" target="_blank" rel="external">http://www.jianshu.com/p/1d52fde638cf</a></li>
+</ul>
 
 
                 

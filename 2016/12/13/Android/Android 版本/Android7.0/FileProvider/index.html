@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="FileProviderFileProvider 继承自 ContentProvider ,它会创建一个格式为 content:// 的 Uri 而不是 file:///。
+内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity 或者 Service 的生命周期。
+Defining a FileProvider不需要继承 FileProvider 直接在 AndroidManifest 中注册就可以：
+&amp;lt;manifest&amp;gt;
+    ...
+    &amp;lt;application&amp;gt;
+        ...
+        &amp;lt;provider
+            android:name=&amp;quot;android.support.v4.content.FileProvider&amp;quot;
+            android:authorities=&amp;quot;com.mydomain.fileprovider&amp;quot;
+            android:exported=&amp;quot;false&amp;quot;
+            android:grantUriPermissions=&amp;quot;true&amp;quot;&amp;gt;
+            ...
+        &amp;lt;/provider&amp;gt;
+        ...
+    &amp;lt;/application&amp;gt;
+&amp;lt;/manifest&amp;gt;
+如果要做从写里面的方法，也可以继承他，然后注册。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Double">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="FileProvider"/>
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Double"/>
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article" />
+    
+
+    <!--Page Cover-->
+    
+
+        <meta name="twitter:card" content="summary" />
+    
+
+    <!-- Title -->
+    
+    <title>FileProvider - Double</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
+
+    <!-- Google Analytics -->
+    
+
+
+    <!-- favicon -->
+    
+	
+</head>
+
+
+<body>
+
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Configurable Title</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/archives">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/klugjo/hexo-theme-clean-blog">
+                            
+                                <i class="fa fa-github fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('http://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>FileProvider</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        2016-12-13
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+                <div class="col-lg-4 col-lg-offset-2 col-md-5 col-md-offset-1 post-tags">
+                    
+                        
+
+
+<a href="/tags/Android7-0/">#Android7.0</a> <a href="/tags/FileProvider/">#FileProvider</a>
+
+
+                    
+                </div>
+                <div class="col-lg-4 col-md-5 post-categories">
+                    
+                        
+
+<a href="/categories/Android/">Android</a>
+
+                    
+                </div>
+            
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h1 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h1><p>FileProvider 继承自 ContentProvider ,它会创建一个格式为 <code>content://</code> 的 Uri 而不是 <code>file:///</code>。</p>
+<p>内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity 或者 Service 的生命周期。</p>
+<h2 id="Defining-a-FileProvider"><a href="#Defining-a-FileProvider" class="headerlink" title="Defining a FileProvider"></a>Defining a FileProvider</h2><p>不需要继承 FileProvider 直接在 AndroidManifest 中注册就可以：</p>
+<pre><code>&lt;manifest&gt;
+    ...
+    &lt;application&gt;
+        ...
+        &lt;provider
+            android:name=&quot;android.support.v4.content.FileProvider&quot;
+            android:authorities=&quot;com.mydomain.fileprovider&quot;
+            android:exported=&quot;false&quot;
+            android:grantUriPermissions=&quot;true&quot;&gt;
+            ...
+        &lt;/provider&gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre><p>如果要做从写里面的方法，也可以继承他，然后注册。</p>
+<a id="more"></a>
+<h2 id="Specifying-Available-Files"><a href="#Specifying-Available-Files" class="headerlink" title="Specifying Available Files"></a>Specifying Available Files</h2><p>FileProvider 只会生成指向预先指定的目录的 content URI.</p>
+<p>定义目录：</p>
+<pre><code>&lt;paths xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;files-path name=&quot;my_images&quot; path=&quot;images/&quot;/&gt;
+    ...
+&lt;/paths&gt;
+</code></pre><p><code>paths</code> 必须包含一个以上的下列子标签：</p>
+<ul>
+<li><code>file-path</code>:可以通过 <code>Context.getFileDir()</code> 获取地址</li>
+<li><code>cache-path</code>:可以通过 <code>Context.getCacheDir()</code> 获取地址</li>
+<li><code>external-path</code>:可以通过 <code>Environment.getExternalStorageDirectory()</code> 获取地址</li>
+<li><code>external-files-path</code>:可以通过 <code>Context.getExternalFilesDir(String)</code> 获取地址</li>
+<li><code>external-cache-path</code>:可以通过 <code>Context.getExternalCacheDir()</code> 获取地址</li>
+</ul>
+<p>把 <code>path</code> 标签写入到 xml 文件，比如<code>res/xml/file_paths.xml</code>,在 AndroidManifest 中定义 <code>meta-data</code>：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.mydomain.fileprovider&quot;
+    android:exported=&quot;false&quot;
+    android:grantUriPermissions=&quot;true&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><h2 id="Generating-the-Content-URI-for-a-File"><a href="#Generating-the-Content-URI-for-a-File" class="headerlink" title="Generating the Content URI for a File"></a>Generating the Content URI for a File</h2><pre><code>File imagePath = new File(Context.getFilesDir(), &quot;images&quot;);
+File newFile = new File(imagePath, &quot;default_image.jpg&quot;);
+Uri contentUri = getUriForFile(getContext(), &quot;com.mydomain.fileprovider&quot;, newFile);
+//content://com.mydomain.fileprovider/my_images/default_image.jpg.
+</code></pre><h1 id="调用系统相机方法"><a href="#调用系统相机方法" class="headerlink" title="调用系统相机方法"></a>调用系统相机方法</h1><h2 id="添加-FileProvider"><a href="#添加-FileProvider" class="headerlink" title="添加 FileProvider"></a>添加 FileProvider</h2><p>AndroidManifest：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.waytone.normal&quot;
+    android:grantUriPermissions=&quot;true&quot;
+    android:exported=&quot;false&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><p>res/xml/file_paths.xml:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;paths&gt;
+        &lt;external-path path=&quot;&quot; name=&quot;camera_photos&quot; /&gt;
+    &lt;/paths&gt;
+&lt;/resources&gt;
+</code></pre><p>Activity:</p>
+<pre><code>@Override
+public void getPhotoFromSysCamera(long photoName) {
+    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    String photoFilePath = FileUtils.getPhotoFilePath(photoName);
+    File file = new File(photoFilePath);
+    if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+    Uri imageUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file);//通过FileProvider创建一个content类型的Uri
+    openCameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+    Logger.d(&quot;图片文件存储在：&quot; + photoFilePath);
+    openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+    startActivityForResult(openCameraIntent, REQUEST_CODE_TAKE_PHOTO_FROM_CAMERA);
+}
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/support/v4/content/FileProvider.html" target="_blank" rel="external">官方API</a></li>
+<li><a href="https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en" target="_blank" rel="external">https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en</a></li>
+</ul>
+
+
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/klugjo/hexo-theme-clean-blog" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2017 Double<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

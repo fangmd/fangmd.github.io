@@ -10,11 +10,8 @@
 
     <!--Description-->
     
-        <meta name="description" content="NDK 实例简单Demo参考：http://yanbober.github.io/2015/02/14/android_studio_jni_1/
-
-创建一个类用于放置调c的代码：
- public class NdkJniUtils {
-public native String getCLangua">
+        <meta name="description" content="创建一个Jni类123public class JniTest &amp;#123;    public static native getStringFromNative();&amp;#125;
+Make（构建）Module app生成字节码（*.class）文件build-&amp;gt;make module&amp;#3">
     
 
     <!--Author-->
@@ -24,7 +21,7 @@ public native String getCLangua">
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="NDK实战"/>
+        <meta property="og:title" content="NDK Hello"/>
     
 
     <!--Open Graph Description-->
@@ -46,7 +43,7 @@ public native String getCLangua">
 
     <!-- Title -->
     
-    <title>NDK实战 - Double</title>
+    <title>NDK Hello - Double</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
@@ -140,7 +137,7 @@ public native String getCLangua">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    <h1>NDK实战</h1>
+                    <h1>NDK Hello</h1>
                     
                     <span class="meta">
                         <!-- Date and Author -->
@@ -185,86 +182,33 @@ public native String getCLangua">
 
             <!-- Post Main Content -->
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <h1 id="NDK-实例"><a href="#NDK-实例" class="headerlink" title="NDK 实例"></a>NDK 实例</h1><h2 id="简单Demo"><a href="#简单Demo" class="headerlink" title="简单Demo"></a>简单Demo</h2><p>参考：<a href="http://yanbober.github.io/2015/02/14/android_studio_jni_1/" target="_blank" rel="external">http://yanbober.github.io/2015/02/14/android_studio_jni_1/</a></p>
+                <h1 id="创建一个Jni类"><a href="#创建一个Jni类" class="headerlink" title="创建一个Jni类"></a>创建一个Jni类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class JniTest &#123;</div><div class="line">    public static native getStringFromNative();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Make（构建）Module-app生成字节码（-class）文件"><a href="#Make（构建）Module-app生成字节码（-class）文件" class="headerlink" title="Make（构建）Module app生成字节码（*.class）文件"></a>Make（构建）Module app生成字节码（*.class）文件</h1><p><code>build-&gt;make module&#39;app&#39;</code></p>
+<p>目的是生成 <code>.class</code> 文件，文件地址在：<code>NdkBuilderDemo/app/build/intermediates/classes/debug/com/adouble/ndkbuilderdemo/JniTest.class</code></p>
+<h1 id="生成头文件（-h）"><a href="#生成头文件（-h）" class="headerlink" title="生成头文件（*.h）"></a>生成头文件（*.h）</h1><ol>
+<li>首先打开工具栏的Terminal工具</li>
+<li><code>cd app/src/main</code></li>
+<li><code>javah -d jni -classpath ../../build/intermediates/classes/debug com.adouble.ndkbuilderdemo.JniTest</code></li>
+</ol>
+<ul>
+<li><code>javah</code> 执行javah命令生成头文件（*.h）</li>
+<li><code>-d jni</code> 在当前目录创建一个文件，文件名称是jni</li>
+<li><code>-classpath xxx/debug</code> 指定要生成头文件（.h）的字节码文件路径（class）</li>
+</ul>
+<h1 id="创建JniTest-c文件"><a href="#创建JniTest-c文件" class="headerlink" title="创建JniTest.c文件"></a>创建JniTest.c文件</h1><p>方法JNICALL Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative，这相当于是java的抽象方法，它只声明但是没有任何实现，一般情况下需要创建一个c或cpp文件去实现相应的方法。</p>
 <ol>
-<li><p>创建一个类用于放置调c的代码：</p>
-<p> public class NdkJniUtils {</p>
-<pre><code>public native String getCLanguageString();
-</code></pre><p> }</p>
-</li>
-<li><p>在Activity中使用这个方法</p>
-</li>
-<li>构建工程</li>
-<li><p>在工程目录下：<code>NDKApplication\app\build\intermediates\classes\debug</code>根据class文件利用javah生成对应的<code>.h</code>头文件</p>
-<pre><code>xxxxx\debug&gt; javah -jni io.github.yanbober.ndkapplication.NdkJniUtils
-</code></pre></li>
-<li><p>执行完之后你可以在文件夹NDKApplication\app\build\intermediates\classes\debug下看见生成的 .h头文件</p>
-</li>
-<li><p>在工程的main目录下新建一个名字为jni的目录，然后将刚才的 .h文件剪切过来。 在jni目录下新建一个c文件，随意取名，我的叫jnitest.c 。编写代码：</p>
-<pre><code>#include &quot;io_github_yanbober_ndkapplication_NdkJniUtils.h&quot;
-/*
- * Class:     io_github_yanbober_ndkapplication_NdkJniUtils
- *  * Method:    getCLanguageString
- *   * Signature: ()Ljava/lang/String;
- *    */
- *    JNIEXPORT jstring JNICALL Java_io_github_yanbober_ndkapplication_NdkJniUtils_getCLanguageString
- *      (JNIEnv *env, jobject obj){
-              return (*env)-&gt;NewStringUTF(env,&quot;This just a test for Android Studio NDK JNI developer!&quot;);
-        }
- *      }
-</code></pre></li>
-<li><p>接下来在工程的local.properties文件中添加NDK路径（上面下载好的那个NDK）</p>
-</li>
-<li><p>接下来在app module目录下的build.gradle中设置库文件名（生成的so文件名）。找到gradle文件的defaultConfig这项，在里面添加如下内容：</p>
-<pre><code>defaultConfig {
-    ......
-    ndk{
-        moduleName &quot;YanboberJniLibName&quot;            //生成的so名字
-            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot;    //输出指定三种abi体系结构下的so库。目前可有可无。
-
-    }
-
-}
-</code></pre></li>
-<li><p>现在生成的so库名字也有了，那就去代码的NdkJniUtils java文件添加静态初始化load代码，添加如下：</p>
-<pre><code>static {
-        System.loadLibrary(&quot;YanboberJniLibName&quot;);    //defaultConfig.ndk.moduleName
-</code></pre></li>
+<li>首先创建一个文件JniTest.c</li>
+<li>编辑JniTest.c，导入头文件com_sandwich_jelly_myapplication_JniTest.h</li>
+<li>实现头文件的抽象方法</li>
 </ol>
-<pre><code>}
-</code></pre><ol>
-<li><p>将c文件编译成<code>.so</code>文件<br><code>jni</code>文件夹下创建：<code>Android.mk</code>:</p>
-<p>LOCAL_PATH       :=  $(call my-dir)<br>include              $(CLEAR_VARS)<br>LOCAL_MODULE     :=  jnimodule<br>LOCAL_SRC_FILES  :=  jnitest.c<br>include              $(BUILD_SHARED_LIBRARY)</p>
-</li>
-</ol>
-<p>第四项改成自己的<code>.c</code>文件名，多个可以添加多个第四个语句；</p>
-<p><code>jni</code>文件夹下创建:<code>Application.mk</code>:</p>
-<pre><code>APP_ABI := armeabi armeabi-v7a x86 mips
-</code></pre><p>构建：cd到<code>jni</code>目录</p>
-<pre><code>ndk-build
-</code></pre><p>构建完成后会看到<code>mian</code>下增加的相应的编译文件；</p>
-<ol>
-<li><p>配置gradle自动编译c文件</p>
-<pre><code>android.ndk {
-        // 模块名称
-        moduleName = &quot;hello-jni&quot;
-
-        // 指定编译平台，更多平台信息 参见https://developer.android.com/ndk/guides/abis.html#sa
-        abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;
-        /*
-         * Other ndk flags configurable here are
-     * cppFlags.add(&quot;-fno-rtti&quot;)
-     * cppFlags.add(&quot;-fno-exceptions&quot;)
-     * ldLibs.addAll([&quot;android&quot;, &quot;log&quot;])
-     * stl       = &quot;system&quot;
-     */
-     *                                                  
-</code></pre><p>}</p>
-</li>
-</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> com_adouble_ndkbuilderdemo_JniTest.h</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative</span><span class="params">(JNIEnv *e, jobject obj)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> (**e).NewStringUTF(e,<span class="string">"Hello from JniTest Function"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Jni类的配置及引用"><a href="#Jni类的配置及引用" class="headerlink" title="Jni类的配置及引用"></a>Jni类的配置及引用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    defaultConfig &#123;</div><div class="line">...</div><div class="line">        ndk &#123;</div><div class="line">            moduleName &quot;NdkJniDemo&quot;          //生成的so名字</div><div class="line">            ldLibs &quot;log&quot;//实现__android_log_print</div><div class="line">            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot; //输出指定三种abi体系结构下的so库，目前可有可无。</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>修改原文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JniTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        System.loadLibrary(<span class="string">"NdkJniDemo"</span>);<span class="comment">//之前在build.gradle里面设置的so名字，必须一致</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> String <span class="title">getStringFromNative</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="项目中引用so"><a href="#项目中引用so" class="headerlink" title="项目中引用so"></a>项目中引用so</h1><p>以上项目编译完后，可以在app/build/intermediates/ndk/debug/lib下面找到生成的so</p>
 <p>参考：</p>
 <ul>
-<li><a href="http://gold.xitu.io/entry/57086e1fa34131004c0b13d5" target="_blank" rel="external">http://gold.xitu.io/entry/57086e1fa34131004c0b13d5</a></li>
+<li><a href="http://www.jianshu.com/p/3e9f3055d7a6" target="_blank" rel="external">http://www.jianshu.com/p/3e9f3055d7a6</a></li>
+<li><a href="http://xyzlf.github.io/2016/07/17/android-jni.html" target="_blank" rel="external">http://xyzlf.github.io/2016/07/17/android-jni.html</a></li>
 </ul>
 
 
