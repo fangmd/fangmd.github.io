@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/" itemprop="url">11. django-rest-framework -- Validators</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/" itemprop="url">9. django-rest-framework -- Serializers fields</a></h1>
         
 
         <div class="post-meta">
@@ -282,7 +282,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -343,29 +343,166 @@
       
         
           
-            <h1 id="Validators"><a href="#Validators" class="headerlink" title="Validators"></a>Validators</h1><h2 id="Validation-in-REST-framework"><a href="#Validation-in-REST-framework" class="headerlink" title="Validation in REST framework"></a>Validation in REST framework</h2><p>rest-framework 中数据的验证逻辑写在 serializar 类中，这样处理的好处：</p>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>simple model：</p>
-<pre><code>class CustomerReportRecord(models.Model):
-    time_raised = models.DateTimeField(default=timezone.now, editable=False)
-    reference = models.CharField(unique=True, max_length=20)
-    description = models.TextField()
-</code></pre><p>serializar：</p>
-<pre><code>class CustomerReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerReportRecord
-</code></pre><p>查看 serializar:</p>
-<pre><code>&gt;&gt;&gt; from project.example.serializers import CustomerReportSerializer
-&gt;&gt;&gt; serializer = CustomerReportSerializer()
-&gt;&gt;&gt; print(repr(serializer))
-CustomerReportSerializer():
-    id = IntegerField(label=&apos;ID&apos;, read_only=True)
-    time_raised = DateTimeField(read_only=True)
-    reference = CharField(max_length=20, validators=[&lt;UniqueValidator(queryset=CustomerReportRecord.objects.all())&gt;])
-    description = CharField(style={&apos;type&apos;: &apos;textarea&apos;})
-</code></pre><p>可以看到 序列化器 已经对 reference 字段进行了唯一性的验证</p>
-<h2 id="UniqueValidator"><a href="#UniqueValidator" class="headerlink" title="UniqueValidator"></a>UniqueValidator</h2><h2 id="UniqueTogetherValidator"><a href="#UniqueTogetherValidator" class="headerlink" title="UniqueTogetherValidator"></a>UniqueTogetherValidator</h2><h2 id="UniqueForDateValidator"><a href="#UniqueForDateValidator" class="headerlink" title="UniqueForDateValidator"></a>UniqueForDateValidator</h2><h2 id="UniqueForMonthValidator"><a href="#UniqueForMonthValidator" class="headerlink" title="UniqueForMonthValidator"></a>UniqueForMonthValidator</h2><h2 id="UniqueForYearValidator"><a href="#UniqueForYearValidator" class="headerlink" title="UniqueForYearValidator"></a>UniqueForYearValidator</h2><p>## </p>
+            <h1 id="Serializer-fields"><a href="#Serializer-fields" class="headerlink" title="Serializer fields"></a>Serializer fields</h1><p>fields 负责将原始数据转化到相应的数据类型，验证数据的有效性，重新获取和设置值到对象中。</p>
+<h2 id="Core-arguments-核心参数"><a href="#Core-arguments-核心参数" class="headerlink" title="Core arguments 核心参数"></a>Core arguments 核心参数</h2><ul>
+<li>read_only</li>
+<li>write_only</li>
+<li>required</li>
+<li>allow_null</li>
+<li>default</li>
+<li>source</li>
+<li>validators</li>
+<li>error_messages</li>
+<li>label</li>
+<li>help_text</li>
+<li>initial <code>day = serializers.DateField(initial=datetime.date.today)</code></li>
+<li>style</li>
+</ul>
+<h2 id="Boolean-fields"><a href="#Boolean-fields" class="headerlink" title="Boolean fields"></a>Boolean fields</h2><h1 id="String-fields"><a href="#String-fields" class="headerlink" title="String fields"></a>String fields</h1><h2 id="EmailField"><a href="#EmailField" class="headerlink" title="EmailField"></a>EmailField</h2><h2 id="RegexField"><a href="#RegexField" class="headerlink" title="RegexField"></a>RegexField</h2><h2 id="SlugField"><a href="#SlugField" class="headerlink" title="SlugField"></a>SlugField</h2><h2 id="URLField"><a href="#URLField" class="headerlink" title="URLField"></a>URLField</h2><h2 id="UUIDField"><a href="#UUIDField" class="headerlink" title="UUIDField"></a>UUIDField</h2><h2 id="FilePathField"><a href="#FilePathField" class="headerlink" title="FilePathField"></a>FilePathField</h2><h2 id="IPAddressField"><a href="#IPAddressField" class="headerlink" title="IPAddressField"></a>IPAddressField</h2><h1 id="Numeric-fields"><a href="#Numeric-fields" class="headerlink" title="Numeric fields"></a>Numeric fields</h1><h2 id="IntegerField"><a href="#IntegerField" class="headerlink" title="IntegerField"></a>IntegerField</h2><h2 id="FloatField"><a href="#FloatField" class="headerlink" title="FloatField"></a>FloatField</h2><h2 id="DecimalField"><a href="#DecimalField" class="headerlink" title="DecimalField"></a>DecimalField</h2><h1 id="Date-and-time-fields"><a href="#Date-and-time-fields" class="headerlink" title="Date and time fields"></a>Date and time fields</h1><h2 id="DateTimeField"><a href="#DateTimeField" class="headerlink" title="DateTimeField"></a>DateTimeField</h2><h2 id="DateField"><a href="#DateField" class="headerlink" title="DateField"></a>DateField</h2><h2 id="TimeField"><a href="#TimeField" class="headerlink" title="TimeField"></a>TimeField</h2><h2 id="DurationField"><a href="#DurationField" class="headerlink" title="DurationField"></a>DurationField</h2><h1 id="Choice-selection-fields"><a href="#Choice-selection-fields" class="headerlink" title="Choice selection fields"></a>Choice selection fields</h1><h2 id="ChoiceField"><a href="#ChoiceField" class="headerlink" title="ChoiceField"></a>ChoiceField</h2><h2 id="MultipleChoiceField"><a href="#MultipleChoiceField" class="headerlink" title="MultipleChoiceField"></a>MultipleChoiceField</h2><h1 id="File-upload-fields"><a href="#File-upload-fields" class="headerlink" title="File upload fields"></a>File upload fields</h1><h2 id="FileField"><a href="#FileField" class="headerlink" title="FileField"></a>FileField</h2><h2 id="ImageField"><a href="#ImageField" class="headerlink" title="ImageField"></a>ImageField</h2><h1 id="Composite-fields"><a href="#Composite-fields" class="headerlink" title="Composite fields"></a>Composite fields</h1><h2 id="ListField"><a href="#ListField" class="headerlink" title="ListField"></a>ListField</h2><h2 id="DictField"><a href="#DictField" class="headerlink" title="DictField"></a>DictField</h2><h2 id="JSONField"><a href="#JSONField" class="headerlink" title="JSONField"></a>JSONField</h2><h1 id="Miscellaneous-fields"><a href="#Miscellaneous-fields" class="headerlink" title="Miscellaneous fields"></a>Miscellaneous fields</h1><h2 id="ReadOnlyField"><a href="#ReadOnlyField" class="headerlink" title="ReadOnlyField"></a>ReadOnlyField</h2><h2 id="HiddenField"><a href="#HiddenField" class="headerlink" title="HiddenField"></a>HiddenField</h2><h2 id="ModelField"><a href="#ModelField" class="headerlink" title="ModelField"></a>ModelField</h2><h2 id="SerializerMethodField"><a href="#SerializerMethodField" class="headerlink" title="SerializerMethodField"></a>SerializerMethodField</h2><h1 id="Custom-fields"><a href="#Custom-fields" class="headerlink" title="Custom fields"></a>Custom fields</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/" itemprop="url">Django Model Field reference</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
+                2016-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
+<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
+<blockquote>
+<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
+</blockquote>
+<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -436,7 +573,7 @@ CustomerReportSerializer():
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
                 2016-11-10
@@ -457,7 +594,7 @@ CustomerReportSerializer():
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -610,149 +747,6 @@ class ListUsers(APIView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/" itemprop="url">Django Model Field reference</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
-                2016-11-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
-<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
-<blockquote>
-<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
-</blockquote>
-<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Android/tips/Android 虚拟机访问本地服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -782,7 +776,7 @@ class ListUsers(APIView):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T09:13:12+08:00">
                 2016-11-10
@@ -803,7 +797,7 @@ class ListUsers(APIView):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -888,6 +882,151 @@ class ListUsers(APIView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework/" itemprop="url">django-rest-framework 官方文档记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
+                2016-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Tutorial-1-Serialization-序列化"><a href="#Tutorial-1-Serialization-序列化" class="headerlink" title="Tutorial 1: Serialization 序列化"></a>Tutorial 1: Serialization 序列化</h1><h2 id="安装基本环境"><a href="#安装基本环境" class="headerlink" title="安装基本环境"></a>安装基本环境</h2><pre><code>pip install django
+pip install djangorestframework
+pip install pygments  # We&apos;ll be using this for the code highlighting
+</code></pre><h2 id="开始-创建测试环境"><a href="#开始-创建测试环境" class="headerlink" title="开始 创建测试环境"></a>开始 创建测试环境</h2><p>创建一个 django 工程</p>
+<pre><code>django-admin.py startproject tutorial
+</code></pre><p>在工程中创建一个 app</p>
+<pre><code>python manage.py startapp snippets
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -917,7 +1056,7 @@ class ListUsers(APIView):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
                 2016-11-07
@@ -938,7 +1077,7 @@ class ListUsers(APIView):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1022,151 +1161,6 @@ class ListUsers(APIView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework/" itemprop="url">django-rest-framework 官方文档记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
-                2016-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Tutorial-1-Serialization-序列化"><a href="#Tutorial-1-Serialization-序列化" class="headerlink" title="Tutorial 1: Serialization 序列化"></a>Tutorial 1: Serialization 序列化</h1><h2 id="安装基本环境"><a href="#安装基本环境" class="headerlink" title="安装基本环境"></a>安装基本环境</h2><pre><code>pip install django
-pip install djangorestframework
-pip install pygments  # We&apos;ll be using this for the code highlighting
-</code></pre><h2 id="开始-创建测试环境"><a href="#开始-创建测试环境" class="headerlink" title="开始 创建测试环境"></a>开始 创建测试环境</h2><p>创建一个 django 工程</p>
-<pre><code>django-admin.py startproject tutorial
-</code></pre><p>在工程中创建一个 app</p>
-<pre><code>python manage.py startapp snippets
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/linux/terminal设置代理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1196,7 +1190,7 @@ pip install pygments  # We&apos;ll be using this for the code highlighting
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T11:38:14+08:00">
                 2016-11-07
@@ -1217,7 +1211,7 @@ pip install pygments  # We&apos;ll be using this for the code highlighting
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1350,7 +1344,7 @@ export https_proxy=http://127.0.0.1:1086/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T12:18:12+08:00">
                 2016-11-04
@@ -1371,7 +1365,7 @@ export https_proxy=http://127.0.0.1:1086/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1420,7 +1414,7 @@ export https_proxy=http://127.0.0.1:1086/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/android波纹效果/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1494,7 +1488,7 @@ export https_proxy=http://127.0.0.1:1086/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T21:03:14+08:00">
                 2016-11-03
@@ -1515,7 +1509,7 @@ export https_proxy=http://127.0.0.1:1086/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1760,7 +1754,7 @@ crashHandler.init(this);
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T13:18:12+08:00">
                 2016-11-03
@@ -1781,7 +1775,7 @@ crashHandler.init(this);
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1838,7 +1832,7 @@ crashHandler.init(this);
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/11/03/Android/数据存储/SharedPreferences/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1924,7 +1918,7 @@ crashHandler.init(this);
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
                 <span class="site-state-item-count">326</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1935,7 +1929,7 @@ crashHandler.init(this);
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">14</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1946,7 +1940,7 @@ crashHandler.init(this);
             <div class="site-state-item site-state-tags">
               
                 <span class="site-state-item-count">247</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               
             </div>
           
@@ -1996,7 +1990,7 @@ crashHandler.init(this);
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
