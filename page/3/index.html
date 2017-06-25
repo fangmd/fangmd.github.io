@@ -253,6 +253,145 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/27/Android/features/退出应用实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/27/Android/features/退出应用实现/" itemprop="url">Android 退出应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-27T09:23:14+08:00">
+                2016-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="容器式"><a href="#容器式" class="headerlink" title="容器式"></a>容器式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;Activity&gt; activityList = <span class="keyword">new</span> LinkedList&lt;Activity&gt;();<span class="comment">//LinkedList便于删除和增加</span></div><div class="line"></div><div class="line">    <span class="comment">// 省略了单例代码...</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeActivity</span><span class="params">(Activity activity)</span></span></div><div class="line">    &#123;</div><div class="line">        activityList.remove(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addActivity</span><span class="params">(Activity activity)</span></span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">        activityList.add(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exit</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (Activity activity : activityList)</div><div class="line">        &#123;</div><div class="line">            activity.finish();</div><div class="line">        &#125;</div><div class="line">        System.exit(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        MyApplication.getInstance().addActivity(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">  <span class="comment">//...</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        MyApplication.getInstance().removeActivity(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"> <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="广播式"><a href="#广播式" class="headerlink" title="广播式"></a>广播式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXITACTION = <span class="string">"action.exit"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> ExitReceiver exitReceiver = <span class="keyword">new</span> ExitReceiver();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        IntentFilter filter = <span class="keyword">new</span> IntentFilter();</div><div class="line">        filter.addAction(EXITACTION);</div><div class="line">        LocalBroadcastManager.getInstance(<span class="keyword">this</span>).registerReceiver(exitReceiver, <span class="keyword">new</span> IntentFilter(EXITACTION));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDestroy();</div><div class="line">        LocalBroadcastManager.getInstance(<span class="keyword">this</span>).unregisterReceiver(exitReceiver);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ExitReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</div><div class="line">            BaseActivity.<span class="keyword">this</span>.finish();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="标志式"><a href="#标志式" class="headerlink" title="标志式"></a>标志式</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Config</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Boolean isExit =<span class="keyword">false</span>;</div><div class="line"><span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  onResume() &#123;</div><div class="line">     <span class="keyword">super</span>.onResume();</div><div class="line">     <span class="keyword">if</span>(Config.isExit) finish();</div><div class="line">  &#125;</div><div class="line"><span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExitAcitivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        finish();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span></span></div><div class="line">&#123;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, ExitAcitivity .class);</div><div class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);</div><div class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</div><div class="line">    startActivity(intent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/26/Android/view/自定义View/自定义View-动画/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2009,161 +2148,6 @@ ValidationError: [&apos;Please enter your name&apos;]
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Android/Android 版本/Android7.0/FileProvider/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/13/Android/Android 版本/Android7.0/FileProvider/" itemprop="url">FileProvider</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T22:38:14+08:00">
-                2016-12-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h1><p>FileProvider 继承自 ContentProvider ,它会创建一个格式为 <code>content://</code> 的 Uri 而不是 <code>file:///</code>。</p>
-<p>内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity 或者 Service 的生命周期。</p>
-<h2 id="Defining-a-FileProvider"><a href="#Defining-a-FileProvider" class="headerlink" title="Defining a FileProvider"></a>Defining a FileProvider</h2><p>不需要继承 FileProvider 直接在 AndroidManifest 中注册就可以：</p>
-<pre><code>&lt;manifest&gt;
-    ...
-    &lt;application&gt;
-        ...
-        &lt;provider
-            android:name=&quot;android.support.v4.content.FileProvider&quot;
-            android:authorities=&quot;com.mydomain.fileprovider&quot;
-            android:exported=&quot;false&quot;
-            android:grantUriPermissions=&quot;true&quot;&gt;
-            ...
-        &lt;/provider&gt;
-        ...
-    &lt;/application&gt;
-&lt;/manifest&gt;
-</code></pre><p>如果要做从写里面的方法，也可以继承他，然后注册。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/12/13/Android/Android 版本/Android7.0/FileProvider/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2235,7 +2219,7 @@ ValidationError: [&apos;Please enter your name&apos;]
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">247</span>
+                <span class="site-state-item-count">246</span>
                 <span class="site-state-item-name">tags</span>
               
             </div>
