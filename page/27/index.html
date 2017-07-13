@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/html/html-菜鸟教程/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/ndk/NDK实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,914 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/02/html/html-菜鸟教程/" itemprop="url">html-w3school 教程</a></h1>
+                <a class="post-title-link" href="/2016/04/03/Android/ndk/NDK实战/" itemprop="url">NDK Hello</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
+                2016-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="创建一个Jni类"><a href="#创建一个Jni类" class="headerlink" title="创建一个Jni类"></a>创建一个Jni类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class JniTest &#123;</div><div class="line">    public static native getStringFromNative();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Make（构建）Module-app生成字节码（-class）文件"><a href="#Make（构建）Module-app生成字节码（-class）文件" class="headerlink" title="Make（构建）Module app生成字节码（*.class）文件"></a>Make（构建）Module app生成字节码（*.class）文件</h1><p><code>build-&gt;make module&#39;app&#39;</code></p>
+<p>目的是生成 <code>.class</code> 文件，文件地址在：<code>NdkBuilderDemo/app/build/intermediates/classes/debug/com/adouble/ndkbuilderdemo/JniTest.class</code></p>
+<h1 id="生成头文件（-h）"><a href="#生成头文件（-h）" class="headerlink" title="生成头文件（*.h）"></a>生成头文件（*.h）</h1><ol>
+<li>首先打开工具栏的Terminal工具</li>
+<li><code>cd app/src/main</code></li>
+<li><code>javah -d jni -classpath ../../build/intermediates/classes/debug com.adouble.ndkbuilderdemo.JniTest</code></li>
+</ol>
+<ul>
+<li><code>javah</code> 执行javah命令生成头文件（*.h）</li>
+<li><code>-d jni</code> 在当前目录创建一个文件，文件名称是jni</li>
+<li><code>-classpath xxx/debug</code> 指定要生成头文件（.h）的字节码文件路径（class）</li>
+</ul>
+<h1 id="创建JniTest-c文件"><a href="#创建JniTest-c文件" class="headerlink" title="创建JniTest.c文件"></a>创建JniTest.c文件</h1><p>方法JNICALL Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative，这相当于是java的抽象方法，它只声明但是没有任何实现，一般情况下需要创建一个c或cpp文件去实现相应的方法。</p>
+<ol>
+<li>首先创建一个文件JniTest.c</li>
+<li>编辑JniTest.c，导入头文件com_sandwich_jelly_myapplication_JniTest.h</li>
+<li>实现头文件的抽象方法</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> com_adouble_ndkbuilderdemo_JniTest.h</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative</span><span class="params">(JNIEnv *e, jobject obj)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> (**e).NewStringUTF(e,<span class="string">"Hello from JniTest Function"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Jni类的配置及引用"><a href="#Jni类的配置及引用" class="headerlink" title="Jni类的配置及引用"></a>Jni类的配置及引用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    defaultConfig &#123;</div><div class="line">...</div><div class="line">        ndk &#123;</div><div class="line">            moduleName &quot;NdkJniDemo&quot;          //生成的so名字</div><div class="line">            ldLibs &quot;log&quot;//实现__android_log_print</div><div class="line">            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot; //输出指定三种abi体系结构下的so库，目前可有可无。</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>修改原文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JniTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        System.loadLibrary(<span class="string">"NdkJniDemo"</span>);<span class="comment">//之前在build.gradle里面设置的so名字，必须一致</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> String <span class="title">getStringFromNative</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="项目中引用so"><a href="#项目中引用so" class="headerlink" title="项目中引用so"></a>项目中引用so</h1><p>以上项目编译完后，可以在app/build/intermediates/ndk/debug/lib下面找到生成的so</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/3e9f3055d7a6" target="_blank" rel="external">http://www.jianshu.com/p/3e9f3055d7a6</a></li>
+<li><a href="http://xyzlf.github.io/2016/07/17/android-jni.html" target="_blank" rel="external">http://xyzlf.github.io/2016/07/17/android-jni.html</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/uml/uml用户指南读书笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/03/uml/uml用户指南读书笔记/" itemprop="url">UML用户指南 读书笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
+                2016-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><h2 id="为什么要建模"><a href="#为什么要建模" class="headerlink" title="为什么要建模"></a>为什么要建模</h2><p>模型是对现实的简化.</p>
+<p>建模是为了能够更好地理解正在开发的系统.</p>
+<p>建模的目的:</p>
+<ol>
+<li>模型有助于按照实际情况或者按照所需要的样式对系统进行可视化</li>
+<li>模型能够规约系统的结构或者行为</li>
+<li>模型给出了指导系统的模板</li>
+<li>模型对做出的决策进行文档化</li>
+</ol>
+<h2 id="建模原理"><a href="#建模原理" class="headerlink" title="建模原理"></a>建模原理</h2><ol>
+<li>选择要创建什么模型,对如何动手解决问题和如何形成解决方案有着意义深远的影响.</li>
+<li>可以在不同的精度级别上表示每一种模型.</li>
+<li>最好的模型是与现实相联系的.</li>
+<li>单个模型或者视图是不充分的,对于每一个重要的系统最好用一小组几乎独立的模型从多个视角区逼近.</li>
+</ol>
+<h2 id="面向对象建模"><a href="#面向对象建模" class="headerlink" title="面向对象建模"></a>面向对象建模</h2><ul>
+<li>从算法角度建模</li>
+<li>面向对象的角度建模</li>
+</ul>
+<p>对面向对象系统进行可视化,详述,构造和文档化正式统一建模语言UML的目的.</p>
+<h1 id="UML-介绍"><a href="#UML-介绍" class="headerlink" title="UML 介绍"></a>UML 介绍</h1><p>Unified Modeling Language 统一建模语言,是一种绘制软件蓝图的标准语言.</p>
+<h2 id="uml-概述"><a href="#uml-概述" class="headerlink" title="uml 概述"></a>uml 概述</h2><ol>
+<li>可视化</li>
+<li>详述</li>
+<li>构造</li>
+<li>文档化</li>
+</ol>
+<h2 id="UML是一种语言"><a href="#UML是一种语言" class="headerlink" title="UML是一种语言"></a>UML是一种语言</h2><h2 id="UML-的概念模型"><a href="#UML-的概念模型" class="headerlink" title="UML 的概念模型"></a>UML 的概念模型</h2><h3 id="UML的构造块"><a href="#UML的构造块" class="headerlink" title="UML的构造块"></a>UML的构造块</h3><ul>
+<li>事物</li>
+<li>关系</li>
+<li>图</li>
+</ul>
+<p>事物是对模型中首要成分的抽象; 关系把事物结合在一起; 图聚集了相关的事物;</p>
+<h4 id="事物"><a href="#事物" class="headerlink" title="事物"></a>事物</h4><ol>
+<li>结构事物</li>
+<li>行为事物</li>
+<li>分组事物</li>
+<li>注释事物</li>
+</ol>
+<h4 id="结构事物"><a href="#结构事物" class="headerlink" title="结构事物"></a>结构事物</h4><ol>
+<li>类(class):具有相同特征的对象的描述</li>
+<li>接口(interface):一组操作集合</li>
+<li>协作(collaboration):定义了一个交互,是由一组共同工作以提供某种写作行为的角色和其他元素构成的一个群体,这些写作行为大于所有元素的各自行为的总和.</li>
+<li>用况(use case)对一组动作序列的描述</li>
+<li>主动类</li>
+<li>构件</li>
+<li>制品</li>
+<li>结点</li>
+</ol>
+<h4 id="行为事物"><a href="#行为事物" class="headerlink" title="行为事物"></a>行为事物</h4><p>UML模型动态部分.</p>
+<ol>
+<li>交互(interaction):由在特定语境中共同完成的一定任务的一组对象或角色之间交互的消息组成. </li>
+<li>状态机(state mechine)描述了一个对象或一个交互在生命期内响应事件所经历的状态序列以及对这些事件的响应.</li>
+<li>活动(activity):描述计算过程执行的步骤序列.</li>
+</ol>
+<p>交互所注重的是一系列相互作用的对象,状态机所注重的是一定时间内一个对象的生命周期,活动注重的是步骤之间的流而不关心哪个对象执行哪个步骤.</p>
+<h4 id="分组事物"><a href="#分组事物" class="headerlink" title="分组事物"></a>分组事物</h4><p>UML模型的组织部分.</p>
+<p>包(package)用于设计本身进行组织的通用机制,与类不同,类是用来组织实现构造物.结构事物,行为事物甚至其他的分组事物都可以放进包内.</p>
+<h4 id="注释事物-annotational-thing"><a href="#注释事物-annotational-thing" class="headerlink" title="注释事物 annotational thing"></a>注释事物 annotational thing</h4><p>uml模型的解释部分.</p>
+<h4 id="UML中的关系"><a href="#UML中的关系" class="headerlink" title="UML中的关系"></a>UML中的关系</h4><ol>
+<li>依赖 (dependency):其中一个元素变化会影响另一个元素变化</li>
+<li>关联(association):是类之间的结构关系,描述了一组链,链是对象之间的连接.</li>
+<li>泛化(generalization):是一种特殊/一般关系,在特殊元素基于一般元素而建立. 继承指向父元素.</li>
+<li>实现(realization)是类目之间的语义关系,其中一个类目指定另一个类目保证执行的合约.实现的使用地方:1. 接口和其实现类之间的关系; 2. 用况和实现它们的协作之间.</li>
+</ol>
+<h4 id="UML中的图-diagram"><a href="#UML中的图-diagram" class="headerlink" title="UML中的图 diagram"></a>UML中的图 diagram</h4><p>图:一组元素的图形表示</p>
+<ol>
+<li>类图:展现类,接口,协作和它们之间的关系.</li>
+<li>对象图:展现一组对象以及它们之间的关系.</li>
+<li>构件图:展现了一个封装的类和它的接口,端口以及由内嵌的构件和连接件构成的内部结构.</li>
+<li>组合结构图:</li>
+<li>用况图:展现了一组用况,参与者及它们之间的关系.</li>
+<li>顺序图:属于交互图(interaction diagram),由一组对象或者角色以及它们之间可能发送的消息构成.专注于系统的动态视图. 顺序图(sequence diagram)强调消息的时间次序的交互图</li>
+<li>通信图:(communication diagram)强调消息收发的对象或者角色的结构组织.</li>
+<li>状态图:(state diagram)展现了状态机.</li>
+<li>活动图:(activity diagram)</li>
+<li>部署图:(deployment diagram)</li>
+<li>包图:(package diagram)</li>
+<li>定时图:(timing diagram)</li>
+<li>交互概览图:(interation overview diagram)</li>
+</ol>
+<h3 id="UML规则"><a href="#UML规则" class="headerlink" title="UML规则"></a>UML规则</h3><p>UML有自己的语法和语义规则,用于:</p>
+<ol>
+<li>命名</li>
+<li>范围:使名字具有特定含义的语境</li>
+<li>可见性</li>
+<li>完整性</li>
+<li>执行</li>
+</ol>
+<h3 id="UML中的公共机制"><a href="#UML中的公共机制" class="headerlink" title="UML中的公共机制"></a>UML中的公共机制</h3><ol>
+<li>详述</li>
+<li>修饰:每个元素有基本符号</li>
+<li>通用划分</li>
+<li>扩展机制</li>
+</ol>
+<h2 id="体系结构"><a href="#体系结构" class="headerlink" title="体系结构"></a>体系结构</h2><h2 id="软件开发生命周期"><a href="#软件开发生命周期" class="headerlink" title="软件开发生命周期"></a>软件开发生命周期</h2><h1 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello, World!"></a>Hello, World!</h1><h2 id="关键抽象"><a href="#关键抽象" class="headerlink" title="关键抽象"></a>关键抽象</h2><h2 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h2><h2 id="制品"><a href="#制品" class="headerlink" title="制品"></a>制品</h2><h1 id="对基本结构建模"><a href="#对基本结构建模" class="headerlink" title="对基本结构建模"></a>对基本结构建模</h1><h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h2 id="入门-1"><a href="#入门-1" class="headerlink" title="入门"></a>入门</h2><p>一个类由3部分组成:</p>
+<ol>
+<li>名称</li>
+<li>属性</li>
+<li>操作</li>
+</ol>
+<h3 id="对属性和操作的组织"><a href="#对属性和操作的组织" class="headerlink" title="对属性和操作的组织"></a>对属性和操作的组织</h3><p>当画一个类的时候不必要把所有的属性和操作都显示出来.在大多数情况下我们也不能把所有的属性和操作都显示出来,可以通过在列表末尾使用<code>...</code>表示更多.</p>
+<h3 id="职责-responsibility"><a href="#职责-responsibility" class="headerlink" title="职责 responsibility"></a>职责 responsibility</h3><p>在类图符底部单独的栏中描述职责.</p>
+<h2 id="常用的建模技术"><a href="#常用的建模技术" class="headerlink" title="常用的建模技术"></a>常用的建模技术</h2><h1 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h1><h2 id="依赖-dependency"><a href="#依赖-dependency" class="headerlink" title="依赖 dependency"></a>依赖 dependency</h2><p>一个事物需要使用另一个事物.</p>
+<p>图形:有向虚线</p>
+<h2 id="泛化-generalization"><a href="#泛化-generalization" class="headerlink" title="泛化 generalization"></a>泛化 generalization</h2><p>集成关系</p>
+<p>图形:空心三角形箭头+实线</p>
+<h2 id="关联-association"><a href="#关联-association" class="headerlink" title="关联 association"></a>关联 association</h2><p>二元关联,n元关联</p>
+<ol>
+<li>名称</li>
+</ol>
+<p>实线</p>
+<ol>
+<li>角色</li>
+</ol>
+<p>一个类参与了关联,就在关系中扮演了一个角色.</p>
+<ol>
+<li>多重性</li>
+<li>聚合:整体/部分之间的关系</li>
+</ol>
+<h2 id="常用的建模技术-1"><a href="#常用的建模技术-1" class="headerlink" title="常用的建模技术"></a>常用的建模技术</h2><h3 id="对简单依赖建模"><a href="#对简单依赖建模" class="headerlink" title="对简单依赖建模"></a>对简单依赖建模</h3><h3 id="对当单继承建模"><a href="#对当单继承建模" class="headerlink" title="对当单继承建模"></a>对当单继承建模</h3><h3 id="对结构关系建模"><a href="#对结构关系建模" class="headerlink" title="对结构关系建模"></a>对结构关系建模</h3><p>依赖和泛化关系都是不对称的. 比如:父类不知道子类的特性.</p>
+<p>关联关系建模时,连个类都是相互对等的.默认关联关系是双向的(也可以限制方向)</p>
+<p>结构关系建模需要做的工作有:</p>
+<ul>
+<li>关联的数据驱动观点:对于每一对类,如果需要从一个类的对象到另一个类的对象导航,就要在这两个类之间建立关联.</li>
+<li>关联的行为驱动观点:如果一个类的对象与另一个类的对象相互交互,而后者不作为前者的过程局部变量或者操作参数,这两个类间是关联</li>
+<li>关联要说明多重性,角色名</li>
+<li>如果关联中一个类是一个类的整体,需要标记为聚合</li>
+</ul>
+<h2 id="提示和技巧"><a href="#提示和技巧" class="headerlink" title="提示和技巧"></a>提示和技巧</h2><ul>
+<li>仅当被建模的关系不是结构关系时,才是用依赖</li>
+<li>关系为<code>is-a-kind-of</code>关系时才使用泛化,往往可以使用聚合代替多继承</li>
+</ul>
+<h1 id="公共机制"><a href="#公共机制" class="headerlink" title="公共机制"></a>公共机制</h1><h1 id="图"><a href="#图" class="headerlink" title="图"></a>图</h1><h2 id="入门-2"><a href="#入门-2" class="headerlink" title="入门"></a>入门</h2><h2 id="术语和概念"><a href="#术语和概念" class="headerlink" title="术语和概念"></a>术语和概念</h2><h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><ol>
+<li>类图(class diagram)展示了一组类,接口,协作以及它们之间的关系.用类图说明系统的静态设计视图</li>
+<li>构件图(component diagram)展示实现构件的内部部件,连接件和端口.</li>
+<li>组合结构图(composite structure diagram)展示类或协作的内部结构.</li>
+<li>对象图(object diagram)展示一组对象及它们之间的关系.</li>
+<li>制品图(artifact diagram)</li>
+<li>部署图</li>
+</ol>
+<h3 id="行为图"><a href="#行为图" class="headerlink" title="行为图"></a>行为图</h3><p>用于对系统的动态方面进行可视化,详述,构造和文档化.</p>
+<ol>
+<li>用况图:描述一组用况和参与者以及它们之间的关系.</li>
+<li>顺序图</li>
+<li>通信图</li>
+<li>状态图</li>
+<li>活动图</li>
+</ol>
+<h3 id="常用建模技术"><a href="#常用建模技术" class="headerlink" title="常用建模技术"></a>常用建模技术</h3><h4 id="对系统的不同视图建模"><a href="#对系统的不同视图建模" class="headerlink" title="对系统的不同视图建模"></a>对系统的不同视图建模</h4><p>从多个维度构造系统的视图,使用不同的类型的建模分析一个系统/</p>
+<h4 id="对不同的抽象层次建模"><a href="#对不同的抽象层次建模" class="headerlink" title="对不同的抽象层次建模"></a>对不同的抽象层次建模</h4><h4 id="对复杂视图建模"><a href="#对复杂视图建模" class="headerlink" title="对复杂视图建模"></a>对复杂视图建模</h4><h1 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h1><h1 id="高级类"><a href="#高级类" class="headerlink" title="高级类"></a>高级类</h1><h2 id="术语和概念-1"><a href="#术语和概念-1" class="headerlink" title="术语和概念"></a>术语和概念</h2><p>类目(classifier)包括:类,关联,接口,数据,类型,信号,构件,结点,用况,子系统.</p>
+<h3 id="类目"><a href="#类目" class="headerlink" title="类目"></a>类目</h3><h3 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h3><ol>
+<li>public:<code>+</code></li>
+<li>protected<code>#</code></li>
+<li>private<code>-</code></li>
+<li>package<code>~</code></li>
+</ol>
+<h3 id="实例范围和静态范围-普通成员变量-静态成员变量"><a href="#实例范围和静态范围-普通成员变量-静态成员变量" class="headerlink" title="实例范围和静态范围(普通成员变量,静态成员变量)"></a>实例范围和静态范围(普通成员变量,静态成员变量)</h3><ul>
+<li>instance:普通成员属性</li>
+<li>static:下划线</li>
+</ul>
+<h3 id="抽象元素-叶子元素-多态性元素"><a href="#抽象元素-叶子元素-多态性元素" class="headerlink" title="抽象元素,叶子元素,多态性元素"></a>抽象元素,叶子元素,多态性元素</h3><h3 id="多重性"><a href="#多重性" class="headerlink" title="多重性"></a>多重性</h3><h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>属性完整语法:</p>
+<p>[可见性]属性名[“:”类型][<code>[</code>多重性<code>]</code>][<code>=</code>初始值][特性串{<code>,</code>特性串}]</p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><p>合法的操作:</p>
+<ul>
+<li>display</li>
+<li><ul>
+<li>display</li>
+</ul>
+</li>
+<li>set(n:Name, s:String): 操作名和参数</li>
+<li>getId() : Integer:操作名和返回类型</li>
+<li>restart() {gaurded}:操作名和特性</li>
+</ul>
+<h3 id="模板类"><a href="#模板类" class="headerlink" title="模板类"></a>模板类</h3><p>4种类的标准衍型:</p>
+<ol>
+<li>元类 metaclass:对象全是类</li>
+<li>幂类型 powertype,对象是给定父类的子类</li>
+<li>衍型 stereotype,说明一个类目可用于其他元素的衍型</li>
+<li>使用程序 utility,属性和操作都是静态范围</li>
+</ol>
+<h2 id="常用建模技术-1"><a href="#常用建模技术-1" class="headerlink" title="常用建模技术"></a>常用建模技术</h2><h3 id="对类的语义建模"><a href="#对类的语义建模" class="headerlink" title="对类的语义建模"></a>对类的语义建模</h3><p>P118</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/program/AndroidStudio/AndroidStudio--内存泄露检测与解决/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/03/program/AndroidStudio/AndroidStudio--内存泄露检测与解决/" itemprop="url">Android Studio 内存泄露检测与解决</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
+                2016-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Android-Studio-内存泄露检测与解决"><a href="#Android-Studio-内存泄露检测与解决" class="headerlink" title="Android Studio 内存泄露检测与解决"></a>Android Studio 内存泄露检测与解决</h1><h2 id="什么是内存泄露"><a href="#什么是内存泄露" class="headerlink" title="什么是内存泄露"></a>什么是内存泄露</h2><p>应该被GC回收的对象存在无效引用，而没有被回收，导致占用了内存却没有发挥作用；</p>
+<h2 id="内存泄露的栗子"><a href="#内存泄露的栗子" class="headerlink" title="内存泄露的栗子"></a>内存泄露的栗子</h2><h3 id="0"><a href="#0" class="headerlink" title="0"></a>0</h3><p><img src="http://ww1.sinaimg.cn/large/006tNc79jw1f4etz0ls28j30hs09874q" alt=""></p>
+<p><code>mLeak</code>是存储在静态区的静态变量，而<code>Leak</code>是内部类，它持有了外部类<code>Activity</code>的引用，这就导致了<code>Activity</code>需要被销毁的时候，由于被<code>mLead</code>持有，所以不会被<br>GC回收，造成内存泄露。</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1"></a>1</h3><p>单例对象中传入<code>Activity</code>对象。</p>
+<p>解决方法：new Singleton(context)改为new Singleton(context.getApplicationContext())即可</p>
+<h2 id="检测内存泄露-–-Android-Monitor"><a href="#检测内存泄露-–-Android-Monitor" class="headerlink" title="检测内存泄露 – Android Monitor"></a>检测内存泄露 – Android Monitor</h2><blockquote>
+<p>Memory栏中看到app的运行内存使用情况</p>
+</blockquote>
+<p>四个按钮：</p>
+<h3 id="enabled"><a href="#enabled" class="headerlink" title="enabled"></a>enabled</h3><p>关闭内存检测</p>
+<h3 id="initiate-GC"><a href="#initiate-GC" class="headerlink" title="initiate GC"></a>initiate GC</h3><p>手动触发GC</p>
+<h3 id="Dump-java-Heap"><a href="#Dump-java-Heap" class="headerlink" title="Dump java Heap"></a>Dump java Heap</h3><p>进入HPROF Viewer界面，查看Java的Heap</p>
+<p>Reference Tree代表指向该实例的引用，可以从这里面查看内存泄漏的原因</p>
+<p>Shallow Size指的是该对象本身占用内存的大小，Retained Size代表该对象被释放后，垃圾回收器能回收的内存总和。</p>
+<h3 id="Start-Allocation-Tracking"><a href="#Start-Allocation-Tracking" class="headerlink" title="Start Allocation Tracking"></a>Start Allocation Tracking</h3><p>参考：</p>
+<ul>
+<li><a href="https://gold.xitu.io/entry/574d64bca3413100592a433b/view" target="_blank" rel="external">https://gold.xitu.io/entry/574d64bca3413100592a433b/view</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/view/自定义View/Path/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/03/Android/view/自定义View/Path/" itemprop="url">Path</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
+                2016-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Path"><a href="#Path" class="headerlink" title="Path"></a>Path</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/03/Android/view/自定义View/Path/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/view/menu/Menu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/03/Android/view/menu/Menu/" itemprop="url">Menu</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T09:23:14+08:00">
+                2016-04-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Menu"><a href="#Menu" class="headerlink" title="Menu"></a>Menu</h1><h2 id="涉及的API"><a href="#涉及的API" class="headerlink" title="涉及的API"></a>涉及的API</h2><ul>
+<li>MenuInflater</li>
+<li>MenuItem</li>
+<li>ActionMode</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/03/Android/view/menu/Menu/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Fragment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Fragment/" itemprop="url">Fragment</a></h1>
         
 
         <div class="post-meta">
@@ -342,27 +1249,163 @@
 
       
         
-          <p><a href="http://w3school.com.cn/html/html_intro.asp">w3school</a></p>
-<h1 id="什么是html"><a href="#什么是html" class="headerlink" title="什么是html"></a>什么是html</h1><p>用来描述网页的语音。</p>
-<ul>
-<li>HTML指的是超文本标记语言(Hyper Text Markup Language)</li>
-<li>HTML不是一种编程语言，而是一种标记语言(markup language)</li>
-<li>标记语言是一套标记标签(markup tag)</li>
-<li>HTML使用标记标签来描述网页</li>
-</ul>
-<h1 id="HTML标签"><a href="#HTML标签" class="headerlink" title="HTML标签"></a>HTML标签</h1><ul>
-<li>由尖括号包围的关键词</li>
-<li>成对出现</li>
-<li>开始标签和结束标签</li>
-<li>开始和结束也称为开放标签和闭合标签</li>
-</ul>
+          <h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/html/html-菜鸟教程/#more" rel="contents">
+            <a class="btn" href="/2016/04/02/Android/控件使用/Fragment/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/view/view-视图状态/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/02/Android/view/view-视图状态/" itemprop="url">View-视图状态</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
+                2016-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="View-视图状态"><a href="#View-视图状态" class="headerlink" title="View-视图状态"></a>View-视图状态</h1><h2 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h2><ul>
+<li><code>enabled</code>：表示视图是否可用，能否响应<code>onTouch</code>事件</li>
+<li><code>focused</code>：表示视图是否可以获得焦点，可以使用<code>requestFocus()</code>方法让司徒获取焦点，返回<code>true</code>表示获取焦点成功；一般只有视图在focusable和focusable in touch mode同时成立的情况下才能成功获取焦点，比如说EditText。</li>
+<li><code>window_focused</code>：表示视图是否处于正在交互的窗口，这个值由系统决定，应用程序无法改变它</li>
+<li><code>selected</code>：表示视图是否处于选中状态，一个界面可以有多个视图处于选中状态，<code>setSelected(boolean)</code>设置值</li>
+<li><code>pressed</code>：表示视图是否处于按下状态，<code>setPressed(boolean)</code></li>
+</ul>
+<h2 id="状态改变"><a href="#状态改变" class="headerlink" title="状态改变"></a>状态改变</h2><p>view状态改变的时候调用方法：<code>drawableStateChanged</code></p>
+<pre><code>protected void drawableStateChanged() {  
+    Drawable d = mBGDrawable;  
+        if (d != null &amp;&amp; d.isStateful()) {  
+            d.setState(getDrawableState());  
+    }  
+}
+</code></pre><h2 id="视图重绘"><a href="#视图重绘" class="headerlink" title="视图重绘"></a>视图重绘</h2><p>调用：<code>setVisibility(),setEnabled()..</code>都会导致视图重绘，内部都是调用了<code>invalidate()</code>方法实现的，我们也可以直接调用这个方法强制重绘视图。</p>
+<p>参考:<a href="http://blog.csdn.net/guolin_blog/article/details/17045157" target="_blank" rel="external">http://blog.csdn.net/guolin_blog/article/details/17045157</a></p>
+
+          
         
       
     </div>
@@ -560,7 +1603,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Fragment/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/html/html-菜鸟教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -579,7 +1622,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Fragment/" itemprop="url">Fragment</a></h1>
+                <a class="post-title-link" href="/2016/04/02/html/html-菜鸟教程/" itemprop="url">html-w3school 教程</a></h1>
         
 
         <div class="post-meta">
@@ -649,10 +1692,23 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
 
       
         
-          <h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1>
+          <p><a href="http://w3school.com.cn/html/html_intro.asp">w3school</a></p>
+<h1 id="什么是html"><a href="#什么是html" class="headerlink" title="什么是html"></a>什么是html</h1><p>用来描述网页的语音。</p>
+<ul>
+<li>HTML指的是超文本标记语言(Hyper Text Markup Language)</li>
+<li>HTML不是一种编程语言，而是一种标记语言(markup language)</li>
+<li>标记语言是一套标记标签(markup tag)</li>
+<li>HTML使用标记标签来描述网页</li>
+</ul>
+<h1 id="HTML标签"><a href="#HTML标签" class="headerlink" title="HTML标签"></a>HTML标签</h1><ul>
+<li>由尖括号包围的关键词</li>
+<li>成对出现</li>
+<li>开始标签和结束标签</li>
+<li>开始和结束也称为开放标签和闭合标签</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/控件使用/Fragment/#more" rel="contents">
+            <a class="btn" href="/2016/04/02/html/html-菜鸟教程/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -827,890 +1883,11 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Toast大全/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Toast大全/" itemprop="url">Toast</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
-                2016-04-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="默认Toast"><a href="#默认Toast" class="headerlink" title="默认Toast"></a>默认Toast</h2><pre><code>Toast.makeText(getApplicationContext(), &quot;默认Toast样式&quot;,Toast.LENGTH_SHORT).show();
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/控件使用/Toast大全/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/tips/android tips/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/02/Android/tips/android tips/" itemprop="url">android tips</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
-                2016-04-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ul>
-<li><p>Use Vectors instead of PNG</p>
-<p>  If you do have to use png, compress them. Take a look at <a href="https://tinypng.com/">TinyPNG</a>.</p>
-</li>
-<li><p>Use shrinkResources</p>
-<p>  shrinkResources true</p>
-</li>
-<li><p>Define a variable at build time In your build.gradle</p>
-<p>  ```<br>  android{</p>
-<pre><code>defaultConfig {
-    ...
-    buildConfigField &quot;String&quot;, &quot;SERVER_ENDPOINT&quot;, &apos;&quot;http://www.myendpoint.com&quot;&apos;
-    buildConfigField &quot;int&quot;, &quot;FOO&quot;, &quot;52&quot;
-    buildConfigField &quot;boolean&quot;, &quot;LOG&quot;, &quot;false&quot;
-    ...
-}
-</code></pre><p>  }</p>
-</li>
-</ul>
-<h2 id="android-自带的工具类"><a href="#android-自带的工具类" class="headerlink" title="android 自带的工具类"></a>android 自带的工具类</h2><ul>
-<li>android.text.TextUtils</li>
-<li>android.webkit.URLUtil</li>
-<li>android.text.format.DateUtils</li>
-<li>tools schemas</li>
-<li>UncaughtExceptionHandler:捕获全局异常</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/tips/android tips/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/01/Android/序列化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/01/Android/序列化/" itemprop="url">序列化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-01T09:13:12+08:00">
-                2016-04-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h1><h2 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h2><blockquote>
-<p>实现接口的对象可以使用流的操作将对象固化到存储器中。</p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/01/Android/序列化/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/31/Android/UI/图片宽高适配问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/03/31/Android/UI/图片宽高适配问题/" itemprop="url">图片宽高适配</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-31T09:13:12+08:00">
-                2016-03-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="图片宽高适配问题"><a href="#图片宽高适配问题" class="headerlink" title="图片宽高适配问题"></a>图片宽高适配问题</h1><p>布局：</p>
-<pre><code>&lt;ImageView
-        android:id=&quot;@+id/item_img&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;wrap_content&quot;
-        android:adjustViewBounds=&quot;true&quot;
-        android:contentDescription=&quot;@null&quot;
-        android:scaleType=&quot;centerCrop&quot;/&gt;
-</code></pre><p>让宽度适配控件的宽度，高度自动缩放。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/03/31/Android/UI/图片宽高适配问题/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/31/Android/SVN/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/03/31/Android/SVN/" itemprop="url">SVN Git 基本</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-31T09:13:12+08:00">
-                2016-03-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="SVN-Git"><a href="#SVN-Git" class="headerlink" title="SVN Git"></a>SVN Git</h1><h2 id="软件"><a href="#软件" class="headerlink" title="软件"></a>软件</h2><p>svn 服务器，客户端</p>
-<p>git</p>
-<h2 id="studio-配置svn"><a href="#studio-配置svn" class="headerlink" title="studio 配置svn"></a>studio 配置svn</h2><p>打开Android studio 设置 搜索 <code>svn</code>，如果没有安装命令行的svn需要去除一个勾。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/03/31/Android/SVN/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/30/Android/view/自定义View/自定义View-绘制文字/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/03/30/Android/view/自定义View/自定义View-绘制文字/" itemprop="url">自定义View -- 绘制文字</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-30T09:23:14+08:00">
-                2016-03-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="绘制文字"><a href="#绘制文字" class="headerlink" title="绘制文字"></a>绘制文字</h1><h2 id="方法一-常用"><a href="#方法一-常用" class="headerlink" title="方法一 常用"></a>方法一 常用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawText</span><span class="params">(@NonNull String text, <span class="keyword">float</span> x, <span class="keyword">float</span> y, @NonNull Paint paint)</span></span></div></pre></td></tr></table></figure>
-<ul>
-<li>参数1: 需要绘制的文本</li>
-<li>参数2: 绘制的文本起始 x 坐标</li>
-<li>参数3: 绘制的文本起始 y 坐标</li>
-</ul>
-<h1 id="获取文字的宽度"><a href="#获取文字的宽度" class="headerlink" title="获取文字的宽度"></a>获取文字的宽度</h1><p>方式一：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@param</span> text  绘制的文字</div><div class="line"> * <span class="doctag">@param</span> paint 画笔</div><div class="line"> * <span class="doctag">@return</span> 文字的宽度</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextWidth</span><span class="params">(String text, Paint paint)</span> </span>&#123;</div><div class="line">    Rect bounds = <span class="keyword">new</span> Rect();</div><div class="line">    paint.getTextBounds(text, <span class="number">0</span>, text.length(), bounds);</div><div class="line">    <span class="keyword">int</span> width = bounds.left + bounds.width();</div><div class="line">    <span class="keyword">return</span> width;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>方式二：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@param</span> text  绘制的文字</div><div class="line"> * <span class="doctag">@param</span> paint 画笔</div><div class="line"> * <span class="doctag">@return</span> 文字的宽度</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextWidth2</span><span class="params">(String text, Paint paint)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> ((<span class="keyword">int</span>) paint.measureText(text));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="获取文字的高度"><a href="#获取文字的高度" class="headerlink" title="获取文字的高度"></a>获取文字的高度</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * <span class="doctag">@param</span> text  绘制的文字</div><div class="line"> * <span class="doctag">@param</span> paint 画笔</div><div class="line"> * <span class="doctag">@return</span> 文字的高度</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextHeight</span><span class="params">(String text, Paint paint)</span> </span>&#123;</div><div class="line">    Rect bounds = <span class="keyword">new</span> Rect();</div><div class="line">    paint.getTextBounds(text, <span class="number">0</span>, text.length(), bounds);</div><div class="line">    <span class="keyword">int</span> height = bounds.bottom + bounds.height();</div><div class="line">    <span class="keyword">return</span> height;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="文字的度量，参数获取-Paint-FontMetrics"><a href="#文字的度量，参数获取-Paint-FontMetrics" class="headerlink" title="文字的度量，参数获取 Paint.FontMetrics"></a>文字的度量，参数获取 Paint.FontMetrics</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mPaint.setStyle(Paint.Style.STROKE);</div><div class="line">canvas.drawRect(<span class="number">100</span>, <span class="number">100</span>, <span class="number">700</span>, <span class="number">300</span>, mPaint);</div><div class="line">mPaint.setTextSize(<span class="number">100</span>);    <span class="comment">// 必须设置大小才能得到五条线的值</span></div><div class="line">Paint.FontMetrics metrics = mPaint.getFontMetrics(); <span class="comment">// 基线</span></div><div class="line"><span class="keyword">float</span> top = metrics.top;</div><div class="line"><span class="keyword">float</span> ascent = metrics.ascent; <span class="comment">// 五条线</span></div><div class="line"><span class="keyword">float</span> leading = metrics.leading;</div><div class="line"><span class="keyword">float</span> descent = metrics.descent;</div><div class="line"><span class="keyword">float</span> bottom = metrics.bottom; <span class="comment">// 最低底边的线</span></div><div class="line">Log.d(TAG, <span class="string">"top="</span> + top + <span class="string">"ascent="</span> + ascent + <span class="string">"leading="</span> + leading + <span class="string">"descent="</span> + descent + <span class="string">"bottom="</span> + bottom);</div><div class="line">canvas.drawText(<span class="string">"测试文字"</span>, <span class="number">100</span>, <span class="number">300</span>, mPaint);  <span class="comment">// 文字的基线 baseline    top,ascent,leading,descent,bottom</span></div></pre></td></tr></table></figure>
-<h1 id="文本绘制水平居中"><a href="#文本绘制水平居中" class="headerlink" title="文本绘制水平居中"></a>文本绘制水平居中</h1><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">float x = (getWidth() - paint.measureText(text))/2</div><div class="line"># x</div></pre></td></tr></table></figure>
-<h1 id="文本垂直居中"><a href="#文本垂直居中" class="headerlink" title="文本垂直居中"></a>文本垂直居中</h1><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();</div><div class="line">float y = getHeight() / 2 + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / 2;</div><div class="line"></div><div class="line"># y</div></pre></td></tr></table></figure>
-<h1 id="Paint-中和绘制文本相关的方法"><a href="#Paint-中和绘制文本相关的方法" class="headerlink" title="Paint 中和绘制文本相关的方法"></a>Paint 中和绘制文本相关的方法</h1><ul>
-<li><code>mTextPaint.setStrikeThruText(true);</code> ：设置文本删除线</li>
-<li><code>setTextSize(float f)</code></li>
-<li><code>setUnderlineText(booelan b)</code>: 设置下滑线</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/26/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="extend next" rel="next" href="/page/28/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/26/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/28/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1755,7 +1932,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">357</span>
+                <span class="site-state-item-count">363</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1777,7 +1954,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">247</span>
+                <span class="site-state-item-count">251</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

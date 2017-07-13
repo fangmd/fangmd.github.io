@@ -93,16 +93,22 @@
 
 
 
-<meta name="description" content="懒加载内存泄漏">
+<meta name="description" content="懒加载让对象在使用的时候在加载到内存中
+1lazy var 变量: 类型 = &amp;#123; 创建变量代码 &amp;#125;()
+内存泄漏">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ios 优化">
 <meta property="og:url" content="http://yoursite.com/2017/06/17/ios/ios优化/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="懒加载内存泄漏">
-<meta property="og:updated_time" content="2017-06-25T08:51:41.000Z">
+<meta property="og:description" content="懒加载让对象在使用的时候在加载到内存中
+1lazy var 变量: 类型 = &amp;#123; 创建变量代码 &amp;#125;()
+内存泄漏">
+<meta property="og:updated_time" content="2017-07-02T14:43:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ios 优化">
-<meta name="twitter:description" content="懒加载内存泄漏">
+<meta name="twitter:description" content="懒加载让对象在使用的时候在加载到内存中
+1lazy var 变量: 类型 = &amp;#123; 创建变量代码 &amp;#125;()
+内存泄漏">
 
 
 
@@ -341,7 +347,9 @@
       
 
       
-        <h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><h1 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h1><a id="more"></a>
+        <h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>让对象在使用的时候在加载到内存中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lazy var 变量: 类型 = &#123; 创建变量代码 &#125;()</div></pre></td></tr></table></figure>
+<h1 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h1><a id="more"></a>
 <h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>例子：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">class CustomCell: UITableViewCell &#123;</div><div class="line"></div><div class="line">    @IBOutlet weak var customButton: UIButton!</div><div class="line">    var onButtonTap:(()-&gt;Void)?</div><div class="line"></div><div class="line">    @IBAction func buttonTap()&#123;</div><div class="line">        onButtonTap?()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">---</div><div class="line"></div><div class="line">class ViewController: UITableViewController &#123;</div><div class="line"></div><div class="line">    ...</div><div class="line">    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell &#123;</div><div class="line">        let cell = tableView.dequeueReusableCell(withIdentifier: &quot;CustomCell&quot;, for: indexPath) as! CustomCell</div><div class="line">        cell.onButtonTap = &#123; _ in</div><div class="line">            self.navigationController?.pushViewController(NewViewController(), animated: true)</div><div class="line">        &#125;</div><div class="line">    &#125;        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>上面的代码中：CustomCell 拥有 onButtonTap，UITableView 拥有 CustomCell，UITableViewController 拥有 UITableView，onButtonTap 拥有 UITableViewController 形成互相引用造成内存泄漏</p>
@@ -474,7 +482,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">357</span>
+                <span class="site-state-item-count">363</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -496,7 +504,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">247</span>
+                <span class="site-state-item-count">251</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
