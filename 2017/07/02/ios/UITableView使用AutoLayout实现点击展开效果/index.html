@@ -108,7 +108,7 @@
 更新 UITableView 的一个 Cell:
 1234567891">
 <meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ios/UITableViewCellExpand.gif">
-<meta property="og:updated_time" content="2017-07-02T03:21:56.000Z">
+<meta property="og:updated_time" content="2017-07-16T07:00:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UITableView 使用 AutoLayout 实现 Cell 点击展开效果">
 <meta name="twitter:description" content="接上篇文章 UITableView Cell 高度自动匹配 
@@ -216,7 +216,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -226,7 +226,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -296,7 +296,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-02T13:18:12+08:00">
                 2017-07-02
@@ -317,7 +317,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -361,6 +361,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mLabelContent.numberOfLines = 0  // 不限制行数，扩展</div><div class="line">mLabelContent.numberOfLines = 2  // 限制函数为 2 行</div></pre></td></tr></table></figure>
 <p>更新 UITableView 的一个 Cell:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mTableView.rx.itemSelected.subscribe(onNext:&#123; indexPath in</div><div class="line">    </div><div class="line">    let cell = self.mTableView.cellForRow(at: indexPath) as! Cell</div><div class="line"></div><div class="line">    self.mTableView.beginUpdates()</div><div class="line">    cell.mModel?.isExpand = !(cell.mModel?.isExpand ?? false) // 通过更新数据源的形式改变 cell</div><div class="line">    self.mTableView.reloadRows(at: [indexPath]UITableViewRowAnimation.automatic)            </div><div class="line">    self.mTableView.endUpdates()</div><div class="line">    </div><div class="line">&#125;).disposed(by: mDisposeBag)</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <h1 id="完整代码块"><a href="#完整代码块" class="headerlink" title="完整代码块"></a>完整代码块</h1><p>Cell:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">import Foundation</div><div class="line">import SnapKit</div><div class="line"></div><div class="line">class Cell: UITableViewCell&#123;</div><div class="line">    </div><div class="line">    static let CELL_IDENTIFIER = &quot;Cell&quot;</div><div class="line">    </div><div class="line">    </div><div class="line">    let mLabelTitle = UILabel()</div><div class="line">    let mLabelContent = UILabel()</div><div class="line">    let mLabelTime = UILabel()</div><div class="line">    </div><div class="line">    var mModel: MessageModel?&#123;</div><div class="line">        didSet&#123;            </div><div class="line">            mLabelTitle.text = mModel?.title</div><div class="line">            mLabelContent.text = mModel?.content</div><div class="line">            mLabelTime.text = mModel?.time</div><div class="line">            mLabelContent.numberOfLines = (mModel?.isExpand ?? false) ? 0 : 2</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    override init(style: UITableViewCellStyle, reuseIdentifier: String?) &#123;</div><div class="line">        super.init(style: style, reuseIdentifier: reuseIdentifier)</div><div class="line">        selectionStyle = .none</div><div class="line">        </div><div class="line">        contentView.addSubview(mLabelTitle)</div><div class="line">        contentView.addSubview(mLabelContent)</div><div class="line">        contentView.addSubview(mLabelTime)</div><div class="line">        </div><div class="line">        </div><div class="line">        mLabelTitle.snp.makeConstraints &#123; (make) in</div><div class="line">            make.top.equalTo(contentView).offset(4)</div><div class="line">            make.left.equalTo(contentView).offset(16)</div><div class="line">        &#125;</div><div class="line">//        mLabelContent.numberOfLines = 0</div><div class="line">        mLabelContent.snp.makeConstraints &#123; (make) in</div><div class="line">            make.top.equalTo(mLabelTitle.snp.bottom).offset(3)</div><div class="line">            make.left.equalTo(contentView).offset(16)</div><div class="line">            make.right.equalTo(contentView).offset(-16)</div><div class="line">        &#125;</div><div class="line">        mLabelTime.snp.makeConstraints &#123; (make) in</div><div class="line">            make.top.equalTo(mLabelContent.snp.bottom).offset(3)</div><div class="line">            make.bottom.equalTo(contentView).offset(-4)</div><div class="line">            make.right.equalTo(contentView).offset(-16)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    required init?(coder aDecoder: NSCoder) &#123;</div><div class="line">        fatalError(&quot;init(coder:) has not been implemented&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>MessageModel:</p>
@@ -475,10 +476,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -498,8 +499,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">367</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">369</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -510,7 +511,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">15</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -521,7 +522,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -587,7 +588,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

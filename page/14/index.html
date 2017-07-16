@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/16/ReadNote/HTTP权威指南/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/21/Android/features/Android后台定时任务实现方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/09/16/ReadNote/HTTP权威指南/" itemprop="url">HTTP 权威指南</a></h1>
+                <a class="post-title-link" href="/2016/09/21/Android/features/Android后台定时任务实现方案/" itemprop="url">Android后台定时任务实现方案</a></h1>
         
 
         <div class="post-meta">
@@ -282,10 +282,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-16T13:18:12+08:00">
-                2016-09-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-21T13:18:12+08:00">
+                2016-09-21
               </time>
             
 
@@ -303,12 +303,12 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -342,25 +342,193 @@
 
       
         
-          <h1 id="HTTP-Web的基础"><a href="#HTTP-Web的基础" class="headerlink" title="HTTP Web的基础"></a>HTTP Web的基础</h1><h2 id="HTTP-概述"><a href="#HTTP-概述" class="headerlink" title="HTTP 概述"></a>HTTP 概述</h2><h3 id="HTTP-－因特网的多媒体信使"><a href="#HTTP-－因特网的多媒体信使" class="headerlink" title="HTTP －因特网的多媒体信使"></a>HTTP －因特网的多媒体信使</h3><p>HTTP使用的是可靠的数据传输协议，能确保数据在传输的时候不会损坏或者产生混乱</p>
-<h3 id="Web客户端和服务器"><a href="#Web客户端和服务器" class="headerlink" title="Web客户端和服务器"></a>Web客户端和服务器</h3><p>服务器也称为HTTP服务器，Web客户端向服务器发送HTTP请求，服务器返回数据。</p>
-<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p>Web服务器是Web资源（Web resource）的宿主。Web资源是Web内容的源头。</p>
-<p>最简单的Web资源就是Web服务器上的静态文件，这些文件可以是任意格式的。</p>
-<h4 id="媒体类型"><a href="#媒体类型" class="headerlink" title="媒体类型"></a>媒体类型</h4><p>根据不同的数据类型，HTTP给每个要通过Web传输的对象都打上MIME type的数据格式标签。</p>
-<p>MiME type：描述被标记的多媒体内容。是一种文本标记，中间使用一条斜杠来分隔</p>
-<p>几个例子</p>
-<ul>
-<li>文本文档 text/html</li>
-<li>ASCII文本文档 text/plain</li>
-<li>JPEG image/jpeg</li>
-<li>GIF image/gif</li>
-<li>QuickTime video/quicktime</li>
-<li>PowerPoint application/vnd.ms-powerpoint</li>
-</ul>
+          <h1 id="方案一-适合需要唤醒cpu的任务比如定位"><a href="#方案一-适合需要唤醒cpu的任务比如定位" class="headerlink" title="方案一 适合需要唤醒cpu的任务比如定位"></a>方案一 适合需要唤醒cpu的任务比如定位</h1><p>Service, AlarmManager, PendingIntent，BroardcastReciever</p>
+<p>在服务中创建AlarmManager，PendingIntent：</p>
+<pre><code>AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+Intent intent2 = new Intent(this, AutoUpdateReceiver.class
+PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent2, 0);
+alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeSpan, pi); // 执行一次； 周期执行使用：alarmManager.setRepeating();
+</code></pre><p>BroadcastReciever:</p>
+<pre><code>public class AutoUpdateReceiver extends BroadcastReceiver {  
+
+    @Override  
+    public void onReceive(Context context, Intent intent) {  
+        // 定时任务处理
+        // 重复任务
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+timeSpan, pi);
+    }  
+}  
+</code></pre>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/09/16/ReadNote/HTTP权威指南/#more" rel="contents">
-              Read more &raquo;
+            <a class="btn" href="/2016/09/21/Android/features/Android后台定时任务实现方案/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/21/Android/数据存储/DBFlowGuide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/21/Android/数据存储/DBFlowGuide/" itemprop="url">DBFlow 使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-21T13:18:12+08:00">
+                2016-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p><code>build.gradle</code></p>
+<pre><code>buildscript {
+    repositories {
+      // required for this library, don&apos;t use mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.neenbedankt.gradle.plugins:android-apt:1.8&apos;
+    }
+}
+</code></pre><p>Because DBFlow3 is still not officially released, you need also add <a href="https://jitpack.io">https://jitpack.io</a> to your allprojects -&gt; repositories dependency list:</p>
+<pre><code>allprojects {
+    repositories {
+        jcenter()
+        maven { url &quot;https://jitpack.io&quot; }
+    }
+}
+</code></pre><p><code>app/build.gradle</code>:</p>
+<pre><code>apply plugin: &apos;com.neenbedankt.android-apt&apos;
+
+dependencies {
+    apt &quot;com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1&quot;
+    compile &quot;com.github.Raizlabs.DBFlow:dbflow-core:3.1.1&quot;
+    compile &quot;com.github.Raizlabs.DBFlow:dbflow-sqlcipher:3.1.1@aar&quot;
+    compile &apos;net.zetetic:android-database-sqlcipher:3.5.1&apos;
+
+    compile &quot;com.github.Raizlabs.DBFlow:dbflow:3.1.1&quot;
+}
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/09/21/Android/数据存储/DBFlowGuide/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -434,7 +602,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-16T13:18:12+08:00">
                 2016-09-16
@@ -455,7 +623,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -521,7 +689,7 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/16/Python/AProject/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -566,7 +734,7 @@ mysite/
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/10/ReadNote/非暴力沟通/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/16/ReadNote/HTTP权威指南/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -585,7 +753,7 @@ mysite/
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/09/10/ReadNote/非暴力沟通/" itemprop="url">非暴力沟通</a></h1>
+                <a class="post-title-link" href="/2016/09/16/ReadNote/HTTP权威指南/" itemprop="url">HTTP 权威指南</a></h1>
         
 
         <div class="post-meta">
@@ -595,10 +763,10 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-10T13:18:12+08:00">
-                2016-09-10
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-16T13:18:12+08:00">
+                2016-09-16
               </time>
             
 
@@ -616,7 +784,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -655,16 +823,25 @@ mysite/
 
       
         
-          <h1 id="让爱融入生活"><a href="#让爱融入生活" class="headerlink" title="让爱融入生活"></a>让爱融入生活</h1><h2 id="非暴力沟通的要素"><a href="#非暴力沟通的要素" class="headerlink" title="非暴力沟通的要素"></a>非暴力沟通的要素</h2><ul>
-<li>观察到了什么</li>
-<li>我的感受是什么</li>
-<li>哪些需要导致那样的感受</li>
-<li>我的请求是什么</li>
+          <h1 id="HTTP-Web的基础"><a href="#HTTP-Web的基础" class="headerlink" title="HTTP Web的基础"></a>HTTP Web的基础</h1><h2 id="HTTP-概述"><a href="#HTTP-概述" class="headerlink" title="HTTP 概述"></a>HTTP 概述</h2><h3 id="HTTP-－因特网的多媒体信使"><a href="#HTTP-－因特网的多媒体信使" class="headerlink" title="HTTP －因特网的多媒体信使"></a>HTTP －因特网的多媒体信使</h3><p>HTTP使用的是可靠的数据传输协议，能确保数据在传输的时候不会损坏或者产生混乱</p>
+<h3 id="Web客户端和服务器"><a href="#Web客户端和服务器" class="headerlink" title="Web客户端和服务器"></a>Web客户端和服务器</h3><p>服务器也称为HTTP服务器，Web客户端向服务器发送HTTP请求，服务器返回数据。</p>
+<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p>Web服务器是Web资源（Web resource）的宿主。Web资源是Web内容的源头。</p>
+<p>最简单的Web资源就是Web服务器上的静态文件，这些文件可以是任意格式的。</p>
+<h4 id="媒体类型"><a href="#媒体类型" class="headerlink" title="媒体类型"></a>媒体类型</h4><p>根据不同的数据类型，HTTP给每个要通过Web传输的对象都打上MIME type的数据格式标签。</p>
+<p>MiME type：描述被标记的多媒体内容。是一种文本标记，中间使用一条斜杠来分隔</p>
+<p>几个例子</p>
+<ul>
+<li>文本文档 text/html</li>
+<li>ASCII文本文档 text/plain</li>
+<li>JPEG image/jpeg</li>
+<li>GIF image/gif</li>
+<li>QuickTime video/quicktime</li>
+<li>PowerPoint application/vnd.ms-powerpoint</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/09/10/ReadNote/非暴力沟通/#more" rel="contents">
-              Read more &raquo;
+            <a class="btn" href="/2016/09/16/ReadNote/HTTP权威指南/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -738,7 +915,7 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-10T13:18:12+08:00">
                 2016-09-10
@@ -759,7 +936,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -825,7 +1002,150 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/10/Android/Lambda/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/10/ReadNote/非暴力沟通/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/10/ReadNote/非暴力沟通/" itemprop="url">非暴力沟通</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-10T13:18:12+08:00">
+                2016-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="让爱融入生活"><a href="#让爱融入生活" class="headerlink" title="让爱融入生活"></a>让爱融入生活</h1><h2 id="非暴力沟通的要素"><a href="#非暴力沟通的要素" class="headerlink" title="非暴力沟通的要素"></a>非暴力沟通的要素</h2><ul>
+<li>观察到了什么</li>
+<li>我的感受是什么</li>
+<li>哪些需要导致那样的感受</li>
+<li>我的请求是什么</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/09/10/ReadNote/非暴力沟通/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -899,7 +1219,7 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-08T22:38:14+08:00">
                 2016-09-08
@@ -920,7 +1240,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -972,7 +1292,7 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/08/Android/android使用其他字体/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1046,7 +1366,7 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-07T13:18:12+08:00">
                 2016-09-07
@@ -1067,7 +1387,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1115,7 +1435,7 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/07/Android/代码规范/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1189,7 +1509,7 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-06T13:18:12+08:00">
                 2016-09-06
@@ -1210,7 +1530,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1264,7 +1584,7 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/06/Android/第三方/RxJava/Rxjava/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1338,7 +1658,7 @@ mysite/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-04T13:18:12+08:00">
                 2016-09-04
@@ -1359,7 +1679,7 @@ mysite/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1411,325 +1731,7 @@ mysite/
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/09/04/Python/Regular_Expression/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/28/Android/优化/找出界面卡顿的原因--BlockCanary/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/28/Android/优化/找出界面卡顿的原因--BlockCanary/" itemprop="url">找出Android界面卡顿的原因－－BlockCanary</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-28T13:18:12+08:00">
-                2016-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><ol>
-<li><p>配置<code>build.gradle</code></p>
-<pre><code>compile &apos;com.github.moduth:blockcanary-android:1.2.1&apos;
-// 仅在debug包启用BlockCanary进行卡顿监控和提示的话，可以这么用
-debugCompile &apos;com.github.moduth:blockcanary-android:1.2.1&apos;
-releaseCompile &apos;com.github.moduth:blockcanary-no-op:1.2.1&apos;
-</code></pre></li>
-<li><p>新建一个类,继承自BlockCanaryContext，实现自己的监控上下文，代码示意如下</p>
-<pre><code>public class AppBlockCanaryContext extends BlockCanaryContext {
-    //设置卡顿判断的阙值
-    public int getConfigBlockThreshold() {
-        return 500;
-    }
-
-    //是否需要显示卡顿的信息
-    public boolean isNeedDisplay() {
-        return BuildConfig.DEBUG;
-    ｝
-
-    //设置log保存在sd卡的目录位置
-    public String getLogPath() {
-        return &quot;/blockcanary/performance&quot;;
-    }
-
- }
-</code></pre></li>
-<li><p>在自定义Application中初始化</p>
-<pre><code>BlockCanary.install(this, new AppBlockCanaryContext());
-</code></pre></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/28/Python/WebCrawler/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/28/Python/WebCrawler/" itemprop="url">A Web Crawler With asyncio Coroutines</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-28T13:18:12+08:00">
-                2016-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>原文地址：<a href="http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html">http://aosabook.org/en/500L/a-web-crawler-with-asyncio-coroutines.html</a></p>
-<h2 id="The-Traditional-Approach"><a href="#The-Traditional-Approach" class="headerlink" title="The Traditional Approach"></a>The Traditional Approach</h2><p>传统的写法，创建一个线程池，每个线程通过socket处理一个页面，下载<code>xkcd.com</code>:</p>
-<pre><code>def fetch(url):
-    sock = socket.socket()
-    sock.connect((&apos;xkcd.com&apos;, 80))
-    request = &apos;GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n&apos;.format(url)
-    sock.send(request.encode(&apos;ascii&apos;))
-    response = b&apos;&apos;
-    chunk = sock.recv(4096)
-    while chunk:
-        response += chunk
-        chunk = sock.recv(4096)
-
-    # Page is now downloaded
-    links = parse_links(response)
-    q.add(links)
-</code></pre><p>socket的操作都是阻塞操作。如果在同一时刻需要处理大量的页面就需要大量的线程。通常一个成熟的应用程序会通过使用线程池来管理线程达到减少不断创建线程导致的性能消耗。</p>
-<p>使用线程是非常消耗系统资源的</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/08/28/Python/WebCrawler/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1814,8 +1816,8 @@ releaseCompile &apos;com.github.moduth:blockcanary-no-op:1.2.1&apos;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">367</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">369</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1826,7 +1828,7 @@ releaseCompile &apos;com.github.moduth:blockcanary-no-op:1.2.1&apos;
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">15</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1837,7 +1839,7 @@ releaseCompile &apos;com.github.moduth:blockcanary-no-op:1.2.1&apos;
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1887,7 +1889,7 @@ releaseCompile &apos;com.github.moduth:blockcanary-no-op:1.2.1&apos;
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
