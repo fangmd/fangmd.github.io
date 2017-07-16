@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -282,7 +282,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -500,6 +500,189 @@ class Track(models.Model):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/" itemprop="url">7. django-rest-framework -- Renderers</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Renderers"><a href="#Renderers" class="headerlink" title="Renderers"></a>Renderers</h1><blockquote>
+<p>Before a TemplateResponse instance can be returned to the client, it must be rendered. The rendering process takes the intermediate representation of template and context, and turns it into the final byte stream that can be served to the client.<br>— Django documentation</p>
+</blockquote>
+<h2 id="How-the-renderer-is-determined"><a href="#How-the-renderer-is-determined" class="headerlink" title="How the renderer is determined"></a>How the renderer is determined</h2><ol>
+<li><p>决定：请求头 <code>Accept</code></p>
+</li>
+<li><p>URL 的后缀（优先）</p>
+</li>
+</ol>
+<h2 id="Setting-the-renderers"><a href="#Setting-the-renderers" class="headerlink" title="Setting the renderers"></a>Setting the renderers</h2><pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
+        &apos;rest_framework.renderers.JSONRenderer&apos;,
+        &apos;rest_framework.renderers.BrowsableAPIRenderer&apos;,
+    )
+}
+</code></pre><p>也可以为视图独立设置：</p>
+<pre><code>from django.contrib.auth.models import User
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class UserCountView(APIView):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        user_count = User.objects.filter(active=True).count()
+        content = {&apos;user_count&apos;: user_count}
+        return Response(content)
+</code></pre><p>方法视图；</p>
+<pre><code>@api_view([&apos;GET&apos;])
+@renderer_classes((JSONRenderer,))
+def user_count_view(request, format=None):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    user_count = User.objects.filter(active=True).count()
+    content = {&apos;user_count&apos;: user_count}
+    return Response(content)
+</code></pre><h2 id="Ordering-of-renderer-classes"><a href="#Ordering-of-renderer-classes" class="headerlink" title="Ordering of renderer classes"></a>Ordering of renderer classes</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONRenderer"><a href="#JSONRenderer" class="headerlink" title="JSONRenderer"></a>JSONRenderer</h2><h2 id="TemplateHTMLRenderer"><a href="#TemplateHTMLRenderer" class="headerlink" title="TemplateHTMLRenderer"></a>TemplateHTMLRenderer</h2><h2 id="StaticHTMLRenderer"><a href="#StaticHTMLRenderer" class="headerlink" title="StaticHTMLRenderer"></a>StaticHTMLRenderer</h2><h2 id="BrowsableAPIRenderer"><a href="#BrowsableAPIRenderer" class="headerlink" title="BrowsableAPIRenderer"></a>BrowsableAPIRenderer</h2><p>渲染成一个网页可操作的API接口</p>
+<ul>
+<li>.media_type: text/html</li>
+<li>.format: ‘.api’</li>
+<li>.charset: utf-8</li>
+<li>.template: ‘rest_framework/api.html’</li>
+</ul>
+<h2 id="AdminRenderer"><a href="#AdminRenderer" class="headerlink" title="AdminRenderer"></a>AdminRenderer</h2><p>Renders data into HTML for an admin-like display:</p>
+<h2 id="HTMLFormRenderer"><a href="#HTMLFormRenderer" class="headerlink" title="HTMLFormRenderer"></a>HTMLFormRenderer</h2><p>使用 html 模版生产结果</p>
+<h2 id="MultiPartRenderer"><a href="#MultiPartRenderer" class="headerlink" title="MultiPartRenderer"></a>MultiPartRenderer</h2><h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -529,7 +712,7 @@ class Track(models.Model):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -550,7 +733,7 @@ class Track(models.Model):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -609,10 +792,348 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/" itemprop="url">11. django-rest-framework -- Validators</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Validators"><a href="#Validators" class="headerlink" title="Validators"></a>Validators</h1><h2 id="Validation-in-REST-framework"><a href="#Validation-in-REST-framework" class="headerlink" title="Validation in REST framework"></a>Validation in REST framework</h2><p>rest-framework 中数据的验证逻辑写在 serializar 类中，这样处理的好处：</p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>simple model：</p>
+<pre><code>class CustomerReportRecord(models.Model):
+    time_raised = models.DateTimeField(default=timezone.now, editable=False)
+    reference = models.CharField(unique=True, max_length=20)
+    description = models.TextField()
+</code></pre><p>serializar：</p>
+<pre><code>class CustomerReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerReportRecord
+</code></pre><p>查看 serializar:</p>
+<pre><code>&gt;&gt;&gt; from project.example.serializers import CustomerReportSerializer
+&gt;&gt;&gt; serializer = CustomerReportSerializer()
+&gt;&gt;&gt; print(repr(serializer))
+CustomerReportSerializer():
+    id = IntegerField(label=&apos;ID&apos;, read_only=True)
+    time_raised = DateTimeField(read_only=True)
+    reference = CharField(max_length=20, validators=[&lt;UniqueValidator(queryset=CustomerReportRecord.objects.all())&gt;])
+    description = CharField(style={&apos;type&apos;: &apos;textarea&apos;})
+</code></pre><p>可以看到 序列化器 已经对 reference 字段进行了唯一性的验证</p>
+<h2 id="UniqueValidator"><a href="#UniqueValidator" class="headerlink" title="UniqueValidator"></a>UniqueValidator</h2><h2 id="UniqueTogetherValidator"><a href="#UniqueTogetherValidator" class="headerlink" title="UniqueTogetherValidator"></a>UniqueTogetherValidator</h2><h2 id="UniqueForDateValidator"><a href="#UniqueForDateValidator" class="headerlink" title="UniqueForDateValidator"></a>UniqueForDateValidator</h2><h2 id="UniqueForMonthValidator"><a href="#UniqueForMonthValidator" class="headerlink" title="UniqueForMonthValidator"></a>UniqueForMonthValidator</h2><h2 id="UniqueForYearValidator"><a href="#UniqueForYearValidator" class="headerlink" title="UniqueForYearValidator"></a>UniqueForYearValidator</h2><p>## </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/" itemprop="url">6. django-rest-framework -- Parsers</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Parsers"><a href="#Parsers" class="headerlink" title="Parsers"></a>Parsers</h1><blockquote>
+<p>REST framework includes a number of built in Parser classes, that allow you to accept requests with various media types.</p>
+</blockquote>
+<p>针对请求中不同的资源请求，提供不同的解析器</p>
+<h2 id="How-the-parser-is-determined-如何决定解析器"><a href="#How-the-parser-is-determined-如何决定解析器" class="headerlink" title="How the parser is determined 如何决定解析器"></a>How the parser is determined 如何决定解析器</h2><p>当 <code>request.data</code> 获取到的时候，REST framework 会检查 <code>Content-Type</code> 请求头的值，根据这个值决定解析器。</p>
+<p>如果没有这个请求头，一般会默认按照 <code>&#39;application/x-www-form-urlencoded&#39;</code> 处理</p>
+<h2 id="Setting-the-parsers"><a href="#Setting-the-parsers" class="headerlink" title="Setting the parsers"></a>Setting the parsers</h2><pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_PARSER_CLASSES&apos;: (
+        &apos;rest_framework.parsers.JSONParser&apos;,
+    )
+}
+</code></pre><p>在 View 中设置：</p>
+<pre><code>from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class ExampleView(APIView):
+    &quot;&quot;&quot;
+    A view that can accept POST requests with JSON content.
+    &quot;&quot;&quot;
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        return Response({&apos;received data&apos;: request.data})
+</code></pre><p>方法视图：</p>
+<pre><code>from rest_framework.decorators import api_view
+from rest_framework.decorators import parser_classes
+
+@api_view([&apos;POST&apos;])
+@parser_classes((JSONParser,))
+def example_view(request, format=None):
+    &quot;&quot;&quot;
+    A view that can accept POST requests with JSON content.
+    &quot;&quot;&quot;
+    return Response({&apos;received data&apos;: request.data})
+</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONParser"><a href="#JSONParser" class="headerlink" title="JSONParser"></a>JSONParser</h2><pre><code>.media_type: application/json
+</code></pre><h2 id="FormParser"><a href="#FormParser" class="headerlink" title="FormParser"></a>FormParser</h2><pre><code>.media_type: application/x-www-form-urlencoded
+</code></pre><h2 id="MultiPartParser"><a href="#MultiPartParser" class="headerlink" title="MultiPartParser"></a>MultiPartParser</h2><pre><code>.media_type: multipart/form-data
+</code></pre><h2 id="FileUploadParser"><a href="#FileUploadParser" class="headerlink" title="FileUploadParser"></a>FileUploadParser</h2><pre><code>.media_type: */*
+</code></pre><h1 id="Custom-parsers"><a href="#Custom-parsers" class="headerlink" title="Custom parsers"></a>Custom parsers</h1><p>。。。</p>
+<h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>安装：</p>
+<pre><code>$ pip install djangorestframework-xml
+</code></pre><p>设置：</p>
+<pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_PARSER_CLASSES&apos;: (
+        &apos;rest_framework_xml.parsers.XMLParser&apos;,
+    ),
+    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
+        &apos;rest_framework_xml.renderers.XMLRenderer&apos;,
+    ),
+}
+</code></pre>
+          
         
       
     </div>
@@ -683,7 +1204,7 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -704,7 +1225,7 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -860,571 +1381,6 @@ urlpatterns = router.urls
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/" itemprop="url">6. django-rest-framework -- Parsers</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Parsers"><a href="#Parsers" class="headerlink" title="Parsers"></a>Parsers</h1><blockquote>
-<p>REST framework includes a number of built in Parser classes, that allow you to accept requests with various media types.</p>
-</blockquote>
-<p>针对请求中不同的资源请求，提供不同的解析器</p>
-<h2 id="How-the-parser-is-determined-如何决定解析器"><a href="#How-the-parser-is-determined-如何决定解析器" class="headerlink" title="How the parser is determined 如何决定解析器"></a>How the parser is determined 如何决定解析器</h2><p>当 <code>request.data</code> 获取到的时候，REST framework 会检查 <code>Content-Type</code> 请求头的值，根据这个值决定解析器。</p>
-<p>如果没有这个请求头，一般会默认按照 <code>&#39;application/x-www-form-urlencoded&#39;</code> 处理</p>
-<h2 id="Setting-the-parsers"><a href="#Setting-the-parsers" class="headerlink" title="Setting the parsers"></a>Setting the parsers</h2><pre><code>REST_FRAMEWORK = {
-    &apos;DEFAULT_PARSER_CLASSES&apos;: (
-        &apos;rest_framework.parsers.JSONParser&apos;,
-    )
-}
-</code></pre><p>在 View 中设置：</p>
-<pre><code>from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-class ExampleView(APIView):
-    &quot;&quot;&quot;
-    A view that can accept POST requests with JSON content.
-    &quot;&quot;&quot;
-    parser_classes = (JSONParser,)
-
-    def post(self, request, format=None):
-        return Response({&apos;received data&apos;: request.data})
-</code></pre><p>方法视图：</p>
-<pre><code>from rest_framework.decorators import api_view
-from rest_framework.decorators import parser_classes
-
-@api_view([&apos;POST&apos;])
-@parser_classes((JSONParser,))
-def example_view(request, format=None):
-    &quot;&quot;&quot;
-    A view that can accept POST requests with JSON content.
-    &quot;&quot;&quot;
-    return Response({&apos;received data&apos;: request.data})
-</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONParser"><a href="#JSONParser" class="headerlink" title="JSONParser"></a>JSONParser</h2><pre><code>.media_type: application/json
-</code></pre><h2 id="FormParser"><a href="#FormParser" class="headerlink" title="FormParser"></a>FormParser</h2><pre><code>.media_type: application/x-www-form-urlencoded
-</code></pre><h2 id="MultiPartParser"><a href="#MultiPartParser" class="headerlink" title="MultiPartParser"></a>MultiPartParser</h2><pre><code>.media_type: multipart/form-data
-</code></pre><h2 id="FileUploadParser"><a href="#FileUploadParser" class="headerlink" title="FileUploadParser"></a>FileUploadParser</h2><pre><code>.media_type: */*
-</code></pre><h1 id="Custom-parsers"><a href="#Custom-parsers" class="headerlink" title="Custom parsers"></a>Custom parsers</h1><p>。。。</p>
-<h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>安装：</p>
-<pre><code>$ pip install djangorestframework-xml
-</code></pre><p>设置：</p>
-<pre><code>REST_FRAMEWORK = {
-    &apos;DEFAULT_PARSER_CLASSES&apos;: (
-        &apos;rest_framework_xml.parsers.XMLParser&apos;,
-    ),
-    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
-        &apos;rest_framework_xml.renderers.XMLRenderer&apos;,
-    ),
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/" itemprop="url">7. django-rest-framework -- Renderers</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Renderers"><a href="#Renderers" class="headerlink" title="Renderers"></a>Renderers</h1><blockquote>
-<p>Before a TemplateResponse instance can be returned to the client, it must be rendered. The rendering process takes the intermediate representation of template and context, and turns it into the final byte stream that can be served to the client.<br>— Django documentation</p>
-</blockquote>
-<h2 id="How-the-renderer-is-determined"><a href="#How-the-renderer-is-determined" class="headerlink" title="How the renderer is determined"></a>How the renderer is determined</h2><ol>
-<li><p>决定：请求头 <code>Accept</code></p>
-</li>
-<li><p>URL 的后缀（优先）</p>
-</li>
-</ol>
-<h2 id="Setting-the-renderers"><a href="#Setting-the-renderers" class="headerlink" title="Setting the renderers"></a>Setting the renderers</h2><pre><code>REST_FRAMEWORK = {
-    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
-        &apos;rest_framework.renderers.JSONRenderer&apos;,
-        &apos;rest_framework.renderers.BrowsableAPIRenderer&apos;,
-    )
-}
-</code></pre><p>也可以为视图独立设置：</p>
-<pre><code>from django.contrib.auth.models import User
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-class UserCountView(APIView):
-    &quot;&quot;&quot;
-    A view that returns the count of active users in JSON.
-    &quot;&quot;&quot;
-    renderer_classes = (JSONRenderer, )
-
-    def get(self, request, format=None):
-        user_count = User.objects.filter(active=True).count()
-        content = {&apos;user_count&apos;: user_count}
-        return Response(content)
-</code></pre><p>方法视图；</p>
-<pre><code>@api_view([&apos;GET&apos;])
-@renderer_classes((JSONRenderer,))
-def user_count_view(request, format=None):
-    &quot;&quot;&quot;
-    A view that returns the count of active users in JSON.
-    &quot;&quot;&quot;
-    user_count = User.objects.filter(active=True).count()
-    content = {&apos;user_count&apos;: user_count}
-    return Response(content)
-</code></pre><h2 id="Ordering-of-renderer-classes"><a href="#Ordering-of-renderer-classes" class="headerlink" title="Ordering of renderer classes"></a>Ordering of renderer classes</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONRenderer"><a href="#JSONRenderer" class="headerlink" title="JSONRenderer"></a>JSONRenderer</h2><h2 id="TemplateHTMLRenderer"><a href="#TemplateHTMLRenderer" class="headerlink" title="TemplateHTMLRenderer"></a>TemplateHTMLRenderer</h2><h2 id="StaticHTMLRenderer"><a href="#StaticHTMLRenderer" class="headerlink" title="StaticHTMLRenderer"></a>StaticHTMLRenderer</h2><h2 id="BrowsableAPIRenderer"><a href="#BrowsableAPIRenderer" class="headerlink" title="BrowsableAPIRenderer"></a>BrowsableAPIRenderer</h2><p>渲染成一个网页可操作的API接口</p>
-<ul>
-<li>.media_type: text/html</li>
-<li>.format: ‘.api’</li>
-<li>.charset: utf-8</li>
-<li>.template: ‘rest_framework/api.html’</li>
-</ul>
-<h2 id="AdminRenderer"><a href="#AdminRenderer" class="headerlink" title="AdminRenderer"></a>AdminRenderer</h2><p>Renders data into HTML for an admin-like display:</p>
-<h2 id="HTMLFormRenderer"><a href="#HTMLFormRenderer" class="headerlink" title="HTMLFormRenderer"></a>HTMLFormRenderer</h2><p>使用 html 模版生产结果</p>
-<h2 id="MultiPartRenderer"><a href="#MultiPartRenderer" class="headerlink" title="MultiPartRenderer"></a>MultiPartRenderer</h2><h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/" itemprop="url">5. django-rest-framework -- Routers</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Routers"><a href="#Routers" class="headerlink" title="Routers"></a>Routers</h1><blockquote>
-<p>Resource routing allows you to quickly declare all of the common routes for a given resourceful controller. Instead of declaring separate routes for your index… a resourceful route declares them in a single line of code.<br>— Ruby on Rails Documentation</p>
-</blockquote>
-<h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><pre><code>from rest_framework import routers
-
-router = routers.SimpleRouter()
-router.register(r&apos;users&apos;, UserViewSet)
-router.register(r&apos;accounts&apos;, AccountViewSet)
-urlpatterns = router.urls
-</code></pre><p><code>register()</code> 方法的两个必填参数：</p>
-<ol>
-<li>prefix：url 前缀</li>
-<li>viewset：viewset 类</li>
-</ol>
-<p>可选参数：</p>
-<ol>
-<li><p>base_name：如果没有设置，会根据 viewset 的 queryset 属性生成，但是如果 viewset 没有设置 queryset 属性就必须设置 base_name  </p>
-<p> Note: The base_name argument is used to specify the initial part of the view name pattern. In the example above, that’s the user or account part.</p>
-</li>
-</ol>
-<h3 id="Using-include-with-routers"><a href="#Using-include-with-routers" class="headerlink" title="Using include with routers"></a>Using include with routers</h3><p>router 的 <code>.url</code> 属性是标准的 URL 模版</p>
-<p>所以把 router 加入到 app 的 url 模版中：</p>
-<pre><code>router = routers.SimpleRouter()
-router.register(r&apos;users&apos;, UserViewSet)
-router.register(r&apos;accounts&apos;, AccountViewSet)
-
-urlpatterns = [
-    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
-]
-
-urlpatterns += router.urls
-</code></pre><p>也可以使用 <code>include</code> 方法：</p>
-<pre><code>urlpatterns = [
-    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
-    url(r&apos;^&apos;, include(router.urls)),
-]
-</code></pre><p>设置 namespaces：</p>
-<pre><code>urlpatterns = [
-    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
-    url(r&apos;^api/&apos;, include(router.urls, namespace=&apos;api&apos;)),
-]
-</code></pre><h3 id="Extra-link-and-actions"><a href="#Extra-link-and-actions" class="headerlink" title="Extra link and actions"></a>Extra link and actions</h3><p>viewset 类中的任意方法添加 <code>@detail_route</code>, <code>@list_route</code> 注解也将被路由。</p>
-<pre><code>from myapp.permissions import IsAdminOrIsSelf
-from rest_framework.decorators import detail_route
-
-class UserViewSet(ModelViewSet):
-    ...
-
-    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf])
-    def set_password(self, request, pk=None):
-        ...
-</code></pre><p>会添加下面的 URL：</p>
-<pre><code>URL pattern: ^users/{pk}/set_password/$ Name: &apos;user-set-password&apos;
-</code></pre><p>改变默认的 url_path：</p>
-<pre><code>from myapp.permissions import IsAdminOrIsSelf
-from rest_framework.decorators import detail_route
-
-class UserViewSet(ModelViewSet):
-    ...
-
-    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf], url_path=&apos;change-password&apos;)
-    def set_password(self, request, pk=None):
-        ...
-</code></pre><p>修改后的URL：</p>
-<pre><code>URL pattern: ^users/{pk}/change-password/$ Name: &apos;user-change-password&apos;
-</code></pre><h1 id="API-Guide"><a href="#API-Guide" class="headerlink" title="API Guide"></a>API Guide</h1><h2 id="SimpleRouter"><a href="#SimpleRouter" class="headerlink" title="SimpleRouter"></a>SimpleRouter</h2><h2 id="DefaultRouter"><a href="#DefaultRouter" class="headerlink" title="DefaultRouter"></a>DefaultRouter</h2>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1454,7 +1410,7 @@ class UserViewSet(ModelViewSet):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -1475,7 +1431,7 @@ class UserViewSet(ModelViewSet):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1573,7 +1529,7 @@ class UserViewSet(ModelViewSet):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1592,7 +1548,7 @@ class UserViewSet(ModelViewSet):
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/" itemprop="url">11. django-rest-framework -- Validators</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/" itemprop="url">12. django-rest-framework -- Authentication</a></h1>
         
 
         <div class="post-meta">
@@ -1602,7 +1558,7 @@ class UserViewSet(ModelViewSet):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -1623,7 +1579,7 @@ class UserViewSet(ModelViewSet):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1663,28 +1619,7 @@ class UserViewSet(ModelViewSet):
       
         
           
-            <h1 id="Validators"><a href="#Validators" class="headerlink" title="Validators"></a>Validators</h1><h2 id="Validation-in-REST-framework"><a href="#Validation-in-REST-framework" class="headerlink" title="Validation in REST framework"></a>Validation in REST framework</h2><p>rest-framework 中数据的验证逻辑写在 serializar 类中，这样处理的好处：</p>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>simple model：</p>
-<pre><code>class CustomerReportRecord(models.Model):
-    time_raised = models.DateTimeField(default=timezone.now, editable=False)
-    reference = models.CharField(unique=True, max_length=20)
-    description = models.TextField()
-</code></pre><p>serializar：</p>
-<pre><code>class CustomerReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerReportRecord
-</code></pre><p>查看 serializar:</p>
-<pre><code>&gt;&gt;&gt; from project.example.serializers import CustomerReportSerializer
-&gt;&gt;&gt; serializer = CustomerReportSerializer()
-&gt;&gt;&gt; print(repr(serializer))
-CustomerReportSerializer():
-    id = IntegerField(label=&apos;ID&apos;, read_only=True)
-    time_raised = DateTimeField(read_only=True)
-    reference = CharField(max_length=20, validators=[&lt;UniqueValidator(queryset=CustomerReportRecord.objects.all())&gt;])
-    description = CharField(style={&apos;type&apos;: &apos;textarea&apos;})
-</code></pre><p>可以看到 序列化器 已经对 reference 字段进行了唯一性的验证</p>
-<h2 id="UniqueValidator"><a href="#UniqueValidator" class="headerlink" title="UniqueValidator"></a>UniqueValidator</h2><h2 id="UniqueTogetherValidator"><a href="#UniqueTogetherValidator" class="headerlink" title="UniqueTogetherValidator"></a>UniqueTogetherValidator</h2><h2 id="UniqueForDateValidator"><a href="#UniqueForDateValidator" class="headerlink" title="UniqueForDateValidator"></a>UniqueForDateValidator</h2><h2 id="UniqueForMonthValidator"><a href="#UniqueForMonthValidator" class="headerlink" title="UniqueForMonthValidator"></a>UniqueForMonthValidator</h2><h2 id="UniqueForYearValidator"><a href="#UniqueForYearValidator" class="headerlink" title="UniqueForYearValidator"></a>UniqueForYearValidator</h2><p>## </p>
-
+            <h1 id="Authtication"><a href="#Authtication" class="headerlink" title="Authtication"></a>Authtication</h1>
           
         
       
@@ -1756,7 +1691,7 @@ CustomerReportSerializer():
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
                 2016-11-13
@@ -1777,7 +1712,7 @@ CustomerReportSerializer():
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2033,7 +1968,7 @@ http://api.example.com/accounts/1/
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/2.django-rest-framework -- Views/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -2052,7 +1987,7 @@ http://api.example.com/accounts/1/
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/2.django-rest-framework -- Views/" itemprop="url">django-rest-framework -- Views</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/" itemprop="url">5. django-rest-framework -- Routers</a></h1>
         
 
         <div class="post-meta">
@@ -2062,10 +1997,10 @@ http://api.example.com/accounts/1/
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
-                2016-11-10
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
               </time>
             
 
@@ -2083,7 +2018,7 @@ http://api.example.com/accounts/1/
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2123,77 +2058,72 @@ http://api.example.com/accounts/1/
       
         
           
-            <h1 id="Class-based-Views-视图基本类"><a href="#Class-based-Views-视图基本类" class="headerlink" title="Class-based Views 视图基本类"></a>Class-based Views 视图基本类</h1><p>rest_framework 提供 <code>APIView</code> ，继承自 django 的视图类 <code>View</code></p>
-<p><code>APIView</code> 相比较正常的 <code>View</code> 的特点：</p>
+            <h1 id="Routers"><a href="#Routers" class="headerlink" title="Routers"></a>Routers</h1><blockquote>
+<p>Resource routing allows you to quickly declare all of the common routes for a given resourceful controller. Instead of declaring separate routes for your index… a resourceful route declares them in a single line of code.<br>— Ruby on Rails Documentation</p>
+</blockquote>
+<h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><pre><code>from rest_framework import routers
+
+router = routers.SimpleRouter()
+router.register(r&apos;users&apos;, UserViewSet)
+router.register(r&apos;accounts&apos;, AccountViewSet)
+urlpatterns = router.urls
+</code></pre><p><code>register()</code> 方法的两个必填参数：</p>
 <ol>
-<li><p>接收的请求是 rest-framework 的 Request 实例</p>
-<p> Requests passed to the handler methods will be REST framework’s Request instances, not Django’s HttpRequest instances.</p>
-</li>
-<li><p>请求处理结果返回的也是 rest-framework 的 Response</p>
-<p> Handler methods may return REST framework’s Response, instead of Django’s HttpResponse. The view will manage content negotiation and setting the correct renderer on the response.</p>
-</li>
-<li><p>任何的异常将会被捕获，反馈到 response 中</p>
-<p> Any APIException exceptions will be caught and mediated into appropriate responses.</p>
-</li>
-<li><p>请求会先检查其权限</p>
-<p> Incoming requests will be authenticated and appropriate permission and/or throttle checks will be run before dispatching the request to the handler method.</p>
+<li>prefix：url 前缀</li>
+<li>viewset：viewset 类</li>
+</ol>
+<p>可选参数：</p>
+<ol>
+<li><p>base_name：如果没有设置，会根据 viewset 的 queryset 属性生成，但是如果 viewset 没有设置 queryset 属性就必须设置 base_name  </p>
+<p> Note: The base_name argument is used to specify the initial part of the view name pattern. In the example above, that’s the user or account part.</p>
 </li>
 </ol>
-<p>使用 APIView 和使用正常的 View 用法基本相同，类中都有请求方法的相应方法 如：<code>.get()</code>, <code>.post()</code>。。。</p>
-<p>例子：</p>
-<pre><code>from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
+<h3 id="Using-include-with-routers"><a href="#Using-include-with-routers" class="headerlink" title="Using include with routers"></a>Using include with routers</h3><p>router 的 <code>.url</code> 属性是标准的 URL 模版</p>
+<p>所以把 router 加入到 app 的 url 模版中：</p>
+<pre><code>router = routers.SimpleRouter()
+router.register(r&apos;users&apos;, UserViewSet)
+router.register(r&apos;accounts&apos;, AccountViewSet)
 
-class ListUsers(APIView):
-    &quot;&quot;&quot;
-    View to list all users in the system.
+urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+]
 
-    * Requires token authentication.
-    * Only admin users are able to access this view.
-    &quot;&quot;&quot;
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
+urlpatterns += router.urls
+</code></pre><p>也可以使用 <code>include</code> 方法：</p>
+<pre><code>urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+    url(r&apos;^&apos;, include(router.urls)),
+]
+</code></pre><p>设置 namespaces：</p>
+<pre><code>urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+    url(r&apos;^api/&apos;, include(router.urls, namespace=&apos;api&apos;)),
+]
+</code></pre><h3 id="Extra-link-and-actions"><a href="#Extra-link-and-actions" class="headerlink" title="Extra link and actions"></a>Extra link and actions</h3><p>viewset 类中的任意方法添加 <code>@detail_route</code>, <code>@list_route</code> 注解也将被路由。</p>
+<pre><code>from myapp.permissions import IsAdminOrIsSelf
+from rest_framework.decorators import detail_route
 
-    def get(self, request, format=None):
-        &quot;&quot;&quot;
-        Return a list of all users.
-        &quot;&quot;&quot;
-        usernames = [user.username for user in User.objects.all()]
-        return Response(usernames)
-</code></pre><h2 id="API-policy-attributes-类的属性"><a href="#API-policy-attributes-类的属性" class="headerlink" title="API policy attributes 类的属性"></a>API policy attributes 类的属性</h2><ul>
-<li>.renderer_classes</li>
-<li>.parser_classes</li>
-<li>.authentication_classes ：认证</li>
-<li>.throttle_classes</li>
-<li>.permission_classes ： 权限</li>
-<li>.content_negotiation_class</li>
-</ul>
-<h2 id="API-policy-instantiation-methods-对象的方法"><a href="#API-policy-instantiation-methods-对象的方法" class="headerlink" title="API policy instantiation methods 对象的方法"></a>API policy instantiation methods 对象的方法</h2><p>6个方法，对应上面6个属性的 <code>get</code> 方法</p>
-<ul>
-<li>.get_renderers(self)</li>
-</ul>
-<h2 id="API-policy-implementation-methods-实现的方法"><a href="#API-policy-implementation-methods-实现的方法" class="headerlink" title="API policy implementation methods 实现的方法"></a>API policy implementation methods 实现的方法</h2><p>下面3个方法会在请求分配前执行</p>
-<ul>
-<li>.check_permissions(self, request)</li>
-<li>.check_throttles(self, request)</li>
-<li>.perform_content_negotiation(self, request, force=False)</li>
-</ul>
-<h2 id="Dispatch-methods-请求调度方法"><a href="#Dispatch-methods-请求调度方法" class="headerlink" title="Dispatch methods 请求调度方法"></a>Dispatch methods 请求调度方法</h2><p>执行 <code>.dispatch()</code> , 将请求分配给具体的方法 .get(), .post(), put(), patch() and .delete().</p>
-<h3 id="initial-self-request-args-kwargs"><a href="#initial-self-request-args-kwargs" class="headerlink" title=".initial(self, request, args, *kwargs)"></a>.initial(self, request, <em>args, *</em>kwargs)</h3><p>在处理方法之前执行，用来做权限判断等，</p>
-<p>一般不需要去重写</p>
-<h3 id="handle-exception-self-exc"><a href="#handle-exception-self-exc" class="headerlink" title=".handle_exception(self, exc)"></a>.handle_exception(self, exc)</h3><p>错误处理</p>
-<p>会捕获所有 <code>rest_framework.exceptions.APIException</code> 的子类异常，和 Django <code>Http404</code>,<code>PermissionDenied</code> 异常。</p>
-<p>如果需要自定义错误的返回，需要重写这个方法</p>
-<h2 id="initialize-request-self-request-args-kwargs"><a href="#initialize-request-self-request-args-kwargs" class="headerlink" title=".initialize_request(self, request, args, *kwargs)"></a>.initialize_request(self, request, <em>args, *</em>kwargs)</h2><p>这个方法用来确保请求属于 <code>Request</code> ，而不是原生请求 <code>HttpRequest</code></p>
-<p>一般不需要去重写</p>
-<h2 id="finalize-response-self-request-response-args-kwargs"><a href="#finalize-response-self-request-response-args-kwargs" class="headerlink" title=".finalize_response(self, request, response, args, *kwargs)"></a>.finalize_response(self, request, response, <em>args, *</em>kwargs)</h2><p>确保请求返回的对象是 <code>Response</code></p>
-<p>一般不需要去重写</p>
-<h1 id="Function-Based-Views"><a href="#Function-Based-Views" class="headerlink" title="Function Based Views"></a>Function Based Views</h1><p>通过注解实现</p>
-<h2 id="api-view"><a href="#api-view" class="headerlink" title="@api_view()"></a>@api_view()</h2><p><code>@api_view(http_method_names=[&#39;GET&#39;], exclude_from_schema=False)</code></p>
-<h2 id="API-policy-decorators-api-装饰器"><a href="#API-policy-decorators-api-装饰器" class="headerlink" title="API policy decorators api 装饰器"></a>API policy decorators api 装饰器</h2><p>需要写在 <code>@api_view</code> 之后</p>
-<pre><code>@throttle_classes([OncePerDayUserThrottle]) # 确保这个 api 一天被调用一次
-</code></pre>
+class UserViewSet(ModelViewSet):
+    ...
+
+    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf])
+    def set_password(self, request, pk=None):
+        ...
+</code></pre><p>会添加下面的 URL：</p>
+<pre><code>URL pattern: ^users/{pk}/set_password/$ Name: &apos;user-set-password&apos;
+</code></pre><p>改变默认的 url_path：</p>
+<pre><code>from myapp.permissions import IsAdminOrIsSelf
+from rest_framework.decorators import detail_route
+
+class UserViewSet(ModelViewSet):
+    ...
+
+    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf], url_path=&apos;change-password&apos;)
+    def set_password(self, request, pk=None):
+        ...
+</code></pre><p>修改后的URL：</p>
+<pre><code>URL pattern: ^users/{pk}/change-password/$ Name: &apos;user-change-password&apos;
+</code></pre><h1 id="API-Guide"><a href="#API-Guide" class="headerlink" title="API Guide"></a>API Guide</h1><h2 id="SimpleRouter"><a href="#SimpleRouter" class="headerlink" title="SimpleRouter"></a>SimpleRouter</h2><h2 id="DefaultRouter"><a href="#DefaultRouter" class="headerlink" title="DefaultRouter"></a>DefaultRouter</h2>
           
         
       
@@ -2276,8 +2206,8 @@ class ListUsers(APIView):
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">363</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">367</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -2288,7 +2218,7 @@ class ListUsers(APIView):
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">15</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -2299,7 +2229,7 @@ class ListUsers(APIView):
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -2349,7 +2279,7 @@ class ListUsers(APIView):
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
