@@ -253,6 +253,868 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/04/Android/第三方/Dagger2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/04/Android/第三方/Dagger2/" itemprop="url">Dagger</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-04T12:18:12+08:00">
+                2016-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h1><p><a href="https://github.com/google/dagger" target="_blank" rel="external">Github 地址</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// Add Dagger dependencies</div><div class="line">dependencies &#123;</div><div class="line">  compile &apos;com.google.dagger:dagger:2.x&apos;</div><div class="line">  annotationProcessor &apos;com.google.dagger:dagger-compiler:2.x&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果在使用 gradle 2.2 以下的 gradle，还需要集成 <a href="https://bitbucket.org/hvisser/android-apt" target="_blank" rel="external">https://bitbucket.org/hvisser/android-apt.</a></p>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><ul>
+<li>@Module: 把这个类表识为 dagger 的 module，是提供依赖注入时所需对象实例的类</li>
+<li>@Inject: 用来标注目标类的依赖和依赖的构造函数</li>
+<li>@Component: Components 从根本上来说就是一个注入器，也可以说是 @Inject 和 @Module 的桥梁，它的主要作用就是连接这两个部分。 Components 可以提供所有定义了的类型的实例，比如：我们必须用 @Component 注解一个接口然后列出所有的@Modules组成该组件，如 果缺失了任何一块都会在编译的时候报错。所有的组件都可以通过它的 modules 知道依赖的范围。</li>
+<li>@Provides：标识函数作为注入提供者，函数名并不重要，它只依赖于所提供的类类型</li>
+<li>@Singleton：如果标识为Singleton，那这个函数会一直返回相同的对象实例，这比常规的单例好很多。否则，每次注入类型都会得到一个新的实例。在这个例子中，由于我们没有创建新实例，而是返回已经存在的实例，因此即使不把函数标识为 Singleton ，每次调用还是会返回相同的实例的，但这样能够更好地说明提供者到底做了什么。 Application 实例是唯一的。</li>
+<li>@Scope: Scopes可是非常的有用，Dagger2 可以通过自定义注解限定注解作用域。后面会演示一个例子，这是一个非常强大的特点，因为就如前面说的一样，没 必要让每个对象都去了解如何管理他们的实例。在scope的例子中，我们用自定义的 @PerActivity注解一个类，所以这个对象存活时间就和 activity的一样。简单来说就是我们可以定义所有范围的粒度(@PerFragment, @PerUser, 等等)。</li>
+<li>Qualifier: 当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的context，所以我们就可以定义 qualifier注解“@ForApplication”和“@ForActivity”，这样当注入一个context的时候，我们就可以告诉 Dagger我们想要哪种类型的context。</li>
+</ul>
+<h1 id="dagger2-最简单的使用例子"><a href="#dagger2-最简单的使用例子" class="headerlink" title="dagger2 最简单的使用例子"></a>dagger2 最简单的使用例子</h1><h2 id="一个需要被注入到-activity-的对象"><a href="#一个需要被注入到-activity-的对象" class="headerlink" title="一个需要被注入到 activity 的对象"></a>一个需要被注入到 activity 的对象</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Poetry</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> String mPoetry;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Poetry</span><span class="params">()</span> </span>&#123;</div><div class="line">        mPoetry = <span class="string">"live is short"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="activity-component"><a href="#activity-component" class="headerlink" title="activity component"></a>activity component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 需要用到这个连接器的对象，就是这个对象里面有需要注入的属性（被标记为<span class="doctag">@Inject</span>的属性）</div><div class="line">     * 这里inject表示注入的意思，这个方法名可以随意更改</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(BaseUseActivity baseUseActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>创建完 Component 后需要编译一遍工程，dagger2 会自动生成一个 DaggerBaseUseComponent 类。</p>
+<p>Component 中每个方法的参数对象，表示这些对象里面需要注入一些其他对象。</p>
+<h2 id="activity"><a href="#activity" class="headerlink" title="activity"></a>activity</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseUseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//添加@Inject注解，表示这个mPoetry是需要注入的</span></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    Poetry mPoetry;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> TextView mTV;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_base_use);</div><div class="line"></div><div class="line">        <span class="comment">// 使用 Dagger2 生成的类 生成组件进行构造，并注入</span></div><div class="line">        BaseUseComponent baseUseComponent = DaggerBaseUseComponent.builder()</div><div class="line">                .build();</div><div class="line">        baseUseComponent.inject(<span class="keyword">this</span>);</div><div class="line"></div><div class="line">        initView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</div><div class="line">        mTV = (TextView) findViewById(R.id.tv_base_use);</div><div class="line">        mTV.setText(mPoetry.mPoetry);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种不通过 <code>@Module</code> 的注解方式有很多的局限性：</p>
+<ol>
+<li><code>@Inject</code> 只能注解一个构造方法，对于有多个构造方法的对象不适用</li>
+<li>对于第三方库中的对象，没法添加 <code>@Inject</code></li>
+</ol>
+<h2 id="使用-Module-注入一个-Gson-对象"><a href="#使用-Module-注入一个-Gson-对象" class="headerlink" title="使用 Module 注入一个 Gson 对象"></a>使用 Module 注入一个 Gson 对象</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseUseModule</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Gson <span class="title">provideGson</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Gson();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Module 类，提供被注解的对象</p>
+<p>将 Module 和 Component 关联</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(modules = BaseUseModule.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 需要用到这个连接器的对象，就是这个对象里面有需要注入的属性（被标记为<span class="doctag">@Inject</span>的属性）</div><div class="line">     * 这里inject表示注入的意思，这个方法名可以随意更改</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(BaseUseActivity baseUseActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Compoent-依赖多个-Module-对象"><a href="#Compoent-依赖多个-Module-对象" class="headerlink" title="Compoent 依赖多个 Module 对象"></a>Compoent 依赖多个 Module 对象</h2><p>如果 Poetry 类有多个构造方法的话，就需要创建额外的 Module：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PoetryModule</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Poetry <span class="title">providePoetry</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Poetry();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Poetry <span class="title">providePoetry</span><span class="params">(String poetry)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Poetry(poetry);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Scope"><a href="#Scope" class="headerlink" title="@Scope"></a>@Scope</h2><p>标记当前生成对象的使用范围，标识一个类型的注射器只实例化一次，在同一个作用域内，只会生成一个实例，然后在此作用域内共用一个实例。这样看起来很像单例模式，我们可以查看@Singleton其实就是@Scope的一个默认实现而已。当然，你得是同一个Component对象来生成，这点我们应该可以理解的吧。<br>我们可以通过自定义Scope来组织Component的作用域，使得每个Component的作用域清晰明了，各施其职。</p>
+<h2 id="组织-Component"><a href="#组织-Component" class="headerlink" title="组织 Component"></a>组织 Component</h2><p>如果其他 Component 需要 ApplicationComponent 中的全局属性的时候，就需要建立两者之间的 依赖方式。</p>
+<ol>
+<li>要有一个全局的Component(可以叫ApplicationComponent),负责管理整个app的全局类实例</li>
+<li>每个页面对应一个Component，比如一个Activity页面定义一个Component，一个Fragment定义一个Component。当然这不是必须的，有些页面之间的依赖的类是一样的，可以公用一个Component。</li>
+</ol>
+<h3 id="依赖方式"><a href="#依赖方式" class="headerlink" title="依赖方式"></a>依赖方式</h3><p>一个Component可以依赖一个或多个Component，并拿到被依赖Component暴露出来的实例，Component的dependencies属性就是确定依赖关系的实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(dependencies = ApplicationComponent.class, modules = &#123;BaseUseModule.class, PoetryModule.class&#125;)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line">    <span class="comment">//...</span></div></pre></td></tr></table></figure>
+<h3 id="包含方式"><a href="#包含方式" class="headerlink" title="包含方式"></a>包含方式</h3><p>SubComponent</p>
+<h3 id="继承方式"><a href="#继承方式" class="headerlink" title="继承方式"></a>继承方式</h3><h2 id="Qualifier"><a href="#Qualifier" class="headerlink" title="Qualifier"></a>Qualifier</h2><p>（限定符）就是解决依赖注入迷失问题</p>
+<h1 id="Application-dagger2-化"><a href="#Application-dagger2-化" class="headerlink" title="Application dagger2 化"></a>Application dagger2 化</h1><h2 id="创建-Application-的鉴别注解"><a href="#创建-Application-的鉴别注解" class="headerlink" title="创建 Application 的鉴别注解"></a>创建 Application 的鉴别注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Qualifier</span> <span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ForApplication &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建-Module"><a href="#创建-Module" class="headerlink" title="创建 Module"></a>创建 Module</h2><p>创建一个 BaseApplication 的依赖注入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> App mApplication;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(App application)</span> </span>&#123;</div><div class="line">        mApplication = application;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="meta">@Singleton</span></div><div class="line">    <span class="meta">@ForApplication</span></div><div class="line">    <span class="function">Context <span class="title">providerApplication</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> mApplication;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建-Component"><a href="#创建-Component" class="headerlink" title="创建 Component"></a>创建 Component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Singleton</span></div><div class="line"><span class="meta">@Component</span>(modules = ApplicationModule.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(App app)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个时候编译一遍工程  mac 下快捷键：<code>command+f9</code></p>
+<p>dagger2 会自动生成一个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DaggerApplicationComponent</span> <span class="keyword">implements</span> <span class="title">ApplicationComponent</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> Provider&lt;LocationManager&gt; provideLocationManagerProvider;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> MembersInjector&lt;App&gt; appMembersInjector;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> MembersInjector&lt;MainActivity&gt; mainActivityMembersInjector;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">DaggerApplicationComponent</span><span class="params">(Builder builder)</span> </span>&#123;</div><div class="line">    <span class="keyword">assert</span> builder != <span class="keyword">null</span>;</div><div class="line">    initialize(builder);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Builder <span class="title">builder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Builder();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(<span class="keyword">final</span> Builder builder)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.provideLocationManagerProvider =</div><div class="line">        DoubleCheck.provider(</div><div class="line">            ApplicationModule_ProvideLocationManagerFactory.create(builder.applicationModule));</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.appMembersInjector = App_MembersInjector.create(provideLocationManagerProvider);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.mainActivityMembersInjector =</div><div class="line">        MainActivity_MembersInjector.create(provideLocationManagerProvider);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(App app)</span> </span>&#123;</div><div class="line">    appMembersInjector.injectMembers(app);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span> </span>&#123;</div><div class="line">    mainActivityMembersInjector.injectMembers(mainActivity);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> ApplicationModule applicationModule;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ApplicationComponent <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (applicationModule == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</div><div class="line">            ApplicationModule.class.getCanonicalName() + <span class="string">" must be set"</span>);</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">new</span> DaggerApplicationComponent(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">applicationModule</span><span class="params">(ApplicationModule applicationModule)</span> </span>&#123;</div><div class="line">      <span class="keyword">this</span>.applicationModule = Preconditions.checkNotNull(applicationModule);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="将-Application-注册到-Component"><a href="#将-Application-注册到-Component" class="headerlink" title="将 Application 注册到 Component"></a>将 Application 注册到 Component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate();</div><div class="line"></div><div class="line">    mApplicationComponent = DaggerApplicationComponent.builder()</div><div class="line">            .applicationModule(<span class="keyword">new</span> ApplicationModule(<span class="keyword">this</span>))</div><div class="line">            .build();</div><div class="line"></div><div class="line">    mApplicationComponent.inject(<span class="keyword">this</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="google-todo-mvp-Dagger"><a href="#google-todo-mvp-Dagger" class="headerlink" title="google todo mvp Dagger"></a>google todo mvp Dagger</h1><p>DemoPresenter:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">StatisticsPresenter</span> <span class="keyword">implements</span> <span class="title">StatisticsContract</span>.<span class="title">Presenter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TasksRepository mTasksRepository;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> StatisticsContract.View mStatisticsView;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    StatisticsPresenter(TasksRepository tasksRepository,</div><div class="line">                               StatisticsContract.View statisticsView) &#123;</div><div class="line">        mTasksRepository = tasksRepository;</div><div class="line">        mStatisticsView = statisticsView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setupListeners</span><span class="params">()</span> </span>&#123;</div><div class="line">        mStatisticsView.setPresenter(<span class="keyword">this</span>); <span class="comment">// 将 presenter 对象传给 view， 通过 module 获取 view 对象，通过 view 对象的  </span></div><div class="line">                                            <span class="comment">//setPresenter 方法将 presenter 对象传给 view</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        loadStatistics();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>DemoPresenterModule:</p>
+<pre><code>@Module
+public class StatisticsPresenterModule {
+
+    private final StatisticsContract.View mView;
+
+    public StatisticsPresenterModule(StatisticsContract.View view) {
+        mView = view;
+    }
+
+    @Provides
+    StatisticsContract.View provideStatisticsContractView() {
+        return mView;
+    }
+}
+</code></pre><p>DemoComponent:</p>
+<pre><code>@FragmentScoped
+@Component(dependencies = TasksRepositoryComponent.class, modules = StatisticsPresenterModule.class)
+public interface StatisticsComponent {
+    void inject(StatisticsActivity statisticsActivity);
+}
+</code></pre><p>DemoActivity:</p>
+<pre><code>// 属性：
+@Inject StatisticsPresenter mStatiticsPresenter;
+
+// 注入代码
+DaggerStatisticsComponent.builder()
+    .statisticsPresenterModule(new StatisticsPresenterModule(statisticsFragment)) // 给 presenter 注入 view
+    .tasksRepositoryComponent(((ToDoApplication) getApplication()) // model
+    .getTasksRepositoryComponent())
+    .build()
+    .inject(this);
+</code></pre><h1 id="使用scope时规则"><a href="#使用scope时规则" class="headerlink" title="使用scope时规则"></a>使用scope时规则</h1><ol>
+<li>component的dependencies与component自身的scope不能相同，即组件之间的scope不同</li>
+<li>Singleton的组件不能依赖其他scope的组件，只能其他scope的组件依赖Singleton的组件。</li>
+<li><p>没有scope的不能依赖有scope的组件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:(21, 1) 错误: com.android.example.devsummit.archdemo.di.component.MyTestComponent (unscoped) cannot depend on scoped components:</div><div class="line">@com.android.example.devsummit.archdemo.di.scope.ActivityScope com.android.example.devsummit.archdemo.di.component.MyTestComponentX</div></pre></td></tr></table></figure>
+</li>
+<li><p>一个component不能同时有多个scope(Subcomponent除外)</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:Execution failed for task ‘:app:compileDebugJavaWithJavac’.</div><div class="line">java.lang.IllegalArgumentException: com.android.example.devsummit.archdemo.di.component.MyTestComponent was annotated with more than one @Scope annotation</div></pre></td></tr></table></figure>
+</li>
+<li><p>component关联的Model中的任何一个被构造的对象有scope，则该整个component要加上这个scope。在暴露或者注入时（不暴露且不注入时，既不使用它构造对象时，不报错），会有如下错误</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:(21, 1) 错误: com.android.example.devsummit.archdemo.di.component.MyTestComponent (unscoped) may not reference scoped bindings:</div><div class="line">@Provides @com.android.example.devsummit.archdemo.di.scope.ActivityScope com.android.example.devsummit.archdemo.vo.User com.android.example.devsummit.archdemo.di.module.TestModule.user()</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="MVP-Dagger2"><a href="#MVP-Dagger2" class="headerlink" title="MVP Dagger2"></a>MVP Dagger2</h1><p>参考：</p>
+<ul>
+<li><a href="https://github.com/googlesamples/android-architecture" target="_blank" rel="external">google_mvp_dagger</a></li>
+<li><a href="https://asce1885.gitbooks.io/android-rd-senior-advanced/content/androidzhong_de_yi_lai_zhu_ru_ff1a_dagger_han_shu_ku_de_shi_yong_ff08_er_ff09.html" target="_blank" rel="external">https://asce1885.gitbooks.io/android-rd-senior-advanced/content/androidzhong_de_yi_lai_zhu_ru_ff1a_dagger_han_shu_ku_de_shi_yong_ff08_er_ff09.html</a></li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0519/2892.html" target="_blank" rel="external">http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0519/2892.html</a></li>
+<li><a href="http://www.jianshu.com/p/94d47da32656" target="_blank" rel="external">http://www.jianshu.com/p/94d47da32656</a></li>
+<li><a href="http://www.jianshu.com/p/65737ac39c44" target="_blank" rel="external">http://www.jianshu.com/p/65737ac39c44</a></li>
+<li><a href="http://limuzhi.com/2016/03/06/Android%E6%B3%A8%E5%85%A5%E6%A1%86%E6%9E%B6Dagger2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="external">http://limuzhi.com/2016/03/06/Android%E6%B3%A8%E5%85%A5%E6%A1%86%E6%9E%B6Dagger2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/01/Android/gradle/gradle密钥配置方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/01/Android/gradle/gradle密钥配置方式/" itemprop="url">Gradle 密钥配置方式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T09:13:12+08:00">
+                2016-12-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>app/gradle</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Properties props = new Properties()</div><div class="line">props.load(new FileInputStream(file(&quot;signing.properties&quot;)))</div><div class="line">android &#123;</div><div class="line">    signingConfigs &#123;</div><div class="line">        release&#123;</div><div class="line">            keyAlias props[&apos;KEY_ALIAS&apos;]</div><div class="line">            keyPassword props[&apos;KEY_PASSWORD&apos;]</div><div class="line">            storeFile file(props[&apos;KEYSTORE_FILE&apos;])</div><div class="line">            storePassword props[&apos;KEYSTORE_PASSWORD&apos;]</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>app/siging.properties</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">KEYSTORE_FILE = C:\\Users\\Mr.Jude\\Documents\\Android\\HelloWorld.jks</div><div class="line">KEYSTORE_PASSWORD = xxxxxx</div><div class="line">KEY_ALIAS = xxxxxx</div><div class="line">KEY_PASSWORD = xxxxxx</div></pre></td></tr></table></figure>
+<p>将signing.properties添加进忽略目录。<br>其他人pull下来代码后。自己新建signing.properties填入相应信息后即可编译成功。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/" itemprop="url">看了一些 RxJava 的文章我依然不知道的事</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T13:18:12+08:00">
+                2016-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>以下代码基于 RxJava2</p>
+</blockquote>
+<h1 id="内存泄露处理"><a href="#内存泄露处理" class="headerlink" title="内存泄露处理"></a>内存泄露处理</h1><p>基本代码：</p>
+<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
+
+public void doSomeWork2() {
+    // 1. 创建一个普通的 observable
+    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
+        @Override
+        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
+            if (e.isDisposed()) return;
+            SystemClock.sleep(2000);
+            e.onNext(&quot;next&quot;);
+            e.onComplete();
+        }
+    });
+
+    // 2. 创建一个可被 CompositeDisposable 管理的 observer
+    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
+        @Override
+        public void onNext(String value) {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
+
+    // 3. 订阅事件
+    observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+
+    // 4. 将需要被 CompositeDisposable 管理的 observer 加入到管理集合中
+    disposables.add(observer);
+}
+</code></pre><p>在 Activity／Fragment 销毁生命周期中取消异步操作防止内存泄露：</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    // 将所有的 observer 取消订阅
+    disposables.clear();
+}
+</code></pre><h1 id="在-mvp-的项目中处理内存泄露"><a href="#在-mvp-的项目中处理内存泄露" class="headerlink" title="在 mvp 的项目中处理内存泄露"></a>在 mvp 的项目中处理内存泄露</h1><p>基于 <a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a> 搭建项目 mvp 框架：</p>
+<p>BasePresenter :</p>
+<pre><code>public abstract class BasePresenter {
+
+    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    public void unSubscribe() {
+        mCompositeDisposable.clear();
+    }
+
+
+    public void register(Disposable disposable) {
+        mCompositeDisposable.add(disposable);
+    }
+
+
+}
+</code></pre><p>一个例子 SimplePresenter extends BasePresenter :</p>
+<pre><code>public class SimplePresenter extends BasePresenter {
+    private static final String TAG = SimplePresenter.class.getSimpleName();
+
+
+    //.....
+
+    public void startWork() {
+
+        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
+            @Override
+            public void onNext(Long value) {
+                Log.d(TAG, &quot;onNext: &quot;);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        Observable.interval(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        register(observer);
+
+    }
+
+}
+</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
+<p>Activity/Fragment:</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mSimplePresenter.unSubscribe();
+}
+</code></pre><h1 id="慎用-functions"><a href="#慎用-functions" class="headerlink" title="慎用 functions"></a>慎用 functions</h1><p>functions：Action，Consumer，Function 等</p>
+<p>原因：这些方法只会对 <code>onNext</code> 事件进行处理，如果 observable 中出现异常产生了 <code>onError</code> 事件就会导致 app 奔溃。</p>
+<p>解决方案：</p>
+<ol>
+<li>不用简化方法</li>
+<li>自己封装一个：</li>
+</ol>
+<p>封装一个类似下面的基类：</p>
+<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
+
+    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
+
+    @Override
+    public void onError(Throwable e) {
+        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+}
+</code></pre><p>使用的时候和 functions 是一样的：（这样下面的代码就不会导致app奔溃了）</p>
+<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
+    @Override
+    public void onNext(Long value) {
+        Log.d(TAG, &quot;onNext: &quot;);
+    }
+};
+
+Observable.interval(2000, TimeUnit.MILLISECONDS)
+        .filter(new Predicate&lt;Long&gt;() {
+            @Override
+            public boolean test(Long aLong) throws Exception {
+                Log.d(TAG, &quot;test: along:&quot; + aLong);
+
+                if (aLong &gt; 2) {
+                    throw new Exception(&quot;sdf&quot;);
+                }
+
+                return true;
+            }
+        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(baseDisposableObserver);
+</code></pre><blockquote>
+<p>RxJava 看的还不多，如有错误还请指出</p>
+</blockquote>
+<p>参考</p>
+<ul>
+<li><a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/" itemprop="url">RecyclerView悬浮条</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:38:14+08:00">
+                2016-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><pre><code>&lt;FrameLayout
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+
+
+    &lt;android.support.v7.widget.RecyclerView
+        android:id=&quot;@+id/rv_float&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        app:layoutManager=&quot;LinearLayoutManager&quot;/&gt;
+
+
+    &lt;TextView
+        android:id=&quot;@+id/tv_float&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;60dp&quot;
+        android:background=&quot;#fff&quot;
+        android:gravity=&quot;center&quot;
+        android:text=&quot;head&quot;
+        android:textSize=&quot;20sp&quot;/&gt;
+
+
+&lt;/FrameLayout&gt;
+</code></pre><h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><pre><code>mRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+
+    }
+
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        View view = layoutManager.findViewByPosition(mFloatItemCurrentPos + 1);
+
+        if (view != null &amp;&amp; view.getTop() &lt;= mFloatItemHeight) {
+            mTV.setY(-(mFloatItemHeight - view.getTop()));
+        }else {
+            mTV.setY(0);
+        }
+
+        if (mFloatItemCurrentPos != layoutManager.findFirstVisibleItemPosition()) {
+            mFloatItemCurrentPos = layoutManager.findFirstVisibleItemPosition();
+            mTV.setY(0);
+
+            updateFloatItem();
+        }
+    }
+});
+
+private void updateFloatItem() {
+     String s = mStrings.get(mFloatItemCurrentPos);
+     mTV.setText(s);
+ }
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab" target="_blank" rel="external">http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab</a>)</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/features/clear_data/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1788,774 +2650,11 @@ svn: E200009: Illegal target for the requested operation
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/17/Android/debug/Debug -- Databases And Shared Preferences/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/17/Android/debug/Debug -- Databases And Shared Preferences/" itemprop="url">Debug -- Databases And Shared Preferences</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-17T13:18:12+08:00">
-                2016-11-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>添加下面的依赖：（版本可能需要更新了）</p>
-<pre><code>debugCompile &apos;com.amitshekhar.android:debug-db:0.1.0&apos;
-</code></pre><p>运行 App 后在log中会看到：</p>
-<pre><code>D/DebugDB: Open http://XXX.XXX.X.XXX:8080 in your browser
-</code></pre><p>在游览器中打开这个地址就可以了。</p>
-<p>原文链接：<a href="https://medium.com/@amitshekhar/debugging-android-databases-and-shared-preferences-in-the-easiest-way-e5f705dfc06b#.bgorqpgg5" target="_blank" rel="external">Android debug Databalses And Shared Preferences</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/view/自定义View/触摸事件冲突处理方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/16/Android/view/自定义View/触摸事件冲突处理方法/" itemprop="url">触摸事件冲突处理方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T13:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="情景一：-父控件拦截了子控件的触摸"><a href="#情景一：-父控件拦截了子控件的触摸" class="headerlink" title="情景一： 父控件拦截了子控件的触摸"></a>情景一： 父控件拦截了子控件的触摸</h1><p>希望父控件不要拦截子控件的触摸事件，即让子控件处理触摸事件</p>
-<p>方式一：</p>
-<pre><code>// 表示父控件不拦截 子View 的触摸事件
-viewGroup.requestDisallowInterceptTouchEvent(true);
-</code></pre><p>方式二：自定义 ViewGroup，继承指定的 ViewGroup，重写下面的方法</p>
-<pre><code>public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-    boolean ret = false;
-
-    //....逻辑处理，如果返回 true 表示拦截子View的触摸事件，false 表示不拦截子View的触摸事件
-    return ret;
-}
-</code></pre><h1 id="情景二：子控件处理的触摸事件"><a href="#情景二：子控件处理的触摸事件" class="headerlink" title="情景二：子控件处理的触摸事件"></a>情景二：子控件处理的触摸事件</h1><p>需要：子控件处理部分的触摸事件</p>
-<p>自定义 ViewGroup，继承指定的 ViewGroup，重写下面的方法，让父控件在合适的时候拦截触摸事件</p>
-<pre><code>public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-    boolean ret = false;
-
-    //....逻辑处理，如果返回 true 表示拦截子View的触摸事件，false 表示不拦截子View的触摸事件
-    return ret;
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/view/ViewDragHelper/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/16/Android/view/ViewDragHelper/" itemprop="url">ViewDragHelper</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T13:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用于分析手势处理的类,一般用在一个自定义ViewGroup的内部</p>
-<p>ViewDragHelper.Callback是连接ViewDragHelper与view之间的桥梁（这个view一般是指拥子view的容器即parentView）；</p>
-<p>   ViewDragHelper的实例是创建的；</p>
-<p>   ViewDragHelper并不是直接作用于要被拖动的View，而是使其控制的视图容器中的子View可以被拖动，如果要指定某个子view的行为，需要在Callback中想办法；</p>
-<p>   ViewDragHelper的本质其实是分析onInterceptTouchEvent和onTouchEvent的MotionEvent参数，然后根据分析的结果去改变一个容器中被拖动子View的位置（ 通过offsetTopAndBottom(int offset)和offsetLeftAndRight(int offset)方法 ），他能在触摸的时候判断当前拖动的是哪个子View；</p>
-<h1 id="ViewDragHelper-类"><a href="#ViewDragHelper-类" class="headerlink" title="ViewDragHelper 类"></a>ViewDragHelper 类</h1><p>创建 ViewDragHelper 对象的方法：（通过静态工厂方法）</p>
-<pre><code>public static ViewDragHelper create(ViewGroup forParent, Callback cb)
-
-public static ViewDragHelper create(ViewGroup forParent, float sensitivity, Callback cb)
-</code></pre><p>参数：</p>
-<ol>
-<li>ViewGroup：ViewDragHelper 作用于的控件组</li>
-<li>sensitivity：灵敏度，最大越灵敏 1.0f为正常值</li>
-<li>Callback: 事件回调的接口</li>
-</ol>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="创建-ViewDragHelper"><a href="#创建-ViewDragHelper" class="headerlink" title="创建 ViewDragHelper"></a>创建 ViewDragHelper</h2><h2 id="让-ViewDragHelper-接管-ViewGroup-的触摸事件"><a href="#让-ViewDragHelper-接管-ViewGroup-的触摸事件" class="headerlink" title="让 ViewDragHelper 接管 ViewGroup 的触摸事件"></a>让 ViewDragHelper 接管 ViewGroup 的触摸事件</h2><pre><code>@Override
-public boolean onInterceptTouchEvent(MotionEvent ev) {
-  final int action = MotionEventCompat.getActionMasked(ev);
-  if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
-      mDragHelper.cancel();
-      return false;
-  }
-  return mDragHelper.shouldInterceptTouchEvent(ev);
-}
-@Override
-public boolean onTouchEvent(MotionEvent ev) {
-  mDragHelper.processTouchEvent(ev);
-  return true;
-}
-</code></pre><p>然后就可以在回调中处理事件了</p>
-<h2 id="触摸事件处理"><a href="#触摸事件处理" class="headerlink" title="触摸事件处理"></a>触摸事件处理</h2><h3 id="拖动行为的处理"><a href="#拖动行为的处理" class="headerlink" title="拖动行为的处理"></a>拖动行为的处理</h3><h4 id="处理横向的拖动"><a href="#处理横向的拖动" class="headerlink" title="处理横向的拖动"></a>处理横向的拖动</h4><p>在 Callback 中实现下面的方法：</p>
-<pre><code>@Override
-public int clampViewPositionHorizontal(View child, int left, int dx) {
-  Log.d(&quot;DragLayout&quot;, &quot;clampViewPositionHorizontal &quot; + left + &quot;,&quot; + dx);
-  final int leftBound = getPaddingLeft();
-  final int rightBound = getWidth() - mDragView.getWidth();
-  // 为了让被拖动的view遇到边界之后就不在拖动，对返回的值做了更多的考虑。
-  final int newLeft = Math.min(Math.max(left, leftBound), rightBound);
-  return newLeft;
-  // return left; //就能实现移动
-}
-</code></pre><p>参数：</p>
-<ol>
-<li>View：表示当前触摸作用于的子 View</li>
-<li>left：当前子 View 的 x 坐标</li>
-<li>dx: 触摸点在 x 轴上做出的移动距离</li>
-</ol>
-<p>返回值：表示子 View 新的 x 坐标</p>
-<h4 id="处理纵向的拖动"><a href="#处理纵向的拖动" class="headerlink" title="处理纵向的拖动"></a>处理纵向的拖动</h4><pre><code>@Override
-public int clampViewPositionVertical(View child, int top, int dy) {
-  final int topBound = getPaddingTop();
-  final int bottomBound = getHeight() - mDragView.getHeight();
-  final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-  return newTop;
-}
-</code></pre><h2 id="滑动边缘"><a href="#滑动边缘" class="headerlink" title="滑动边缘"></a>滑动边缘</h2><p>滑动边缘： EDGE_LEFT ,EDGE_TOP, EDGE_RIGHT, EDGE_BOTTOM</p>
-<p>设置边缘：</p>
-<pre><code>mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
-</code></pre><p>实现方法 Callback：</p>
-<pre><code>@Override
-public void onEdgeTouched(int edgeFlags, int pointerId) {
-    super.onEdgeTouched(edgeFlags, pointerId);
-    Toast.makeText(getContext(), &quot;edgeTouched&quot;, Toast.LENGTH_SHORT).show();
-}
-</code></pre><p>如果你想在边缘滑动的时候根据滑动距离移动一个子view，可以通过实现onEdgeDragStarted方法，并在onEdgeDragStarted方法中手动指定要移动的子View:</p>
-<pre><code>@Override
-public void onEdgeDragStarted(int edgeFlags, int pointerId) {
-    mDragHelper.captureChildView(mDragView2, pointerId);
-}
-</code></pre><p>参数：</p>
-<ol>
-<li>edgeFlags：滑动的边缘</li>
-<li>pointerId：本次触摸事件的ID</li>
-</ol>
-<h2 id="加速度检测"><a href="#加速度检测" class="headerlink" title="加速度检测"></a>加速度检测</h2><h2 id="回调Drag-Release"><a href="#回调Drag-Release" class="headerlink" title="回调Drag Release"></a>回调Drag Release</h2><p>Callback: 手指抬起回调</p>
-<pre><code>@Override
-public void onViewReleased(View releasedChild, float xvel, float yvel) {
-    //...
-}
-</code></pre><h3 id="实现-View-返回动画"><a href="#实现-View-返回动画" class="headerlink" title="实现 View 返回动画"></a>实现 View 返回动画</h3><p>Callback：</p>
-<pre><code>@Override
-public void onViewReleased(View releasedChild, float xvel, float yvel) {
-
-    //mAutoBackView手指释放时可以自动回去
-    if (releasedChild == mAutoBackView) {
-        mViewDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
-        invalidate();
-    }
-}
-</code></pre><p>CustomView：</p>
-<pre><code>@Override
-public void computeScroll()
-{
-    if(mViewDragHelper.continueSettling(true))
-    {
-        invalidate();
-    }
-}
-</code></pre><p>View 滑动返回动画内部使用的是： mScroller.startScroll。</p>
-<h2 id="移动到某个指定的位置"><a href="#移动到某个指定的位置" class="headerlink" title="移动到某个指定的位置"></a>移动到某个指定的位置</h2><pre><code>mViewDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
-</code></pre><h2 id="设置触摸处理的开关"><a href="#设置触摸处理的开关" class="headerlink" title="设置触摸处理的开关"></a>设置触摸处理的开关</h2><blockquote>
-<p>这种方法也可以用于滑动冲突的解决</p>
-</blockquote>
-<p>在自定义 View 中自定义一个方法：</p>
-<pre><code>public void setDragAble(boolean b) {
-    mDragAble = b;
-//        if (b) {
-//
-//        } else {
-//            mViewDragHelper.abort();
-//        }
-}
-</code></pre><p>在 Callback 中：</p>
-<pre><code>@Override
-public boolean tryCaptureView(View child, int pointerId) {
-    //.....
-    return mDragAble;
-}
-</code></pre><p>参考：</p>
-<ul>
-<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html" target="_blank" rel="external">http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html</a></li>
-<li><a href="http://blog.csdn.net/lmj623565791/article/details/46858663" target="_blank" rel="external">http://blog.csdn.net/lmj623565791/article/details/46858663</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/网络/retrofit/retrofit-下载进度/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/16/Android/网络/retrofit/retrofit-下载进度/" itemprop="url">retrofit - 下载进度实现</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T12:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="定义一个-Interceptor"><a href="#定义一个-Interceptor" class="headerlink" title="定义一个 Interceptor"></a>定义一个 Interceptor</h1><p>public class DownloadProgressInterceptor implements Interceptor {<br>    private DownloadProgressListener progressListener;</p>
-<pre><code>public DownloadProgressInterceptor(DownloadProgressListener progressListener) {
-    this.progressListener = progressListener;
-}
-
-@Override
-public Response intercept(Chain chain) throws IOException {
-    Response originalResponse = chain.proceed(chain.request());
-    return originalResponse.newBuilder()
-            .body(new DownloadProgressResponseBody(originalResponse.body(), progressListener))
-            .build();
-}
-
-private static class DownloadProgressResponseBody extends ResponseBody {
-
-    private final ResponseBody responseBody;
-    private final DownloadProgressListener progressListener;
-    private BufferedSource bufferedSource;
-
-    public DownloadProgressResponseBody(ResponseBody responseBody,
-                                        DownloadProgressListener progressListener) {
-        this.responseBody = responseBody;
-        this.progressListener = progressListener;
-    }
-
-    @Override
-    public MediaType contentType() {
-        return responseBody.contentType();
-    }
-
-    @Override
-    public long contentLength() {
-        return responseBody.contentLength();
-    }
-
-    @Override
-    public BufferedSource source() {
-        if (bufferedSource == null) {
-            bufferedSource = Okio.buffer(source(responseBody.source()));
-        }
-        return bufferedSource;
-    }
-
-    private Source source(Source source) {
-        return new ForwardingSource(source) {
-            long totalBytesRead = 0L;
-
-            @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
-                long bytesRead = super.read(sink, byteCount);
-                // read() returns the number of bytes read, or -1 if this source is exhausted.
-                totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-
-                if (null != progressListener) {
-                    progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
-                }
-                return bytesRead;
-            }
-        };
-    }
-}
-
-public interface DownloadProgressListener {
-    void update(long bytesRead, long contentLength, boolean done);
-}
-</code></pre><p>}</p>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><pre><code>OkHttpClient client = new OkHttpClient.Builder()
-        .addInterceptor(new DownloadProgressInterceptor(new DownloadProgressInterceptor.DownloadProgressListener() {
-
-            @Override
-            public void update(long bytesRead, long contentLength, boolean done) {
-
-            }
-        })).build();
-
-
-mDownService = new Retrofit.Builder()
-        .client(client)
-        .baseUrl(Api.getInstance().getServiceAddress())
-        .build()
-        .create(DownService.class);
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2600,7 +2699,7 @@ mDownService = new Retrofit.Builder()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">369</span>
+                <span class="site-state-item-count">373</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
