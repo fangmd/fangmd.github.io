@@ -93,16 +93,25 @@
 
 
 
-<meta name="description" content="例子 项目经理">
+<meta name="description" content="例子 项目经理一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理
+如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。
+命令：Command
+1234567public abstract class Command&amp;#123;    protected RequirementGro">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式之蝉 - 命令模式">
 <meta property="og:url" content="http://yoursite.com/2017/07/20/ReadNote/设计模式/设计模式之蝉-命令模式/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="例子 项目经理">
-<meta property="og:updated_time" content="2017-07-20T15:14:33.000Z">
+<meta property="og:description" content="例子 项目经理一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理
+如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。
+命令：Command
+1234567public abstract class Command&amp;#123;    protected RequirementGro">
+<meta property="og:updated_time" content="2017-07-22T02:10:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之蝉 - 命令模式">
-<meta name="twitter:description" content="例子 项目经理">
+<meta name="twitter:description" content="例子 项目经理一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理
+如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。
+命令：Command
+1234567public abstract class Command&amp;#123;    protected RequirementGro">
 
 
 
@@ -341,7 +350,43 @@
       
 
       
-        <h1 id="例子-项目经理"><a href="#例子-项目经理" class="headerlink" title="例子 项目经理"></a>例子 项目经理</h1>
+        <h1 id="例子-项目经理"><a href="#例子-项目经理" class="headerlink" title="例子 项目经理"></a>例子 项目经理</h1><p>一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理</p>
+<p>如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。</p>
+<p>命令：Command</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    protected RequirementGroup rg = new RequirementGroup(); // 需求组</div><div class="line">    protected PageGroup pg = new PageGroup();</div><div class="line">    protected CodeGroup cg = new CodeGroup();</div><div class="line"></div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>增加一个需求命令：AddRequirementCommand</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class AddRqueirementCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.rg.find();</div><div class="line">        super.rg.add();</div><div class="line">        super.rg.plan();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有多少个命令就有多少个 Command 抽象类的子类。</p>
+<p>命名分发类：Invoker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class Invoker&#123;</div><div class="line">    private Command command;</div><div class="line"></div><div class="line">    public void setCommand(Command command)&#123;</div><div class="line">        this.command = command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>负责人接到命令后立即执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Client&#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        Invoker xiaoming = new Invoker()</div><div class="line"></div><div class="line">        Command command = new AddRequirementCommand();</div><div class="line">        xiaoming.setCommand(command);</div><div class="line">        xiaoming.action();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.</p>
+<p>将一个请求封装成一个对象，从而让你使用不同的请求把客户端参数化，对请求排队或者记录请求日志，可以提供命令的撤销和恢复功能。</p>
+<p>请求方：Invoker，执行方：Receiver</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Receiver&#123;</div><div class="line">    public abstract void doSomething();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接受者有多个，所以是抽象的。</p>
+<p>Command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体的命令类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class ConcreteCommand1 extends Command&#123;</div><div class="line">    private Reciever receiver;</div><div class="line">    public ConcreteCommand1(Receiver _receiver)&#123;</div><div class="line">        this.receiver = _receiver;</div><div class="line">    &#125;</div><div class="line">    public void execute()&#123;</div><div class="line">        this.receiver.doSomething();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Invoker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Invoder&#123;</div><div class="line">    private Command command;</div><div class="line">    public void setCommand(Command _command)&#123;</div><div class="line">        this.command = _command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>优点：</p>
+<ol>
+<li>类间解耦</li>
+<li>可扩展性</li>
+<li>命令模式结合其他模式使用：结合责任链模式，实现命令族解析任务；结合模版方法模式，则可以减少 Command 子类的膨胀问题</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>Command 子类过多</li>
+</ol>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>一些是命令的地方就可以使用命令模式。比如 按钮的点击，DOS 命令</p>
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><h2 id="一个命令可以对应多个执行端"><a href="#一个命令可以对应多个执行端" class="headerlink" title="一个命令可以对应多个执行端"></a>一个命令可以对应多个执行端</h2><h2 id="反悔问题"><a href="#反悔问题" class="headerlink" title="反悔问题"></a>反悔问题</h2><p>需要在执行方增加 <code>roolBack</code> 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Group&#123;</div><div class="line">    //...</div><div class="line"></div><div class="line">    public void rollBack()&#123;</div><div class="line">        // 更具日志回滚</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class CancelDeletePageCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.pg.rollBack();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -392,6 +437,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-装饰模式/" rel="prev" title="设计模式之蝉 - 装饰模式">
+                设计模式之蝉 - 装饰模式 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -463,7 +512,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">373</span>
+                <span class="site-state-item-count">377</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -520,7 +569,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子-项目经理"><span class="nav-number">1.</span> <span class="nav-text">例子 项目经理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子-项目经理"><span class="nav-number">1.</span> <span class="nav-text">例子 项目经理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">3.1.</span> <span class="nav-text">使用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展"><span class="nav-number">4.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个命令可以对应多个执行端"><span class="nav-number">4.1.</span> <span class="nav-text">一个命令可以对应多个执行端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反悔问题"><span class="nav-number">4.2.</span> <span class="nav-text">反悔问题</span></a></li></ol></li></ol></div>
             
 
           </div>
