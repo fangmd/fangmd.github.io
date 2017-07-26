@@ -103,7 +103,7 @@
 <meta property="og:description" content="例子请求抽象类，更具不同的 type 由不同的请求子类处理
 1234public interface IWomen&amp;#123;    public int getType();    public String getRequest();&amp;#125;
 1234public interface IHandler&amp;#123;    // 处理请求    public void HandleMessag">
-<meta property="og:updated_time" content="2017-07-22T08:47:36.000Z">
+<meta property="og:updated_time" content="2017-07-23T04:22:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之蝉 - 责任链模式">
 <meta name="twitter:description" content="例子请求抽象类，更具不同的 type 由不同的请求子类处理
@@ -352,8 +352,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface IHandler&#123;</div><div class="line">    // 处理请求</div><div class="line">    public void HandleMessage(IWomen women);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>处理请求类的子类：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class Father implements IHandler&#123;</div><div class="line">    public void HandleMessage(IWomen women)&#123;</div><div class="line">        //....</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="责任链模式："><a href="#责任链模式：" class="headerlink" title="责任链模式："></a>责任链模式：</h2><p>修改 Handler:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public abstract class Handler&#123;</div><div class="line">    public final static int FATHER_LEVEL_REQUEST = 1;</div><div class="line">    public final static int HUSBAND_LEVEL_REQUEST = 2;</div><div class="line">    public final static int SON_LEVEL_REQUEST = 3;</div><div class="line"></div><div class="line">    // 能处理的级别</div><div class="line">    private int level = 0;</div><div class="line"></div><div class="line">    private Handler nextHandler;</div><div class="line">    public Handler(int _level)&#123;</div><div class="line">        this.level = _level;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public final void HandleMessage(IWomen women)&#123;</div><div class="line">        if (women.getType() == this.level)&#123;</div><div class="line">            this.response(women);</div><div class="line">        &#125; else&#123;</div><div class="line">            if (this.nextHandler != nul)&#123;</div><div class="line">                // 有后续环节，把请求交给后面的处理</div><div class="line">            &#125;else&#123;</div><div class="line">                // 没有后续处理了，不用处理</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setNext(Handler _handler)&#123;</div><div class="line">        this.nextHandler = _handler;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 回应请示</div><div class="line">    protected abstract void response(IWomen women);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>w<br><br>## 责任链模式：<br><br>修改 Handler:<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public abstract class Handler&#123;</div><div class="line">    public final static int FATHER_LEVEL_REQUEST = 1;</div><div class="line">    public final static int HUSBAND_LEVEL_REQUEST = 2;</div><div class="line">    public final static int SON_LEVEL_REQUEST = 3;</div><div class="line"></div><div class="line">    // 能处理的级别</div><div class="line">    private int level = 0;</div><div class="line"></div><div class="line">    private Handler nextHandler;</div><div class="line">    public Handler(int _level)&#123;</div><div class="line">        this.level = _level;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public final void HandleMessage(IWomen women)&#123;</div><div class="line">        if (women.getType() == this.level)&#123;</div><div class="line">            this.response(women);</div><div class="line">        &#125; else&#123;</div><div class="line">            if (this.nextHandler != nul)&#123;</div><div class="line">                // 有后续环节，把请求交给后面的处理</div><div class="line">            &#125;else&#123;</div><div class="line">                // 没有后续处理了，不用处理</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void setNext(Handler _handler)&#123;</div><div class="line">        this.nextHandler = _handler;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 回应请示</div><div class="line">    protected abstract void response(IWomen women);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>上面的代码同时也用到了 模版模式 </p>
 <p>使用的时候需要设置 nextHandler</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args)&#123;</div><div class="line">    Handler father = new Father();</div><div class="line">    Handler husband = new Hansband();</div><div class="line">    Handler son = new Son();</div><div class="line">    father.setNext(husband);</div><div class="line">    husband.setNext(son)</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -410,8 +409,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-策略模式/" rel="next" title="设计模式之蝉 - 策略模式">
-                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 策略模式
+              <a href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-装饰模式/" rel="next" title="设计模式之蝉 - 装饰模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 装饰模式
               </a>
             
           </div>
@@ -420,8 +419,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-适配器模式/" rel="prev" title="设计模式之蝉 - 适配器模式">
-                设计模式之蝉 - 适配器模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-组合模式/" rel="prev" title="设计模式之蝉 - 组合模式">
+                设计模式之蝉 - 组合模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -494,7 +493,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">377</span>
+                <span class="site-state-item-count">380</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -551,7 +550,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#责任链模式："><span class="nav-number">1.1.</span> <span class="nav-text">责任链模式：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">3.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">3.2.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol></div>
             
 
           </div>

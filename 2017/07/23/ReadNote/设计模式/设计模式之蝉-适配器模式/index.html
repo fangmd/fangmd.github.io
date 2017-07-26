@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Double">
 <meta property="og:description" content="例子定义Convert the interface of a class into another interface clients expect. Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.
 将一个类的接口变成客户端所期待的另一种接口，从而使原本因接">
-<meta property="og:updated_time" content="2017-07-23T03:53:58.000Z">
+<meta property="og:updated_time" content="2017-07-23T07:37:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之蝉 - 适配器模式">
 <meta name="twitter:description" content="例子定义Convert the interface of a class into another interface clients expect. Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.
@@ -351,8 +351,10 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Target</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteTarget</span> <span class="keyword">implements</span> <span class="title">Targets</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>Adaptee：源角色</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adaptee</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>Adapter：适配器角色</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span> <span class="keyword">extends</span> <span class="title">Adaptee</span> <span class="keyword">implements</span> <span class="title">Target</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.doSomething();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<!--more-->
 <p>适配器角色，继承要被适配的对象，实现目标接口。</p>
 <h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
 <li>让两个没有关系的类在一起运行</li>
@@ -362,7 +364,16 @@
 </ol>
 <h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>使用适配器而不是修改已经投产的接口。</p>
 <h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>一般用于处理正在服役的项目中的问题。</p>
-<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1>
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><p>如果被适配的对象不是一个类，而是多个类的话，java 不支持多继承，所以就不能继承被继承类了。</p>
+<p>例子：</p>
+<p>需要适配的抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IOuterUserBaseInfo</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Map <span class="title">getUserBaseIngo</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IOutUserHomeInfo</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Map <span class="title">getUserHomeInfo</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>需要适配的抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// OuterUserBaseInfo</span></div><div class="line"><span class="comment">// OutUserHomeInfo</span></div></pre></td></tr></table></figure>
+<p>适配器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OuterUserInfo</span> <span class="keyword">implements</span> <span class="title">IUserInfo</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> IOutUserBaseInfo baseInfo = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">private</span> IOutUserHomeInfo homeInfo = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Map baseMap = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">private</span> Map homeMap = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OutUserInfo</span><span class="params">(IOutUserBaseInfo _baseInfo, IOutUserHomeInfo _homeInfo)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.baseInfo = _baseInfo;</div><div class="line">        <span class="keyword">this</span>.homeInfo = _homeInfo;</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.baseMap = <span class="keyword">this</span>.baseInfo.getUserBaseInfo();</div><div class="line">        <span class="keyword">this</span>.homeMap = <span class="keyword">this</span>.officeInfo.getUserHomeInfo();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// IUserInfo 相关方法（Target）</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><p>适配器模式是一个补偿模式，补救模式。</p>
+
       
     </div>
 
@@ -404,8 +415,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-责任链模式/" rel="next" title="设计模式之蝉 - 责任链模式">
-                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 责任链模式
+              <a href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-观察者模式/" rel="next" title="设计模式之蝉 - 观察者模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 观察者模式
               </a>
             
           </div>
@@ -484,7 +495,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">377</span>
+                <span class="site-state-item-count">380</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -541,7 +552,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用类图"><span class="nav-number">2.1.</span> <span class="nav-text">通用类图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">3.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展"><span class="nav-number">4.</span> <span class="nav-text">扩展</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用类图"><span class="nav-number">2.1.</span> <span class="nav-text">通用类图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优点"><span class="nav-number">3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">3.2.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扩展"><span class="nav-number">4.</span> <span class="nav-text">扩展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最佳实践"><span class="nav-number">5.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
             
 
           </div>
