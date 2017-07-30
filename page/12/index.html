@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/" itemprop="url">6. django-rest-framework -- Parsers</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/" itemprop="url">django-rest-framework -- Generic views</a></h1>
         
 
         <div class="post-meta">
@@ -342,60 +342,30 @@
 
       
         
-          
-            <h1 id="Parsers"><a href="#Parsers" class="headerlink" title="Parsers"></a>Parsers</h1><blockquote>
-<p>REST framework includes a number of built in Parser classes, that allow you to accept requests with various media types.</p>
+          <h1 id="Generic-views"><a href="#Generic-views" class="headerlink" title="Generic views"></a>Generic views</h1><blockquote>
+<p>One of the key benefits of class-based views is the way they allow you to compose bits of reusable behavior. REST framework takes advantage of this by providing a number of pre-built views that provide for commonly used patterns.</p>
 </blockquote>
-<p>针对请求中不同的资源请求，提供不同的解析器</p>
-<h2 id="How-the-parser-is-determined-如何决定解析器"><a href="#How-the-parser-is-determined-如何决定解析器" class="headerlink" title="How the parser is determined 如何决定解析器"></a>How the parser is determined 如何决定解析器</h2><p>当 <code>request.data</code> 获取到的时候，REST framework 会检查 <code>Content-Type</code> 请求头的值，根据这个值决定解析器。</p>
-<p>如果没有这个请求头，一般会默认按照 <code>&#39;application/x-www-form-urlencoded&#39;</code> 处理</p>
-<h2 id="Setting-the-parsers"><a href="#Setting-the-parsers" class="headerlink" title="Setting the parsers"></a>Setting the parsers</h2><pre><code>REST_FRAMEWORK = {
-    &apos;DEFAULT_PARSER_CLASSES&apos;: (
-        &apos;rest_framework.parsers.JSONParser&apos;,
-    )
-}
-</code></pre><p>在 View 中设置：</p>
-<pre><code>from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
+<h2 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h2><pre><code>class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdminUser,)
 
-class ExampleView(APIView):
-    &quot;&quot;&quot;
-    A view that can accept POST requests with JSON content.
-    &quot;&quot;&quot;
-    parser_classes = (JSONParser,)
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
-    def post(self, request, format=None):
-        return Response({&apos;received data&apos;: request.data})
-</code></pre><p>方法视图：</p>
-<pre><code>from rest_framework.decorators import api_view
-from rest_framework.decorators import parser_classes
 
-@api_view([&apos;POST&apos;])
-@parser_classes((JSONParser,))
-def example_view(request, format=None):
-    &quot;&quot;&quot;
-    A view that can accept POST requests with JSON content.
-    &quot;&quot;&quot;
-    return Response({&apos;received data&apos;: request.data})
-</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONParser"><a href="#JSONParser" class="headerlink" title="JSONParser"></a>JSONParser</h2><pre><code>.media_type: application/json
-</code></pre><h2 id="FormParser"><a href="#FormParser" class="headerlink" title="FormParser"></a>FormParser</h2><pre><code>.media_type: application/x-www-form-urlencoded
-</code></pre><h2 id="MultiPartParser"><a href="#MultiPartParser" class="headerlink" title="MultiPartParser"></a>MultiPartParser</h2><pre><code>.media_type: multipart/form-data
-</code></pre><h2 id="FileUploadParser"><a href="#FileUploadParser" class="headerlink" title="FileUploadParser"></a>FileUploadParser</h2><pre><code>.media_type: */*
-</code></pre><h1 id="Custom-parsers"><a href="#Custom-parsers" class="headerlink" title="Custom parsers"></a>Custom parsers</h1><p>。。。</p>
-<h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>安装：</p>
-<pre><code>$ pip install djangorestframework-xml
-</code></pre><p>设置：</p>
-<pre><code>REST_FRAMEWORK = {
-    &apos;DEFAULT_PARSER_CLASSES&apos;: (
-        &apos;rest_framework_xml.parsers.XMLParser&apos;,
-    ),
-    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
-        &apos;rest_framework_xml.renderers.XMLRenderer&apos;,
-    ),
-}
+url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all(), serializer_class=UserSerializer), name=&apos;user-list&apos;)
 </code></pre>
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -701,6 +671,521 @@ http://api.example.com/accounts/1/
 <pre><code>/accounts/1/
 </code></pre><h2 id="How-hyperlinked-views-are-determined"><a href="#How-hyperlinked-views-are-determined" class="headerlink" title="How hyperlinked views are determined"></a>How hyperlinked views are determined</h2><p>。。。。。</p>
 
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/" itemprop="url">9. django-rest-framework -- Serializers fields</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Serializer-fields"><a href="#Serializer-fields" class="headerlink" title="Serializer fields"></a>Serializer fields</h1><p>fields 负责将原始数据转化到相应的数据类型，验证数据的有效性，重新获取和设置值到对象中。</p>
+<h2 id="Core-arguments-核心参数"><a href="#Core-arguments-核心参数" class="headerlink" title="Core arguments 核心参数"></a>Core arguments 核心参数</h2><ul>
+<li>read_only</li>
+<li>write_only</li>
+<li>required</li>
+<li>allow_null</li>
+<li>default</li>
+<li>source</li>
+<li>validators</li>
+<li>error_messages</li>
+<li>label</li>
+<li>help_text</li>
+<li>initial <code>day = serializers.DateField(initial=datetime.date.today)</code></li>
+<li>style</li>
+</ul>
+<h2 id="Boolean-fields"><a href="#Boolean-fields" class="headerlink" title="Boolean fields"></a>Boolean fields</h2><h1 id="String-fields"><a href="#String-fields" class="headerlink" title="String fields"></a>String fields</h1><h2 id="EmailField"><a href="#EmailField" class="headerlink" title="EmailField"></a>EmailField</h2><h2 id="RegexField"><a href="#RegexField" class="headerlink" title="RegexField"></a>RegexField</h2><h2 id="SlugField"><a href="#SlugField" class="headerlink" title="SlugField"></a>SlugField</h2><h2 id="URLField"><a href="#URLField" class="headerlink" title="URLField"></a>URLField</h2><h2 id="UUIDField"><a href="#UUIDField" class="headerlink" title="UUIDField"></a>UUIDField</h2><h2 id="FilePathField"><a href="#FilePathField" class="headerlink" title="FilePathField"></a>FilePathField</h2><h2 id="IPAddressField"><a href="#IPAddressField" class="headerlink" title="IPAddressField"></a>IPAddressField</h2><h1 id="Numeric-fields"><a href="#Numeric-fields" class="headerlink" title="Numeric fields"></a>Numeric fields</h1><h2 id="IntegerField"><a href="#IntegerField" class="headerlink" title="IntegerField"></a>IntegerField</h2><h2 id="FloatField"><a href="#FloatField" class="headerlink" title="FloatField"></a>FloatField</h2><h2 id="DecimalField"><a href="#DecimalField" class="headerlink" title="DecimalField"></a>DecimalField</h2><h1 id="Date-and-time-fields"><a href="#Date-and-time-fields" class="headerlink" title="Date and time fields"></a>Date and time fields</h1><h2 id="DateTimeField"><a href="#DateTimeField" class="headerlink" title="DateTimeField"></a>DateTimeField</h2><h2 id="DateField"><a href="#DateField" class="headerlink" title="DateField"></a>DateField</h2><h2 id="TimeField"><a href="#TimeField" class="headerlink" title="TimeField"></a>TimeField</h2><h2 id="DurationField"><a href="#DurationField" class="headerlink" title="DurationField"></a>DurationField</h2><h1 id="Choice-selection-fields"><a href="#Choice-selection-fields" class="headerlink" title="Choice selection fields"></a>Choice selection fields</h1><h2 id="ChoiceField"><a href="#ChoiceField" class="headerlink" title="ChoiceField"></a>ChoiceField</h2><h2 id="MultipleChoiceField"><a href="#MultipleChoiceField" class="headerlink" title="MultipleChoiceField"></a>MultipleChoiceField</h2><h1 id="File-upload-fields"><a href="#File-upload-fields" class="headerlink" title="File upload fields"></a>File upload fields</h1><h2 id="FileField"><a href="#FileField" class="headerlink" title="FileField"></a>FileField</h2><h2 id="ImageField"><a href="#ImageField" class="headerlink" title="ImageField"></a>ImageField</h2><h1 id="Composite-fields"><a href="#Composite-fields" class="headerlink" title="Composite fields"></a>Composite fields</h1><h2 id="ListField"><a href="#ListField" class="headerlink" title="ListField"></a>ListField</h2><h2 id="DictField"><a href="#DictField" class="headerlink" title="DictField"></a>DictField</h2><h2 id="JSONField"><a href="#JSONField" class="headerlink" title="JSONField"></a>JSONField</h2><h1 id="Miscellaneous-fields"><a href="#Miscellaneous-fields" class="headerlink" title="Miscellaneous fields"></a>Miscellaneous fields</h1><h2 id="ReadOnlyField"><a href="#ReadOnlyField" class="headerlink" title="ReadOnlyField"></a>ReadOnlyField</h2><h2 id="HiddenField"><a href="#HiddenField" class="headerlink" title="HiddenField"></a>HiddenField</h2><h2 id="ModelField"><a href="#ModelField" class="headerlink" title="ModelField"></a>ModelField</h2><h2 id="SerializerMethodField"><a href="#SerializerMethodField" class="headerlink" title="SerializerMethodField"></a>SerializerMethodField</h2><h1 id="Custom-fields"><a href="#Custom-fields" class="headerlink" title="Custom fields"></a>Custom fields</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/7. django-rest-framework -- Renderers/" itemprop="url">7. django-rest-framework -- Renderers</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Renderers"><a href="#Renderers" class="headerlink" title="Renderers"></a>Renderers</h1><blockquote>
+<p>Before a TemplateResponse instance can be returned to the client, it must be rendered. The rendering process takes the intermediate representation of template and context, and turns it into the final byte stream that can be served to the client.<br>— Django documentation</p>
+</blockquote>
+<h2 id="How-the-renderer-is-determined"><a href="#How-the-renderer-is-determined" class="headerlink" title="How the renderer is determined"></a>How the renderer is determined</h2><ol>
+<li><p>决定：请求头 <code>Accept</code></p>
+</li>
+<li><p>URL 的后缀（优先）</p>
+</li>
+</ol>
+<h2 id="Setting-the-renderers"><a href="#Setting-the-renderers" class="headerlink" title="Setting the renderers"></a>Setting the renderers</h2><pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
+        &apos;rest_framework.renderers.JSONRenderer&apos;,
+        &apos;rest_framework.renderers.BrowsableAPIRenderer&apos;,
+    )
+}
+</code></pre><p>也可以为视图独立设置：</p>
+<pre><code>from django.contrib.auth.models import User
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class UserCountView(APIView):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    renderer_classes = (JSONRenderer, )
+
+    def get(self, request, format=None):
+        user_count = User.objects.filter(active=True).count()
+        content = {&apos;user_count&apos;: user_count}
+        return Response(content)
+</code></pre><p>方法视图；</p>
+<pre><code>@api_view([&apos;GET&apos;])
+@renderer_classes((JSONRenderer,))
+def user_count_view(request, format=None):
+    &quot;&quot;&quot;
+    A view that returns the count of active users in JSON.
+    &quot;&quot;&quot;
+    user_count = User.objects.filter(active=True).count()
+    content = {&apos;user_count&apos;: user_count}
+    return Response(content)
+</code></pre><h2 id="Ordering-of-renderer-classes"><a href="#Ordering-of-renderer-classes" class="headerlink" title="Ordering of renderer classes"></a>Ordering of renderer classes</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONRenderer"><a href="#JSONRenderer" class="headerlink" title="JSONRenderer"></a>JSONRenderer</h2><h2 id="TemplateHTMLRenderer"><a href="#TemplateHTMLRenderer" class="headerlink" title="TemplateHTMLRenderer"></a>TemplateHTMLRenderer</h2><h2 id="StaticHTMLRenderer"><a href="#StaticHTMLRenderer" class="headerlink" title="StaticHTMLRenderer"></a>StaticHTMLRenderer</h2><h2 id="BrowsableAPIRenderer"><a href="#BrowsableAPIRenderer" class="headerlink" title="BrowsableAPIRenderer"></a>BrowsableAPIRenderer</h2><p>渲染成一个网页可操作的API接口</p>
+<ul>
+<li>.media_type: text/html</li>
+<li>.format: ‘.api’</li>
+<li>.charset: utf-8</li>
+<li>.template: ‘rest_framework/api.html’</li>
+</ul>
+<h2 id="AdminRenderer"><a href="#AdminRenderer" class="headerlink" title="AdminRenderer"></a>AdminRenderer</h2><p>Renders data into HTML for an admin-like display:</p>
+<h2 id="HTMLFormRenderer"><a href="#HTMLFormRenderer" class="headerlink" title="HTMLFormRenderer"></a>HTMLFormRenderer</h2><p>使用 html 模版生产结果</p>
+<h2 id="MultiPartRenderer"><a href="#MultiPartRenderer" class="headerlink" title="MultiPartRenderer"></a>MultiPartRenderer</h2><h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/6. django-rest-framework -- Parsers/" itemprop="url">6. django-rest-framework -- Parsers</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Parsers"><a href="#Parsers" class="headerlink" title="Parsers"></a>Parsers</h1><blockquote>
+<p>REST framework includes a number of built in Parser classes, that allow you to accept requests with various media types.</p>
+</blockquote>
+<p>针对请求中不同的资源请求，提供不同的解析器</p>
+<h2 id="How-the-parser-is-determined-如何决定解析器"><a href="#How-the-parser-is-determined-如何决定解析器" class="headerlink" title="How the parser is determined 如何决定解析器"></a>How the parser is determined 如何决定解析器</h2><p>当 <code>request.data</code> 获取到的时候，REST framework 会检查 <code>Content-Type</code> 请求头的值，根据这个值决定解析器。</p>
+<p>如果没有这个请求头，一般会默认按照 <code>&#39;application/x-www-form-urlencoded&#39;</code> 处理</p>
+<h2 id="Setting-the-parsers"><a href="#Setting-the-parsers" class="headerlink" title="Setting the parsers"></a>Setting the parsers</h2><pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_PARSER_CLASSES&apos;: (
+        &apos;rest_framework.parsers.JSONParser&apos;,
+    )
+}
+</code></pre><p>在 View 中设置：</p>
+<pre><code>from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+class ExampleView(APIView):
+    &quot;&quot;&quot;
+    A view that can accept POST requests with JSON content.
+    &quot;&quot;&quot;
+    parser_classes = (JSONParser,)
+
+    def post(self, request, format=None):
+        return Response({&apos;received data&apos;: request.data})
+</code></pre><p>方法视图：</p>
+<pre><code>from rest_framework.decorators import api_view
+from rest_framework.decorators import parser_classes
+
+@api_view([&apos;POST&apos;])
+@parser_classes((JSONParser,))
+def example_view(request, format=None):
+    &quot;&quot;&quot;
+    A view that can accept POST requests with JSON content.
+    &quot;&quot;&quot;
+    return Response({&apos;received data&apos;: request.data})
+</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="JSONParser"><a href="#JSONParser" class="headerlink" title="JSONParser"></a>JSONParser</h2><pre><code>.media_type: application/json
+</code></pre><h2 id="FormParser"><a href="#FormParser" class="headerlink" title="FormParser"></a>FormParser</h2><pre><code>.media_type: application/x-www-form-urlencoded
+</code></pre><h2 id="MultiPartParser"><a href="#MultiPartParser" class="headerlink" title="MultiPartParser"></a>MultiPartParser</h2><pre><code>.media_type: multipart/form-data
+</code></pre><h2 id="FileUploadParser"><a href="#FileUploadParser" class="headerlink" title="FileUploadParser"></a>FileUploadParser</h2><pre><code>.media_type: */*
+</code></pre><h1 id="Custom-parsers"><a href="#Custom-parsers" class="headerlink" title="Custom parsers"></a>Custom parsers</h1><p>。。。</p>
+<h1 id="Third-party-packages"><a href="#Third-party-packages" class="headerlink" title="Third party packages"></a>Third party packages</h1><h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a>YAML</h2><h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>安装：</p>
+<pre><code>$ pip install djangorestframework-xml
+</code></pre><p>设置：</p>
+<pre><code>REST_FRAMEWORK = {
+    &apos;DEFAULT_PARSER_CLASSES&apos;: (
+        &apos;rest_framework_xml.parsers.XMLParser&apos;,
+    ),
+    &apos;DEFAULT_RENDERER_CLASSES&apos;: (
+        &apos;rest_framework_xml.renderers.XMLRenderer&apos;,
+    ),
+}
+</code></pre>
           
         
       
@@ -1224,6 +1709,140 @@ class ListUsers(APIView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" itemprop="url">django-rest-framework 提高</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
+                2016-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一个后台架构需要考虑的"><a href="#一个后台架构需要考虑的" class="headerlink" title="一个后台架构需要考虑的"></a>一个后台架构需要考虑的</h1><p>统一的异常处理<br>api权限<br>统一的参数校验<br>缓存如何可以做的更简单统一<br>认证<br>统一的查询过滤<br>代码分层</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1360,709 +1979,11 @@ pip install pygments  # We&apos;ll be using this for the code highlighting
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" itemprop="url">django-rest-framework 提高</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
-                2016-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一个后台架构需要考虑的"><a href="#一个后台架构需要考虑的" class="headerlink" title="一个后台架构需要考虑的"></a>一个后台架构需要考虑的</h1><p>统一的异常处理<br>api权限<br>统一的参数校验<br>缓存如何可以做的更简单统一<br>认证<br>统一的查询过滤<br>代码分层</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/linux/terminal设置代理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/07/linux/terminal设置代理/" itemprop="url">Terminal 设置代理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T11:38:14+08:00">
-                2016-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>$ export http_proxy=&apos;http://localhost:8087&apos;
-$ export https_proxy=&apos;http://localhost:8087&apos;
-
-
-export http_proxy=http://127.0.0.1:1086/
-export https_proxy=http://127.0.0.1:1086/
-</code></pre><p>PS：别用ping对以上代理进行测试，不管用。</p>
-<h1 id="设置-Shadowsocks-代理"><a href="#设置-Shadowsocks-代理" class="headerlink" title="设置 Shadowsocks 代理"></a>设置 Shadowsocks 代理</h1><p><img src="http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/index.html" alt="http://droidyue.com/blog/2016/04/04/set-shadowsocks-proxy-for-terminal/index.html"></p>
-<h2 id="mac"><a href="#mac" class="headerlink" title="mac"></a>mac</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install polipo</div></pre></td></tr></table></figure>
-<h3 id="修改配置"><a href="#修改配置" class="headerlink" title="修改配置:"></a>修改配置:</h3><p>设置每次登陆启动polipo</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -sfv /usr/local/opt/polipo/*.plist ~/Library/LaunchAgents</div></pre></td></tr></table></figure>
-<p>修改文件/usr/local/opt/polipo/homebrew.mxcl.polipo.plist设置parentProxy:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</div><div class="line">&lt;plist version=&quot;1.0&quot;&gt;</div><div class="line">  &lt;dict&gt;</div><div class="line">    &lt;key&gt;Label&lt;/key&gt;</div><div class="line">    &lt;string&gt;homebrew.mxcl.polipo&lt;/string&gt;</div><div class="line">    &lt;key&gt;RunAtLoad&lt;/key&gt;</div><div class="line">    &lt;true/&gt;</div><div class="line">    &lt;key&gt;KeepAlive&lt;/key&gt;</div><div class="line">    &lt;true/&gt;</div><div class="line">    &lt;key&gt;ProgramArguments&lt;/key&gt;</div><div class="line">    &lt;array&gt;</div><div class="line">        &lt;string&gt;/usr/local/opt/polipo/bin/polipo&lt;/string&gt;</div><div class="line">        &lt;string&gt;socksParentProxy=localhost:1080&lt;/string&gt;</div><div class="line">    &lt;/array&gt;</div><div class="line">    &lt;!-- Set `ulimit -n 20480`. The default OS X limit is 256, that&apos;s</div><div class="line">         not enough for Polipo (displays &apos;too many files open&apos; errors).</div><div class="line">         It seems like you have no reason to lower this limit</div><div class="line">         (and unlikely will want to raise it). --&gt;</div><div class="line">    &lt;key&gt;SoftResourceLimits&lt;/key&gt;</div><div class="line">    &lt;dict&gt;</div><div class="line">      &lt;key&gt;NumberOfFiles&lt;/key&gt;</div><div class="line">      &lt;integer&gt;20480&lt;/integer&gt;</div><div class="line">    &lt;/dict&gt;</div><div class="line">  &lt;/dict&gt;</div><div class="line">&lt;/plist&gt;</div></pre></td></tr></table></figure></p>
-<p>修改的地方是增加了<code>&lt;string&gt;socksParentProxy=localhost:1080&lt;/string&gt;</code></p>
-<h3 id="启动-Mac"><a href="#启动-Mac" class="headerlink" title="启动(Mac):"></a>启动(Mac):</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.polipo.plist</div><div class="line">launchctl load ~/Library/LaunchAgents/homebrew.mxcl.polipo.plis</div><div class="line"></div><div class="line">// or</div><div class="line">launchctl unload /usr/local/opt/polipo/homebrew.mxcl.polipo.plist</div><div class="line">launchctl load /usr/local/opt/polipo/homebrew.mxcl.polipo.plist</div></pre></td></tr></table></figure>
-<h3 id="验证及使用"><a href="#验证及使用" class="headerlink" title="验证及使用:"></a>验证及使用:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">07:56:24-androidyue/var/log$ curl ip.gs</div><div class="line">当前 IP：125.39.112.15 来自：中国天津天津 联通</div><div class="line">08:09:23-androidyue/var/log$ http_proxy=http://localhost:8123 curl ip.gs</div><div class="line">当前 IP：210.140.193.128 来自：日本日本</div></pre></td></tr></table></figure>
-<h3 id="设置别名"><a href="#设置别名" class="headerlink" title="设置别名:"></a>设置别名:</h3><p>bash中有一个很好的东西，就是别名alias. Linux用户修改~/.bashrc，Mac用户修改~/.bash_profile文件，增加如下设置:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">alias hp=&quot;http_proxy=http://localhost:8123&quot;</div></pre></td></tr></table></figure>
-<p>然后Linux用户执行source ~/.bashrc，Mac用户执行source ~/.bash_profile</p>
-<p>使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">20:39:39-androidyue~$ curl ip.gs</div><div class="line">当前 IP：125.39.112.14 来自：中国天津天津 联通</div><div class="line">20:39:44-androidyue~$ hp curl ip.gs</div><div class="line">当前 IP：210.140.193.128 来自：日本日本 </div><div class="line">20:39:48-androidyue~$</div></pre></td></tr></table></figure></p>
-<h3 id="当前会话全局设置"><a href="#当前会话全局设置" class="headerlink" title="当前会话全局设置"></a>当前会话全局设置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export http_proxy=http://localhost:8123</div><div class="line"></div><div class="line"></div><div class="line">unset http_proxy</div></pre></td></tr></table></figure>
-<p>如果想要更长久的设置代理，可以将export http_proxy=<a href="http://localhost:8123加入.bashrc或者.bash_profile文件" target="_blank" rel="external">http://localhost:8123加入.bashrc或者.bash_profile文件</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/android波纹效果/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/04/Android/Android 版本/Android5.0/android波纹效果/" itemprop="url">android5.0 波纹效果</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T12:18:12+08:00">
-                2016-11-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>android5.0后支持</p>
-<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="drawable-v21-touch-bg-xml"><a href="#drawable-v21-touch-bg-xml" class="headerlink" title="drawable-v21/touch_bg.xml"></a>drawable-v21/touch_bg.xml</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-        android:color=&quot;@color/line_grey&quot;&gt;
-    &lt;item android:drawable=&quot;@color/white&quot;/&gt;
-&lt;/ripple&gt;
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/android波纹效果/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Android/优化/Android错误日志收集/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/03/Android/优化/Android错误日志收集/" itemprop="url">Android错误日志 收集</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T21:03:14+08:00">
-                2016-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="创建一个异常类"><a href="#创建一个异常类" class="headerlink" title="创建一个异常类"></a>创建一个异常类</h1><pre><code>public class CrashHandler implements Thread.UncaughtExceptionHandler {
-
-    private static final String TAG = &quot;CrashHandler&quot;;
-    private static final boolean DEBUG = true;
-
-    public static final String PATH = Environment.getExternalStorageDirectory().getPath() + &quot;/qchat/log/&quot;;
-    private static final String FILE_NAME = &quot;crash&quot;;
-    //log文件的后缀名
-    private static final String FILE_NAME_SUFFIX = &quot;.txt&quot;;
-
-    private static CrashHandler sInstance = new CrashHandler();
-
-    //系统默认的异常处理（默认情况下，系统会终止当前的异常程序）
-    private Thread.UncaughtExceptionHandler mDefaultCrashHandler;
-
-    private Context mContext;
-
-    //构造方法私有，防止外部构造多个实例，即采用单例模式
-    private CrashHandler() {
-    }
-
-    public static CrashHandler getInstance() {
-        return sInstance;
-    }
-
-    //这里主要完成初始化工作
-    public void init(Context context) {
-        //获取系统默认的异常处理器
-        mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler();
-        //将当前实例设为系统默认的异常处理器
-        Thread.setDefaultUncaughtExceptionHandler(this);
-        //获取Context，方便内部使用
-        mContext = context.getApplicationContext();
-    }
-
-
-    @Override
-    public void uncaughtException(Thread thread, Throwable ex) {
-        //读取stacktrace信息
-        try {
-            //导出异常信息到SD卡中
-            dumpExceptionToSDCard(ex);
-            //这里可以通过网络上传异常信息到服务器，便于开发人员分析日志从而解决bug
-            uploadExceptionToServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //打印出当前调用栈信息
-        ex.printStackTrace();
-
-        //如果系统提供了默认的异常处理器，则交给系统去结束我们的程序，否则就由我们自己结束自己
-        if (mDefaultCrashHandler != null) {
-            mDefaultCrashHandler.uncaughtException(thread, ex);
-        } else {
-            Process.killProcess(Process.myPid());
-        }
-
-    }
-
-    private void dumpExceptionToSDCard(Throwable ex) throws IOException {
-        //如果SD卡不存在或无法使用，则无法把异常信息写入SD卡
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            if (DEBUG) {
-                Log.w(TAG, &quot;sdcard unmounted,skip dump exception&quot;);
-                return;
-            }
-        }
-
-        File dir = new File(PATH);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        long current = System.currentTimeMillis();
-        String time = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).format(new Date(current));
-        //以当前时间创建log文件
-        File file = new File(PATH + FILE_NAME + time + FILE_NAME_SUFFIX);
-
-        try {
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-            //导出发生异常的时间
-            pw.println(time);
-
-            //导出手机信息
-            dumpPhoneInfo(pw);
-
-            pw.println();
-            //导出异常的调用栈信息
-            ex.printStackTrace(pw);
-
-            pw.close();
-        } catch (Exception e) {
-            Log.e(TAG, &quot;dump crash info failed&quot;);
-        }
-    }
-
-    private void dumpPhoneInfo(PrintWriter pw) throws PackageManager.NameNotFoundException {
-        //应用的版本名称和版本号
-        PackageManager pm = mContext.getPackageManager();
-        PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(), PackageManager.GET_ACTIVITIES);
-        pw.print(&quot;App Version: &quot;);
-        pw.print(pi.versionName);
-        pw.print(&apos;_&apos;);
-        pw.println(pi.versionCode);
-
-        //android版本号
-        pw.print(&quot;OS Version: &quot;);
-        pw.print(Build.VERSION.RELEASE);
-        pw.print(&quot;_&quot;);
-        pw.println(Build.VERSION.SDK_INT);
-
-        //手机制造商
-        pw.print(&quot;Vendor: &quot;);
-        pw.println(Build.MANUFACTURER);
-
-        //手机型号
-        pw.print(&quot;Model: &quot;);
-        pw.println(Build.MODEL);
-
-        //cpu架构
-        pw.print(&quot;CPU ABI: &quot;);
-        pw.println(Build.CPU_ABI);
-    }
-
-    private void uploadExceptionToServer() {
-        //TODO Upload Exception Message To Your Web Server
-//        FilePostUtils.uploadCrashFile();
-        Logger.e(&quot;crash upload&quot;);
-    }
-}
-</code></pre><h1 id="注册这个类"><a href="#注册这个类" class="headerlink" title="注册这个类"></a>注册这个类</h1><p>在 Application 中</p>
-<pre><code>CrashHandler crashHandler = CrashHandler.getInstance();
-crashHandler.init(this);
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/11/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/13/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2107,7 +2028,7 @@ crashHandler.init(this);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">380</span>
+                <span class="site-state-item-count">384</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>

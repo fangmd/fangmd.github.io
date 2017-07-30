@@ -253,6 +253,676 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/12/Android/ndk/NDKlearn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/12/Android/ndk/NDKlearn/" itemprop="url">NDK 学习记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-12T13:18:12+08:00">
+                2016-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ndk-build"><a href="#ndk-build" class="headerlink" title="ndk-build"></a>ndk-build</h1><p><a href="http://blog.csdn.net/shulianghan/article/details/18964835" target="_blank" rel="external">http://blog.csdn.net/shulianghan/article/details/18964835</a></p>
+<h1 id="新方法-CMake"><a href="#新方法-CMake" class="headerlink" title="新方法 CMake"></a>新方法 CMake</h1><p><a href="http://wl9739.github.io/2016/09/21/%E5%9C%A8-Android-Studio-2-2-%E4%B8%AD%E6%84%89%E5%BF%AB%E5%9C%B0%E4%BD%BF%E7%94%A8-C-C-md/" target="_blank" rel="external">http://wl9739.github.io/2016/09/21/%E5%9C%A8-Android-Studio-2-2-%E4%B8%AD%E6%84%89%E5%BF%AB%E5%9C%B0%E4%BD%BF%E7%94%A8-C-C-md/</a></p>
+<h1 id="NDK-官方文档-学习"><a href="#NDK-官方文档-学习" class="headerlink" title="NDK 官方文档 学习"></a>NDK 官方文档 学习</h1><h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><ol>
+<li>下载</li>
+<li>解压</li>
+<li>配置环境变量</li>
+</ol>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>可能使用到ndk的人：</p>
+<ol>
+<li>需要开发多平台app的人</li>
+<li>提供 libraries 给他人使用的人</li>
+<li>游戏开发等需要代码运行速度的人</li>
+</ol>
+<h3 id="How-it-Works"><a href="#How-it-Works" class="headerlink" title="How it Works"></a>How it Works</h3><h4 id="Main-components"><a href="#Main-components" class="headerlink" title="Main components"></a>Main components</h4><p>需要了解下面的组件</p>
+<ol>
+<li><p>ndk-build：脚本文件，在NDK开发的时候会执行</p>
+<ul>
+<li>自动识别开发系统和应用的工程文件</li>
+<li>生成二进制文件</li>
+<li>复制二进制文件到应用工程目录中</li>
+</ul>
+</li>
+<li><p>java：android构建的时候生成<code>.dex</code>文件，运行在java虚拟机中，java语言使用下面的语句调用<code>native</code>代码</p>
+<pre><code>public native int add(int x,int y);
+</code></pre></li>
+<li><p>Native shared libraries:NDK会把native code 构建成<code>.so</code>文件</p>
+</li>
+<li>Native static libraries:构建静态库</li>
+<li>Java Native Interface(JNI):java 和 C++ 交互</li>
+<li>Application Binary Interface(ABI):决定了代码如何和设备交互，不同的设备需要不同的ABI文件来支持（俗称的CUP适配）</li>
+<li>Manifest:如果要写一个没有java 组件的app，需要声明<code>NativeActivity</code>类</li>
+</ol>
+<p>如果要使用<code>ndk-build</code>脚本和调试脚本<code>ndk-gdb</code>需要下面两项：</p>
+<ol>
+<li><code>Android.mk</code>:需要创建<code>Android.mk</code>配置文件在<code>jni</code>文件夹下，<code>ndk-build</code>脚本会寻找这个文件，它定义了一些配置信息(defines the module and its name, the source files to be compiled, build flags and libraries to link.)</li>
+<li><code>Application.mk</code>:这个文件列举和描述了app使用的模块，包括：<ul>
+<li>ABIs </li>
+<li>Toolchains</li>
+<li>Standard libraries</li>
+</ul>
+</li>
+</ol>
+<h4 id="Flow-使用流程"><a href="#Flow-使用流程" class="headerlink" title="Flow 使用流程"></a>Flow 使用流程</h4><ol>
+<li>设计app，确定哪里需要使用native代码</li>
+<li>创建app工程</li>
+<li>如果作纯 native代码的app，需要在<code>AndroidManifest.xml</code>中配置</li>
+<li>创建<code>Android.mk</code>文件(describing the native library, including name, flags, linked libraries, and source files to be compiled in the “JNI” directory.)</li>
+<li>可选，创建<code>Application.mk</code><br>….</li>
+</ol>
+<h3 id="Native-Activities-and-Applications"><a href="#Native-Activities-and-Applications" class="headerlink" title="Native Activities and Applications"></a>Native Activities and Applications</h3><blockquote>
+<p>暂时跳过</p>
+</blockquote>
+<h2 id="Android-mk"><a href="#Android-mk" class="headerlink" title="Android.mk"></a>Android.mk</h2><h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p><code>Android.mk</code>保存在工程目录下的<code>jin/</code>文件夹下</p>
+<h3 id="Basics"><a href="#Basics" class="headerlink" title="Basics"></a>Basics</h3><p><code>Android.mk</code>文件开始句子：</p>
+<pre><code>LOCAL_PATH := $(call my-dir)
+</code></pre><p>这个句子表明了开发的文件位置，宏功能<code>my-dir</code>由构建系统提供，返回当前的文件目录</p>
+<p>下个句子：<code>CLEAR_VARS</code>:值由构建系统提供</p>
+<pre><code>include $(CLEAR_VARS)
+</code></pre><p>这个变量指出GNU清理大多数的<code>LOCAL_XXX</code>变量，比如：<code>LOCAL_MODULE</code>，<code>LOCAL_SRC_FILES</code>，<code>LOCAL_STATIC_LIBRARIES</code>，但是不会清理<code>LOCAL_PATH</code></p>
+<p>next: <code>LOCAL_MODULE</code>:保存了模块的名称，每个模块都要使用语句</p>
+<pre><code>LOCAL_MODULE := hello-jni
+</code></pre><p>注意：模块名必须是唯一的而且不带空格，构建系统在构建模块的时候会自动添加文件名的前缀和后缀比如：<code>libhello-jni.so</code>,如果模块名中和前缀后缀有重合的地方，就不会添加前缀或者后缀了。</p>
+<p>next：</p>
+<pre><code>LOCAL_SRC_FILES := hello.jni.c
+</code></pre><p>包含了c或者c++文件名</p>
+<p>last：</p>
+<pre><code>include $(BUILD_SHARED_LIBRARY)
+</code></pre><h2 id="Application-mk"><a href="#Application-mk" class="headerlink" title="Application.mk"></a>Application.mk</h2><h2 id="ndk-build-1"><a href="#ndk-build-1" class="headerlink" title="ndk-build"></a>ndk-build</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/04/Android/设计模式/MVP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/04/Android/设计模式/MVP/" itemprop="url">MVP 学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-04T13:18:12+08:00">
+                2016-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="MVP-学习"><a href="#MVP-学习" class="headerlink" title="MVP 学习"></a>MVP 学习</h1><h2 id="MVP-是什么"><a href="#MVP-是什么" class="headerlink" title="MVP 是什么"></a>MVP 是什么</h2><blockquote>
+<p>一种设计模式</p>
+</blockquote>
+<p>包含四个要素：</p>
+<ol>
+<li>View：负责绘制UI元素，与用户进行交互(比如Activity)</li>
+<li>View interface：需要View实现的接口，View通过View interface与Presenter进行交互，降低耦合，方便进行单元测试</li>
+<li>Model：负责存储，检索，操作数据(有时也实现一个Model interface用来降低耦合);也有人理解为JavaBean；</li>
+<li>Presenter：作为View与Model交互的中间纽带，处理与用户交互的负责逻辑</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/06/04/Android/设计模式/MVP/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/04/Android/权限管理/Android权限管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/04/Android/权限管理/Android权限管理/" itemprop="url">Android权限管理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-04T13:18:12+08:00">
+                2016-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android-权限管理"><a href="#Android-权限管理" class="headerlink" title="Android 权限管理"></a>Android 权限管理</h1><h2 id="Permission-Group"><a href="#Permission-Group" class="headerlink" title="Permission Group"></a>Permission Group</h2><p>安卓中使用权限组来管理权限，每个权限组下包含了相关的子权限；</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/06/04/Android/权限管理/Android权限管理/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/04/Android/bmob/bmob实现App更新/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/06/04/Android/bmob/bmob实现App更新/" itemprop="url">Bomb实现App更新</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-04T13:18:12+08:00">
+                2016-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Bmob实现App更新"><a href="#Bmob实现App更新" class="headerlink" title="Bmob实现App更新"></a>Bmob实现App更新</h1><h2 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h2><p>地址:<a href="http://docs.bmob.cn/data/Android/e_autoupdate/doc/index.html#index_快速入门" target="_blank" rel="external">http://docs.bmob.cn/data/Android/e<em>autoupdate/doc/index.html#index</em>快速入门</a></p>
+<h3 id="0-导入SDK"><a href="#0-导入SDK" class="headerlink" title="0 导入SDK"></a>0 导入SDK</h3><p><a href="http://docs.bmob.cn/data/Android/b_developdoc/doc/index.html#index_SDK导入" target="_blank" rel="external">http://docs.bmob.cn/data/Android/b_developdoc/doc/index.html#index_SDK导入</a></p>
+<h4 id="方法一：添加依赖仓库"><a href="#方法一：添加依赖仓库" class="headerlink" title="方法一：添加依赖仓库"></a>方法一：添加依赖仓库</h4><p><code>project/build.gradle</code>:</p>
+<pre><code>repositories {
+     jcenter()
+     //Bmob的maven仓库地址--必填
+     maven { url &quot;https://raw.github.com/bmob/bmob-android-sdk/master&quot;  }
+
+}
+</code></pre><p>在<code>app/build.gradle</code>中添加需要的依赖：</p>
+<pre><code>dependencies {
+    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])
+
+        //以下SDK开发者请根据需要自行选择
+        //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
+            //3.4.7-aar：请务必查看下面注释[1]
+    compile &apos;cn.bmob.android:bmob-sdk:3.4.7-aar&apos;
+
+        //bmob-push：Bmob的推送包
+    compile &apos;cn.bmob.android:bmob-push:0.8&apos;
+
+    //bmob-im：Bmob的即时通讯包，注意每个版本的im依赖特定版本的bmob-sdk，具体的依赖关系可查看下面注释[2]
+    compile &apos;cn.bmob.android:bmob-im:2.0.5@aar&apos;
+    compile &apos;cn.bmob.android:bmob-sdk:3.4.7-aar&apos;
+    //bmob-sms ：Bmob单独为短信服务提供的包
+    compile &apos;cn.bmob.android:bmob-sms:1.0.1&apos;
+
+   //如果你想应用能够兼容Android6.0，请添加此依赖(org.apache.http.legacy.jar)
+   compile &apos;cn.bmob.android:http-legacy:1.0&apos;
+
+}
+</code></pre><p><em>注意：</em>这里如果我们使用retrofit的话，<code>okhttp</code>的依赖就重复了，如果打包的时候报错，建议通过手动导入jar和so文件的方式来加入SDK</p>
+<h4 id="方法二：手动导入SDK-jar-so"><a href="#方法二：手动导入SDK-jar-so" class="headerlink" title="方法二：手动导入SDK jar so"></a>方法二：手动导入SDK jar so</h4><ol>
+<li>将下载的sdk中的jar文件复制到工程的libs目录下(注意不要复制okhttp相关的jar，如果你的工程中已经添加了这个依赖)</li>
+<li>将包含so文件的文件夹复制到<code>app/src/main/jniLibs</code>这个文件夹可能需要自己创建</li>
+</ol>
+<h4 id="AndroidManifest-xml配置"><a href="#AndroidManifest-xml配置" class="headerlink" title="AndroidManifest.xml配置"></a>AndroidManifest.xml配置</h4><p>sdk需要的权限：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt; 
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWORK_STATE&quot; /&gt; 
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_WIFI_STATE&quot; /&gt; 
+&lt;uses-permission android:name=&quot;android.permission.WAKE_LOCK&quot; /&gt; 
+&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.READ_PHONE_STATE&quot; /&gt;
+</code></pre><p>ps:其中有两个敏感权限</p>
+<h3 id="1-初始化SDK"><a href="#1-初始化SDK" class="headerlink" title="1 初始化SDK"></a>1 初始化SDK</h3><p>在代码中初始化SDK</p>
+<pre><code>// 初始化BmobSDK 
+Bmob.initialize(this, APPID);
+</code></pre><h3 id="3-版本设置"><a href="#3-版本设置" class="headerlink" title="3 版本设置"></a>3 版本设置</h3><p><em>app的版本号和版本码设置在<code>app/build.gradle</code>中，如果在<code>AndroidManifest.xml</code>中设置，还是会被覆盖；</em></p>
+<h3 id="4-app更新相关api"><a href="#4-app更新相关api" class="headerlink" title="4 app更新相关api"></a>4 app更新相关api</h3><p>官方Demo：<a href="https://github.com/bmob/bmob-android-demo-autoupdate/blob/master/src/com/bmob/autoupdatedemo/MainActivity.java" target="_blank" rel="external">https://github.com/bmob/bmob-android-demo-autoupdate/blob/master/src/com/bmob/autoupdatedemo/MainActivity.java</a></p>
+<h1 id="未解决"><a href="#未解决" class="headerlink" title="未解决"></a>未解决</h1><ol>
+<li>SDK初始化代码放在<code>BaseApplication</code>中失败</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/03/Android/intent和Bundle传值/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1283,670 +1953,11 @@ mIsDualPane = srticleView != null &amp;&amp; articleView.getVisibility() == View
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/15/Android/tips/Android时间操作/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/15/Android/tips/Android时间操作/" itemprop="url">Android 时间操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-15T12:18:12+08:00">
-                2016-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Android-时间操作"><a href="#Android-时间操作" class="headerlink" title="Android 时间操作"></a>Android 时间操作</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/05/15/Android/tips/Android时间操作/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/15/Android/网络/网络协议 -http/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/15/Android/网络/网络协议 -http/" itemprop="url">网络协议--http</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-15T12:18:12+08:00">
-                2016-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="网络协议-–-http"><a href="#网络协议-–-http" class="headerlink" title="网络协议 – http"></a>网络协议 – http</h1><p>超文本传输协议（HTTP，HyperText Transfer Protocol)是互联网上应用最为广泛的一种网络协议。所有的WWW文件都必须遵守这个标准。</p>
-<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ol>
-<li><p>支持客户/服务器模式。</p>
-</li>
-<li><p>简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。每种方法规定了客户与服务器联系的类型不同。由于HTTP协议简单，使得HTTP服务器的程序规模小，因而通信速度很快。</p>
-</li>
-<li><p>灵活：HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type（Content-Type是HTTP包中用来表示内容类型的标识）加以标记。</p>
-</li>
-<li><p>无连接：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。</p>
-</li>
-<li><p>无状态：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。</p>
-</li>
-</ol>
-<h2 id="两种回话方式"><a href="#两种回话方式" class="headerlink" title="两种回话方式"></a>两种回话方式</h2><ol>
-<li>建立连接-&gt;请求-&gt;响应-&gt;断开连接</li>
-<li>在一个TCP连接中可以传送多个HTTP请求和响应</li>
-</ol>
-<p>不需要等待上次HTTP响应完毕，可以多个HTTP请求同时进行。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/05/15/Android/网络/网络协议 -http/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/15/Android/网络/网络协议/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/15/Android/网络/网络协议/" itemprop="url">网络协议</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-15T12:18:12+08:00">
-                2016-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="五层模型-七层，四层，按自己理解"><a href="#五层模型-七层，四层，按自己理解" class="headerlink" title="五层模型(七层，四层，按自己理解)"></a>五层模型(七层，四层，按自己理解)</h3><ul>
-<li>应用层 Application Layer</li>
-<li>传输层 Transport Layer</li>
-<li>网络层 Network Layer</li>
-<li>链接层 Link Layer</li>
-<li>实体层 Physical Layer</li>
-</ul>
-<p>越下面的层级，越靠近硬件；</p>
-<h3 id="层与协议"><a href="#层与协议" class="headerlink" title="层与协议"></a>层与协议</h3><p>互联网协议：Internet Protocol Suite</p>
-<h4 id="实体层"><a href="#实体层" class="headerlink" title="实体层"></a>实体层</h4><p>物理链接电脑：光缆/电缆/无线电波</p>
-<p>主要规定了网络的一些电气特性</p>
-<p>作用:负责传送0和1的电信号。</p>
-<h4 id="链接层"><a href="#链接层" class="headerlink" title="链接层"></a>链接层</h4><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><p>单纯的0和1没有任何意义，必须规定解读方式：多少个电信号算一组？每个信号位有何意义？</p>
-<blockquote>
-<p>这就是”链接层”的功能，它在”实体层”的上方，确定了0和1的分组方式。</p>
-</blockquote>
-<h5 id="以太网协议"><a href="#以太网协议" class="headerlink" title="以太网协议"></a>以太网协议</h5><p>一组电信号构成一个数据包：叫做Frame帧</p>
-<p>每一Frame：标头Head – 数据Data</p>
-<p><em>标头：</em>包含数据包的一些说明项，比如发送者、接受者、数据类型等等；”数据”则是数据包的具体内容。”标头”的长度，固定为18字节。</p>
-<p><em>数据：</em>长度，最短为46字节，最长为1500字节。</p>
-<p>如果数据很长，就必须分割成多个帧进行发送。</p>
-<h5 id="MAC地址"><a href="#MAC地址" class="headerlink" title="MAC地址"></a>MAC地址</h5><p>上面提到，以太网数据包的”标头”，包含了发送者和接受者的信息。那么，发送者和接受者是如何标识呢？</p>
-<p>以太网规定，连入网络的所有设备，都必须具有”网卡”接口。数据包必须是从一块网卡，传送到另一块网卡。网卡的地址，就是数据包的发送地址和接收地址，这叫做MAC地址。</p>
-<p>MAC地址：长度是48个二进制位，通常用12个十六进制数表示。</p>
-<p><img src="http://image.beekka.com/blog/201205/bg2012052906.png" alt="http://image.beekka.com/blog/201205/bg2012052906.png"></p>
-<p>前6个十六进制数是厂商编号，后6个是该厂商的网卡流水号。</p>
-<p>有了MAC地址，就可以定位网卡和数据包的路径了。</p>
-<p><em>MAC地址，定义地址</em></p>
-<h5 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h5><p>1号计算机向2号计算机发送一个数据包，同一个子网络的3号、4号、5号计算机都会收到这个包。它们读取这个包的”标头”，找到接收方的MAC地址，然后与自身的MAC地址相比较，如果两者相同，就接受这个包，做进一步处理，否则就丢弃这个包。这种发送方式就叫做”广播”（broadcasting）。</p>
-<blockquote>
-<p>效率低，局限在发送者所在的子网络；所以有了网络层</p>
-<h4 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h4><p>作用是引进一套新的地址，使得我们能够区分不同的计算机是否属于同一个子网络。这套地址就叫做”网络地址”，简称”网址”。</p>
-</blockquote>
-<p>每台计算机有了两种地址，一种是MAC地址，另一种是网络地址。两种地址之间没有任何联系，MAC地址是绑定在网卡上的，网络地址则是管理员分配的，它们只是随机组合在一起。</p>
-<p>网络地址帮助我们确定计算机所在的子网络，MAC地址则将数据包送到该子网络中的目标网卡。因此，从逻辑上可以推断，必定是先处理网络地址，然后再处理MAC地址。</p>
-<h5 id="IP协议"><a href="#IP协议" class="headerlink" title="IP协议"></a>IP协议</h5><p>规定网络地址的协议，叫做IP协议，IP地址；IPv4，IPv6</p>
-<p>“子网掩码”，就是表示子网络特征的一个参数。它的网络部分全部为1，主机部分全部为0。</p>
-<p>知道”子网掩码”，我们就能判断，任意两个IP地址是否处在同一个子网络。方法是将两个IP地址与子网掩码分别进行AND运算（两个数位都为1，运算结果为1，否则为0），然后比较结果是否相同，如果是的话，就表明它们在同一个子网络中，否则就不是。</p>
-<p>IP协议作用：</p>
-<ol>
-<li>为每一台计算机分配IP地址</li>
-<li>确定哪些地址在同一个子网络。(配合子网掩码)</li>
-</ol>
-<h5 id="IP数据包"><a href="#IP数据包" class="headerlink" title="IP数据包"></a>IP数据包</h5><p>根据IP协议发送的数据，就叫做IP数据包。</p>
-<p>IP数据包直接放进以太网数据包的”数据”部分</p>
-<p>互联网分层结构的好处：上层的变动完全不涉及下层的结构。</p>
-<p>IP数据包：</p>
-<ol>
-<li>标头Head：主要包括版本、长度、IP地址等信息</li>
-<li>数据Data：IP数据包的具体内容</li>
-</ol>
-<h5 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h5><p>因为IP数据包是放在以太网数据包里发送的，所以我们必须同时知道两个地址，一个是对方的MAC地址，另一个是对方的IP地址。通常情况下，对方的IP地址是已知的（后文会解释），但是我们不知道它的MAC地址。</p>
-<p>所以，我们需要一种机制，能够从IP地址得到MAC地址。</p>
-<p>这里又可以分成两种情况。</p>
-<ol>
-<li><p>如果两台主机不在同一个子网络，那么事实上没有办法得到对方的MAC地址，只能把数据包传送到两个子网络连接处的”网关”（gateway），让网关去处理。</p>
-</li>
-<li><p>如果两台主机在同一个子网络，那么我们可以用ARP协议，得到对方的MAC地址。ARP协议也是发出一个数据包（包含在以太网数据包中），其中包含它所要查询主机的IP地址，在对方的MAC地址这一栏，填的是FF:FF:FF:FF:FF:FF，表示这是一个”广播”地址。它所在子网络的每一台主机，都会收到这个数据包，从中取出IP地址，与自身的IP地址进行比较。如果两者相同，都做出回复，向对方报告自己的MAC地址，否则就丢弃这个包。</p>
-</li>
-</ol>
-<p>总之，有了ARP协议之后，我们就可以得到同一个子网络内的主机MAC地址，可以把数据包发送到任意一台主机之上了。</p>
-<h4 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h4><p>有了MAC地址和IP地址，我们已经可以在互联网上任意两台主机上建立通信。</p>
-<h5 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h5><p>是0到65535之间的一个整数，0到1023的端口被系统占用，用户只能选用大于1023的端口。</p>
-<p>一个应用程序一个端口</p>
-<h5 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h5><p>就是建立”端口到端口”的通信。相比之下，”网络层”的功能是建立”主机到主机”的通信。只要确定主机和端口，我们就能实现程序之间的交流。</p>
-<p>Unix系统就把主机+端口，叫做”套接字”（socket）</p>
-<p>有了它，就可以进行网络应用程序开发了。</p>
-<h5 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h5><blockquote>
-<p>在数据包中加入端口信息，这就需要新的协议。</p>
-</blockquote>
-<p>UDP数据包：它的格式几乎就是在数据前面，加上端口号。</p>
-<ol>
-<li>标头Head：定义了发出端口和接收端口</li>
-<li>数据Data：具体的内容</li>
-</ol>
-<p>把整个UDP数据包放入IP数据包的”数据”部分，</p>
-<p>UDP数据包非常简单，”标头”部分一共只有8个字节，总长度不超过65,535字节，正好放进一个IP数据包。</p>
-<h5 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h5><p>UDP协议的优点是比较简单，容易实现，但是缺点是可靠性较差，一旦数据包发出，无法知道对方是否收到。</p>
-<blockquote>
-<p>有确认机制的UDP协议</p>
-</blockquote>
-<p>TCP协议能够确保数据不会遗失。它的缺点是过程复杂、实现困难、消耗较多的资源。</p>
-<h4 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h4><p>应用程序收到”传输层”的数据，接下来就要进行解读。</p>
-<p>TCP协议可以为各种各样的程序传递数据，比如Email、WWW、FTP等等</p>
-<p>以太网的数据包结构：</p>
-<p><img src="http://image.beekka.com/blog/201205/bg2012052913.png" alt="http://image.beekka.com/blog/201205/bg2012052913.png"></p>
-<p>参考：<a href="http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/15/Android/view/WebView/WebView js 交互/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/15/Android/view/WebView/WebView js 交互/" itemprop="url">WebView js交互</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-15T11:38:14+08:00">
-                2016-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="WebView-js-交互"><a href="#WebView-js-交互" class="headerlink" title="WebView js 交互"></a>WebView js 交互</h1><h2 id="js调用java代码"><a href="#js调用java代码" class="headerlink" title="js调用java代码"></a>js调用java代码</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>webview设置一个和js交互的接口（注意这里只是一般的意思，并不是java中接口的含义）</p>
-<pre><code>mWebView.addJavascriptInterface(new DemoJavaScriptInterface(), &quot;demo&quot;);
-</code></pre><p>new  DemoJavaScriptInterface就是这个接口，demo就是这个接口的别名。</p>
-<p>上面的代码执行之后在html的js中就能通过别名（这里是“demo”）来调用newDemoJavaScriptInterface类中的任何方法。</p>
-<p>如我们想让html中的一个button点击之后调用java中的函数可以这样：</p>
-<pre><code>&lt;input type=&quot;button&quot;  value=&quot;click me&quot;  onclick=&quot;window.demo.clickOnAndroid()&quot;/&gt;
-</code></pre><blockquote>
-<p>但是因为安全问题，在Android4.2中(如果应用的android:targetSdkVersion数值为17+)JS只能访问带有 @JavascriptInterface注解的Java函数。因此如果你的开发版本比较高，需要在被调用的函数前加上@JavascriptInterface注解。</p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/05/15/Android/view/WebView/WebView js 交互/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/38/">38</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1991,7 +2002,7 @@ mIsDualPane = srticleView != null &amp;&amp; articleView.getVisibility() == View
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">380</span>
+                <span class="site-state-item-count">384</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
