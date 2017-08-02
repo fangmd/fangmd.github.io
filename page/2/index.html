@@ -253,6 +253,175 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/20/ReadNote/设计模式/设计模式之蝉-命令模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/20/ReadNote/设计模式/设计模式之蝉-命令模式/" itemprop="url">设计模式之蝉 - 命令模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-20T21:38:14+08:00">
+                2017-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="例子-项目经理"><a href="#例子-项目经理" class="headerlink" title="例子 项目经理"></a>例子 项目经理</h1><p>一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理</p>
+<p>如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。</p>
+<p>命令：Command</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    protected RequirementGroup rg = new RequirementGroup(); // 需求组</div><div class="line">    protected PageGroup pg = new PageGroup();</div><div class="line">    protected CodeGroup cg = new CodeGroup();</div><div class="line"></div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>增加一个需求命令：AddRequirementCommand</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class AddRqueirementCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.rg.find();</div><div class="line">        super.rg.add();</div><div class="line">        super.rg.plan();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有多少个命令就有多少个 Command 抽象类的子类。</p>
+<p>命名分发类：Invoker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class Invoker&#123;</div><div class="line">    private Command command;</div><div class="line"></div><div class="line">    public void setCommand(Command command)&#123;</div><div class="line">        this.command = command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>负责人接到命令后立即执行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Client&#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        Invoker xiaoming = new Invoker()</div><div class="line"></div><div class="line">        Command command = new AddRequirementCommand();</div><div class="line">        xiaoming.setCommand(command);</div><div class="line">        xiaoming.action();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.</p>
+<p>将一个请求封装成一个对象，从而让你使用不同的请求把客户端参数化，对请求排队或者记录请求日志，可以提供命令的撤销和恢复功能。</p>
+<p>请求方：Invoker，执行方：Receiver</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Receiver&#123;</div><div class="line">    public abstract void doSomething();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接受者有多个，所以是抽象的。</p>
+<p>Command:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体的命令类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class ConcreteCommand1 extends Command&#123;</div><div class="line">    private Reciever receiver;</div><div class="line">    public ConcreteCommand1(Receiver _receiver)&#123;</div><div class="line">        this.receiver = _receiver;</div><div class="line">    &#125;</div><div class="line">    public void execute()&#123;</div><div class="line">        this.receiver.doSomething();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Invoker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Invoder&#123;</div><div class="line">    private Command command;</div><div class="line">    public void setCommand(Command _command)&#123;</div><div class="line">        this.command = _command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>优点：</p>
+<ol>
+<li>类间解耦</li>
+<li>可扩展性</li>
+<li>命令模式结合其他模式使用：结合责任链模式，实现命令族解析任务；结合模版方法模式，则可以减少 Command 子类的膨胀问题</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>Command 子类过多</li>
+</ol>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>一些是命令的地方就可以使用命令模式。比如 按钮的点击，DOS 命令</p>
+<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><h2 id="一个命令可以对应多个执行端"><a href="#一个命令可以对应多个执行端" class="headerlink" title="一个命令可以对应多个执行端"></a>一个命令可以对应多个执行端</h2><h2 id="反悔问题"><a href="#反悔问题" class="headerlink" title="反悔问题"></a>反悔问题</h2><p>需要在执行方增加 <code>roolBack</code> 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Group&#123;</div><div class="line">    //...</div><div class="line"></div><div class="line">    public void rollBack()&#123;</div><div class="line">        // 更具日志回滚</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class CancelDeletePageCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.pg.rollBack();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/19/ReadNote/设计模式/设计模式之蝉-中介者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1117,140 +1286,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/ios/UITableView相关/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/12/ios/UITableView相关/" itemprop="url">UITableView 相关</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-12T13:18:12+08:00">
-                2017-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ios/" itemprop="url" rel="index">
-                    <span itemprop="name">ios</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="cell-中创建圆形图片"><a href="#cell-中创建圆形图片" class="headerlink" title="cell 中创建圆形图片"></a>cell 中创建圆形图片</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">extension UIImageView&#123;</div><div class="line"></div><div class="line">    func asCircle(size: CGFloat = -1)&#123;</div><div class="line">        if size == -1&#123;</div><div class="line">            layer.cornerRadius = (bounds.size.width/2)</div><div class="line">        &#125;else&#123;</div><div class="line">            layer.cornerRadius = size</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    func loadCircleImage(url: String)&#123;</div><div class="line">        self.layer.masksToBounds = true</div><div class="line">        self.layer.cornerRadius = self.frame.size.width / 2.0;</div><div class="line">        self.clipsToBounds = true</div><div class="line">        let urlResult = URL(string: url)</div><div class="line">        self.kf.setImage(with: urlResult, options: [.transition(.none)])</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var mModel: ForumItemModel?&#123;</div><div class="line">    didSet&#123;            </div><div class="line">        let imgUrl = mModel?.creatorPhotoUrl ?? &quot;&quot;</div><div class="line">        mIvAvatar.loadCircleImage(url: imgUrl)</div><div class="line">        mIvAvatar.asCircle(size: 7)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/ios/AutoLayout相关/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1352,6 +1387,141 @@
 </ol>
 <p>比如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make.bottom.equalTo(superView).offset(10)</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/ios/UITableView相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/12/ios/UITableView相关/" itemprop="url">UITableView 相关</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-12T13:18:12+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="head-view-设置大小"><a href="#head-view-设置大小" class="headerlink" title="head view 设置大小"></a>head view 设置大小</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">just set head view frame</div></pre></td></tr></table></figure>
+<h1 id="cell-中创建圆形图片"><a href="#cell-中创建圆形图片" class="headerlink" title="cell 中创建圆形图片"></a>cell 中创建圆形图片</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">extension UIImageView&#123;</div><div class="line"></div><div class="line">    func asCircle(size: CGFloat = -1)&#123;</div><div class="line">        if size == -1&#123;</div><div class="line">            layer.cornerRadius = (bounds.size.width/2)</div><div class="line">        &#125;else&#123;</div><div class="line">            layer.cornerRadius = size</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    func loadCircleImage(url: String)&#123;</div><div class="line">        self.layer.masksToBounds = true</div><div class="line">        self.layer.cornerRadius = self.frame.size.width / 2.0;</div><div class="line">        self.clipsToBounds = true</div><div class="line">        let urlResult = URL(string: url)</div><div class="line">        self.kf.setImage(with: urlResult, options: [.transition(.none)])</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var mModel: ForumItemModel?&#123;</div><div class="line">    didSet&#123;            </div><div class="line">        let imgUrl = mModel?.creatorPhotoUrl ?? &quot;&quot;</div><div class="line">        mIvAvatar.loadCircleImage(url: imgUrl)</div><div class="line">        mIvAvatar.asCircle(size: 7)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
           
         
       
@@ -1527,149 +1697,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/" itemprop="url">UITableView 使用 AutoLayout 实现 Cell 点击展开效果</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-02T13:18:12+08:00">
-                2017-07-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ios/" itemprop="url" rel="index">
-                    <span itemprop="name">ios</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ios/UITableViewCellExpand.gif" alt="效果图"></p>
-<p>接上篇文章 <a href="http://www.jianshu.com/p/a93d23a50771">UITableView Cell 高度自动匹配</a> </p>
-<h1 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h1><p>使用改变 Label 的 numberOfLines 来实现点击扩展效果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mLabelContent.numberOfLines = 0  // 不限制行数，扩展</div><div class="line">mLabelContent.numberOfLines = 2  // 限制函数为 2 行</div></pre></td></tr></table></figure>
-<p>更新 UITableView 的一个 Cell:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mTableView.rx.itemSelected.subscribe(onNext:&#123; indexPath in</div><div class="line">    </div><div class="line">    let cell = self.mTableView.cellForRow(at: indexPath) as! Cell</div><div class="line"></div><div class="line">    self.mTableView.beginUpdates()</div><div class="line">    cell.mModel?.isExpand = !(cell.mModel?.isExpand ?? false) // 通过更新数据源的形式改变 cell</div><div class="line">    self.mTableView.reloadRows(at: [indexPath]UITableViewRowAnimation.automatic)            </div><div class="line">    self.mTableView.endUpdates()</div><div class="line">    </div><div class="line">&#125;).disposed(by: mDisposeBag)</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1719,7 +1746,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">384</span>
+                <span class="site-state-item-count">385</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1741,7 +1768,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">251</span>
+                <span class="site-state-item-count">252</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
