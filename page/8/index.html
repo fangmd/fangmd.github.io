@@ -393,149 +393,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" itemprop="url">自定义View -- 自定义属性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
-                2016-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="创建按照正常步骤创建-自定义View"><a href="#创建按照正常步骤创建-自定义View" class="headerlink" title="创建按照正常步骤创建 自定义View"></a>创建按照正常步骤创建 自定义View</h2><h2 id="在-values-attrs-xml-中创建自定义属性"><a href="#在-values-attrs-xml-中创建自定义属性" class="headerlink" title="在 values/attrs.xml 中创建自定义属性"></a>在 values/attrs.xml 中创建自定义属性</h2><p>例子：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyView"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_center_color"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_text_size"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>Note：</p>
-<ul>
-<li>属性命名添加前缀防止重复</li>
-</ul>
-<h2 id="在布局中使用自定义属性"><a href="#在布局中使用自定义属性" class="headerlink" title="在布局中使用自定义属性"></a>在布局中使用自定义属性</h2><p>例子：</p>
-<p>需要在跟布局中加入命名空间：<code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.waytone.animationdemo.indicate.MyView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/status_indicate_view"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></div><div class="line">    <span class="attr">app:siv_center_color</span>=<span class="string">"#f23"</span></div><div class="line">    <span class="attr">app:siv_text_size</span>=<span class="string">"12"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span>/&gt;</div></pre></td></tr></table></figure>
-<h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-方法流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -639,6 +496,149 @@
             </a>
           </div>
           <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" itemprop="url">自定义View -- 自定义属性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="创建按照正常步骤创建-自定义View"><a href="#创建按照正常步骤创建-自定义View" class="headerlink" title="创建按照正常步骤创建 自定义View"></a>创建按照正常步骤创建 自定义View</h2><h2 id="在-values-attrs-xml-中创建自定义属性"><a href="#在-values-attrs-xml-中创建自定义属性" class="headerlink" title="在 values/attrs.xml 中创建自定义属性"></a>在 values/attrs.xml 中创建自定义属性</h2><p>例子：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyView"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_center_color"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_text_size"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Note：</p>
+<ul>
+<li>属性命名添加前缀防止重复</li>
+</ul>
+<h2 id="在布局中使用自定义属性"><a href="#在布局中使用自定义属性" class="headerlink" title="在布局中使用自定义属性"></a>在布局中使用自定义属性</h2><p>例子：</p>
+<p>需要在跟布局中加入命名空间：<code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.waytone.animationdemo.indicate.MyView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/status_indicate_view"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></div><div class="line">    <span class="attr">app:siv_center_color</span>=<span class="string">"#f23"</span></div><div class="line">    <span class="attr">app:siv_text_size</span>=<span class="string">"12"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span>/&gt;</div></pre></td></tr></table></figure>
+<h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
+          
         
       
     </div>
@@ -1852,7 +1852,7 @@ filter_vertical = (&apos;authors&apos;,)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">385</span>
+                <span class="site-state-item-count">386</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1874,7 +1874,7 @@ filter_vertical = (&apos;authors&apos;,)
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-count">253</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
