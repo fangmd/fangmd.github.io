@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/UI/style快速替换/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/第三方登入/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/18/Android/UI/style快速替换/" itemprop="url">style快速替换</a></h1>
+                <a class="post-title-link" href="/2016/04/18/Android/第三方/第三方登入/" itemprop="url">第三方登入</a></h1>
         
 
         <div class="post-meta">
@@ -343,10 +343,43 @@
       
         
           
-            <h1 id="style快速替换"><a href="#style快速替换" class="headerlink" title="style快速替换"></a>style快速替换</h1><pre><code>(android:.+)=&quot;(.*)&quot;
+            <h1 id="第三方登入，QQ"><a href="#第三方登入，QQ" class="headerlink" title="第三方登入，QQ"></a>第三方登入，QQ</h1><ol>
+<li>注册开发者</li>
+<li>创建应用：获得 key，id</li>
+<li>配置信息</li>
+</ol>
+<h2 id="登入代码："><a href="#登入代码：" class="headerlink" title="登入代码："></a>登入代码：</h2><pre><code>private Tencent mTencent;
 
-&lt;item name=&quot;$1&quot;&gt;$2&lt;/item&gt;
-</code></pre>
+public void btnQqLogin(View view) {
+    //TODO: qq登入
+    // 参数1：appid
+    mTencent = Tencent.createInstance(&quot;1105344126&quot;, this.getApplicationContext());
+    // 登入
+    // 检查单前是否已经进行过qq登入，如果登入过就不用在登入了
+    if (mTencent.isSessionValid()) {
+        // 参数1：activity
+        // 参数2：scope：API的范围，表示登入后客户端能够调用什么功能
+        // 参数3：登入是否成功的接口回调
+        mTencent.login(this, &quot;all&quot;, new IUiListener() {
+            @Override
+            public void onComplete(Object o) {
+                Log.d(TAG, &quot;onComplete: &quot; + o.toString());
+            }
+
+            @Override
+            public void onError(UiError uiError) {
+                Log.d(TAG, &quot;onError: &quot;+uiError.toString());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, &quot;onCancel: &quot;);
+            }
+        });
+    }
+}
+</code></pre><p>login方法：用于登入获取授权的Token，Token用于让客户端可以直接访问用户的私有数据，而不需要密码；使用了OAuth协议的实现，能够保证安全，并且不需要频繁的登入。</p>
+
           
         
       

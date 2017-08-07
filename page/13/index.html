@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/2.django-rest-framework -- Views/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/2.django-rest-framework -- Views/" itemprop="url">django-rest-framework -- Views</a></h1>
+                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/" itemprop="url">Django Model Field reference</a></h1>
         
 
         <div class="post-meta">
@@ -342,79 +342,19 @@
 
       
         
-          
-            <h1 id="Class-based-Views-视图基本类"><a href="#Class-based-Views-视图基本类" class="headerlink" title="Class-based Views 视图基本类"></a>Class-based Views 视图基本类</h1><p>rest_framework 提供 <code>APIView</code> ，继承自 django 的视图类 <code>View</code></p>
-<p><code>APIView</code> 相比较正常的 <code>View</code> 的特点：</p>
-<ol>
-<li><p>接收的请求是 rest-framework 的 Request 实例</p>
-<p> Requests passed to the handler methods will be REST framework’s Request instances, not Django’s HttpRequest instances.</p>
-</li>
-<li><p>请求处理结果返回的也是 rest-framework 的 Response</p>
-<p> Handler methods may return REST framework’s Response, instead of Django’s HttpResponse. The view will manage content negotiation and setting the correct renderer on the response.</p>
-</li>
-<li><p>任何的异常将会被捕获，反馈到 response 中</p>
-<p> Any APIException exceptions will be caught and mediated into appropriate responses.</p>
-</li>
-<li><p>请求会先检查其权限</p>
-<p> Incoming requests will be authenticated and appropriate permission and/or throttle checks will be run before dispatching the request to the handler method.</p>
-</li>
-</ol>
-<p>使用 APIView 和使用正常的 View 用法基本相同，类中都有请求方法的相应方法 如：<code>.get()</code>, <code>.post()</code>。。。</p>
-<p>例子：</p>
-<pre><code>from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
-
-class ListUsers(APIView):
-    &quot;&quot;&quot;
-    View to list all users in the system.
-
-    * Requires token authentication.
-    * Only admin users are able to access this view.
-    &quot;&quot;&quot;
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAdminUser,)
-
-    def get(self, request, format=None):
-        &quot;&quot;&quot;
-        Return a list of all users.
-        &quot;&quot;&quot;
-        usernames = [user.username for user in User.objects.all()]
-        return Response(usernames)
-</code></pre><h2 id="API-policy-attributes-类的属性"><a href="#API-policy-attributes-类的属性" class="headerlink" title="API policy attributes 类的属性"></a>API policy attributes 类的属性</h2><ul>
-<li>.renderer_classes</li>
-<li>.parser_classes</li>
-<li>.authentication_classes ：认证</li>
-<li>.throttle_classes</li>
-<li>.permission_classes ： 权限</li>
-<li>.content_negotiation_class</li>
-</ul>
-<h2 id="API-policy-instantiation-methods-对象的方法"><a href="#API-policy-instantiation-methods-对象的方法" class="headerlink" title="API policy instantiation methods 对象的方法"></a>API policy instantiation methods 对象的方法</h2><p>6个方法，对应上面6个属性的 <code>get</code> 方法</p>
-<ul>
-<li>.get_renderers(self)</li>
-</ul>
-<h2 id="API-policy-implementation-methods-实现的方法"><a href="#API-policy-implementation-methods-实现的方法" class="headerlink" title="API policy implementation methods 实现的方法"></a>API policy implementation methods 实现的方法</h2><p>下面3个方法会在请求分配前执行</p>
-<ul>
-<li>.check_permissions(self, request)</li>
-<li>.check_throttles(self, request)</li>
-<li>.perform_content_negotiation(self, request, force=False)</li>
-</ul>
-<h2 id="Dispatch-methods-请求调度方法"><a href="#Dispatch-methods-请求调度方法" class="headerlink" title="Dispatch methods 请求调度方法"></a>Dispatch methods 请求调度方法</h2><p>执行 <code>.dispatch()</code> , 将请求分配给具体的方法 .get(), .post(), put(), patch() and .delete().</p>
-<h3 id="initial-self-request-args-kwargs"><a href="#initial-self-request-args-kwargs" class="headerlink" title=".initial(self, request, args, *kwargs)"></a>.initial(self, request, <em>args, *</em>kwargs)</h3><p>在处理方法之前执行，用来做权限判断等，</p>
-<p>一般不需要去重写</p>
-<h3 id="handle-exception-self-exc"><a href="#handle-exception-self-exc" class="headerlink" title=".handle_exception(self, exc)"></a>.handle_exception(self, exc)</h3><p>错误处理</p>
-<p>会捕获所有 <code>rest_framework.exceptions.APIException</code> 的子类异常，和 Django <code>Http404</code>,<code>PermissionDenied</code> 异常。</p>
-<p>如果需要自定义错误的返回，需要重写这个方法</p>
-<h2 id="initialize-request-self-request-args-kwargs"><a href="#initialize-request-self-request-args-kwargs" class="headerlink" title=".initialize_request(self, request, args, *kwargs)"></a>.initialize_request(self, request, <em>args, *</em>kwargs)</h2><p>这个方法用来确保请求属于 <code>Request</code> ，而不是原生请求 <code>HttpRequest</code></p>
-<p>一般不需要去重写</p>
-<h2 id="finalize-response-self-request-response-args-kwargs"><a href="#finalize-response-self-request-response-args-kwargs" class="headerlink" title=".finalize_response(self, request, response, args, *kwargs)"></a>.finalize_response(self, request, response, <em>args, *</em>kwargs)</h2><p>确保请求返回的对象是 <code>Response</code></p>
-<p>一般不需要去重写</p>
-<h1 id="Function-Based-Views"><a href="#Function-Based-Views" class="headerlink" title="Function Based Views"></a>Function Based Views</h1><p>通过注解实现</p>
-<h2 id="api-view"><a href="#api-view" class="headerlink" title="@api_view()"></a>@api_view()</h2><p><code>@api_view(http_method_names=[&#39;GET&#39;], exclude_from_schema=False)</code></p>
-<h2 id="API-policy-decorators-api-装饰器"><a href="#API-policy-decorators-api-装饰器" class="headerlink" title="API policy decorators api 装饰器"></a>API policy decorators api 装饰器</h2><p>需要写在 <code>@api_view</code> 之后</p>
-<pre><code>@throttle_classes([OncePerDayUserThrottle]) # 确保这个 api 一天被调用一次
-</code></pre>
-          
+          <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
+<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
+<blockquote>
+<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
+</blockquote>
+<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -983,6 +923,149 @@ export https_proxy=http://127.0.0.1:1086/
 <p>如果想要更长久的设置代理，可以将export http_proxy=<a href="http://localhost:8123加入.bashrc或者.bash_profile文件" target="_blank" rel="external">http://localhost:8123加入.bashrc或者.bash_profile文件</a></p>
 
           
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/" itemprop="url">Android5.0 新动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T22:38:14+08:00">
+                2016-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="点击波纹效果使用-touch-feedback"><a href="#点击波纹效果使用-touch-feedback" class="headerlink" title="点击波纹效果使用 touch feedback"></a>点击波纹效果使用 touch feedback</h1><h2 id="drawable-v21-touch-bg-xml"><a href="#drawable-v21-touch-bg-xml" class="headerlink" title="drawable-v21/touch_bg.xml"></a>drawable-v21/touch_bg.xml</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+        android:color=&quot;@color/line_grey&quot;&gt;
+    &lt;item android:drawable=&quot;@color/white&quot;/&gt;
+&lt;/ripple&gt;
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1601,149 +1684,6 @@ public void setToolbarColor(Bitmap bitmap) {
 }
 </code></pre>
           
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/" itemprop="url">Android5.0 新动画</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T22:38:14+08:00">
-                2016-11-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="点击波纹效果使用-touch-feedback"><a href="#点击波纹效果使用-touch-feedback" class="headerlink" title="点击波纹效果使用 touch feedback"></a>点击波纹效果使用 touch feedback</h1><h2 id="drawable-v21-touch-bg-xml"><a href="#drawable-v21-touch-bg-xml" class="headerlink" title="drawable-v21/touch_bg.xml"></a>drawable-v21/touch_bg.xml</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-        android:color=&quot;@color/line_grey&quot;&gt;
-    &lt;item android:drawable=&quot;@color/white&quot;/&gt;
-&lt;/ripple&gt;
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>

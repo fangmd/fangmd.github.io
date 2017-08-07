@@ -119,7 +119,7 @@ https://github.com/DianQK/LearnRxSwift
 
 RxSwift下如何实现基于MJRefresh的上下拉刷新？
   很可惜作者没有给 Demo，从这里知道了如何实现 ViewModel 让 View">
-<meta property="og:updated_time" content="2017-06-25T08:52:00.000Z">
+<meta property="og:updated_time" content="2017-08-06T10:39:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxSwift">
 <meta name="twitter:description" content="RxSwift
@@ -393,7 +393,7 @@ RxSwift下如何实现基于MJRefresh的上下拉刷新？
 <h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><p>Observable 创建方式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">asObservable 返回一个序列</div><div class="line">create 使用 Swift 闭包的方式创建序列</div><div class="line">deferred 只有在有观察者订阅时，才去创建序列</div><div class="line">empty 创建一个空的序列，只发射一个 .Completed</div><div class="line">error 创建一个发射 error 终止的序列</div><div class="line">toObservable 使用 SequenceType 创建序列</div><div class="line">interval 创建一个每隔一段时间就发射的递增序列</div><div class="line">never 不创建序列，也不发送通知</div><div class="line">just 只创建包含一个元素的序列。换言之，只发送一个值和 .Completed</div><div class="line">of 通过一组元素创建一个序列</div><div class="line">range 创建一个有范围的递增序列</div><div class="line">repeatElement 创建一个发射重复值的序列</div><div class="line">timer 创建一个带延迟的序列</div></pre></td></tr></table></figure>
 <h4 id="create"><a href="#create" class="headerlink" title="create"></a>create</h4><p>使用 swift 闭包的方式创建序列</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">let myJust = &#123; (singleElement: Int) -&gt; Observable&lt;Int&gt; in</div><div class="line">    return Observable.create &#123; observer in</div><div class="line">        observer.on(.Next(singleElement))</div><div class="line">        observer.on(.Completed)</div><div class="line">        </div><div class="line">        return NopDisposable.instance</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">_ = myJust(5)</div><div class="line">    .subscribe &#123; event in</div><div class="line">        print(event)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">func myJust&lt;E&gt;(_ element: E) -&gt; Observable&lt;E&gt; &#123;</div><div class="line">    return Observable.create &#123; observer in</div><div class="line">        observer.on(.next(element))</div><div class="line">        observer.on(.completed)</div><div class="line">        return Disposables.create()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">myJust(0)</div><div class="line">    .subscribe(onNext: &#123; n in</div><div class="line">      print(n)</div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
 <h4 id="timer"><a href="#timer" class="headerlink" title="timer"></a>timer</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">let timerSequence = Observable&lt;Int&gt;.timer(1, period: 1, scheduler: MainScheduler.instance)</div><div class="line"></div><div class="line">_ = timerSequence.subscribe &#123; event in</div><div class="line">    print(event)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="bindTo"><a href="#bindTo" class="headerlink" title="bindTo"></a>bindTo</h3><h4 id="0"><a href="#0" class="headerlink" title="0"></a>0</h4><p>将 UITextField 中文字的变化发送到 UILabel 显示</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// public func bindTo&lt;O&gt;(_ observer: O) -&gt; Disposable where O : ObserverType, O.E == Self.E</div><div class="line"></div><div class="line">textField.rx.text</div><div class="line">    .bind(to: label.rx.text)</div><div class="line">    .addDisposableTo(disposeBag)</div></pre></td></tr></table></figure>
@@ -490,8 +490,8 @@ RxSwift下如何实现基于MJRefresh的上下拉刷新？
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/19/ios/strings/" rel="prev" title="String 管理">
-                String 管理 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/19/ios/UIScrollView/" rel="prev" title="UIScrollView">
+                UIScrollView <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

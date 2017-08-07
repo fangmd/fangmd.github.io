@@ -412,7 +412,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -431,7 +431,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/" itemprop="url">设计模式之蝉 - 单例模式</a></h1>
+                <a class="post-title-link" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/" itemprop="url">设计模式之蝉 - 工厂方法模式</a></h1>
         
 
         <div class="post-meta">
@@ -501,12 +501,12 @@
 
       
         
-          <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Ensure a class has only one instance, and provide a global point of access it.</p>
-<p>单例模式的通用代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton singleton = <span class="keyword">new</span> Singleton();</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> singleton;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 累中的其他方法，尽量是 static ????</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <h1 id="引子-女娲造人"><a href="#引子-女娲造人" class="headerlink" title="引子 女娲造人"></a>引子 女娲造人</h1><p><img src="" alt="factory0"></p>
+<p>关键代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 人种代码</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YellowHuman</span> <span class="keyword">implements</span> <span class="title">Human</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"黄色人种的皮肤是黄色的"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">talk</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"黄色人种会说话"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 八卦炉代码</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractHumanfactory</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> &lt;T extends human&gt; <span class="function">T <span class="title">createHuman</span><span class="params">(Class&lt;T&gt; c)</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanFactory</span> <span class="keyword">extends</span> <span class="title">AbstractHumanFactory</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> &lt;T extends Human&gt; <span class="function">T <span class="title">createHuman</span><span class="params">(Class&lt;T&gt; c)</span></span>&#123;</div><div class="line">        Human human = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span>&#123;</div><div class="line">                human = (T)Class.forName(c.getName()).newInstance();</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e)&#123;</div><div class="line">                System.out.println(<span class="string">"人种错误"</span>)</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">    AbstractHumanFactory YinYangLu = <span class="keyword">new</span> HumanFactory();</div><div class="line">    Human yellowHuman = YinYangLu.createHuman(YellowHuman.class);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/#more" rel="contents">
+            <a class="btn" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -707,7 +707,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -726,7 +726,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/" itemprop="url">设计模式之蝉 - 工厂方法模式</a></h1>
+                <a class="post-title-link" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/" itemprop="url">设计模式之蝉 - 单例模式</a></h1>
         
 
         <div class="post-meta">
@@ -796,12 +796,12 @@
 
       
         
-          <h1 id="引子-女娲造人"><a href="#引子-女娲造人" class="headerlink" title="引子 女娲造人"></a>引子 女娲造人</h1><p><img src="" alt="factory0"></p>
-<p>关键代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 人种代码</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">YellowHuman</span> <span class="keyword">implements</span> <span class="title">Human</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"黄色人种的皮肤是黄色的"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">talk</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"黄色人种会说话"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 八卦炉代码</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractHumanfactory</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> &lt;T extends human&gt; <span class="function">T <span class="title">createHuman</span><span class="params">(Class&lt;T&gt; c)</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanFactory</span> <span class="keyword">extends</span> <span class="title">AbstractHumanFactory</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> &lt;T extends Human&gt; <span class="function">T <span class="title">createHuman</span><span class="params">(Class&lt;T&gt; c)</span></span>&#123;</div><div class="line">        Human human = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span>&#123;</div><div class="line">                human = (T)Class.forName(c.getName()).newInstance();</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e)&#123;</div><div class="line">                System.out.println(<span class="string">"人种错误"</span>)</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">    AbstractHumanFactory YinYangLu = <span class="keyword">new</span> HumanFactory();</div><div class="line">    Human yellowHuman = YinYangLu.createHuman(YellowHuman.class);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Ensure a class has only one instance, and provide a global point of access it.</p>
+<p>单例模式的通用代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton singleton = <span class="keyword">new</span> Singleton();</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> singleton;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 累中的其他方法，尽量是 static ????</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-工厂方法模式/#more" rel="contents">
+            <a class="btn" href="/2016/05/01/ReadNote/设计模式/设计模式之蝉-单例模式/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -942,6 +942,157 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/26/Android/view/RecyclerView/RecyclerView 问题记录/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/view/EditText 知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/24/Android/view/EditText 知识点/" itemprop="url">EditText 知识点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
+                2016-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="设置限制输入"><a href="#设置限制输入" class="headerlink" title="设置限制输入"></a>设置限制输入</h1><pre><code>android:digits=&quot;1234567890&quot; &lt;!--仅限输入数字--&gt;
+</code></pre><h1 id="自动调出屏幕键盘"><a href="#自动调出屏幕键盘" class="headerlink" title="自动调出屏幕键盘"></a>自动调出屏幕键盘</h1><h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><pre><code>getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+</code></pre><p>关闭：</p>
+<pre><code>getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+</code></pre><h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><blockquote>
+<p>我使用的时候无效</p>
+</blockquote>
+<pre><code>EditText yourEditText= (EditText) findViewById(R.id.yourEditText);
+InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+imm.showSoftInput(yourEditText, InputMethodManager.SHOW_IMPLICIT);
+</code></pre><p>关闭代码：</p>
+<pre><code>InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/24/Android/view/EditText 知识点/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -1272,139 +1423,6 @@ private void shareBySystem(){
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/从系统相册中选择图片/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/24/Android/从系统相册中选择图片/" itemprop="url">Android 系统相机和相册调用的使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
-                2016-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="从系统相册中选择图片"><a href="#从系统相册中选择图片" class="headerlink" title="从系统相册中选择图片"></a>从系统相册中选择图片</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/Android 系统相机的使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1588,7 +1606,7 @@ private void shareBySystem(){
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/view/EditText 知识点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/从系统相册中选择图片/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1607,7 +1625,7 @@ private void shareBySystem(){
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/24/Android/view/EditText 知识点/" itemprop="url">EditText 知识点</a></h1>
+                <a class="post-title-link" href="/2016/04/24/Android/从系统相册中选择图片/" itemprop="url">Android 系统相机和相册调用的使用</a></h1>
         
 
         <div class="post-meta">
@@ -1677,27 +1695,9 @@ private void shareBySystem(){
 
       
         
-          <h1 id="设置限制输入"><a href="#设置限制输入" class="headerlink" title="设置限制输入"></a>设置限制输入</h1><pre><code>android:digits=&quot;1234567890&quot; &lt;!--仅限输入数字--&gt;
-</code></pre><h1 id="自动调出屏幕键盘"><a href="#自动调出屏幕键盘" class="headerlink" title="自动调出屏幕键盘"></a>自动调出屏幕键盘</h1><h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><pre><code>getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-</code></pre><p>关闭：</p>
-<pre><code>getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-</code></pre><h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><blockquote>
-<p>我使用的时候无效</p>
-</blockquote>
-<pre><code>EditText yourEditText= (EditText) findViewById(R.id.yourEditText);
-InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-imm.showSoftInput(yourEditText, InputMethodManager.SHOW_IMPLICIT);
-</code></pre><p>关闭代码：</p>
-<pre><code>InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/24/Android/view/EditText 知识点/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <h1 id="从系统相册中选择图片"><a href="#从系统相册中选择图片" class="headerlink" title="从系统相册中选择图片"></a>从系统相册中选择图片</h1>
+          
         
       
     </div>
