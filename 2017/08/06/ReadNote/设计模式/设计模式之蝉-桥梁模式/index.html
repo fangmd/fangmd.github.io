@@ -99,7 +99,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/index.html">
 <meta property="og:site_name" content="Double">
 <meta property="og:description" content="例子">
-<meta property="og:updated_time" content="2017-08-06T06:03:16.000Z">
+<meta property="og:updated_time" content="2017-08-07T15:02:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之蝉 - 桥梁模式">
 <meta name="twitter:description" content="例子">
@@ -342,6 +342,38 @@
 
       
         <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><a id="more"></a>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Bridge Pattern，桥梁模式，桥接模式</p>
+<p>Decouple an abstraction from its implementation so that the two can vary independently.</p>
+<p>将抽象和实现解耦，使得两者可以独立地变化。</p>
+<h2 id="通用类"><a href="#通用类" class="headerlink" title="通用类"></a>通用类</h2><ul>
+<li>Abstraction: 抽象化角色</li>
+<li>Implementor: 实现化角色</li>
+<li>RefinedAbstraction: 修正抽象化角色</li>
+<li>ConcreteImplementor: 具体实现化角色</li>
+</ul>
+<p>Implementor</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Implementor</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doAnything</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ConcreteImplementor:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteImplementor1</span> <span class="keyword">implements</span> <span class="title">Implementor</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doAnything</span><span class="params">()</span></span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Abstraction:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Abstraction</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Implementor imp;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Abstraction</span><span class="params">(Implementor _imp)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.imp = _imp;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.imp.doSomething();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Implementor <span class="title">getImp</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> imp;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>RefinedAbstraction</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RefinedAbstraction</span> <span class="keyword">extends</span> <span class="title">Abstraction</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RefinedAbstraction</span><span class="params">(Implementro _imp)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(_imp);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.request()</div><div class="line">        <span class="keyword">super</span>.getImp().doAnthing();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Client:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        Implementor imp = <span class="keyword">new</span> ConcreteImplementor1();</div><div class="line"></div><div class="line">        Abstraction abs = <span class="keyword">new</span> RefinedAbstraction(imp);</div><div class="line"></div><div class="line">        abs.request();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>桥梁模式是一个非常简单的模式，使用了类间的聚合关系，继承，覆写等常用功能，但是提供了一个非常清晰，稳定的架构</p>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>优点：</p>
+<ol>
+<li>抽象和实现分离</li>
+<li>优秀的扩充能力</li>
+<li>实现细节对客户透明</li>
+</ol>
+<p>使用场景：</p>
+<ol>
+<li>不希望或不适合使用继承的场景</li>
+<li>接口或抽象类不稳定的场景</li>
+<li>重用性要求较高的场景</li>
+</ol>
 
       
     </div>
@@ -384,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/05/ReadNote/设计模式/设计模式之蝉-解释器模式/" rel="next" title="设计模式之蝉 - 解释器模式">
-                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 解释器模式
+              <a href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/" rel="next" title="设计模式之蝉 - 享元模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 享元模式
               </a>
             
           </div>
@@ -394,8 +426,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/" rel="prev" title="设计模式之蝉 - 享元模式">
-                设计模式之蝉 - 享元模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/" rel="prev" title="设计模式之蝉 - 工厂方法模式 vs 建造者模式">
+                设计模式之蝉 - 工厂方法模式 vs 建造者模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -468,7 +500,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">389</span>
+                <span class="site-state-item-count">391</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -525,7 +557,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">2.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通用类"><span class="nav-number">2.1.</span> <span class="nav-text">通用类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a></li></ol></div>
             
 
           </div>

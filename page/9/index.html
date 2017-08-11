@@ -253,6 +253,146 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/26/Android/view/自定义View/自定义View-动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/26/Android/view/自定义View/自定义View-动画/" itemprop="url">自定义View -- 动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-26T09:23:14+08:00">
+                2016-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="利用-ValueAnimation-实现动画"><a href="#利用-ValueAnimation-实现动画" class="headerlink" title="利用 ValueAnimation 实现动画"></a>利用 ValueAnimation 实现动画</h1><p>在自定义View 中添加下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">private</span> ValueAnimator mValueAnimator;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mProgress;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mAnimationTime;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">        mValueAnimator = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mValueAnimator.setDuration(<span class="number">2000</span>);</div><div class="line"><span class="comment">//        mValueAnimator.setRepeatCount(ValueAnimator.RESTART);</span></div><div class="line">        mValueAnimator.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line"></div><div class="line">        mValueAnimator.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = (<span class="keyword">int</span>) animation.getAnimatedValue();</div><div class="line">            Log.d(TAG, <span class="string">"run: mProgress"</span> + mProgress);</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        mValueAnimator.addListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">                <span class="keyword">if</span> (((<span class="keyword">int</span>) mValueAnimator.getAnimatedValue()) &gt;= <span class="number">98</span>) &#123;</div><div class="line">                    mAnimationTime = <span class="number">0</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mValueAnimator != <span class="keyword">null</span>) &#123;</div><div class="line">            mAnimationTime = mValueAnimator.getCurrentPlayTime();</div><div class="line">            mValueAnimator.cancel();  <span class="comment">// 保持停止状态</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mValueAnimator != <span class="keyword">null</span>) &#123;</div><div class="line">            mValueAnimator.start();</div><div class="line">            mValueAnimator.setCurrentPlayTime(mAnimationTime);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">repeatStart</span><span class="params">()</span> </span>&#123;</div><div class="line">        repeatStart(ValueAnimator.REVERSE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">repeatStart</span><span class="params">(<span class="keyword">int</span> repeatMode)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (repeatMode == ValueAnimator.RESTART || repeatMode == ValueAnimator.REVERSE) &#123;</div><div class="line">            mValueAnimator.setRepeatMode(repeatMode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Log.e(TAG, <span class="string">"repeatStart: repeatMode error"</span>);</div><div class="line">            mValueAnimator.setRepeatMode(ValueAnimator.RESTART);</div><div class="line">        &#125;</div><div class="line">        mValueAnimator.setRepeatCount(ValueAnimator.INFINITE);</div><div class="line">        start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDetachedFromWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDetachedFromWindow();</div><div class="line">        stop();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onAttachedToWindow</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onAttachedToWindow();</div><div class="line"><span class="comment">//        run();</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><code>initAnimate()</code> 需要在 View 初始化中调用。</p>
+<h2 id="分步动画例子"><a href="#分步动画例子" class="headerlink" title="分步动画例子"></a>分步动画例子</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 绘制方法</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCenter</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStep == <span class="number">0</span> || mStep == <span class="number">1</span>) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">4</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStep == <span class="number">2</span>) &#123;</div><div class="line">        <span class="keyword">int</span> radius = mProgress * (mWidth / <span class="number">3</span> - mWidth / <span class="number">4</span>) / <span class="number">100</span> + mWidth / <span class="number">4</span>;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius, mCenterPaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">circleLoading</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStep == <span class="number">0</span> || mStep == <span class="number">1</span>) &#123;</div><div class="line">        <span class="keyword">int</span> startAngle = mProgress * <span class="number">720</span> / <span class="number">100</span>;</div><div class="line">        RectF rectF = <span class="keyword">new</span> RectF(<span class="number">0</span> + <span class="number">10</span>, <span class="number">0</span> + <span class="number">10</span>, mWidth - <span class="number">10</span>, mHeight - <span class="number">10</span>);</div><div class="line">        canvas.drawArc(rectF, startAngle, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint); <span class="comment">// 120 - 200</span></div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStep == <span class="number">2</span>) &#123;</div><div class="line">        <span class="comment">// 矩形框：（10，10）（mWidth-10，mHeight-10）--》 （30，30）（mWidth-30，mHeight-30）</span></div><div class="line">        <span class="keyword">int</span> differ = mProgress * <span class="number">20</span> / <span class="number">100</span>;</div><div class="line">        <span class="comment">// 圆弧： 80 --》 120</span></div><div class="line">        <span class="keyword">int</span> angleDiffer = mProgress * <span class="number">40</span> / <span class="number">100</span>;</div><div class="line">        <span class="keyword">int</span> startAngle = mProgress * <span class="number">360</span> / <span class="number">100</span>;</div><div class="line">        RectF rectF = <span class="keyword">new</span> RectF(<span class="number">0</span> + <span class="number">10</span> + differ, <span class="number">0</span> + <span class="number">10</span> + differ, mWidth - <span class="number">10</span> - differ, mHeight - <span class="number">10</span> - differ);</div><div class="line">        canvas.drawArc(rectF, startAngle, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint); <span class="comment">// 120 - 200</span></div><div class="line">        canvas.drawArc(rectF, startAngle + <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span>, <span class="number">80</span> + angleDiffer, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// ------------ 分步动画</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 动画阶段</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mStep;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">end</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// progress 0 -&gt; 100 (100=0 的状态) 收尾动画</span></div><div class="line">    ValueAnimator valueAnimator1 = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">    valueAnimator1.setDuration(<span class="number">300</span>);</div><div class="line">    valueAnimator1.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line">    valueAnimator1.addUpdateListener(animation -&gt; &#123;</div><div class="line">        mStep = <span class="number">2</span>;</div><div class="line">        mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">        invalidate();</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// progress 收尾 ( 如果收尾调用的时候 mProgress 不在 100 的位置)</span></div><div class="line">    ValueAnimator valueAnimator = ValueAnimator.ofInt(mProgress, <span class="number">100</span>);</div><div class="line">    valueAnimator.setDuration(<span class="number">100</span>);</div><div class="line">    valueAnimator.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line">    valueAnimator.addUpdateListener(animation -&gt; &#123;</div><div class="line">        mStep = <span class="number">1</span>;</div><div class="line">        mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">        invalidate();</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.addListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">            stopStepOneAnimator();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">            valueAnimator1.start();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopStepOneAnimator</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mStepOneAnimator != <span class="keyword">null</span> &amp;&amp; mStepOneAnimator.isStarted()) &#123;</div><div class="line">        mStepOneAnimator.cancel();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="分状态动画"><a href="#分状态动画" class="headerlink" title="分状态动画"></a>分状态动画</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// draw</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCenter</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    mCenterPaint.setColor(mIDLEColor);</div><div class="line">    <span class="keyword">if</span> (mStatus == LoadingViewStatus.IDLE) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.SELECTED) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.LOADING) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.OK) &#123;</div><div class="line">        mCenterPaint.setColor(mOkColor);</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">circleLoading</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            <span class="keyword">int</span> angleDiffer = mProgress * <span class="number">180</span> / <span class="number">100</span>;</div><div class="line">            RectF rectF = <span class="keyword">new</span> RectF(<span class="number">10</span>, <span class="number">10</span>, mWidth - <span class="number">10</span>, mHeight - <span class="number">10</span>);</div><div class="line">            canvas.drawArc(rectF, <span class="number">0</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            <span class="keyword">int</span> radius = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            <span class="keyword">int</span> radius2 = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius2, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// loading view mStatus --------------------------------</span></div><div class="line"><span class="comment">// color</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mOkColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mIDLEColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mSelectedColor;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToIDLEAniamte;</div><div class="line"><span class="keyword">private</span> ValueAnimator mLoadingAnimate;</div><div class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> mAnimating;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToSelectedAnimate;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToOkAnimate;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mProgress;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mStatus = <span class="number">0</span>; <span class="comment">// 0:idle , 1:loading , 2 selected</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> lastStatus = mStatus;</div><div class="line">    mStatus = status;</div><div class="line">    stopAllAnimate();</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            startToIDLEAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            startLoadingAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            startToSelectedAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            startToOkAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToOkAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToOkAnimate = ValueAnimator.ofInt(<span class="number">100</span>, <span class="number">0</span>);</div><div class="line">        mToOkAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToOkAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToOkAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">100</span>;</div><div class="line">    mToOkAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToSelectedAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToSelectedAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToSelectedAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToSelectedAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToSelectedAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToSelectedAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startLoadingAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mLoadingAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mLoadingAnimate.setRepeatMode(ValueAnimator.RESTART);</div><div class="line">        mLoadingAnimate.setRepeatCount(ValueAnimator.INFINITE);</div><div class="line">        mLoadingAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mLoadingAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mLoadingAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToIDLEAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte == <span class="keyword">null</span>) &#123;</div><div class="line">        mToIDLEAniamte = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToIDLEAniamte.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToIDLEAniamte.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToIDLEAniamte.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopAllAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate != <span class="keyword">null</span> &amp;&amp; mLoadingAnimate.isStarted()) &#123;</div><div class="line">        mLoadingAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte != <span class="keyword">null</span> &amp;&amp; mToIDLEAniamte.isStarted()) &#123;</div><div class="line">        mToIDLEAniamte.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate != <span class="keyword">null</span> &amp;&amp; mToSelectedAnimate.isStarted()) &#123;</div><div class="line">        mToSelectedAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate != <span class="keyword">null</span> &amp;&amp; mToOkAnimate.isStarted()) &#123;</div><div class="line">        mToOkAnimate.end();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">Animator.AnimatorListener listener = <span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingViewStatus</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> IDLE = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LOADING = <span class="number">1</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SELECTED = <span class="number">2</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OK = <span class="number">3</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>效果：</p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/25/macos/mac设置定时任务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -386,6 +526,169 @@
 <ul>
 <li><a href="https://my.oschina.net/shede333/blog/470377" target="_blank" rel="external">https://my.oschina.net/shede333/blog/470377</a></li>
 </ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/25/linux/linux-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/25/linux/linux-command/" itemprop="url">Linux Command</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-25T12:18:12+08:00">
+                2016-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="查看文件大小"><a href="#查看文件大小" class="headerlink" title="查看文件大小"></a>查看文件大小</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls -lh</div></pre></td></tr></table></figure>
+<h1 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h1><p>插卡内核<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">uname -a</div><div class="line"></div><div class="line">#or </div><div class="line"></div><div class="line">uname -r</div></pre></td></tr></table></figure></p>
+<h1 id="kill-process-by-pid-file"><a href="#kill-process-by-pid-file" class="headerlink" title="kill process by pid file"></a>kill process by pid file</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill $(cat ~/code/posbox/posbox.pid)</div></pre></td></tr></table></figure>
+<p>-9  杀死父进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill -9 $(cat ~/code/posbox/posbox.pid)</div></pre></td></tr></table></figure>
+<h1 id="ps-进程管理"><a href="#ps-进程管理" class="headerlink" title="ps 进程管理"></a>ps 进程管理</h1><p>Process Status</p>
+<blockquote>
+<p>ps 为我们提供了进程的一次性的查看，它所提供的查看结果并不动态连续的；如果想对进程时间监控，应该用 top 工具。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps [参数]</div></pre></td></tr></table></figure>
+<p>命令参数：<br>查看所有进程信息：<code>ps -A</code></p>
+<p><code>ps ax</code>:</p>
+<ul>
+<li>a: all</li>
+<li>x: x参数会显示没有控制终端的进程。</li>
+</ul>
+<h1 id="tail-监听文件"><a href="#tail-监听文件" class="headerlink" title="tail 监听文件"></a>tail 监听文件</h1><p>常用于 log 的监听</p>
+<p>tail[必要参数][选择参数][文件]   </p>
+<p>-f ： 表示循环读取</p>
+<p>常用例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail -f [文件]</div></pre></td></tr></table></figure></p>
+<h1 id="杀进程-uwsgi"><a href="#杀进程-uwsgi" class="headerlink" title="杀进程 uwsgi"></a>杀进程 uwsgi</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps ax | grep uwsgi</div></pre></td></tr></table></figure>
+<p>kill:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">udo pkill -f uwsgi -9</div></pre></td></tr></table></figure></p>
+<h1 id="fuser"><a href="#fuser" class="headerlink" title="fuser"></a>fuser</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">fuser: [-cfu] file ...</div><div class="line">    -c  file is treated as mount point</div><div class="line">    -f  the report is only for the named files</div><div class="line">    -u  print username of pid in parenthesis</div></pre></td></tr></table></figure>
+<p>例子：查看谁正在使用数据库,并关闭该进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">fuser db.sqlite3</div><div class="line"></div><div class="line"># db.sqlite3: 35756 </div><div class="line"></div><div class="line">kill 35756</div></pre></td></tr></table></figure>
+<h1 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minute] [hour] [day] [month] [week] [command]</div></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">* * * * * scrapy crawl douban</div></pre></td></tr></table></figure>
+<h1 id="which"><a href="#which" class="headerlink" title="which"></a>which</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">which python3</div></pre></td></tr></table></figure>
+<p>获取某个命令的位置</p>
 
           
         
@@ -1861,569 +2164,11 @@ class SimpleForm(forms.Form):
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Python/django/Django-Forms-Overview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/13/Python/django/Django-Forms-Overview/" itemprop="url">Django Forms - Overview</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
-                2016-12-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Overview</p>
-<h1 id="HTML-Forms"><a href="#HTML-Forms" class="headerlink" title="HTML Forms"></a>HTML Forms</h1><p>在 HTML 中表单由<code>&lt;form&gt;...&lt;/form&gt;</code>标签生成。</p>
-<p><code>&lt;input&gt;</code>元素，需要定义：</p>
-<ol>
-<li>where:用户的输入该返回什么 URL</li>
-<li>how:数据应该使用哪种 HTTP method 返回</li>
-</ol>
-<h2 id="GET-and-POST"><a href="#GET-and-POST" class="headerlink" title="GET and POST"></a>GET and POST</h2><p>GET and POST are the only HTTP methods to use when dealing with forms.</p>
-<h1 id="Django’s-role-in-forms"><a href="#Django’s-role-in-forms" class="headerlink" title="Django’s role in forms"></a>Django’s role in forms</h1><ul>
-<li>preparing and restructuring data to make it ready for rendering</li>
-<li>creating HTML forms for the data</li>
-<li>receiving and processing submitted forms and data from the client</li>
-</ul>
-<h1 id="Forms-in-Django"><a href="#Forms-in-Django" class="headerlink" title="Forms in Django"></a>Forms in Django</h1><p>We’ve described HTML forms briefly, but an HTML <form> is just one part of the machinery required.</form></p>
-<h2 id="The-Django-Form-class"><a href="#The-Django-Form-class" class="headerlink" title="The Django Form class"></a>The Django Form class</h2><h2 id="Instantiating-processing-and-rendering-forms"><a href="#Instantiating-processing-and-rendering-forms" class="headerlink" title="Instantiating, processing, and rendering forms"></a>Instantiating, processing, and rendering forms</h2><ol>
-<li>get hold of it in the view (fetch it from the database, for example)</li>
-<li>pass it to the template context</li>
-<li>expand it to HTML markup using template variables</li>
-</ol>
-<h1 id="Building-a-form"><a href="#Building-a-form" class="headerlink" title="Building a form"></a>Building a form</h1><h2 id="The-work-that-needs-to-be-done"><a href="#The-work-that-needs-to-be-done" class="headerlink" title="The work that needs to be done"></a>The work that needs to be done</h2><p>比如需要创建一个下面的 html：</p>
-<pre><code>&lt;form action=&quot;/your-name/&quot; method=&quot;post&quot;&gt;
-    &lt;label for=&quot;your_name&quot;&gt;Your name: &lt;/label&gt;
-    &lt;input id=&quot;your_name&quot; type=&quot;text&quot; name=&quot;your_name&quot; value=&quot;{{ current_name }}&quot;&gt;
-    &lt;input type=&quot;submit&quot; value=&quot;OK&quot;&gt;
-&lt;/form&gt;
-</code></pre><h2 id="Building-a-form-in-Django"><a href="#Building-a-form-in-Django" class="headerlink" title="Building a form in Django"></a>Building a form in Django</h2><h3 id="The-Form-class"><a href="#The-Form-class" class="headerlink" title="The Form class"></a>The Form class</h3><p>forms.py:</p>
-<pre><code>from django import forms
-
-class NameForm(forms.Form):
-    your_name = forms.CharField(label=&apos;Your name&apos;, max_length=100)
-</code></pre><p>forms class 有一个 is_valid() 方法，用于验证数据的有效性</p>
-<p>这个 forms 被渲染后的 html：</p>
-<pre><code>&lt;label for=&quot;your_name&quot;&gt;Your name: &lt;/label&gt;
-&lt;input id=&quot;your_name&quot; type=&quot;text&quot; name=&quot;your_name&quot; maxlength=&quot;100&quot; required /&gt;
-</code></pre><p>没有包含 <code>&lt;form&gt;</code> 标签，和 submit button</p>
-<h3 id="The-view"><a href="#The-view" class="headerlink" title="The view"></a>The view</h3><p>views.py：</p>
-<pre><code>from django.shortcuts import render
-from django.http import HttpResponseRedirect
-
-from .forms import NameForm
-
-def get_name(request):
-    # if this is a POST request we need to process the form data
-    if request.method == &apos;POST&apos;:
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it&apos;s valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect(&apos;/thanks/&apos;)
-
-    # if a GET (or any other method) we&apos;ll create a blank form
-    else:
-        form = NameForm()
-
-    return render(request, &apos;name.html&apos;, {&apos;form&apos;: form})
-</code></pre><h1 id="Form-classes"><a href="#Form-classes" class="headerlink" title="Form classes"></a>Form classes</h1><p>所有的 Form class 都继承自 <code>django.forms.Form</code>, 包括 Django 的 admin 中使用的 <code>ModelForm</code></p>
-<blockquote>
-<p>Form 用于直接添加和编辑 Django model。</p>
-</blockquote>
-<h2 id="Bound-and-unbound-form-instances"><a href="#Bound-and-unbound-form-instances" class="headerlink" title="Bound and unbound form instances"></a>Bound and unbound form instances</h2><p>Bound 和 unbound 的区别：</p>
-<ol>
-<li>一个 unbound 的 form 没有和它连接的数据，当它被渲染显示给用户的时候，它是空的或者包含默认的值。</li>
-<li>一个 bound form，渲染后是包含数据的。</li>
-</ol>
-<p>form 的 <code>is_bound</code> 属性表示了是否绑定数据。</p>
-<h2 id="More-on-fields"><a href="#More-on-fields" class="headerlink" title="More on fields"></a>More on fields</h2><p>下面创建一个更有意义的 form：</p>
-<p>forms.py:</p>
-<pre><code>from django import forms
-
-class ContactForm(forms.Form):
-    subject = forms.CharField(max_length=100)
-    message = forms.CharField(widget=forms.Textarea)
-    sender = forms.EmailField()
-    cc_myself = forms.BooleanField(required=False)
-</code></pre><h3 id="Widgets"><a href="#Widgets" class="headerlink" title="Widgets"></a>Widgets</h3><p>每个 form field 都有一个对应的 Widget class,用于设置其 input 的 type，默认 type=”text”</p>
-<h4 id="Field-data"><a href="#Field-data" class="headerlink" title="Field data"></a>Field data</h4><p>通过调用 <code>forms.is_valid()</code> 来验证用户数据,验证后的数据会被保存的到 <code>form.cleaned_data</code> dictionary,这里的数据可以很好的转化成 Python 数据</p>
-<p>views.py:</p>
-<pre><code>from django.core.mail import send_mail
-
-if form.is_valid():
-    subject = form.cleaned_data[&apos;subject&apos;]
-    message = form.cleaned_data[&apos;message&apos;]
-    sender = form.cleaned_data[&apos;sender&apos;]
-    cc_myself = form.cleaned_data[&apos;cc_myself&apos;]
-
-    recipients = [&apos;info@example.com&apos;]
-    if cc_myself:
-        recipients.append(sender)
-
-    send_mail(subject, message, sender, recipients)
-    return HttpResponseRedirect(&apos;/thanks/&apos;)
-</code></pre><p>一些 field 类型需要一些额外的处理，比如 使用 form 上传文件</p>
-<h1 id="Working-with-form-templates"><a href="#Working-with-form-templates" class="headerlink" title="Working with form templates"></a>Working with form templates</h1><p>把 form 对象放到 template 的 conext 中就可以把 form 添加到 template 中，比如表单的变量名是 form，<code></code> 加入到 template 中就可以了。</p>
-<h2 id="Form-rendering-options"><a href="#Form-rendering-options" class="headerlink" title="Form rendering options"></a>Form rendering options</h2><p>一些定制：</p>
-<ul>
-<li><code></code>: 生成的 html 会被 <code>&lt;tr&gt;</code> 标签包裹</li>
-<li><code></code>: 被 <code>&lt;p&gt;</code> 包裹</li>
-<li><code></code>: 被 <code>&lt;li&gt;</code> 包裹</li>
-</ul>
-<p>在 template 中需要自己写 <code>&lt;table&gt;</code>,<code>&lt;ul&gt;</code> 标签</p>
-<p><code></code> ContactForm 的输出：</p>
-<pre><code>&lt;p&gt;&lt;label for=&quot;id_subject&quot;&gt;Subject:&lt;/label&gt;
-    &lt;input id=&quot;id_subject&quot; type=&quot;text&quot; name=&quot;subject&quot; maxlength=&quot;100&quot; required /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;label for=&quot;id_message&quot;&gt;Message:&lt;/label&gt;
-    &lt;textarea name=&quot;message&quot; id=&quot;id_message&quot; required&gt;&lt;/textarea&gt;&lt;/p&gt;
-&lt;p&gt;&lt;label for=&quot;id_sender&quot;&gt;Sender:&lt;/label&gt;
-    &lt;input type=&quot;email&quot; name=&quot;sender&quot; id=&quot;id_sender&quot; required /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;label for=&quot;id_cc_myself&quot;&gt;Cc myself:&lt;/label&gt;
-    &lt;input type=&quot;checkbox&quot; name=&quot;cc_myself&quot; id=&quot;id_cc_myself&quot; /&gt;&lt;/p&gt;
-</code></pre><p>每个 field 都有一个 ID <code>id_&lt;field-name&gt;</code></p>
-<h2 id="Rendering-fields-manually"><a href="#Rendering-fields-manually" class="headerlink" title="Rendering fields manually"></a>Rendering fields manually</h2><p>手动渲染 fields，每个 field 都可以通过属性 <code></code> 获取</p>
-<p>ex：</p>
-<pre><code>{{ form.non_field_errors }}
-&lt;div class=&quot;fieldWrapper&quot;&gt;
-    {{ form.subject.errors }}
-    &lt;label for=&quot;{{ form.subject.id_for_label }}&quot;&gt;Email subject:&lt;/label&gt;
-    {{ form.subject }}
-&lt;/div&gt;
-&lt;div class=&quot;fieldWrapper&quot;&gt;
-    {{ form.message.errors }}
-    &lt;label for=&quot;{{ form.message.id_for_label }}&quot;&gt;Your message:&lt;/label&gt;
-    {{ form.message }}
-&lt;/div&gt;
-&lt;div class=&quot;fieldWrapper&quot;&gt;
-    {{ form.sender.errors }}
-    &lt;label for=&quot;{{ form.sender.id_for_label }}&quot;&gt;Your email address:&lt;/label&gt;
-    {{ form.sender }}
-&lt;/div&gt;
-&lt;div class=&quot;fieldWrapper&quot;&gt;
-    {{ form.cc_myself.errors }}
-    &lt;label for=&quot;{{ form.cc_myself.id_for_label }}&quot;&gt;CC yourself?&lt;/label&gt;
-    {{ form.cc_myself }}
-&lt;/div&gt;
-</code></pre><p><code>&lt;label&gt;</code> 可以通过 <code>label_tag()</code> 方法生成，ex：</p>
-<pre><code>&lt;div class=&quot;fieldWrapper&quot;&gt;
-    {{ form.subject.errors }}
-    {{ form.subject.label_tag }}
-    {{ form.subject }}
-&lt;/div&gt;
-</code></pre><h3 id="Rendering-form-error-messages"><a href="#Rendering-form-error-messages" class="headerlink" title="Rendering form error messages"></a>Rendering form error messages</h3><p>。。。</p>
-<h2 id="Looping-over-the-form’s-fields"><a href="#Looping-over-the-form’s-fields" class="headerlink" title="Looping over the form’s fields"></a>Looping over the form’s fields</h2><p>使用遍历 field 的方式生成 forms：</p>
-<pre><code>{% for field in form %}
-        <div class="fieldWrapper">
-            {{ field.errors }}
-            {{ field.label_tag }} {{ field }}
-            {% if field.help_text %}
-            <p class="help">{{ field.help_text|safe }}</p>
-            {% endif %}
-        </div>
-    {% endfor %}
-</code></pre><p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<p><code></code></p>
-<h3 id="Looping-over-hidden-and-visible-fields"><a href="#Looping-over-hidden-and-visible-fields" class="headerlink" title="Looping over hidden and visible fields"></a>Looping over hidden and visible fields</h3><pre><code>{% for hidden in form.hidden_fields %}
-    {{ hidden }}
-    {% endfor %}
-
-{% for field in form.visible_fields %}
-        <div class="fieldWrapper">
-            {{ field.errors }}
-            {{ field.label_tag }} {{ field }}
-        </div>
-    {% endfor %}
-</code></pre><h2 id="Reusable-form-templates"><a href="#Reusable-form-templates" class="headerlink" title="Reusable form templates"></a>Reusable form templates</h2><p>把 form 的 html 写到一个 html 文件文件中，通过 <code>include</code> 达到复用的效果</p>
-<pre><code># In your form template:
-{% include "form_snippet.html" %}
-
-# In form_snippet.html:
-{% for field in form %}
-        <div class="fieldWrapper">
-            {{ field.errors }}
-            {{ field.label_tag }} {{ field }}
-        </div>
-    {% endfor %}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Python/django/Django-Forms-API/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/13/Python/django/Django-Forms-API/" itemprop="url">Django Forms - API</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
-                2016-12-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Bound-and-unbound-forms"><a href="#Bound-and-unbound-forms" class="headerlink" title="Bound and unbound forms"></a>Bound and unbound forms</h1><p>Form 实例可以 bound 数据也不可 unbound</p>
-<ul>
-<li>如果 bound 数据，form 可以验证数据的正确性，并且渲染结合数据成 HTML。</li>
-<li>如果 unbound，form 不能验证数据的正确性（因为没有数据），但是同样可以渲染成 html</li>
-</ul>
-<h3 id="class-Form"><a href="#class-Form" class="headerlink" title="class Form"></a>class Form</h3><p>create Form instance:</p>
-<pre><code>f = ContactForm()
-</code></pre><p>bind data to form 通过 dictionary 作为第一个参数:</p>
-<pre><code>data = {&apos;subject&apos;: &apos;hello&apos;, &apos;message&apos;: &apos;hi there&apos;, &apos;sender&apos;: &apos;foo@example.com&apos;, &apos;cc_myself&apos;: True}
-
-f = ContactForm(data)
-</code></pre><p>dictionary: key 就是 field names,</p>
-<h3 id="is-bound"><a href="#is-bound" class="headerlink" title="is_bound"></a>is_bound</h3><p>判断 Form 是否已经绑定数据：</p>
-<pre><code>f = ContactForm()
-f.is_bound # False
-
-f = ContactForm({&apos;subject&apos;: &apos;hello&apos;})
-f.is_bound # True
-
-f = ContactForm({})
-f.is_bound # True
-</code></pre><p>一个 Form 实例初始化后就不能改变它所绑定的数据了，如果要改变只能重新创建新的 Form 对象使用</p>
-<h1 id="Using-forms-to-validate-data"><a href="#Using-forms-to-validate-data" class="headerlink" title="Using forms to validate data"></a>Using forms to validate data</h1><h3 id="Form-clean"><a href="#Form-clean" class="headerlink" title="Form.clean()"></a>Form.clean()</h3><h3 id="Form-is-valid"><a href="#Form-is-valid" class="headerlink" title="Form.is_valid()"></a>Form.is_valid()</h3><p>validate data</p>
-<h3 id="Form-errors"><a href="#Form-errors" class="headerlink" title="Form.errors"></a>Form.errors</h3><pre><code>&gt;&gt;&gt; data = {&apos;subject&apos;: &apos;&apos;,
-...         &apos;message&apos;: &apos;Hi there&apos;,
-...         &apos;sender&apos;: &apos;invalid email address&apos;,
-...         &apos;cc_myself&apos;: True}
-&gt;&gt;&gt; f = ContactForm(data)
-&gt;&gt;&gt; f.is_valid()
-
-&gt;&gt;&gt; f.errors
-{&apos;sender&apos;: [&apos;Enter a valid email address.&apos;], &apos;subject&apos;: [&apos;This field is required.&apos;]}
-</code></pre><h3 id="Form-errors-as-data"><a href="#Form-errors-as-data" class="headerlink" title="Form.errors.as_data()"></a>Form.errors.as_data()</h3><pre><code>&gt;&gt;&gt; f.errors.as_data()
-{&apos;sender&apos;: [ValidationError([&apos;Enter a valid email address.&apos;])],
-&apos;subject&apos;: [ValidationError([&apos;This field is required.&apos;])]}
-</code></pre><h3 id="Form-errors-as-json-escape-html-False"><a href="#Form-errors-as-json-escape-html-False" class="headerlink" title="Form.errors.as_json(escape_html=False)"></a>Form.errors.as_json(escape_html=False)</h3><pre><code>&gt;&gt;&gt; f.errors.as_json()
-{&quot;sender&quot;: [{&quot;message&quot;: &quot;Enter a valid email address.&quot;, &quot;code&quot;: &quot;invalid&quot;}],
-&quot;subject&quot;: [{&quot;message&quot;: &quot;This field is required.&quot;, &quot;code&quot;: &quot;required&quot;}]}
-</code></pre><h3 id="Form-add-error-field-error"><a href="#Form-add-error-field-error" class="headerlink" title="Form.add_error(field, error)"></a>Form.add_error(field, error)</h3><h3 id="Form-non-field-errors"><a href="#Form-non-field-errors" class="headerlink" title="Form.non_field_errors()"></a>Form.non_field_errors()</h3><h2 id="Behavior-of-unbound-forms"><a href="#Behavior-of-unbound-forms" class="headerlink" title="Behavior of unbound forms"></a>Behavior of unbound forms</h2><pre><code>&gt;&gt;&gt; f = ContactForm()
-&gt;&gt;&gt; f.is_valid()
-False
-&gt;&gt;&gt; f.errors
-{}
-</code></pre><h1 id="Dynamic-initial-values"><a href="#Dynamic-initial-values" class="headerlink" title="Dynamic initial values"></a>Dynamic initial values</h1><h3 id="Form-initial"><a href="#Form-initial" class="headerlink" title="Form.initial"></a>Form.initial</h3><pre><code>&gt;&gt;&gt; f = ContactForm(initial={&apos;subject&apos;: &apos;Hi there!&apos;})
-</code></pre><h1 id="Checking-which-form-data-has-changed"><a href="#Checking-which-form-data-has-changed" class="headerlink" title="Checking which form data has changed"></a>Checking which form data has changed</h1><h3 id="Form-has-changed"><a href="#Form-has-changed" class="headerlink" title="Form.has_changed()"></a>Form.has_changed()</h3><p>判断是否有数据改变了</p>
-<pre><code>&gt;&gt;&gt; data = {&apos;subject&apos;: &apos;hello&apos;,
-...         &apos;message&apos;: &apos;Hi there&apos;,
-...         &apos;sender&apos;: &apos;foo@example.com&apos;,
-...         &apos;cc_myself&apos;: True}
-&gt;&gt;&gt; f = ContactForm(data, initial=data)
-&gt;&gt;&gt; f.has_changed()
-False
-</code></pre><p>当 form 提交的时候，我们创建一个新的 form 实例，并且验证数据比较和原始数据的差别。</p>
-<pre><code>&gt;&gt;&gt; f = ContactForm(request.POST, initial=data)
-&gt;&gt;&gt; f.has_changed()
-</code></pre><h3 id="Form-changed-data"><a href="#Form-changed-data" class="headerlink" title="Form.changed_data"></a>Form.changed_data</h3><h1 id="Accessing-the-fields-from-the-form"><a href="#Accessing-the-fields-from-the-form" class="headerlink" title="Accessing the fields from the form"></a>Accessing the fields from the form</h1><h3 id="Form-fields"><a href="#Form-fields" class="headerlink" title="Form.fields"></a>Form.fields</h3><pre><code>&gt;&gt;&gt; for row in f.fields.values(): print(row)
-...
-&lt;django.forms.fields.CharField object at 0x7ffaac632510&gt;
-&lt;django.forms.fields.URLField object at 0x7ffaac632f90&gt;
-&lt;django.forms.fields.CharField object at 0x7ffaac3aa050&gt;
-&gt;&gt;&gt; f.fields[&apos;name&apos;]
-&lt;django.forms.fields.CharField object at 0x7ffaac6324d0&gt;
-</code></pre><p>可以改变 Form 实例的 field：</p>
-<pre><code>&gt;&gt;&gt; f.as_table().split(&apos;\n&apos;)[0]
-&apos;&lt;tr&gt;&lt;th&gt;Name:&lt;/th&gt;&lt;td&gt;&lt;input name=&quot;name&quot; type=&quot;text&quot; value=&quot;instance&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;&apos;
-&gt;&gt;&gt; f.fields[&apos;name&apos;].label = &quot;Username&quot;
-&gt;&gt;&gt; f.as_table().split(&apos;\n&apos;)[0]
-&apos;&lt;tr&gt;&lt;th&gt;Username:&lt;/th&gt;&lt;td&gt;&lt;input name=&quot;name&quot; type=&quot;text&quot; value=&quot;instance&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;&apos;
-</code></pre><h1 id="Accessing-“clean”-data"><a href="#Accessing-“clean”-data" class="headerlink" title="Accessing “clean” data"></a>Accessing “clean” data</h1><h3 id="Form-cleaned-data"><a href="#Form-cleaned-data" class="headerlink" title="Form.cleaned_data"></a>Form.cleaned_data</h3><pre><code>&gt;&gt;&gt; data = {&apos;subject&apos;: &apos;hello&apos;,
-...         &apos;message&apos;: &apos;Hi there&apos;,
-...         &apos;sender&apos;: &apos;foo@example.com&apos;,
-...         &apos;cc_myself&apos;: True}
-&gt;&gt;&gt; f = ContactForm(data)
-&gt;&gt;&gt; f.is_valid()
-True
-&gt;&gt;&gt; f.cleaned_data
-{&apos;cc_myself&apos;: True, &apos;message&apos;: &apos;Hi there&apos;, &apos;sender&apos;: &apos;foo@example.com&apos;, &apos;subject&apos;: &apos;hello&apos;}
-</code></pre><h1 id="Outputting-forms-as-HTML"><a href="#Outputting-forms-as-HTML" class="headerlink" title="Outputting forms as HTML"></a>Outputting forms as HTML</h1><pre><code>&gt;&gt;&gt; f = ContactForm()
-&gt;&gt;&gt; print(f)
-</code></pre><h2 id="as-p"><a href="#as-p" class="headerlink" title="as_p()"></a>as_p()</h2><h2 id="as-ul"><a href="#as-ul" class="headerlink" title="as_ul()"></a>as_ul()</h2><h2 id="as-table"><a href="#as-table" class="headerlink" title="as_table()"></a>as_table()</h2><h2 id="Styling-required-or-erroneous-form-rows"><a href="#Styling-required-or-erroneous-form-rows" class="headerlink" title="Styling required or erroneous form rows"></a>Styling required or erroneous form rows</h2><h2 id="Configuring-form-elements’HTML-id-attributes-and-tags"><a href="#Configuring-form-elements’HTML-id-attributes-and-tags" class="headerlink" title="Configuring form elements’HTML id attributes and  tags"></a>Configuring form elements’HTML id attributes and <label> tags</label></h2><h2 id="Notes-on-field-ordering"><a href="#Notes-on-field-ordering" class="headerlink" title="Notes on field ordering"></a>Notes on field ordering</h2><h2 id="How-errors-are-displayed"><a href="#How-errors-are-displayed" class="headerlink" title="How errors are displayed"></a>How errors are displayed</h2><h2 id="Customizing-the-error-list-format"><a href="#Customizing-the-error-list-format" class="headerlink" title="Customizing the error list format"></a>Customizing the error list format</h2><h1 id="More-granular-output"><a href="#More-granular-output" class="headerlink" title="More granular output"></a>More granular output</h1><p>The <code>as_p()</code>, <code>as_ul()</code>, and <code>as_table()</code> methods are simply shortcuts – they’re not the only way a form object can be displayed.</p>
-<h3 id="class-BoundField"><a href="#class-BoundField" class="headerlink" title="class BoundField"></a>class BoundField</h3><h2 id="Attributes-of-BoundField"><a href="#Attributes-of-BoundField" class="headerlink" title="Attributes of BoundField"></a>Attributes of BoundField</h2><h2 id="Methods-of-BoundField"><a href="#Methods-of-BoundField" class="headerlink" title="Methods of BoundField"></a>Methods of BoundField</h2><h3 id="BoundField-as-hidden-attrs-None-kwargs"><a href="#BoundField-as-hidden-attrs-None-kwargs" class="headerlink" title="BoundField.as_hidden(attrs=None, **kwargs)"></a>BoundField.as_hidden(attrs=None, **kwargs)</h3><h3 id="BoundField-as-widget-widget-None-attrs-None-only-initial-False"><a href="#BoundField-as-widget-widget-None-attrs-None-only-initial-False" class="headerlink" title="BoundField.as_widget(widget=None, attrs=None, only_initial=False)"></a>BoundField.as_widget(widget=None, attrs=None, only_initial=False)</h3><h3 id="BoundField-css-classes"><a href="#BoundField-css-classes" class="headerlink" title="BoundField.css_classes()"></a>BoundField.css_classes()</h3><h3 id="BoundField-label-tag-contents-None-attrs-None-label-suffix-None"><a href="#BoundField-label-tag-contents-None-attrs-None-label-suffix-None" class="headerlink" title="BoundField.label_tag(contents=None, attrs=None, label_suffix=None)"></a>BoundField.label_tag(contents=None, attrs=None, label_suffix=None)</h3><h3 id="BoundField-value"><a href="#BoundField-value" class="headerlink" title="BoundField.value()"></a>BoundField.value()</h3><h1 id="Customizing-BoundField"><a href="#Customizing-BoundField" class="headerlink" title="Customizing BoundField"></a>Customizing BoundField</h1><h1 id="Binding-uploaded-files-to-a-form"><a href="#Binding-uploaded-files-to-a-form" class="headerlink" title="Binding uploaded files to a form"></a>Binding uploaded files to a form</h1><p>first，为了能够上传文件，需要在 <code>&lt;form&gt;</code> 元素中定义 <code>enctype=&quot;multipart/form-data&quot;</code>:</p>
-<pre><code>&lt;form enctype=&quot;multipart/form-data&quot; method=&quot;post&quot; action=&quot;/foo/&quot;&gt;
-</code></pre><p>secondly，当我们使用 form 的时候，需要绑定文件数据，文件数据的处理和普通的表单数据处理是分开的：</p>
-<pre><code># Bound form with an image field
-&gt;&gt;&gt; from django.core.files.uploadedfile import SimpleUploadedFile
-&gt;&gt;&gt; data = {&apos;subject&apos;: &apos;hello&apos;,
-...         &apos;message&apos;: &apos;Hi there&apos;,
-...         &apos;sender&apos;: &apos;foo@example.com&apos;,
-...         &apos;cc_myself&apos;: True}
-&gt;&gt;&gt; file_data = {&apos;mugshot&apos;: SimpleUploadedFile(&apos;face.jpg&apos;, &lt;file data&gt;)}
-&gt;&gt;&gt; f = ContactFormWithMugshot(data, file_data)
-</code></pre><p>从一个请求中绑定数据：</p>
-<pre><code># Bound form with an image field, data from the request
-&gt;&gt;&gt; f = ContactFormWithMugshot(request.POST, request.FILES)
-</code></pre><p>unbound：</p>
-<pre><code># Unbound form with an image field
-&gt;&gt;&gt; f = ContactFormWithMugshot()
-</code></pre><h2 id="Testing-for-multipart-forms"><a href="#Testing-for-multipart-forms" class="headerlink" title="Testing for multipart forms"></a>Testing for multipart forms</h2><h3 id="Form-is-multipart"><a href="#Form-is-multipart" class="headerlink" title="Form.is_multipart()"></a>Form.is_multipart()</h3><p>判断表单是否是包含文件上传：</p>
-<pre><code>&gt;&gt;&gt; f = ContactFormWithMugshot()
-&gt;&gt;&gt; f.is_multipart()
-True
-</code></pre><p>template example：</p>
-<pre><code>{% if form.is_multipart %}
-        <form enctype="multipart/form-data" method="post" action="/foo/">
-    {% else %}
-        <form method="post" action="/foo/">
-    {% endif %}
-{{ form }}
-&lt;/form&gt;
-</form></form></code></pre><h1 id="Subclassing-forms"><a href="#Subclassing-forms" class="headerlink" title="Subclassing forms"></a>Subclassing forms</h1><h1 id="Prefixes-for-forms"><a href="#Prefixes-for-forms" class="headerlink" title="Prefixes for forms"></a>Prefixes for forms</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/39/">39</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2468,7 +2213,7 @@ True
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">389</span>
+                <span class="site-state-item-count">391</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
