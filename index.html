@@ -253,6 +253,1431 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/20/ReadNote/设计模式/设计模式之蝉-命令模式+责任链模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/20/ReadNote/设计模式/设计模式之蝉-命令模式+责任链模式/" itemprop="url">设计模式之蝉 - 命令模式 + 责任链模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-20T21:38:14+08:00">
+                2017-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>移植 *inux 命令到 windows</p>
+<p>抽象命令类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CommandName</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> CommandName nextOpertor;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">handleMessage</span><span class="params">(CommandVP vp)</span></span>&#123;</div><div class="line">        String result = <span class="string">""</span>;</div><div class="line">        <span class="keyword">if</span>(vo.getparam().size() == <span class="number">0</span> || vo.getParam().contains(<span class="keyword">this</span>.getOperator()))&#123;</div><div class="line">            result = <span class="keyword">this</span>.echo(vo);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.nextOperator != <span class="keyword">null</span>)&#123;</div><div class="line">                result = <span class="keyword">this</span>.nextOperator.handleMessage(vo);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                result = <span class="string">"命令无法执行"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNext</span><span class="params">(CommandName _operator)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.nextOperator = _operator;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象 ls 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractLS</span> <span class="keyword">extends</span> <span class="title">CommandName</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String DEFAULT_PARAM = <span class="string">""</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String A_PARAM = <span class="string">"a"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String L_PARAM = <span class="string">"l"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LS</span> <span class="keyword">extends</span> <span class="title">AbstractLS</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> FileManager.ls(vo.formatData());</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.DEFAULT_PARAM;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls -l 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LS_L</span> <span class="keyword">extends</span> <span class="title">AbstractLS</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> FileManager.ls_l(vo.formatData());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.L_PARAM;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls -a 命令：类似上面的代码。</p>
+<p>FileManager 负责与操作系统交互：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileManager</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"file1\nfile2\file3\nfille4"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls_l</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        String str = <span class="string">"...."</span></div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls_a</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        String str = <span class="string">".."</span>;</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Command</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">execute</span><span class="params">(CommandVO vo)</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> List&lt;? extends CommandName&gt; buildChain(Class&lt;? extends Command)&#123;</div><div class="line">        List&lt;Class&gt; classes = ClassUtils.getSonClass(abstractClass);</div><div class="line">        List&lt;CommandName&gt; commandNameList = <span class="keyword">new</span> ArrayList&lt;CommandName&gt;();</div><div class="line"></div><div class="line">        <span class="keyword">for</span>(Class c: classes)&#123;</div><div class="line">            CommandName commandName = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                commandName = (CommandName)Class.forNam(c.getName()).newInstance()</div><div class="line">            &#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">if</span>(commandNameList.size() &gt; <span class="number">0</span>)&#123;</div><div class="line">                commandNameList.get(commandNameList.size()-<span class="number">1</span>).setNext(..)</div><div class="line">            &#125;</div><div class="line">            commandNameList.add(commandName);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> commandNameList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Command 抽象类作用：1. 定义命令的执行方法 2. 负责命令族（责任链）的建立</p>
+<p>LSCommand:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LSCommand</span> <span class="keyword">extends</span> <span class="title">Command</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">execute</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        CommandName firstNode = <span class="keyword">super</span>.buildChain(AbstractLS.class).get(<span class="number">0</span>)</div><div class="line">        <span class="keyword">return</span> firstNode.hanldeMessage(vo);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>命令对象 CommandVO:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommandVO</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String DIVIDE_FLAG = <span class="string">" "</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String PREFIX = <span class="string">"-"</span>;</div><div class="line">    <span class="keyword">private</span> String commandName = <span class="string">""</span>;</div><div class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; paramList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; dataList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CommandVO</span><span class="params">(String commandStr)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(commandStr != <span class="keyword">null</span> &amp;&amp; commandStr.length() != <span class="number">0</span>)&#123;</div><div class="line">            String[] complexStr = commandStr.split(CommandVO.DIVIDE_FLAG)</div><div class="line">            <span class="keyword">this</span>.commandName = complexStr[<span class="number">0</span>];</div><div class="line"></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;complexStr.length; i++)&#123;</div><div class="line">                String str = complexStr[i];</div><div class="line">                <span class="keyword">if</span>(str.indexOf(CommandVO.PREFIX) == <span class="number">0</span>)&#123;</div><div class="line">                    <span class="keyword">this</span>.paramList.add(str.replace(CommandVO.PREFIX, <span class="string">""</span>).trim());</div><div class="line">                &#125;<span class="keyword">else</span>&#123;</div><div class="line">                    <span class="keyword">this</span>.dataList.add(str.trim());</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            System.out.println(<span class="string">"命令解析失败"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCommandName</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.commandName;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.paramList.size() == <span class="number">0</span>)&#123;</div><div class="line">            <span class="keyword">this</span>.paramList.add(<span class="string">""</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> newArrayList(<span class="keyword">new</span> HashSet(<span class="keyword">this</span>.paramList));</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getData</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.dataList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>命令分发：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Invoker</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">exec</span><span class="params">(String _commandStr)</span></span>&#123;</div><div class="line">        String result = <span class="string">""</span>;</div><div class="line">        CommandVO vo = <span class="keyword">new</span> CommandVO(_commandStr);</div><div class="line">        <span class="keyword">if</span>(CommandEnum.getNames().contains(vo.getCommandName()))&#123;</div><div class="line">            String className = CommandEnum.valueOf(vo.getCommandName())...</div><div class="line">            Command command;</div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                command = (Command)Class.forName(className).newInstance();</div><div class="line">                result = command.execute(vo);</div><div class="line">            &#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            result = <span class="string">"无法执行"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>//……..</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/20/ReadNote/设计模式/设计模式之蝉-工厂方法模式+/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/20/ReadNote/设计模式/设计模式之蝉-工厂方法模式+/" itemprop="url">设计模式之蝉 - 命令模式 + 责任链模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-20T21:38:14+08:00">
+                2017-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>移植 *inux 命令到 windows</p>
+<p>抽象命令类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CommandName</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> CommandName nextOpertor;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">handleMessage</span><span class="params">(CommandVP vp)</span></span>&#123;</div><div class="line">        String result = <span class="string">""</span>;</div><div class="line">        <span class="keyword">if</span>(vo.getparam().size() == <span class="number">0</span> || vo.getParam().contains(<span class="keyword">this</span>.getOperator()))&#123;</div><div class="line">            result = <span class="keyword">this</span>.echo(vo);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.nextOperator != <span class="keyword">null</span>)&#123;</div><div class="line">                result = <span class="keyword">this</span>.nextOperator.handleMessage(vo);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                result = <span class="string">"命令无法执行"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNext</span><span class="params">(CommandName _operator)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.nextOperator = _operator;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象 ls 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractLS</span> <span class="keyword">extends</span> <span class="title">CommandName</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String DEFAULT_PARAM = <span class="string">""</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String A_PARAM = <span class="string">"a"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String L_PARAM = <span class="string">"l"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LS</span> <span class="keyword">extends</span> <span class="title">AbstractLS</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> FileManager.ls(vo.formatData());</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.DEFAULT_PARAM;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls -l 命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LS_L</span> <span class="keyword">extends</span> <span class="title">AbstractLS</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> FileManager.ls_l(vo.formatData());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.L_PARAM;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ls -a 命令：类似上面的代码。</p>
+<p>FileManager 负责与操作系统交互：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileManager</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"file1\nfile2\file3\nfille4"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls_l</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        String str = <span class="string">"...."</span></div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ls_a</span><span class="params">(String path)</span></span>&#123;</div><div class="line">        String str = <span class="string">".."</span>;</div><div class="line">        <span class="keyword">return</span> str;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Command</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">execute</span><span class="params">(CommandVO vo)</span></span>;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> List&lt;? extends CommandName&gt; buildChain(Class&lt;? extends Command)&#123;</div><div class="line">        List&lt;Class&gt; classes = ClassUtils.getSonClass(abstractClass);</div><div class="line">        List&lt;CommandName&gt; commandNameList = <span class="keyword">new</span> ArrayList&lt;CommandName&gt;();</div><div class="line"></div><div class="line">        <span class="keyword">for</span>(Class c: classes)&#123;</div><div class="line">            CommandName commandName = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                commandName = (CommandName)Class.forNam(c.getName()).newInstance()</div><div class="line">            &#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">if</span>(commandNameList.size() &gt; <span class="number">0</span>)&#123;</div><div class="line">                commandNameList.get(commandNameList.size()-<span class="number">1</span>).setNext(..)</div><div class="line">            &#125;</div><div class="line">            commandNameList.add(commandName);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> commandNameList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Command 抽象类作用：1. 定义命令的执行方法 2. 负责命令族（责任链）的建立</p>
+<p>LSCommand:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LSCommand</span> <span class="keyword">extends</span> <span class="title">Command</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">execute</span><span class="params">(CommandVO vo)</span></span>&#123;</div><div class="line">        CommandName firstNode = <span class="keyword">super</span>.buildChain(AbstractLS.class).get(<span class="number">0</span>)</div><div class="line">        <span class="keyword">return</span> firstNode.hanldeMessage(vo);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>命令对象 CommandVO:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CommandVO</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String DIVIDE_FLAG = <span class="string">" "</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String PREFIX = <span class="string">"-"</span>;</div><div class="line">    <span class="keyword">private</span> String commandName = <span class="string">""</span>;</div><div class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; paramList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; dataList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CommandVO</span><span class="params">(String commandStr)</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(commandStr != <span class="keyword">null</span> &amp;&amp; commandStr.length() != <span class="number">0</span>)&#123;</div><div class="line">            String[] complexStr = commandStr.split(CommandVO.DIVIDE_FLAG)</div><div class="line">            <span class="keyword">this</span>.commandName = complexStr[<span class="number">0</span>];</div><div class="line"></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;complexStr.length; i++)&#123;</div><div class="line">                String str = complexStr[i];</div><div class="line">                <span class="keyword">if</span>(str.indexOf(CommandVO.PREFIX) == <span class="number">0</span>)&#123;</div><div class="line">                    <span class="keyword">this</span>.paramList.add(str.replace(CommandVO.PREFIX, <span class="string">""</span>).trim());</div><div class="line">                &#125;<span class="keyword">else</span>&#123;</div><div class="line">                    <span class="keyword">this</span>.dataList.add(str.trim());</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            System.out.println(<span class="string">"命令解析失败"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCommandName</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.commandName;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getParam</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.paramList.size() == <span class="number">0</span>)&#123;</div><div class="line">            <span class="keyword">this</span>.paramList.add(<span class="string">""</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> newArrayList(<span class="keyword">new</span> HashSet(<span class="keyword">this</span>.paramList));</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getData</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.dataList;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>命令分发：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Invoker</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">exec</span><span class="params">(String _commandStr)</span></span>&#123;</div><div class="line">        String result = <span class="string">""</span>;</div><div class="line">        CommandVO vo = <span class="keyword">new</span> CommandVO(_commandStr);</div><div class="line">        <span class="keyword">if</span>(CommandEnum.getNames().contains(vo.getCommandName()))&#123;</div><div class="line">            String className = CommandEnum.valueOf(vo.getCommandName())...</div><div class="line">            Command command;</div><div class="line">            <span class="keyword">try</span>&#123;</div><div class="line">                command = (Command)Class.forName(className).newInstance();</div><div class="line">                result = command.execute(vo);</div><div class="line">            &#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            result = <span class="string">"无法执行"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>//……..</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/19/ReadNote/设计模式/设计模式之蝉-门面模式vs中介模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/19/ReadNote/设计模式/设计模式之蝉-门面模式vs中介模式/" itemprop="url">设计模式之蝉 - 门面模式vs中介模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-19T21:38:14+08:00">
+                2017-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>门面模式为复杂的子系统提供一个统一的访问界面，它定义的是一个高层的接口，该接口使子系统更容易使用，避免外部模块深入到子系统。</p>
+<p>中介者模式使用一个中介对象来封装一系列同事对象的交互行为。</p>
+<h1 id="中介者模式实现工资计算"><a href="#中介者模式实现工资计算" class="headerlink" title="中介者模式实现工资计算"></a>中介者模式实现工资计算</h1><p>抽象同事类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbsColleague</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> AbsMediator mediator;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AbsColleague</span><span class="params">(AbsMediator _mediator)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.mediator = _mediator;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>职位接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IPosition</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">promote</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demote</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>职位：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Position</span> <span class="keyword">extends</span> <span class="title">AbsColleague</span> <span class="keyword">implements</span> <span class="title">IPosition</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Position</span><span class="params">(AbsMediator _mediator)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(_mediator);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">domote</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.mediator.down(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">promote</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.mediator.up(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每个职位的升降都委托给中介者执行。</p>
+<p>工资接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ISalray</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">increaseSalary</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">decreaseSalary</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>工资：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Salary</span> <span class="keyword">extends</span> <span class="title">AbsColleague</span> <span class="keyword">implements</span> <span class="title">ISalary</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Salary</span><span class="params">(AbsMediator _mediator)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.(_mediator);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">decreaseSalary</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.mediator.down(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">increaseSalary</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.mediator.up(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象中介者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbsMediator</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> ISalary salary;</div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> IPosition position;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Absmediator</span><span class="params">()</span></span>&#123;</div><div class="line">        salary = <span class="keyword">new</span> Salary(<span class="keyword">this</span>);</div><div class="line">        position = <span class="keyword">new</span> Position(<span class="keyword">this</span>);        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">(ISalary _salary)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">(IPosition _position)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">down</span><span class="params">(ISalary _salary)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">down</span><span class="params">(IPosition _position)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>中介者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Mediator</span> <span class="keyword">extends</span> <span class="title">AbsMediator</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">(ISalary _salary)</span></span>&#123;</div><div class="line">        upSalary();        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">(IPosition position)</span></span>&#123;</div><div class="line">        upPosition();</div><div class="line">        upSalary();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">upSalary</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"工资翻倍"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">upPosition</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"职位升级"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//...</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>场景类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        Mediator mediator = <span class="keyword">new</span> Mediaotr();</div><div class="line">        IPosition position = <span class="keyword">new</span> Position(mediator);</div><div class="line">        ISalary salary = <span class="keyword">new</span> Sahalry(mediator);</div><div class="line">        ITax tax = <span class="keyword">new</span> Tax(mediator);</div><div class="line"></div><div class="line">        position.promote();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>职位和工资, 税收之间有紧密的联系，如果不采用中介者模式，则每个对象都要与其他两个对象进行通讯，这会增加系统的复杂性。</p>
+<h1 id="门面模式实现工资计算"><a href="#门面模式实现工资计算" class="headerlink" title="门面模式实现工资计算"></a>门面模式实现工资计算</h1><p>考勤情况：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Attendance</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWorkDays</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">new</span> Ranom()).nextInt(<span class="number">30</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>奖金计算：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bonus</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Attendance atte = <span class="keyword">new</span> Attendance();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getBonus</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">int</span> workDays = atte.getWorksDays();</div><div class="line">        <span class="keyword">int</span> bonus = workDays * <span class="number">1800</span> / <span class="number">30</span>;</div><div class="line">        <span class="keyword">return</span> bonus;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>基本工资：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BasicSalary</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getBasicSalary</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">2000</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>绩效：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">performance</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> BasicSalary salary = <span class="keyword">new</span> BasicSalary();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPerformanceValue</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">int</span> perf = (<span class="keyword">new</span> Random()).nextInt(<span class="number">100</span>);</div><div class="line">        <span class="keyword">return</span> salary.getBasicSalary() * perf / <span class="number">100</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>税收：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tax</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTax</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">new</span> Random()).nextInt(<span class="number">300</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面是所有的计算薪酬的子元素。</p>
+<p>总工资计算：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SalaryProvider</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> BasicSalary basicSalary = <span class="keyword">new</span> BasicSalary();</div><div class="line">    <span class="keyword">private</span> Bonus bonus = <span class="keyword">new</span> Bonus();</div><div class="line">    <span class="keyword">private</span> Performance perf = <span class="keyword">new</span> Performance();</div><div class="line">    <span class="keyword">private</span> Tax tax = <span class="keyword">new</span> Tax();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalSalary</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> basicSalary.getBasicSalary() + .......;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>HR 门面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HRFacade</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> SalaryProvider salaryProvider = <span class="keyword">new</span> SalaryProvider();</div><div class="line">    <span class="keyword">private</span> Attendance attendance = <span class="keyword">new</span> Attendance();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">querySalary</span><span class="params">(String name, Date date)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> salaryProvider.totalSalary();</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">queryWorkDays</span><span class="params">(String name)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> attendance.getWorkDays();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>门面只是提供一个统一访问的基础而已。不做任何判断，校验，异常处理。</p>
+<p>场景类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        HRFacade facade = <span class="keyword">new</span> HRFacade();</div><div class="line"></div><div class="line">        <span class="keyword">int</span> salary = facade.querySalary(<span class="string">"张三"</span>, <span class="keyword">new</span> Date(System.currentTimeMillis()));</div><div class="line"></div><div class="line">        <span class="keyword">int</span> workDays = facade.queryWorkDays(<span class="string">"李斯"</span>);        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><p>门面模式以封装和隔离为主要任务，中介者模式则是以调合同事类之间的关系为主，因为要调和，所以具有部分的业务逻辑控制。</p>
+<ul>
+<li>功能区别：门面模式只是增加一个门面，对于子系统没有增加任何功能，子系统脱离门面可以完全独立运行。中介者模式则增加了业务功能，同事类通常不能脱离中介者而独立存在。</li>
+<li>知晓状态：门面模式中子系统不知道有门面存在，中介者中每个同事类都知道中介者的存在。</li>
+<li>封装程度不同：门面模式是一种简单的封装，任何请求处理都委托给子系统，中介者模式需要又一个中心，由中心协调同事类完成。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/19/ReadNote/设计模式/设计模式之蝉-包装模式PK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/19/ReadNote/设计模式/设计模式之蝉-包装模式PK/" itemprop="url">设计模式之蝉 - 代理模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-19T21:38:14+08:00">
+                2017-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在很多设计模式中有些角色是不干活的，只是冲当黔首的作用。</p>
+<p>这类包装模式类型为：wrapping pattern</p>
+<p>包括：装饰模式，适配器模式，门面模式，代理模式，桥梁模式</p>
+<h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>明星接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>明星：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singer</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.pirintln(<span class="string">"Singer sign"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>经纪人：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Agent</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> IStar star;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Agent</span><span class="params">(IStar _star)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.star = _star;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sign</span><span class="params">()</span></span>&#123;</div><div class="line">        star.sign();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>经纪人把请求传递给明星，让他签名。</p>
+<h1 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h1><p>明星接口:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>假明星：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FreakStar</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"演技差"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象装饰类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Decorator</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> IStar star;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Decorator</span><span class="params">(IStar _star)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.star = _star;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.star.act();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>装饰类的子类：HotAir, Deny:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HotAir</span> <span class="keyword">extends</span> <span class="title">Decorator</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HotAir</span><span class="params">(IStar _star)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.(_star);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"演出前：-----修饰动作"</span>)</div><div class="line">        <span class="keyword">super</span>.act();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><p>明星找提升</p>
+<p>明星接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">(String context)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>电影明星：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilmStar</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">(String context)</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"明星演戏： "</span> + context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>普通演员接口:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IActor</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">playact</span><span class="params">(String context)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>普通演员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnknownActor</span> <span class="keyword">implements</span> <span class="title">IActor</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">playact</span><span class="params">(String context)</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"普通演员："</span> + context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>替身演员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Standin</span> <span class="keyword">implements</span> <span class="title">IStar</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> IActor actor;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Standin</span><span class="params">(IActor _actor)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.actor = _actor;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">act</span><span class="params">(String context)</span></span>&#123;</div><div class="line">        actor.playact(context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用适配器，让普通演员也具有了：<code>act</code> 方法，同时实现了 <code>IStar</code> 接口</p>
+<p>使用场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        IStar star = <span class="keyword">new</span> FilmStar();</div><div class="line">        star.act(<span class="string">"前十分钟，明星本人演出"</span>);</div><div class="line"></div><div class="line">        IActor actor = <span class="keyword">new</span> UnknownActor();</div><div class="line">        IStar standin = <span class="keyword">new</span> Standin(actor);</div><div class="line">        standin.act(<span class="string">"中间五分钟，提升演出"</span>);</div><div class="line"></div><div class="line">        star.act(<span class="string">"最后十分钟，明星演出"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="桥梁模式"><a href="#桥梁模式" class="headerlink" title="桥梁模式"></a>桥梁模式</h1><p>抽象活动：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbsAction</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">desc</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>演电影 ActFilm , 唱歌 Sing：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sing</span> <span class="keyword">extends</span> <span class="title">AbsAction</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">desc</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"唱歌"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象明星：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbsStar</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> AbsAction action;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AbsStar</span><span class="params">(AbsAction _action)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.action = _action;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doJob</span><span class="params">()</span></span>&#123;</div><div class="line">        action.desc();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>电影明星：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilmStar</span> <span class="keyword">extends</span> <span class="title">AbsStar</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FilmStar</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(<span class="keyword">new</span> ActFilm());</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FilmStar</span><span class="params">(AbsAction _action)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(_action);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doJob</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">".."</span>)</div><div class="line">        <span class="keyword">super</span>.doJob();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>场景类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        AbsStar zhangSan = <span class="keyword">new</span> FilmStar();</div><div class="line">        AbsStar lisi = <span class="keyword">new</span> Singer();</div><div class="line">        zhangSan.doJob();</div><div class="line">        lisi.doJob();</div><div class="line">        lisi = <span class="keyword">new</span> Singer(<span class="keyword">new</span> ActFilm());</div><div class="line">        lisi.doJob();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h1><p>5种包装模式的共特征：都是通过委托的方式对一个对象或一些列对象实施包装，有了包装，设计的系统才更加灵活，稳定，并且极具扩展性。</p>
+<p>代理模式：主要用在不希望展示一个对象内部细节的场景中。</p>
+<p>装饰模式：是一种特殊的代理模式，提倡在不改变接口的前提下增加对象的功能。</p>
+<p>适配器模式：主要意图是接口转换</p>
+<p>桥梁模式：在抽象层产生耦合，解决的事自行扩展的问题，可以使两个有耦合关系的对象互不印象地扩展</p>
+<p>门面模式：粗粒度的封装，提供一个方便访问子系统的接口，不具有任何的业务逻辑，仅仅是一个访问复杂系统的快速通道。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/17/ReadNote/设计模式/设计模式之蝉-策略模式vs桥梁模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/17/ReadNote/设计模式/设计模式之蝉-策略模式vs桥梁模式/" itemprop="url">设计模式之蝉 - 策略模式 vs 桥梁模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-17T21:38:14+08:00">
+                2017-08-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="策略模式实现邮件发送"><a href="#策略模式实现邮件发送" class="headerlink" title="策略模式实现邮件发送"></a>策略模式实现邮件发送</h1><p>定义一个邮件模版，有两个实现类：TextMail，HtmlMail 分别实现两种不同格式的邮件封装。</p>
+<p>Mailserver 是一个环境角色，接收 MailTemplate 对象通过 sendMail 方法发送邮件。</p>
+<p>抽象邮件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MailTemplate</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String from;</div><div class="line">    <span class="keyword">private</span> String to;</div><div class="line">    <span class="keyword">private</span> String subject;</div><div class="line">    <span class="keyword">private</span> String context;</div><div class="line"></div><div class="line">    <span class="comment">//creater/getter/setter</span></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个抽象类中没有抽象方法，但是定义为抽象类为了保证这个类不能被实例化。</p>
+<p>文本邮件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TextMail</span> <span class="keyword">extends</span> <span class="title">MailTemplate</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// creater</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getContext</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// 文本类型设置邮件的格式为 text/plain</span></div><div class="line"></div><div class="line">        context = context + <span class="string">"\n邮件格式为：文本格式"</span></div><div class="line">        <span class="keyword">return</span> context;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>超文本格式邮件：HtmlMail</p>
+<p>MailServer:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MailServer</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> MailTemplate m;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MailServer</span><span class="params">(MailTemplate _m)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.m = _m;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMail</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//.... m</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">maim</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        MailTemplate m = <span class="keyword">new</span> HtmlMail(<span class="string">"a@a.com"</span>, <span class="string">"b@b.com"</span>, <span class="string">"content"</span>, <span class="string">".."</span>)</div><div class="line">        MailServer mail = <span class="keyword">new</span> MailServer(m);</div><div class="line">        mail.sendMail();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>策略模式完成的任务就是提供两种可以替换的算法。供上层模块调用。</p>
+<h1 id="桥梁模式实现邮件发送"><a href="#桥梁模式实现邮件发送" class="headerlink" title="桥梁模式实现邮件发送"></a>桥梁模式实现邮件发送</h1><p>桥梁模式关注的是抽象和实现的分离，它是结构型模式。</p>
+<p>下面使用桥梁模式扩展邮件服务器，</p>
+<p>邮件模版：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MailTemplate</span></span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line"></div><div class="line">    <span class="comment">// 相比较策略模式的 MailTemplate 增加下面的方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(String sendInfo)</span></span>&#123;</div><div class="line">        context = sendInfo + context;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>文本邮件和超文本邮件类一样：TextMail,HtmlMail</p>
+<p>邮件服务器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MailServer</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> MailTempalte m;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MailServer</span><span class="params">(MailTemplate _m)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.m = _m;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMail</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//... send mail</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>环境变量角色：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Postfix</span> <span class="keyword">extends</span> <span class="title">MailServer</span></span>&#123;</div><div class="line">    <span class="function">pubic <span class="title">Postfix</span><span class="params">(MailTemplate _m)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(_m);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMail</span><span class="params">()</span></span>&#123;</div><div class="line">        String context = <span class="string">"Received: from XXX"</span></div><div class="line">        <span class="keyword">super</span>.m.add(context);</div><div class="line">        <span class="keyword">super</span>.sendMail();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每个邮件服务器在发送邮件的时候都留下自己的标记。</p>
+<p>SendMail 邮件服务器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SendMail</span> <span class="keyword">extends</span> <span class="title">MailServer</span></span>&#123;</div><div class="line">    <span class="function">pubic <span class="title">Postfix</span><span class="params">(MailTemplate _m)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>(_m);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMail</span><span class="params">()</span></span>&#123;</div><div class="line">        String context = <span class="string">"Received: from XXX"</span></div><div class="line">        <span class="keyword">super</span>.m.add(context);</div><div class="line">        <span class="keyword">super</span>.sendMail();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/15/ReadNote/设计模式/设计模式之蝉-观察者模式vs责任链模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/15/ReadNote/设计模式/设计模式之蝉-观察者模式vs责任链模式/" itemprop="url">设计模式之蝉 - 观察者模式 vs 责任链模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-15T21:38:14+08:00">
+                2017-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>DNS 服务器解析，区域 DNS 服务器保存自己区域的域名解析数据，如果解析不了就会提交上级域名解析，最终由美国洛杉矶的顶级域名服务器进行解析，返回结果。</p>
+<h1 id="责任链模式实现-DNS-解析过程"><a href="#责任链模式实现-DNS-解析过程" class="headerlink" title="责任链模式实现 DNS 解析过程"></a>责任链模式实现 DNS 解析过程</h1><p>解析记录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Recorder</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String domain;</div><div class="line">    <span class="keyword">private</span> String ip;</div><div class="line">    <span class="keyword">private</span> String owner;</div><div class="line">    <span class="comment">//getter/setter/toString</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象域名服务器；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DnsServer</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> DnsServer upperServer;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Recorder <span class="title">resolve</span><span class="params">(String domain)</span></span>&#123;</div><div class="line">        Recorder recorder = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span>(isLocal(domain))&#123;</div><div class="line">            recorder = echo(domain);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            recorder = upperServer.resolve(domain);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> recorder;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUpperServer</span><span class="params">(DnsServer _upperServer)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.upperServer = _upperServer;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 判断 域名 是否是属于这个区域的</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isLocal</span><span class="params">(String domain)</span></span>;</div><div class="line">    <span class="comment">// 解析 域名</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Recorder <span class="title">echo</span><span class="params">(String domain)</span></span>&#123;</div><div class="line">        Recorder recorder = <span class="keyword">new</span> Recorder();</div><div class="line">        recorder.setIp(genIpAddress());</div><div class="line">        recorder.setDomain(domain);</div><div class="line">        <span class="keyword">return</span> recorder;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">genIpAddress</span><span class="params">()</span></span>&#123;</div><div class="line">        Random rend = <span class="keyword">new</span> Random();</div><div class="line">        String address = rand.nextInt(<span class="number">255</span>) + <span class="string">"."</span> + rand.nextInt(<span class="number">255</span>) + <span class="string">"."</span> +rand.nextInt(<span class="number">255</span>);</div><div class="line">        <span class="keyword">return</span> address;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上海 DNS 服务器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SHDnsServer</span> <span class="keyword">extends</span> <span class="title">DnsServer</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Recorder <span class="title">echo</span><span class="params">(String domain)</span></span>&#123;</div><div class="line">        Recorder recorder = <span class="keyword">super</span>.echo(domain);</div><div class="line">        recorder.setOwner(<span class="string">"上海 DNS 服务器"</span>);</div><div class="line">        <span class="keyword">return</span> recorder;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isLocal</span><span class="params">(String domain)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> domain.endsWith(<span class="string">".sh.cn"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里重写了 echo 方法，用于设置 Recorder 的服务器级别</p>
+<p>中国顶级 DNS 服务器，全球顶级 DNS 服务器：ChinaTopDnsServer, TopDnsServer</p>
+<p>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(Stringp[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</div><div class="line">        DnsServer sh = <span class="keyword">new</span> SHDnsServer();</div><div class="line">        DnsServer china = <span class="keyword">new</span> ChinaTopDnsServer();</div><div class="line">        DnsServer top = <span class="keyword">new</span> TopDnsServer();</div><div class="line"></div><div class="line">        china.setUpperServer(top);</div><div class="line">        sh.setUpperServer(china);</div><div class="line"></div><div class="line">        String domain = <span class="string">"www.xxx.sh.cn"</span>;</div><div class="line">        <span class="comment">//start</span></div><div class="line">        sh.resolve(domain);</div><div class="line">        <span class="comment">//end</span></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="触发链模式实现-DNS-解析过程"><a href="#触发链模式实现-DNS-解析过程" class="headerlink" title="触发链模式实现 DNS 解析过程"></a>触发链模式实现 DNS 解析过程</h1><p>抽象 DNS 服务器：即使观察者也是被观察者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DnsServer</span> <span class="keyword">extends</span> <span class="title">Observable</span> <span class="keyword">implements</span> <span class="title">Observer</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 接收到事件后处理</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Observable arg0, Object arg1)</span></span>&#123;</div><div class="line">        Recorder recorder = (Recorder)arg1;</div><div class="line">        <span class="keyword">if</span>(isLocal(recorder))&#123;</div><div class="line">            recorder.setIp(genIpAddress());</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            responsesFromUpperServer(recorder);</div><div class="line">        &#125;</div><div class="line">        sign(recorder);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUpperServer</span><span class="params">(DnsServer dnsServer)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.deleteObservers();</div><div class="line">        <span class="keyword">super</span>.addObserver(dnsServer);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//向父 dns 请求解析，也就是通知观察者</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">responsFromUpperServer</span><span class="params">(Recorder recorder)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.setChanged();</div><div class="line">        <span class="keyword">super</span>.notifyObservers(recorder);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 每个 dns 服务器签上自己的名字</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">sign</span><span class="params">(Recorder recorder)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isLocal</span><span class="params">(Recorder recorder)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 生成一个 ip</span></div><div class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">genIpAddress</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">// create address</span></div><div class="line">        <span class="keyword">return</span> address;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>responsFromUpperServer</code> 方法只能设置一个观察者，一般一个 DNS 服务器只有一个上级服务器。</p>
+<p><code>sing</code> 方法签名用于记录由谁解析出来的</p>
+<p>上海 dns 服务器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SHDnsServer</span> <span class="keyword">extends</span> <span class="title">DnsServer</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">sign</span><span class="params">(Recorder recorder)</span></span>&#123;</div><div class="line">        recorder.setOwner(<span class="string">"SH DNS"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isLocal</span><span class="params">(Recorder recorder)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> recorder.getDomain().endsWith(<span class="string">".sh.cn"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>中国顶级DNS服务器，全球DNS服务器。</p>
+<p>场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</div><div class="line">        DnsServer sh = <span class="keyword">new</span> SHDnsServer();</div><div class="line">        DnsServer china = <span class="keyword">new</span> ChinaTopDnsServer();</div><div class="line">        DnsServer top = <span class="keyword">new</span> TopDnsServer();</div><div class="line"></div><div class="line">        china.setUpperServer(top);</div><div class="line">        sh.setUpperServer(china);</div><div class="line"></div><div class="line">        <span class="comment">// domain 随机生成一个域名</span></div><div class="line">        String domain = <span class="string">"......"</span></div><div class="line">        Recorder recorder = <span class="keyword">new</span> Recorder();</div><div class="line">        recorder.setDomain(domain);</div><div class="line">        sh.update(<span class="keyword">null</span>, recorder);</div><div class="line">        </div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>触发链和责任链的区别</p>
+<ul>
+<li>链中的消息对象不同：责任链中传递的消息对象的结构不能改变，触发链中可以改变</li>
+<li>上下节点关系不同：责任链中上下节点没有关系，接收同样的对象。触发链上下级关系亲密，链中相邻的节点都是一个小团体</li>
+<li>消息的分销渠道不同：责任链一个消息从链头到链尾移动。触发链消息的传递有很大的灵活性</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/14/ReadNote/设计模式/设计模式之蝉-策略模式vs状态模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/14/ReadNote/设计模式/设计模式之蝉-策略模式vs状态模式/" itemprop="url">设计模式之蝉 - 策略模式 vs 状态模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-14T21:38:14+08:00">
+                2017-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>状态模式和策略模式非常像</p>
+<p>都是使用 Context 类封装一个具体的行为，都提供一个封装的方法。</p>
+<p>策略模式封装的是不同的算法，算法之间没有交互。</p>
+<p>状态模式封装的是不同的状态，以达到状态切换行为随之发生改变的目的。</p>
+<h1 id="策略模式实现人生"><a href="#策略模式实现人生" class="headerlink" title="策略模式实现人生"></a>策略模式实现人生</h1><p>抽象工作算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkAlgorithm</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体算法，孩童算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChildWork</span> <span class="keyword">extends</span> <span class="title">WorkAlgorithm</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"儿童的工作是玩耍"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>AdultWork,OldWork</p>
+<p>环境角色：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> WorkAlgorithm workMethod;</div><div class="line"></div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>&#123;</div><div class="line">        workMethod.work();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用的时候 需要创建 WorkAlgorithm 具体的子类，传入 Context 使用</p>
+<h1 id="状态模式实现人生"><a href="#状态模式实现人生" class="headerlink" title="状态模式实现人生"></a>状态模式实现人生</h1><p>抽象状态类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanState</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> Human human;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHuman</span><span class="params">(Human _human)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.human = _human;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>状态具体类，ChildState，AdultState，OldState</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChildState</span> <span class="keyword">extends</span> <span class="title">HumanState</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"child play"</span>)</div><div class="line">        <span class="keyword">super</span>.human.setState(Human.ADULT_STATE);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每个状态执行完成后切换状态，这里状态变化是单向的</p>
+<p>环境角色：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Human</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> HumanState CHILD_STATE = <span class="keyword">new</span> ChildState();</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> HumanState ADULT_STATE = <span class="keyword">new</span> AdultState();</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> HumanState OLD_STATE = <span class="keyword">new</span> OldState();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> HumanState state;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(HumanState _state)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state = _state;</div><div class="line">        <span class="keyword">this</span>.state.setHuman(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">work</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state.work();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>策略模式和状态模式不同点：</p>
+<ul>
+<li>环境角色的职责不同：策略模式的环境角色只是一个委托作用，负责算法的替换。状态模式的环境角色具有登记状态变化的功能，与具体的状态类写作，共同完成状态切换行为</li>
+<li>解决问题的重点不同：策略模式旨在解决内部算法如何改变的问题，保证算法自由切换。状态模式旨在解决内在状态改变引起的变化问题</li>
+<li>解决问题的方法不同</li>
+<li>应用场景不同</li>
+<li>复杂度不同</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/11/ReadNote/设计模式/设计模式之蝉-装饰模式vs适配器模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/11/ReadNote/设计模式/设计模式之蝉-装饰模式vs适配器模式/" itemprop="url">设计模式之蝉 - 装饰模式 vs 适配器模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-11T21:38:14+08:00">
+                2017-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>装饰模式和适配器模式在通用类图上没有太多相似点，差别比较大，但是功能上有相似的地方：都是包装作用，都是通过委托方式实现其功能。</p>
+<p>装饰模式包装的事自己的兄弟类，适配器模式则是修饰非血缘关系类。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/11/ReadNote/设计模式/设计模式之蝉-装饰模式vs适配器模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/11/ReadNote/设计模式/设计模式之蝉-代理模式vs装饰模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/11/ReadNote/设计模式/设计模式之蝉-代理模式vs装饰模式/" itemprop="url">设计模式之蝉 - 代理模式 vs 装饰模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-11T21:38:14+08:00">
+                2017-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>结构类模式：适配器模式，桥梁模式，组合模式，装饰模式，门面模式，享元模式，代理模式。</p>
+<p>它们都是通过组合类或对象产生更大结构以适应更高层次的逻辑需求</p>
+<p>下面比较 代理模式和装饰模式</p>
+<h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p>通过代理欣赏表演</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/11/ReadNote/设计模式/设计模式之蝉-代理模式vs装饰模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/10/ReadNote/设计模式/设计模式之蝉-抽象工厂vs建造者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -383,1296 +1808,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/" itemprop="url">设计模式之蝉 - 工厂方法模式 vs 建造者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-08T21:38:14+08:00">
-                2017-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="创建者模式"><a href="#创建者模式" class="headerlink" title="创建者模式"></a>创建者模式</h1><ul>
-<li>工厂方法模式</li>
-<li>建造者模式</li>
-<li>抽象工厂模式</li>
-<li>单例模式</li>
-<li>原型模式</li>
-</ul>
-<h1 id="工厂方法模式-vs-建造者模式"><a href="#工厂方法模式-vs-建造者模式" class="headerlink" title="工厂方法模式 vs 建造者模式"></a>工厂方法模式 vs 建造者模式</h1><p>工厂方法模式：注重整体对象的创建方法</p>
-<p>建造者模式：注重部件构件的过程，旨在通过一步一步地构造创建复杂对象</p>
-<p>例子：如果要创建一个超人，使用工厂模式就是直接创建一个超人，但是使用建造者模式需要组装超人的手，头。。等部分然后得到一个超人。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/" itemprop="url">设计模式之蝉 - 桥梁模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-06T21:38:14+08:00">
-                2017-08-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/" itemprop="url">设计模式之蝉 - 享元模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-06T21:38:14+08:00">
-                2017-08-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>考生系统：</p>
-<ul>
-<li>SignInfo: 考生对象类</li>
-<li>SignInfoFactory: 考生工厂</li>
-</ul>
-<p>使用一种共享技术减少对象数量，Object Pool 对象池</p>
-<p>下面设计一个简单的共享对象池：</p>
-<ul>
-<li>容器定义：定义一个池容器，在容器中容纳对象</li>
-<li>提供客户端访问的接口：提供一个接口给客户端访问，池中有对象就直接获取，否则就创建一个对象</li>
-</ul>
-<p>但是如果把所有的对象都放在池里还不够，因为如果所有对象都有被使用还是会造成内存撑爆的情况。</p>
-<p>处理方法：这么多对象肯定有相同的属性值，把对象的相同属性提取出来，不同的属性在系统内进行赋值处理。</p>
-<p>扩展原来的考生对象类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SignInfo4Pool</span> <span class="keyword">extends</span> <span class="title">SignIinfo</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String key;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SignInfo4Pool</span><span class="params">(String _key)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.key = _key;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> key;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setKey</span><span class="params">(String key)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.key = key;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>key：考生对象属性标示，一个 key 对应一个考试， = 考试科目 + 考试地点</p>
-<blockquote>
-<p>在对象池中，对象一旦产生，必然有一个唯一的，可访问的状态标志该对象，而且池中的对象声明周期是由池容器决定，而不是由使用者决定</p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/05/ReadNote/设计模式/设计模式之蝉-解释器模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/05/ReadNote/设计模式/设计模式之蝉-解释器模式/" itemprop="url">设计模式之蝉 - 解释器模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-05T21:38:14+08:00">
-                2017-08-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/" itemprop="url">设计模式之蝉 - 状态模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-02T21:38:14+08:00">
-                2017-08-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>电梯</p>
-<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>ILife 抽象类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILife</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>电梯实现：Lift</p>
-<p>场景：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ILift lift = <span class="keyword">new</span> Lift();</div><div class="line">lift.open();</div><div class="line">lift.close();</div><div class="line">lift.run();</div><div class="line">lift.stop();</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Android/架构/Android组件化开发/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/02/Android/架构/Android组件化开发/" itemprop="url">Android 组件化开发 -- 老项目改善</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-02T12:18:12+08:00">
-                2017-08-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="路由实现"><a href="#路由实现" class="headerlink" title="路由实现"></a>路由实现</h1><p>使用 <a href="https://github.com/alibaba/ARouter" target="_blank" rel="external">ARouter</a> 实现跳转</p>
-<h2 id="0-集成-ARouter"><a href="#0-集成-ARouter" class="headerlink" title="0 集成 ARouter"></a>0 集成 ARouter</h2><h1 id="创建一个新的工程"><a href="#创建一个新的工程" class="headerlink" title="创建一个新的工程"></a>创建一个新的工程</h1><h2 id="导入旧代码"><a href="#导入旧代码" class="headerlink" title="导入旧代码"></a>导入旧代码</h2><p>在新工程中创建一个新的 module</p>
-<p>将老代码中的代码复制到新工程的 module 文件中</p>
-<h3 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h3><ol>
-<li>build.gradle 不要直接替换文件，应该把老项目中的 build.gradle 中特殊的配置一个个复制过来</li>
-<li><p>ActivityManifest merge 问题处理：在主工程 AndroidManifest 中添加</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line"></div><div class="line">&lt;application</div><div class="line">    //...</div><div class="line">    tools:replace=&quot;android:name, android:icon, android:theme&quot;&gt;</div><div class="line">//....</div></pre></td></tr></table></figure>
-<p> 根据实际情况 添加： <code>android:name</code>, <code>android:icon</code> 等选项</p>
-</li>
-<li><p>处理新项目和老项目资源 id 冲突问题：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">resourcePrefix &quot;oldapp_&quot;</div></pre></td></tr></table></figure>
-</li>
-<li><p><code>Error:Execution failed for task &#39;:app:mergeDebugResources&#39;.</code></p>
-<p> 主工程 build.gradle 中添加：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">android&#123;</div><div class="line">    //...</div><div class="line">    aaptOptions.cruncherEnabled = false</div><div class="line">    aaptOptions.useNewCruncher = false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>不能使用 switch-case 访问资源ID: 使用 Android Studio 快捷修复按钮修复即可</p>
-</li>
-</ol>
-<h1 id="关于依赖"><a href="#关于依赖" class="headerlink" title="关于依赖"></a>关于依赖</h1><ol>
-<li>主工程依赖所有的 module ？？</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/" itemprop="url">设计模式之蝉 - 备忘录模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-30T21:38:14+08:00">
-                2017-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>记录事物的初始状态，如果执行某个方法失败后恢复状态。</p>
-<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Boy</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String state = <span class="string">""</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeState</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state = <span class="string">"心情可能很不好"</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getState</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> state;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state = state;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/" itemprop="url">设计模式之蝉 - 访问者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-30T21:38:14+08:00">
-                2017-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>上报员工的信息</p>
-<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>抽象员工：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Emloyee</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> MALE = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> FEMALE = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sex;</div><div class="line"></div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">report</span><span class="params">()</span></span>&#123;</div><div class="line">        String info = <span class="string">"name:"</span> + <span class="keyword">this</span>.name; <span class="comment">//... salary, sex</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 拼装员工其他信息</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getOtherInfo</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/23/ReadNote/设计模式/设计模式之蝉-观察者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-观察者模式/" itemprop="url">设计模式之蝉 - 观察者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-23T21:38:14+08:00">
-                2017-07-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="版本一"><a href="#版本一" class="headerlink" title="版本一"></a>版本一</h2><p>被观察者接口：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IHanFeiZi</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">haveBreakfest</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">haveFun</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-观察者模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1722,7 +1857,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">391</span>
+                <span class="site-state-item-count">400</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1744,7 +1879,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">251</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

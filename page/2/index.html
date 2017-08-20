@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/23/ReadNote/设计模式/设计模式之蝉-适配器模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/ReadNote/设计模式/设计模式之蝉-命令模式vs策略模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-适配器模式/" itemprop="url">设计模式之蝉 - 适配器模式</a></h1>
+                <a class="post-title-link" href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-命令模式vs策略模式/" itemprop="url">设计模式之蝉 - 命令模式 vs 策略模式</a></h1>
         
 
         <div class="post-meta">
@@ -284,8 +284,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-23T21:38:14+08:00">
-                2017-07-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-08T21:38:14+08:00">
+                2017-08-08
               </time>
             
 
@@ -342,16 +342,1185 @@
 
       
         
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Convert the interface of a class into another interface clients expect. Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.</p>
-<p>将一个类的接口变成客户端所期待的另一种接口，从而使原本因接口不匹配而无法在一起工作的两个类能够在一起工作。</p>
-<p>也叫变压器模式，包装模式（Wrapper)</p>
-<h2 id="通用类图"><a href="#通用类图" class="headerlink" title="通用类图"></a>通用类图</h2><p>Target：目标角色</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Target</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteTarget</span> <span class="keyword">implements</span> <span class="title">Targets</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Adaptee：源角色</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Adaptee</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//...</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+            <p>行为类模式：责任链模式，命令模式，解释器模式，迭代器模式，中介者模式，备忘录模式，观察者模式，状态模式，策略模式，模版方法模式，访问者模式。</p>
+<p>命令模式和策略模式的类图相识，只是命令模式多了一个接受者角色</p>
+<p>策略模式的意图是封装算法，让算法独立；命令模式则是动作解耦，把动作的执行对象分位执行对象（接收者），执行行为（命令角色）</p>
+<h1 id="策略模式实现压缩算法"><a href="#策略模式实现压缩算法" class="headerlink" title="策略模式实现压缩算法"></a>策略模式实现压缩算法</h1><p>一个文件可以使用 zip 或者 gzip 压缩</p>
+<p>抽象压缩算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Algorithm</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">compress</span><span class="params">(String source, String to)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">unCompress</span><span class="params">(String source, String to)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>zip 压缩算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Zip</span> <span class="keyword">implements</span> <span class="title">Algorithm</span></span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>gzip 压缩算法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GZip</span> <span class="keyword">implements</span> <span class="title">Algorithm</span></span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>环境角色：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Algorithm al;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(Algorithm _al)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.al = _al;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">compress</span><span class="params">(String source, String to)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> al.compress(source, to);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">uncompress</span><span class="params">(String source, String to)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> al.uncompress(source, to)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用的时候创建 Context 就能压缩文件了，需要传入需要的算法对象，在更改算法的时候也只需要修改 Context 创建时传入的算法就可以了。</p>
+<h1 id="命令模式实现压缩算法"><a href="#命令模式实现压缩算法" class="headerlink" title="命令模式实现压缩算法"></a>命令模式实现压缩算法</h1><p>命令模式主旨是封装命令，使请求者和实现者解耦。</p>
+<p>抽象压缩命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractCmd</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> IReceiver zip = <span class="keyword">new</span> ZipReceiver();</div><div class="line">    <span class="keyword">protected</span> IReceiver gzip = <span class="keyword">new</span> GzipReceiver();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">execute</span><span class="params">(String source, String to)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>抽象命令引用了两个接受者：zip，gzip 接收者。</p>
+<p>zip 压缩命令：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZipCompressCmd</span> <span class="keyword">extends</span> <span class="title">AbstractCmd</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">execute</span><span class="params">(String source, String to)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.zip.compress(source, to);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>zip 解压命令，gzip压缩命令，gzip解压命令</p>
+<p>抽象接收者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IReceiver</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">compress</span><span class="params">(String source, String to)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">uncompress</span><span class="params">(String source, String to)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>zip 接受者，gzip结束者</p>
+<p>调用者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Invoker</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> AbstractCmd cmd;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Invoker</span><span class="params">(AbstractCmd _cmd)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.cmd = _cmd;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">execute</span><span class="params">(String source, String to)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> cmd.execute(source, to);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>两个模式的异同点</p>
+<ul>
+<li>使用场景不同：策略模式适用于算法要求变换的场景，命令模式适用于解耦两个有紧耦合关系的对象场合或者多命令多撤销的场景</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/" itemprop="url">设计模式之蝉 - 工厂方法模式 vs 建造者模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-08T21:38:14+08:00">
+                2017-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="创建者模式"><a href="#创建者模式" class="headerlink" title="创建者模式"></a>创建者模式</h1><ul>
+<li>工厂方法模式</li>
+<li>建造者模式</li>
+<li>抽象工厂模式</li>
+<li>单例模式</li>
+<li>原型模式</li>
+</ul>
+<h1 id="工厂方法模式-vs-建造者模式"><a href="#工厂方法模式-vs-建造者模式" class="headerlink" title="工厂方法模式 vs 建造者模式"></a>工厂方法模式 vs 建造者模式</h1><p>工厂方法模式：注重整体对象的创建方法</p>
+<p>建造者模式：注重部件构件的过程，旨在通过一步一步地构造创建复杂对象</p>
+<p>例子：如果要创建一个超人，使用工厂模式就是直接创建一个超人，但是使用建造者模式需要组装超人的手，头。。等部分然后得到一个超人。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/07/23/ReadNote/设计模式/设计模式之蝉-适配器模式/#more" rel="contents">
+            <a class="btn" href="/2017/08/08/ReadNote/设计模式/设计模式之蝉-工厂方法模式vs建造者模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/" itemprop="url">设计模式之蝉 - 桥梁模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-06T21:38:14+08:00">
+                2017-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-桥梁模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/" itemprop="url">设计模式之蝉 - 享元模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-06T21:38:14+08:00">
+                2017-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>考生系统：</p>
+<ul>
+<li>SignInfo: 考生对象类</li>
+<li>SignInfoFactory: 考生工厂</li>
+</ul>
+<p>使用一种共享技术减少对象数量，Object Pool 对象池</p>
+<p>下面设计一个简单的共享对象池：</p>
+<ul>
+<li>容器定义：定义一个池容器，在容器中容纳对象</li>
+<li>提供客户端访问的接口：提供一个接口给客户端访问，池中有对象就直接获取，否则就创建一个对象</li>
+</ul>
+<p>但是如果把所有的对象都放在池里还不够，因为如果所有对象都有被使用还是会造成内存撑爆的情况。</p>
+<p>处理方法：这么多对象肯定有相同的属性值，把对象的相同属性提取出来，不同的属性在系统内进行赋值处理。</p>
+<p>扩展原来的考生对象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SignInfo4Pool</span> <span class="keyword">extends</span> <span class="title">SignIinfo</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String key;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SignInfo4Pool</span><span class="params">(String _key)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.key = _key;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> key;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setKey</span><span class="params">(String key)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.key = key;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>key：考生对象属性标示，一个 key 对应一个考试， = 考试科目 + 考试地点</p>
+<blockquote>
+<p>在对象池中，对象一旦产生，必然有一个唯一的，可访问的状态标志该对象，而且池中的对象声明周期是由池容器决定，而不是由使用者决定</p>
+</blockquote>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/06/ReadNote/设计模式/设计模式之蝉-享元模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/05/ReadNote/设计模式/设计模式之蝉-解释器模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/05/ReadNote/设计模式/设计模式之蝉-解释器模式/" itemprop="url">设计模式之蝉 - 解释器模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-05T21:38:14+08:00">
+                2017-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/" itemprop="url">设计模式之蝉 - 状态模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-02T21:38:14+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>电梯</p>
+<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>ILife 抽象类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILife</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>电梯实现：Lift</p>
+<p>场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ILift lift = <span class="keyword">new</span> Lift();</div><div class="line">lift.open();</div><div class="line">lift.close();</div><div class="line">lift.run();</div><div class="line">lift.stop();</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/02/ReadNote/设计模式/设计模式之蝉-状态模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Android/架构/Android组件化开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/02/Android/架构/Android组件化开发/" itemprop="url">Android 组件化开发 -- 老项目改善</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-02T12:18:12+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="路由实现"><a href="#路由实现" class="headerlink" title="路由实现"></a>路由实现</h1><p>使用 <a href="https://github.com/alibaba/ARouter" target="_blank" rel="external">ARouter</a> 实现跳转</p>
+<h2 id="0-集成-ARouter"><a href="#0-集成-ARouter" class="headerlink" title="0 集成 ARouter"></a>0 集成 ARouter</h2><h1 id="创建一个新的工程"><a href="#创建一个新的工程" class="headerlink" title="创建一个新的工程"></a>创建一个新的工程</h1><h2 id="导入旧代码"><a href="#导入旧代码" class="headerlink" title="导入旧代码"></a>导入旧代码</h2><p>在新工程中创建一个新的 module</p>
+<p>将老代码中的代码复制到新工程的 module 文件中</p>
+<h3 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h3><ol>
+<li>build.gradle 不要直接替换文件，应该把老项目中的 build.gradle 中特殊的配置一个个复制过来</li>
+<li><p>ActivityManifest merge 问题处理：在主工程 AndroidManifest 中添加</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line"></div><div class="line">&lt;application</div><div class="line">    //...</div><div class="line">    tools:replace=&quot;android:name, android:icon, android:theme&quot;&gt;</div><div class="line">//....</div></pre></td></tr></table></figure>
+<p> 根据实际情况 添加： <code>android:name</code>, <code>android:icon</code> 等选项</p>
+</li>
+<li><p>处理新项目和老项目资源 id 冲突问题：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">resourcePrefix &quot;oldapp_&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>Error:Execution failed for task &#39;:app:mergeDebugResources&#39;.</code></p>
+<p> 主工程 build.gradle 中添加：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">android&#123;</div><div class="line">    //...</div><div class="line">    aaptOptions.cruncherEnabled = false</div><div class="line">    aaptOptions.useNewCruncher = false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>不能使用 switch-case 访问资源ID: 使用 Android Studio 快捷修复按钮修复即可</p>
+</li>
+</ol>
+<h1 id="关于依赖"><a href="#关于依赖" class="headerlink" title="关于依赖"></a>关于依赖</h1><ol>
+<li>主工程依赖所有的 module ？？</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/" itemprop="url">设计模式之蝉 - 备忘录模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-30T21:38:14+08:00">
+                2017-07-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>记录事物的初始状态，如果执行某个方法失败后恢复状态。</p>
+<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Boy</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String state = <span class="string">""</span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeState</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state = <span class="string">"心情可能很不好"</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getState</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> state;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setState</span><span class="params">(String state)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.state = state;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-备忘录模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/" itemprop="url">设计模式之蝉 - 访问者模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-30T21:38:14+08:00">
+                2017-07-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>上报员工的信息</p>
+<h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>抽象员工：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Emloyee</span></span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> MALE = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> FEMALE = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> salary;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sex;</div><div class="line"></div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">report</span><span class="params">()</span></span>&#123;</div><div class="line">        String info = <span class="string">"name:"</span> + <span class="keyword">this</span>.name; <span class="comment">//... salary, sex</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 拼装员工其他信息</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getOtherInfo</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -530,1189 +1699,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/22/ReadNote/设计模式/设计模式之蝉-策略模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-策略模式/" itemprop="url">设计模式之蝉 - 策略模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-22T21:38:14+08:00">
-                2017-07-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>策略抽象类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public interface IStrategy&#123;</div><div class="line">    public void operate();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>策略具体：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">BackDoor</div><div class="line"></div><div class="line">GivenGrennLight</div><div class="line"></div><div class="line">BlockEnemy</div></pre></td></tr></table></figure>
-<p>Context 承装策略：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class Context&#123;</div><div class="line">    private IStrategy straegy;</div><div class="line">    public Context(IStrategy strategy)&#123;</div><div class="line">        this.straegy = straegy;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void operate()&#123;</div><div class="line">        this.straegy.operate();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-策略模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/22/ReadNote/设计模式/设计模式之蝉-责任链模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-责任链模式/" itemprop="url">设计模式之蝉 - 责任链模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-22T21:38:14+08:00">
-                2017-07-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>请求抽象类，更具不同的 type 由不同的请求子类处理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface IWomen&#123;</div><div class="line">    public int getType();</div><div class="line">    public String getRequest();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface IHandler&#123;</div><div class="line">    // 处理请求</div><div class="line">    public void HandleMessage(IWomen women);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>处理请求类的子类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class Father implements IHandler&#123;</div><div class="line">    public void HandleMessage(IWomen women)&#123;</div><div class="line">        //....</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-责任链模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/22/ReadNote/设计模式/设计模式之蝉-装饰模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-装饰模式/" itemprop="url">设计模式之蝉 - 装饰模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-22T21:38:14+08:00">
-                2017-07-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子-成绩单"><a href="#例子-成绩单" class="headerlink" title="例子 成绩单"></a>例子 成绩单</h1><h2 id="通过继承进行修饰"><a href="#通过继承进行修饰" class="headerlink" title="通过继承进行修饰"></a>通过继承进行修饰</h2><p>对成绩单进行修饰：对父类中的 <code>report</code> 方法进行修饰</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class SugarFouthGradeSchoolReport extends FouthGradeSchoolReport&#123;</div><div class="line">    private void reportHighScore()&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    private void reportSort()&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void report()&#123;</div><div class="line">        this.reportHighScore();</div><div class="line">        super.report();</div><div class="line">        this.reportSort();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果情况多，针对每种情况都写继承类就会导致类数量激增，而且不易维护。</p>
-<p>通过定义一批专门负责装饰的类来解决：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public abstract class Decorator extends SchoolReport&#123;</div><div class="line">    private SchoolReport sr;</div><div class="line">    public Decorator(Schoolreport sr)&#123;</div><div class="line">        this.sr = sr;</div><div class="line">    &#125;</div><div class="line">    public void report()&#123;</div><div class="line">        this.sr.report();</div><div class="line">    &#125;</div><div class="line">    public void sign(String name)&#123;</div><div class="line">        this.sr.sign(name);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/22/ReadNote/设计模式/设计模式之蝉-装饰模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/20/ReadNote/设计模式/设计模式之蝉-命令模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/20/ReadNote/设计模式/设计模式之蝉-命令模式/" itemprop="url">设计模式之蝉 - 命令模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-20T21:38:14+08:00">
-                2017-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="例子-项目经理"><a href="#例子-项目经理" class="headerlink" title="例子 项目经理"></a>例子 项目经理</h1><p>一个项目组有 需求组（Requirement Group），美工组（Page Group），代码组（Code Group），项目经理</p>
-<p>如果甲方在对需求进行改动的时候不应该直接找实际组去更改工作，而是应该统一找项目经理沟通。</p>
-<p>命令：Command</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    protected RequirementGroup rg = new RequirementGroup(); // 需求组</div><div class="line">    protected PageGroup pg = new PageGroup();</div><div class="line">    protected CodeGroup cg = new CodeGroup();</div><div class="line"></div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>增加一个需求命令：AddRequirementCommand</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public class AddRqueirementCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.rg.find();</div><div class="line">        super.rg.add();</div><div class="line">        super.rg.plan();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>有多少个命令就有多少个 Command 抽象类的子类。</p>
-<p>命名分发类：Invoker:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class Invoker&#123;</div><div class="line">    private Command command;</div><div class="line"></div><div class="line">    public void setCommand(Command command)&#123;</div><div class="line">        this.command = command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>负责人接到命令后立即执行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Client&#123;</div><div class="line">    public static void main(String[] args)&#123;</div><div class="line">        Invoker xiaoming = new Invoker()</div><div class="line"></div><div class="line">        Command command = new AddRequirementCommand();</div><div class="line">        xiaoming.setCommand(command);</div><div class="line">        xiaoming.action();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.</p>
-<p>将一个请求封装成一个对象，从而让你使用不同的请求把客户端参数化，对请求排队或者记录请求日志，可以提供命令的撤销和恢复功能。</p>
-<p>请求方：Invoker，执行方：Receiver</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Receiver&#123;</div><div class="line">    public abstract void doSomething();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>接受者有多个，所以是抽象的。</p>
-<p>Command:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public abstract class Command&#123;</div><div class="line">    public abstract void execute();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>具体的命令类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class ConcreteCommand1 extends Command&#123;</div><div class="line">    private Reciever receiver;</div><div class="line">    public ConcreteCommand1(Receiver _receiver)&#123;</div><div class="line">        this.receiver = _receiver;</div><div class="line">    &#125;</div><div class="line">    public void execute()&#123;</div><div class="line">        this.receiver.doSomething();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Invoker:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Invoder&#123;</div><div class="line">    private Command command;</div><div class="line">    public void setCommand(Command _command)&#123;</div><div class="line">        this.command = _command;</div><div class="line">    &#125;</div><div class="line">    public void action()&#123;</div><div class="line">        this.command.execute();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>优点：</p>
-<ol>
-<li>类间解耦</li>
-<li>可扩展性</li>
-<li>命令模式结合其他模式使用：结合责任链模式，实现命令族解析任务；结合模版方法模式，则可以减少 Command 子类的膨胀问题</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>Command 子类过多</li>
-</ol>
-<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>一些是命令的地方就可以使用命令模式。比如 按钮的点击，DOS 命令</p>
-<h1 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h1><h2 id="一个命令可以对应多个执行端"><a href="#一个命令可以对应多个执行端" class="headerlink" title="一个命令可以对应多个执行端"></a>一个命令可以对应多个执行端</h2><h2 id="反悔问题"><a href="#反悔问题" class="headerlink" title="反悔问题"></a>反悔问题</h2><p>需要在执行方增加 <code>roolBack</code> 方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public abstract class Group&#123;</div><div class="line">    //...</div><div class="line"></div><div class="line">    public void rollBack()&#123;</div><div class="line">        // 更具日志回滚</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class CancelDeletePageCommand extends Command&#123;</div><div class="line">    public void execute()&#123;</div><div class="line">        super.pg.rollBack();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/19/ReadNote/设计模式/设计模式之蝉-中介者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/19/ReadNote/设计模式/设计模式之蝉-中介者模式/" itemprop="url">设计模式之蝉 - 中介者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-19T21:38:14+08:00">
-                2017-07-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Define an object that encapsulates how a set of objects interact. Mediator promotes loose coupling by keeping objects from referring to each other explicitly, and it lets you vary their interaction independently.</p>
-<p>用一个中介对象封装一系列的对象交互，中介者使各对象不需要显示地相互作用，从而使其耦合松散，而且可以独立地改变它们之间的交互。</p>
-<p>通用格式：</p>
-<p>中介者抽象类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Mediator</span></span>&#123;</div><div class="line">    <span class="keyword">protected</span> ConcreteColleague1 c1;</div><div class="line">    <span class="keyword">protected</span> ConcreteColleague2 c2;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ConcreteColleague1 <span class="title">getC1</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> c1;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setC1</span><span class="params">(ConcreteColleague1 c1)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.c1 = c1;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> ConcreteColleague2 <span class="title">getC2</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> c2;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setC1</span><span class="params">(ConcreteColleague2 c2)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.c2 = c2;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 业务逻辑</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doSomething1</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">doSomething2</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/19/ReadNote/设计模式/设计模式之蝉-中介者模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/18/ReadNote/设计模式/设计模式之蝉-原型模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/18/ReadNote/设计模式/设计模式之蝉-原型模式/" itemprop="url">设计模式之蝉 - 原型模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-18T21:38:14+08:00">
-                2017-07-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子-个性化电子账单"><a href="#例子-个性化电子账单" class="headerlink" title="例子 个性化电子账单"></a>例子 个性化电子账单</h1><p>让 Mail 业务类实现 Cloneable 接口, 在使用的时候 clone 对象使用</p>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Specify the kinds of objects to create using a prototypical instance, and create new objects by copying this prototype.</p>
-<p>用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</p>
-<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/18/ReadNote/设计模式/设计模式之蝉-原型模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/18/ReadNote/设计模式/设计模式之蝉-代理模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/18/ReadNote/设计模式/设计模式之蝉-代理模式/" itemprop="url">设计模式之蝉 - 代理模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-18T21:38:14+08:00">
-                2017-07-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="例子-游戏代打"><a href="#例子-游戏代打" class="headerlink" title="例子 游戏代打"></a>例子 游戏代打</h1><p>基本代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public interface IGamePlayer&#123;</div><div class="line">    public void login(String user, String password);</div><div class="line">    public void killBoss();</div><div class="line">    public void upgrade();    </div><div class="line">&#125;</div><div class="line"></div><div class="line">public class GamePlayer implements IGamePlayer&#123;</div><div class="line">    private String name = &quot;&quot;</div><div class="line">    public GamePlayer(String _name)&#123;</div><div class="line">        this.name = _name;</div><div class="line">    &#125;</div><div class="line">    public void killBoss()&#123;</div><div class="line">        System.out.println(this.name + &quot;在打怪&quot;);</div><div class="line">    &#125;</div><div class="line">    public void login(String user, String password)&#123;</div><div class="line">        System.out.println(&quot;登入名&quot; + user + &quot;的用户&quot; + this.name + &quot;登入成功！&quot;);</div><div class="line">    &#125;</div><div class="line">    public void upgrade()&#123;</div><div class="line">        System.out.println(this.name + &quot;升级了&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>代理 GamePlayerProxy:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GamePlayerProxy</span> <span class="keyword">implements</span> <span class="title">IGamePlayer</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> IGamePlayer gamePlayer = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GamePlayerProxy</span><span class="params">(IGamePlayer _gramePlayer)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.gamePlayer = _gamePlayer;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">killBoss</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.gamePlayer.killBoss();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String user, String password)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.gamePlayer.login(user, password);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">upgrade</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.gamePlayer.upgrade();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Provide a surrogate or placeholder for another object to control access to it.</p>
-<p>为其他对象提供一种代理以控制对这个对象的访问。</p>
-<p>代理模式也叫委托模式</p>
-<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><p>优点：</p>
-<ol>
-<li>职责清晰</li>
-<li>高扩展性</li>
-<li>智能化</li>
-</ol>
-<h1 id="代理模式的扩展"><a href="#代理模式的扩展" class="headerlink" title="代理模式的扩展"></a>代理模式的扩展</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p>要求客户端只能访问代理角色，不能直接反问真实角色。</p>
-<p>将真实角色的创建封装到代理对象中，不对外暴露。</p>
-<h2 id="强制代理"><a href="#强制代理" class="headerlink" title="强制代理"></a>强制代理</h2><p>必须通过真实角色找到代理角色</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IGamePlayer</span></span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> IGamePlayer <span class="title">getProxy</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="代理的个性"><a href="#代理的个性" class="headerlink" title="代理的个性"></a>代理的个性</h2><p>代理实现其他接口</p>
-<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><p>面向切面编程 AOP（Aspect Oriented Programming）核心就是采用了动态代理机制</p>
-<p>增加 InvocationHandler 接口和 GamePlayIH, 作用就是产生一个对象的代理对象，其中 InvocationHandler 是 JDK 提供的动态代理接口, 对被代理类的方法进行代理。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public class GamePlayIH implements InvocationHandler&#123;</div><div class="line">    // 被代理者</div><div class="line">    Class cls = null;</div><div class="line">    // 被代理的实例</div><div class="line">    Object obj = null;</div><div class="line"></div><div class="line">    public GamePlayIH(Object _obj)&#123;</div><div class="line">        this.obj = _obj;</div><div class="line">    &#125;</div><div class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable&#123;</div><div class="line">        Object result = method.invoke(this.obj, args);</div><div class="line">        return result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>动态代理是根据被代理的接口生成所有的方法。</p>
-<p>使用动态代理:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) throws Throwable&#123;</div><div class="line">    IGamePlayer player = new GamePlayer(&quot;张飞&quot;);</div><div class="line">    InvocationHandler handler = new GamePlayIH(player);</div><div class="line"></div><div class="line">    System.out.println(&quot;开始时间：-------&quot;);</div><div class="line">    ClassLoader cl = player.getClass.getClassLoader();</div><div class="line">    // 动态产生一个代理者</div><div class="line">    IGamePlayer proxy = (IGamePlayer) Proxy.newProxyInstance(cl, new Class...)</div><div class="line">    proxy.login(&quot;zhangsan&quot;, &quot;password&quot;)</div><div class="line"></div><div class="line">    proxy.killBoss();</div><div class="line">    proxy.upgrade();</div><div class="line">    // end</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>作用：如果需要实现用户登入的时候发送通知给用户（调用 login 方法的时候铺货）</p>
-<p>修改动态代理</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GamePlayIH</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span></span>&#123;</div><div class="line">    <span class="comment">// 被代理者</span></div><div class="line">    Class cls = <span class="keyword">null</span>;</div><div class="line">    <span class="comment">// 被代理的实例</span></div><div class="line">    Object obj = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GamePlayIH</span><span class="params">(Object _obj)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.obj = _obj;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable</span>&#123;</div><div class="line">        Object result = method.invoke(<span class="keyword">this</span>.obj, args);</div><div class="line">        <span class="keyword">if</span> (method.getName().equalsIgnnoreCase(<span class="string">"login"</span>))&#123;</div><div class="line">            System.out.println(<span class="string">"有人在用你的账号"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>//….需要深入学习 AOP</p>
-<p>Aspect，JoinPoint, Advice, Weave</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/16/ReadNote/设计模式/设计模式之蝉-模版模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/16/ReadNote/设计模式/设计模式之蝉-模版模式/" itemprop="url">设计模式之蝉 - 模版模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-16T21:38:14+08:00">
-                2017-07-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>悍马车模型，下面有 H1，H2 两种型号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public abstract class HummerModel&#123;</div><div class="line">    public abstract void start();</div><div class="line">    public abstract void stop();</div><div class="line">    public abstract void alarm();</div><div class="line">    public abstract void engineBoom();</div><div class="line">    public void run()&#123;</div><div class="line">        this.start();</div><div class="line">        this.engineBoom();</div><div class="line">        this.alarm();</div><div class="line">        this.stop();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// HummerH1Model</div><div class="line"></div><div class="line">// HummerH2Model</div></pre></td></tr></table></figure>
-<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>Template Method Pattern</p>
-<p>Define the skeleton of an algorithm in an operation, deferring some steps to subclasses. Template Methid lets subclasses redefine certain steps of an algorithm without changing the algorithm’s structure.</p>
-<p>定义一个操作中的算法的框架，而将一些步骤延迟到子类中。使子类不能改变一个算法的结构但是可以定义该算法某些特定的步骤。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/16/ReadNote/设计模式/设计模式之蝉-模版模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1762,7 +1748,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">391</span>
+                <span class="site-state-item-count">400</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1784,7 +1770,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">251</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
