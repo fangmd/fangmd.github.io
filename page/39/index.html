@@ -1074,7 +1074,7 @@ classpath环境变量配置语法？
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day10总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day12总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1093,7 +1093,7 @@ classpath环境变量配置语法？
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/12/28/java/java_day/Day10总结/" itemprop="url">java -- day10</a></h1>
+                <a class="post-title-link" href="/2015/12/28/java/java_day/Day12总结/" itemprop="url">java -- day12</a></h1>
         
 
         <div class="post-meta">
@@ -1164,485 +1164,102 @@ classpath环境变量配置语法？
       
         
           
-            <h1 id="Day10"><a href="#Day10" class="headerlink" title="Day10"></a>Day10</h1><h2 id="异常机制"><a href="#异常机制" class="headerlink" title="异常机制"></a>异常机制</h2><h3 id="异常的概念"><a href="#异常的概念" class="headerlink" title="异常的概念"></a>异常的概念</h3><blockquote>
-<p>程序在运行或者编译的时候出现的不正常的现象。    </p>
-<h3 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类</h3><p>Thorwsable:异常的根类，直接继承至<code>Object</code></p>
+            <h1 id="Day-12"><a href="#Day-12" class="headerlink" title="Day 12"></a>Day 12</h1><h2 id="集合的概念以及集合框架介绍"><a href="#集合的概念以及集合框架介绍" class="headerlink" title="集合的概念以及集合框架介绍"></a>集合的概念以及集合框架介绍</h2><h3 id="集合的概念"><a href="#集合的概念" class="headerlink" title="集合的概念"></a>集合的概念</h3><blockquote>
+<p>存储引用数据对象的变长的容器。</p>
 </blockquote>
-<p>两个子类：</p>
-<ol>
-<li><code>Error</code>程序不能处理的jvm级别的异常。如：<code>StackOverflowError</code></li>
-<li><code>Exception:</code>程序能够捕获或者处理的异常。<ol>
-<li><code>RuntimeException：</code>运行时异常：程序在运行过程中出现的异常</li>
-<li><code>Checked：</code>：程序在编译时的错误，且必须处理的异常。</li>
-</ol>
-</li>
-</ol>
-<p>常见的<code>RuntimeException</code>异常：</p>
-<ol>
-<li><code>ArithmeticException：</code>算术异常，例子：两个整数相除，除数为0；</li>
-<li><code>InputMismaticException:</code>输入不匹配异常，例子：<code>Scanner</code>扫描器对象试图从控制台获得一个与该对象取出的数据不吻合如：<code>input.next();</code></li>
-<li><code>NullPointerException:</code>空指针异常，例子：一个引用类型的实例为<code>null</code>，调用方法。如：<code>String str = null; boolean isTrue = str.equals(&quot;&quot;)</code>;</li>
-<li><code>ArrayIndexOutOfBoundsException:</code>数据下标越界异常，例子：访问数组中的元素，下标&gt;=数组的长度。</li>
-<li><code>NumberFormatException:</code>数据格式化异常，例子：将一个非数字的字符串转换成数据包装类型，如：<code>new Integer(&quot;abs&quot;)</code></li>
-<li><code>ClassCastException：</code>强制类型转换异常，例子：将一个父类的引用强制转换为没有继承关系的类型时；</li>
-</ol>
-<p>异常的特点</p>
-<ol>
-<li>若某行的代码在执行过程中抛出异常，那么后续的语句都不会执行；</li>
-<li>若异常已经被处理，那么后续的语句会继续执行；</li>
-</ol>
-<p>常见的<code>Checked</code>异常：</p>
-<ol>
-<li><code>ClassNotFoundException:</code>找不到类的异常，例子：通过<code>Class.forName(&quot;类的全限定名对应的字符串&quot;)</code>如：<code>Class.forName(&quot;a.b.bc.Dog&quot;);</code></li>
-<li><code>ParseaException:</code>日期解析异常，将一个与定制格式不匹配的日期字符串解析为Date类型对象；</li>
-<li><code>DataFormatException:</code></li>
-</ol>
-<p><strong>如何鉴别异常的类型：</strong></p>
-<ol>
-<li><code>RuntimeException:</code><ol>
-<li>编译能通过</li>
-<li>查看该异常类型的层次结构图，该异常直接或者间接继承与<code>RuntimeException</code></li>
-</ol>
-</li>
-<li><code>Checked：</code><ol>
-<li>若不处理，编译报错</li>
-<li>查看该异常的类型层次结构图<h3 id="异常的处理方式"><a href="#异常的处理方式" class="headerlink" title="异常的处理方式"></a>异常的处理方式</h3>①try{<br>//可能产生异常的代码<br>}catch(异常类型 e){//捕获<br>//处理措施（补救方案）<br>}</li>
-</ol>
-</li>
-</ol>
-<p>适用场景：可能出现异常的情形只有一个（很多–》捕获的异常类型是Exception,可以接收任意子类型异常对象），处理方式一样。</p>
-<p>②<em>**</em>使用得最外广泛</p>
-<pre><code>try{
-//可能产生异常的代码
-  }catch(异常类型1 e){//捕获
-  //处理措施（补救方案）
-  }catch(异常类型2 e){//捕获
-  //处理措施（补救方案）
-  }
-  ...
-  catch(异常类型n e){//捕获
-  //处理措施（补救方案）
-  }
-</code></pre><p><strong>注意点</strong>：</p>
-<p>1、若异常类型之间有继承关系，那么，子异常类型的捕获必须置于父类型异常之前。<br>2、若异常类型之间没有继承关系，那么，与顺序无关。</p>
-<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的。</p>
-<p>③<em>**</em>使用得最外广泛</p>
-<pre><code> try{
-//可能产生异常的代码
-  }catch(异常类型1 e){//捕获
-  //处理措施（补救方案）
-  }catch(异常类型2 e){//捕获
-  //处理措施（补救方案）
-  }
-  ...
-  catch(异常类型n e){//捕获
-  //处理措施（补救方案）
-  }finally{
- //无论异常发生与否，都会执行的代码
- //----&gt;在真实项目中，一般书写资源释放的语句（如：io的关闭）
-  }
-</code></pre><p>注意：<br>1、finally语句块一般都会执行，但是例外的情况：<br>  ①若jvm异常退出  System.exit(负数);<br>  ②jvm正常退出    System.exit(正常);<br>    –》无条件终结jvm的执行<br>2、fianlly语句块中对于之前书写的return 变量值是没有影响的。</p>
-<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的,且要单独进行资源释放。（io流）</p>
-<p>④   </p>
-<pre><code> try{
-}finally{
-}
-</code></pre><p>使用场景：所有异常的处理，以及资源释放的语法都置于finally语句块中。    </p>
-<h5 id="抛出异常：throws和throw"><a href="#抛出异常：throws和throw" class="headerlink" title="抛出异常：throws和throw"></a>抛出异常：throws和throw</h5><ol>
-<li>throws：<ol>
-<li>使用在方法的声明部分，表示抛出本方法中可能产生的所有异常类型</li>
-<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常类型1，异常类型2.。。。{方法体}</li>
-<li>从设计者角度，在设计方法的时候若可能发生异常，而且处理的时机不成熟，就需要抛给能够处理的调用者，若该调用者处理的时机还不成熟，继续向上抛，直到能处理为止（到main中不能抛必须处理） 时机：若方法有参数，参数值从外部传入，此时就不成熟。</li>
-</ol>
-</li>
-<li>throw：<ol>
-<li>使用在方法同中，后接一个定制了异常信息的异常对象。</li>
-<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常对象所对应的异常{方法体 throw 异常对象；}</li>
-<li>语法  把 throws 去掉</li>
-<li>从设计者角度，设计throw是为了便于定制异常信息。</li>
-</ol>
-</li>
-</ol>
-<p>throw 和 throws 是否同时出现：不用。</p>
-<p>根据throw后异常对象所属的类型来确定。前提：方法体中处理异常的时机不成熟，而且，需要对异常信息进行人性化定制的场合。</p>
-<ol>
-<li>必须出现：throw后异常对象属于编译时异常</li>
-<li>不用出现，throw后异常对象属于运行时异常。<h4 id="自定义异常"><a href="#自定义异常" class="headerlink" title="自定义异常"></a>自定义异常</h4></li>
-</ol>
-<p>自定义异常:jdk中设计好的异常类型，不能满足现实的需求，定制的异常类型。</p>
-<p>自定义异常的书写方式：</p>
-<p>第一种：继承RuntimeException<br>   不需要立即进行处理的异常。 –》运行时时异常 </p>
-<p>第二种：继承Exception<br>   需要立即进行处理的异常，否则编译报错。 –》编译时异常 </p>
-<p>需求：家具厂生产桌子，桌子的半径若在范围[30.567,31.889]cm区间之内，就是<br>合格的产品，否则，就是残次品，次品需要返工的。模拟场景：木匠师傅搬着刚刚精心制作完成的桌子，去质检部检测，检查合格，师傅休息；不合格，让其返工，直到合格为止。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day09总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/12/28/java/java_day/Day09总结/" itemprop="url">java -- day9</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T21:18:12+08:00">
-                2015-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java基础/" itemprop="url" rel="index">
-                    <span itemprop="name">java基础</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Day09-总结"><a href="#Day09-总结" class="headerlink" title="Day09 总结"></a>Day09 总结</h1><h2 id="一维数组的创建"><a href="#一维数组的创建" class="headerlink" title="一维数组的创建"></a>一维数组的创建</h2><blockquote>
-<p>数组：是用来存储相兼容数据类型数据或者是存储同一个父类类型的所有子类对象或者是存储同一个接口的所有实现类对象的定长的容器。</p>
-</blockquote>
-<h3 id="数组的声明："><a href="#数组的声明：" class="headerlink" title="数组的声明："></a>数组的声明：</h3><p>四种：</p>
-<p>①使用默认的初始值来初始化数组中的每一个元素<br>语法：数组元素类型 [] 数组名 = new 数组元素类型[数组中元素的个数（数组的长度）];<br> 如：int [] scores = new int[3];</p>
-<p>②先声明，然后再赋予默认的初始值。<br>语法：数组元素类型 [] 数组名;<br>      数组名= new 数组元素类型[数组中元素的个数（数组的长度）];<br> 如：int [] scores;<br>     scores = new int[3];</p>
-<p>③先声明，然后再使用指定的值进行初始化。<br>语法：数组元素类型 [] 数组名 = new 数组元素类型[]{元素1，元素2,….};<br> 如：int [] scores = new int[]{56,78,98};</p>
-<p>④将第三种写法可以简化为（使用数组常量值给数组进行赋值）<br>语法：数组元素类型 [] 数组名 = {元素1，元素2,….};<br> 如：int [] scores =  {56,78,98};</p>
 <p>特点：</p>
 <ol>
-<li>new出来的数组会在堆内存中开辟一块连续的空间进行存储且都有默认的初始值，默认的初始值与数组中的元素类型相同类的属性初始值相同。</li>
-<li>如何访问、操作数组中的每一个元素：通过下标来操作<br>语法：数组名[下标] = xx–&gt;通过栈中的引用修改堆中数组的元素值<pre><code>数组元素类型 x = 数组名[下标] --&gt;取出数组中相应位置的元素
-</code></pre>下标：脚标，脚标从0开始，到数组长度-1</li>
-<li>如何获得数组的长度：通过length属性获得</li>
-<li>数组最大的下标为：数组长度-1,若下标 &gt;=数组的长度，会抛出：数组越界的异常。（ArrayIndexOutOfBoundsException）<h2 id="数组的赋值"><a href="#数组的赋值" class="headerlink" title="数组的赋值"></a>数组的赋值</h2>静态赋值：数组中每个元素的值是固定写死的。<br>如：<code>int [] nums = {67,89,87};</code></li>
-</ol>
-<p>动态赋值：数组中每个元素的值是通过某个方法计算得出来的，或者是通过控制台动态获取的。<br>如：<code>int [] nums = new int[3];</code> <code>nums[1] = getSecondElementsValue();</code>或者是<code>nums[1] = input.nextInt();</code></p>
-<h2 id="数组的访问"><a href="#数组的访问" class="headerlink" title="数组的访问"></a>数组的访问</h2><p>数组的访问:通过下标来访问数组中的元素。如：<code>int[] scores = {89,90};</code>访问最后一个元素值：<code>int lasstElement  = scores[scores.length-1];</code></p>
-<h3 id="循环访问"><a href="#循环访问" class="headerlink" title="循环访问"></a>循环访问</h3><p><strong>遍历数组</strong>： 遍历：依次取出数组中的每一个元素。</p>
-<pre><code> 遍历方式①：普通的for循环
-语法：for(int i = 0; i&lt; 数组的长度;i++){//i:循环变量，同样：也是数组的下标（取值范围[0,数组长度)）
- 数组中元素的类型 变量 = 数组名[i];
- xxx
-  }
-
-遍历方式②：增强for循环
-语法：for(数组中元素的类型 变量:数组名){
-  数组中元素的类型 临时变量 = 变量;
-  xxx
-  }
-</code></pre><p>—&gt;数组两种遍历方式的异同点：</p>
-<p>同：都可以用来遍历数组。</p>
-<p>异： ①语法<br>    ②普通for循环不仅可以取出数组中的元素，而且可以修改数组中指定位置的元素。<br>      增强for循环一般只能取出数组中的元素，不能修改（注意：也可以借助下标修改数组中的元素）</p>
-<h2 id="数组的排序"><a href="#数组的排序" class="headerlink" title="数组的排序"></a>数组的排序</h2><p>数组排序算法：冒泡、选择、插入、堆、快速等等。—》效率最高的排序算法是：堆<br>在真实项目中，对数组的排序，使用的是Arrays工具类中相应的方法。</p>
-<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>冒泡排序：数组中元素之间两两进行比较，大的后移。</p>
-<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>选择排序：从第一个元素开始，依次与后续的每一个元素进行比较，大的后移。</p>
-<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>插入排序：从数组中第二个元素开始，依次与之前已经排好序的元素进行比较，找到合适的位置，插入。</p>
-<h2 id="数组的查找"><a href="#数组的查找" class="headerlink" title="数组的查找"></a>数组的查找</h2><h3 id="顺序查找"><a href="#顺序查找" class="headerlink" title="顺序查找"></a>顺序查找</h3><p>顺序查找：将待查找的元素依次与数组中的每一个元素进行比较，找到后，返回该元素在数组中对应的索引值；否则，返回-1(只要是负数即可)。</p>
-<h3 id="二分法查找"><a href="#二分法查找" class="headerlink" title="二分法查找"></a>二分法查找</h3><p>二分法查找（折半查找）：前提是在已经排好序的数组中，通过将待查找的元素与中间索引值对应的元素进行比较，若大于中间索引值对应的元素，去右半部分查找，否则，去左半部分查找。依此类推。直到找到为止；找不到返回一个负数。</p>
-<h2 id="可变参数的传递"><a href="#可变参数的传递" class="headerlink" title="可变参数的传递"></a>可变参数的传递</h2><h2 id="命令行参数：String-args"><a href="#命令行参数：String-args" class="headerlink" title="命令行参数：String[] args"></a>命令行参数：String[] args</h2><p>可变参数：在设计方法时，方法的最后一个形参的个数是变动的。</p>
-<pre><code>语法：访问权限修饰符 返回值类型 方法名（类型1 参数1，...,类型n ... 参数n）{
-//方法体
-  }
-</code></pre><p>特点：</p>
+<li>存储的数据是引用类型；</li>
+<li><p>长度可变；</p>
+<h3 id="集合的框架结构介绍"><a href="#集合的框架结构介绍" class="headerlink" title="集合的框架结构介绍"></a>集合的框架结构介绍</h3><p>Collection接口</p>
+</li>
+<li><p>list接口</p>
 <ol>
-<li>将包含了变长参数的方法，在方法体中，可以将其当作一个一维数组。 (本质是一维数组???可以用数组的操作方法来操作? 角标操作法)</li>
-<li>变长参数只能放在方法形参的最后，不能置于开始和中间（前提：方法有多个形参）</li>
-<li>…只能有三个，且只能置于类型和变量之间</li>
-</ol>
-<p>命令行参数：入口main方法的参数<br>如何给命令行参数传入值<br>语法：java 字节码文件名 实参1 实参2 .. 实参n<br>实参1 实参2 .. 实参n:就会传递给main方法参数args,根据传入的先后顺序，依次作为一维数组中的每一个元素值。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day14总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/12/28/java/java_day/Day14总结/" itemprop="url">Day14 总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T21:18:12+08:00">
-                2015-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java基础/" itemprop="url" rel="index">
-                    <span itemprop="name">java基础</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Day14-总结"><a href="#Day14-总结" class="headerlink" title="Day14 总结"></a>Day14 总结</h1><h2 id="File类"><a href="#File类" class="headerlink" title="File类"></a>File类</h2><blockquote>
-<p>File类：对存储在磁盘上的文件和目录的抽取和封装。</p>
-<h3 id="File类作用"><a href="#File类作用" class="headerlink" title="File类作用"></a>File类作用</h3><p>常用的字段：<code>static String separator</code>：会根据底层平台，动态生成一个分隔符（目录之间的分隔符）windows –&gt;\ ;linux –&gt; /</p>
-<h3 id="File类的构造方法"><a href="#File类的构造方法" class="headerlink" title="File类的构造方法"></a>File类的构造方法</h3><p><code>File(File parent, String child)</code>：根据父目录对应的文件对象和该目录下的文件</p>
-<p><code>File(String pathname)</code> ：将参数指定的目录封装成一个file对象（绝对路径和相对路径）</p>
-<p><code>File(String parent, String child)</code> ：根据父目录对应的路径，和该目录下的文件或目录<br>xxx</p>
-<h3 id="File类文件属性方法"><a href="#File类文件属性方法" class="headerlink" title="File类文件属性方法"></a>File类文件属性方法</h3><h3 id="使用File类对文件进行操作"><a href="#使用File类对文件进行操作" class="headerlink" title="使用File类对文件进行操作"></a>使用File类对文件进行操作</h3><h3 id="使用File类浏览目录中的文件和子目录"><a href="#使用File类浏览目录中的文件和子目录" class="headerlink" title="使用File类浏览目录中的文件和子目录"></a>使用File类浏览目录中的文件和子目录</h3><h2 id="IO概念和种类"><a href="#IO概念和种类" class="headerlink" title="IO概念和种类:"></a>IO概念和种类:</h2><h3 id="什么是IO流？"><a href="#什么是IO流？" class="headerlink" title="什么是IO流？"></a>什么是IO流？</h3><p>IO流：磁盘上的文件与内存进行数据传递的管道（通路、媒介）。</p>
-<p>###流的作用和原理？    </p>
-<h2 id="IO流的种类"><a href="#IO流的种类" class="headerlink" title="IO流的种类:"></a>IO流的种类:</h2><h3 id="输入流、输出流-相对于内存而言"><a href="#输入流、输出流-相对于内存而言" class="headerlink" title="输入流、输出流    (相对于内存而言)"></a>输入流、输出流    (<strong>相对于内存而言</strong>)</h3><h3 id="字符流、字节流"><a href="#字符流、字节流" class="headerlink" title="字符流、字节流"></a>字符流、字节流</h3><h3 id="节点流、处理流"><a href="#节点流、处理流" class="headerlink" title="节点流、处理流"></a>节点流、处理流</h3><ol>
-<li><strong>节点流：</strong>与具体的存储介质直接进行交互的流。（API中涉及到的类：FileInputStream –&gt;文件字节输入流，FileOutputStream–&gt;文件字节输出流FileReader–&gt;文件字符输入流，FileWriter–&gt;文件字符输出流）</li>
-<li><strong>处理流：</strong>不与具体的存储介质直接进行交互的流。（API中涉及到的类：    <ol>
-<li>BufferedInputStream –&gt;带缓存的字节输入流，</li>
-<li>BufferedOutputStream–&gt;带缓存的字节输出流；                 3. BufferedReader –&gt;带缓存的字符输入流</li>
-<li>BufferedWriter –&gt;带缓存的字符输出流）</li>
+<li>ArrayList类：</li>
+<li>LinkedList类</li>
+<li>Vector类</li>
+<li><p>Strck类:继承Vector，栈结构</p>
+<pre><code>常用方法：
+ E peek() 查看堆栈顶部的对象，但不从堆栈中移除它。 
+ E pop()  移除堆栈顶部的对象，并作为此函数的值返回该对象。 
+ E push(E item) 把项压入堆栈顶部。 
+ int search(Object o) 返回对象在堆栈中的位置，以 1 为基数。
+</code></pre></li>
 </ol>
 </li>
 </ol>
-</blockquote>
-<p>##字节输入流:    </p>
-<p>###InputStream类的常用方法    </p>
-<ol>
-<li>int available() ：返回的是流中所有数据的长度（单位：字节）。</li>
-<li>void close()：关闭此输入流并释放与该流关联的所有系统资源。 </li>
+<p>list中特有的方法：</p>
+<pre><code>E get(int index) ：根据索引值取出元素
+int indexOf(Object o) ：返回一个元素在集合中的索引值
+ListIterator&lt;E&gt; listIterator()  ：返回一个列表迭代器对象
+E set(int index, E element) ：使用指定的元素替换集合中相应位置的元素
+List&lt;E&gt; subList(int fromIndex, int toIndex)：返回指定区间的子集合，子集合中不存在结束索引对应的元素        
+</code></pre><ol>
+<li>set接口    <ol>
+<li>HashSet类</li>
+<li>LinkedHashSet</li>
+<li>TreeSet<h3 id="集合与数组的对比"><a href="#集合与数组的对比" class="headerlink" title="集合与数组的对比"></a>集合与数组的对比</h3></li>
 </ol>
-<p>###InputStream类的子类:文件输入流FileInputStream    </p>
-<p>###FileInputStream构造方法和常用方法    </p>
-<p>##字节输出流:    </p>
-<p>###OutputStream类的常用方法</p>
-<ol>
-<li>void close() 关闭此输出流并释放与此流有关的所有系统资源。 </li>
-<li>void flush() 将输出流中的数据刷新。</li>
-<li>void write(byte[] b)：将参数指定的字节数组写入到输出流中。</li>
-<li>void write(byte[] b, int off, int len) ：将参数指定的字节数组的一部分写入到输出流中。</li>
-<li><p>abstract  void write(int b) ：将参数指定的字节写入到字节输出流中。</p>
-<p> 需求：使用InputStream,OutputStream,实现文件的拷贝。将指定目录下的文件，拷贝到另外一个目录中去。</p>
-<p> 思路：<br> 1、构建文件字节输入流对象（理解：建立了一条磁盘文件到内存的通路）<br> 2、构建文件字节输出流对象（理解：建立了一条内存到磁盘存储介质的通路）<br> 3、通过循环从输入流中读取数据，与此同时，将数据写入到输出流中，直到数据处理完毕。<br> 4、释放资源</p>
-<p> 字节流的适用场景：</p>
-<pre><code>拷贝具有特定格式的源文件（声音、图像、视频、压缩包、doc、excel、exe文件表格等等）时，要使用字节流，
-</code></pre><p> 不会破坏源的格式，否则，拷贝后，文件无法打开、运行等等。</p>
-<p> 路径：<br>  绝对路径：从盘符开始的路径。  如：c:/temp.txt<br>  相对路径：不从盘符开始的路径。如： ../../tmp/test.txt</p>
-<p> 目录和目录、目录和文件之间的分隔符：<br> windows:  c:\temp\test.txt<br> linux :   temp/test.txt</p>
-<p> File.seperator; —&gt;根据系统运行的平台，动态生成一个分隔符<br>###OuputStream类的子类:文件输出类FileOutputStream<br>###FileOutputStream构造方法和常用方法<br>##字符输入流:<br>###Reader类的常用方法<br>###Reader类的子类:FileReader<br>###FileReader构造方法和常用方法<br>##字符输出流<br>###Writer类的常用方法    </p>
 </li>
-<li>Writer append(char c) ：将字符追加到字符输出流的末尾。</li>
-<li>Writer append(CharSequence csq) ：将字符追加到字符输出流的末尾。</li>
-<li>void write(char[] cbuf) ：将参数指定的字符数组中的数据写入到字符输出流中。(字符流中的read(char[]cbuf)，作用是：将流中的数据读取出来填充字符数组)</li>
-<li><p>void write(String str) ：直接将字符串写入到字符输出流中。<br>###Writer类的子类:FileWriter    </p>
-<p> 需求：使用Writer，将内存中的数据写入到磁盘一个文件中。</p>
-<p> 案例：使用字符流，实现文件的拷贝。</p>
-<p> 字符流的适用场景：操作文本文件时，建议使用。若操作一些带有特殊格式（声音、图像、视频、压缩包等等）的文件，不要使用。</p>
+<li>存储的元素不同：数值存储的是基本数据类型或者引用类型，而集合只能存储引用类型；</li>
+<li>长度是否可变；<h2 id="Collection接口"><a href="#Collection接口" class="headerlink" title="Collection接口"></a>Collection接口</h2><blockquote>
+<p>语法：Collection 对象名 = new Collection 接口实现类的构造方法；</p>
+<h3 id="集合对象的创建"><a href="#集合对象的创建" class="headerlink" title="集合对象的创建"></a>集合对象的创建</h3><h3 id="Collection中常用的方法"><a href="#Collection中常用的方法" class="headerlink" title="Collection中常用的方法"></a>Collection中常用的方法</h3></blockquote>
 </li>
 </ol>
-<p>###FileWriter构造方法和常用方法</p>
+<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><h3 id="泛型应用在集合上"><a href="#泛型应用在集合上" class="headerlink" title="泛型应用在集合上"></a>泛型应用在集合上</h3><h3 id="泛型应用在类上"><a href="#泛型应用在类上" class="headerlink" title="泛型应用在类上"></a>泛型应用在类上</h3><h3 id="泛型应用在方法上"><a href="#泛型应用在方法上" class="headerlink" title="泛型应用在方法上"></a>泛型应用在方法上</h3><p>泛型：泛指的类型，指的是：将类型可以当成参数，在子类和父类，实现类和接口之间进行传递。<br>泛型的本质：类型的传递。</p>
+<p>泛型的分类：<br>①泛型接口<br>语法：访问权限修饰符 interface 接口名&lt;类型1,类型2,…,类型n&gt;{<br>      }</p>
+<p>注意：1、此处，类型1等等与接口之间不存在实现的关系，关系仅限于：<br>      将明示出来的类型当成一个普通的类型，在整个接口体中可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
+<p>②泛型类<br>语法：访问权限修饰符 class 类名&lt;类型1,类型2,…,类型n&gt;{<br>      }</p>
+<p>注意：1、此处，类型1等等与类之间不存在继承关系，关系仅限于：<br>      将明示出来的类型当成一个普通的类型，在整个类体中都可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
+<p>③泛型方法</p>
+<p>语法：访问权限修饰符 &lt;类型1,类型2,…,类型n&gt; 返回值类型 方法名(..){<br>      }</p>
+<p>注意：1、此处，类型1等等与方法的关系是：<br>      将明示出来的类型当成一个普通的类型，在整个方法体中以及方法的声明部分都可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
+<p>泛型语法设计的目的：<br>  ①最大限度提高代码的复用性。<br>  ②将运行时的异常提前到编译时。</p>
+<p>需求：通过一个集合，存储班级学生的分数，求总成绩。</p>
+<h2 id="Iterator迭代器"><a href="#Iterator迭代器" class="headerlink" title="Iterator迭代器"></a>Iterator迭代器</h2><h3 id="迭代器的工作原理"><a href="#迭代器的工作原理" class="headerlink" title="迭代器的工作原理"></a>迭代器的工作原理</h3><h3 id="迭代器的使用"><a href="#迭代器的使用" class="headerlink" title="迭代器的使用"></a>迭代器的使用</h3><p>作用：遍历集合；</p>
+<p>集合中有一个方法的返回值是Iterator，赋值给Iterator对象，然后用Iterator的方法来处理集合；</p>
+<h2 id="List接口"><a href="#List接口" class="headerlink" title="List接口"></a>List接口</h2><h3 id="List接口的存储特点"><a href="#List接口的存储特点" class="headerlink" title="List接口的存储特点"></a>List接口的存储特点</h3><ol>
+<li>可重复；</li>
+<li>有序；<h3 id="List接口的实现类"><a href="#List接口的实现类" class="headerlink" title="List接口的实现类"></a>List接口的实现类</h3></li>
+<li>ArrayList：底层的数据结构是数值，查询和修改元素的效率高，增删元素的效率低。    </li>
+<li>LinkedList：底层的数据结构是“双向链表”（可以从链表的两头对数据进行处理，里面的每个节点不仅保存了数据也保存的该节点前后对象的地址），查询、修改的效率低，增删的效率高；</li>
+<li>ArrayList与LinkedList存储的比较    </li>
+</ol>
+<p>特有的方法：</p>
+<ol>
+<li>void addFirst(E e) ：将参数指定的元素添加到集合的开始位置</li>
+<li>void addLast(E e) ：将参数指定的元素添加到集合的最后的位置</li>
+<li>Iterator<e> descendingIterator()：将集合中的元素反转存入迭代器</e></li>
+<li>E getFirst() ：取出集合中第一个元素           </li>
+<li>E getLast() ：取出集合中最后一个元素  </li>
+<li>E pop()：取出集合中的元素（栈顶）<br>void push(E e) ：将参数指定的元素入栈<h2 id="Set集合的存储特点"><a href="#Set集合的存储特点" class="headerlink" title="Set集合的存储特点"></a>Set集合的存储特点</h2></li>
+<li>不能重复</li>
+<li>无序<h3 id="HashSet的实现原理"><a href="#HashSet的实现原理" class="headerlink" title="HashSet的实现原理"></a>HashSet的实现原理</h3></li>
+<li>底层数据结构是哈希表</li>
+<li>无序（存储的顺序和输入顺序无关，但是在数据存储的时候按照底层算法实现）    <h4 id="重写equals"><a href="#重写equals" class="headerlink" title="重写equals()"></a>重写equals()</h4><h4 id="重写equals-1"><a href="#重写equals-1" class="headerlink" title="重写equals()"></a>重写equals()</h4><h3 id="TreeSet的实现原理"><a href="#TreeSet的实现原理" class="headerlink" title="TreeSet的实现原理"></a>TreeSet的实现原理</h3><h4 id="Comparable接口的使用"><a href="#Comparable接口的使用" class="headerlink" title="Comparable接口的使用"></a>Comparable接口的使用</h4><h4 id="Comparator接口的使用"><a href="#Comparator接口的使用" class="headerlink" title="Comparator接口的使用"></a>Comparator接口的使用</h4><h3 id="LinkedHashSet-继承hashSet，没有特别的方法"><a href="#LinkedHashSet-继承hashSet，没有特别的方法" class="headerlink" title="LinkedHashSet 继承hashSet，没有特别的方法"></a>LinkedHashSet 继承hashSet，没有特别的方法</h3></li>
+<li>底层是链表</li>
+<li>有序：元素的顺序和添加顺序一样</li>
+</ol>
+<p><strong>遍历List集</strong>合时，可以使用四种：</p>
+<ol>
+<li>迭代器</li>
+<li>增强for —》只能取出集合中的元素，不能修改。</li>
+<li>普通for —&gt;可以取出集合中的元素，同时还可以修改</li>
+<li>转换为数组</li>
+</ol>
+<h3 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h3><p>TreeSet实现类的特点：<br>①排序的 （集合中的元素根据指定的顺序进行升序排列后，存入集合）<br>②无序的 （元素添加的顺序与底层存储的顺序不一致，特例：添加时是排好序的）<br>③底层存储元素时采用的数据结构是二叉树</p>
+<p>深度挖掘TreeSet集合：<br>存储在该种集合中的元素为什么能够排序呢？<br>就对象本质而言，不具备可比性。但是，程序是用来描述现实世界，需求要求对象<br>能进行比较。所以，必须人为给定一个比较规则。</p>
+<p>如何给定规则：<br>方式①：让需要进行比较的实例所对应的类实现Comparable接口，实现其中的copareTo（）方法，在该方法中指定比较规则。（让实例具备可比性）<br>    compareToz（xxx）方法，有三个返回值：0  –》当前对象与参数指定的对象相等</p>
+<pre><code>&gt;0 --&gt; 当前对象大于参数指定的对象
+&lt;0 --》当前对象小于参数指定的对象
+</code></pre><p>方式②：构建TreeSet集合对象时，传入一个比较器对象，让容器具备可比性。<br>   比较器： 设计一个类，让该类实现Comparator接口,实现接口中的compare方法，在该方法中定制比较规则。</p>
+<p>需求：定义一个TreeSet的集合，存储班级学生的信息，根据学生的年龄来排序，若年龄相同，根据身高来排序，若身高相同，根据体重来排序，若<br>      体重也相同，根据名字来排序。</p>
+<p>思路：①设计一个Student实例类<br>      ②测试类，main–》构建容器对象，存储学生实例，遍历，观察结果</p>
+<p>注意：<br>1、TreeSet集合中的元素要进行比较，有两种实现方式，在真实项目中选择其一即可，不要“双管齐下”。<br>   效果：对象的比较会优先选择Comparable方式；那么，Comparator方式就成了冗余的代码。</p>
+<p>2、向一个TreeSet集合中的存入元素，元素一般要具备可比性，否则抛出ClassCastException。除非：是让容器具备可比性（Comprator方式）。</p>
+<p>–》拓展：一般TreeSet中存放的是同一个类的对象，让同类对象之间进行比较，然后排序。但是，现实需求是变动的，让不同种类的对象进行比较，<br>         现实中也有很多。如何实现呢？<br>需求：让人、老虎、狮子赛跑，看那个物种速度快，速度升序，若速度一样，根据体重来比较，体重降序。</p>
+<p>分析：<br>1）设计三个实体类：人，老虎，狮子，且类要实现Comparable接口。<br>2）测试类 main：构建不同物种的对象，存入集合，打印，观察结果。</p>
 
           
         
@@ -1925,7 +1542,7 @@ xxx
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/day22总结即servlet/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1944,7 +1561,7 @@ xxx
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/12/28/java/java_day/day22总结即servlet/" itemprop="url">Servlet</a></h1>
+                <a class="post-title-link" href="/2015/12/28/java/java_day/Day2/" itemprop="url">java -- day2</a></h1>
         
 
         <div class="post-meta">
@@ -2015,101 +1632,318 @@ xxx
       
         
           
-            <p>##Servlet</p>
+            <h1 id="Day2"><a href="#Day2" class="headerlink" title="Day2"></a>Day2</h1><hr>
+<h2 id="什么是JAVA语句的执行结构"><a href="#什么是JAVA语句的执行结构" class="headerlink" title="什么是JAVA语句的执行结构"></a>什么是JAVA语句的执行结构</h2><p><strong>&gt;JAVA语句的执行结构：运行在jvm中的字节码文件代码执行的路径。</strong></p>
+<h2 id="JAVA语句有哪些结构"><a href="#JAVA语句有哪些结构" class="headerlink" title="JAVA语句有哪些结构"></a>JAVA语句有哪些结构</h2><ul>
+<li>顺序语句：程序遵循从上往下，从左往右。</li>
+<li>分支语句：程序执行时，满足某个条件，执行相应的语句块，否则，执行其余的代码块。</li>
+<li><p>循环语句：程序执行时，对于某段反复或者是多次执行的语句。</p>
+<h2 id="顺序语句"><a href="#顺序语句" class="headerlink" title="顺序语句"></a>顺序语句</h2><h2 id="分支语句"><a href="#分支语句" class="headerlink" title="分支语句"></a>分支语句</h2><p>  if分支语句的分类：<br>  ①单分支<br>  if(取值为boolean型的表达式){</p>
+<pre><code>//语句块
+</code></pre><p>  }<br>  ②双分支<br>  if(取值为boolean型的表达式){</p>
+<pre><code>//语句块
+</code></pre><p>  }else{</p>
+<pre><code>//语句块
+</code></pre><p>  }<br>  ③多分支<br>  if(取值为boolean型的表达式1){</p>
+<pre><code>//语句块1
+</code></pre><p>  }else if(取值为boolean型的表达式2){</p>
+<pre><code>//语句块2
+</code></pre><p>  }<br>   ….<br>  else{</p>
+<pre><code>//语句块
+</code></pre><p>  }<br>  拓展：嵌套if分支语句：在分支语句中，可以继续书写if分支语句。<br>  注意：从语法的角度而言，嵌套的层数没有限制，但是，为了提高程序的可读性和可维护性，建议层数&lt;= 3。<br><strong>switch语句的语法：**</strong>没有longfloatdouble**</p>
+<p>  switch(表达式){//表达式值的类型是byte,short,char,int,<strong>枚举</strong>（jdk &gt;= 1.5），String(jdk &gt;= 1.7)</p>
+<pre><code>case 常量值1:
+  语句1
+  break;
+case 常量值2:
+  语句2
+  break;
+case 常量值3:
+   语句3
+  break;
+...
+default:
+ xxx
+</code></pre><p>   }<br><strong>说明：</strong>若表达式的值与case分支后常量值相匹配，就会执行该<code>case</code>分支.</p>
+</li>
+</ul>
+<p><strong>注意点：</strong></p>
+<ul>
+<li>1、case分支后常量值不允许重复</li>
+<li>2、多个case分支，若处理方式一样，可以简写。（将多个<code>case</code>叠加在一起）</li>
+<li>3、每个case分支，建议都书写break.</li>
+<li>4、从语法的角度而言，default语句可以书写在switch分支语句的任意地方，但是，<strong>若不书写在最后，需要添加“<code>break;</code>”,书写在最后，不需要添加。</strong></li>
+</ul>
+<p><strong>switch语句与if语句的异同点:</strong></p>
+<pre><code>同：都是选择分支语句。
+异：1、语法不同。
+    2、语句后表达式值的类型不同，if语句表达式值的类型是`boolean,switch`分支表达式值的类型是`byte,short,char,int,**枚举**，String`。
+    3、适用场景
+       if:变量的值在某个区间之内。
+       switch:变量的值是某个定值。
+</code></pre><p>##循环语句</p>
 <blockquote>
-<p>运行在服务器端的web server中的java小程序</p>
+<p>程序在执行时，某段反复或者是多次执行的逻辑。</p>
 </blockquote>
-<p>web server:web服务器，常见的有：tomcat、jboss、websphere、iis等jsp引擎</p>
-<p>tomcat、jboss：纯粹使用java语言编写的，将服务端(ServerSocket)的共通的代码抽取出来，做成一个产品。</p>
-<p>网站与web server的关系，web服务器中可以部署n个网站。</p>
-<p>Servlet的生命周期：–&gt;底层使用了单例设计模式  出生–提供服务(deGet(),doPost())–销毁(服务器重启，关闭)</p>
-<p>url:统一资源定位符。用来标示互联网上资源的位置。(<a href="http://xxx" target="_blank" rel="external">http://xxx</a>)</p>
-<p>uri:统一资源标识符。url是uri的子集。(ftp://xxx)</p>
-<p>###Servlet的跳转方式</p>
-<ol>
-<li><p>客户端跳转</p>
-<ol>
-<li>地址栏发生改变</li>
-<li>不会传递request对象</li>
-<li>response.sendRedirect(“地址”)</li>
+<p><strong>for循环</strong>    </p>
+<pre><code>语法：for(表达式1;表达式2;表达式3){
+    //循环体
+      }
+
+说明：表达式1一般用于给循环变量进行初始化(只能执行一次)
+     表达式2取值是一个boolean值，用于判定循环的条件满足与否，满足，继续执行循环体，否则，退出循环体的执行（至少执行一次）
+     表达式3一般用来修改循环变量的值（有可能一次都不执行）
+     **循环（有可能一次都不执行)**
+</code></pre><p><strong>for循环拓展：</strong></p>
+<pre><code>1、嵌套for循环
+    循环体中代码继续使用for循环，从语法的角度而言，没有限制，建议层数&lt;=3.
+  案例：使用嵌套for循环打印九九乘法表。    
+2、for循环中各个表达式奇葩的写法（笔试）
+    2.1 死循环：for(;;){}
+    2.2 注意表达式1中的循环变量的作用域范围；
+    2.3 表达式用于修改循环变量的值，步长默认是1也可以改变。
+    2.4 倒序输出：for(int i=10;i&gt;=1;i--){}
+    2.5 表达式3可以是**复合语句**：for(i=1;i&lt;5;System.out.println(&quot;i=&quot;+i)){}
+</code></pre><p><strong><em>**</em></strong>while循环<strong><em>**</em></strong></p>
+<pre><code>语法：while(取值类型位boolean的表达式){
+         //循环体
+      }
+说明：先判断，再执行。满足条件，执行循环体，否则，跳出循环体的执行，执行循环体后续的语句。
+     有可能一次都不执行
+
+案例：使用while循环，求出任意给定的数各个位上的数字之和。
+分析： 1234
+  从低位开始，每位上的数字对10求余，将语句累加起来；
+然后，将商赋值给当前分析的数字。以此类推，直到商为0，
+退出。
+</code></pre><p><strong>do-while循环</strong></p>
+<pre><code>语法：do{
+    //循环体
+      }while(取值类型为boolean的表达式);
+说明：先执行，再判断。若满足条件，继续执行循环体，否则，跳出循环体的执行，执行循环体后续的语句。
+      至少会执行一次
+
+案例：使用do...while...循环，完成一个猜数的游戏。
+分析：1,在1～10区间内，任意产生一个随机数（根据某个算法，产生的随机数），Math类有方法random()工具方法，Math.random();//[0,1)double型的值
+      2,从控制台接收用户猜的数
+      3、将用户猜的数与随机数进行比较
+        &gt;随机数，提示，大了
+        &lt;随机数，提示，小了哦
+     直到用户猜中为止
+</code></pre><p><strong>跳转语句</strong></p>
+<blockquote>
+<p>会对程序的执行轨迹产生变更的语句。<br>注意：return其实，也是跳转语句。</p>
+</blockquote>
+<p><strong>break语句的使用：</strong></p>
+<ul>
+<li>使用在switch分支语句中，含义是：跳出switch语句块。</li>
+<li>使用在循环体中，含义：跳出当前循环。（注意：与break相隔最近的循环）<br>案例：使用break语句，模拟一个场景，学校举行4000长跑比赛，选手跑到第4圈时，腿抽筋，有队医搀扶着退出比赛的情形。</li>
+</ul>
+<p><strong>break拓展：</strong></p>
+<ul>
+<li>在多重循环体中，最内层中的break语句，<strong>跳出的是当前循环</strong>。</li>
+<li>如何在内循环中，直接退出外循环，实现方式有<strong>几</strong>种。3种：1.连续跳出2.做标记3.满足条件跳出</li>
+</ul>
+<p><strong>continue语句的使用：</strong></p>
+<blockquote>
+<p>只能使用在循环体中，含义：结束本次循环，继续下一次循环。==》特点：<strong>没有退出当前循环</strong>，依然在循环体中。</p>
+<p>需求：使用continue，打印输出1～10以内所有的奇数。</p>
+</blockquote>
+<p><strong>for,while和do-while三种循环的异同点。</strong></p>
+<pre><code>同：都是循环语句。
+异：1、语法不同
+    2、适用场景不同
+      1）for:直到循环开始和结束的条件。
+      2）while:不知道循环的次数；且，需要先判断，再执行的场合。
+      3）do...while...：不知道循环的次数；且，需要执行，再判断的场合;循环体至少会执行一次。
+
+拓展开来：其实三个循环语句可以混用，关键点在于根据相应循环语句的特点，选用最为合适的循环。
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day14总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/12/28/java/java_day/Day14总结/" itemprop="url">Day14 总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T21:18:12+08:00">
+                2015-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Day14-总结"><a href="#Day14-总结" class="headerlink" title="Day14 总结"></a>Day14 总结</h1><h2 id="File类"><a href="#File类" class="headerlink" title="File类"></a>File类</h2><blockquote>
+<p>File类：对存储在磁盘上的文件和目录的抽取和封装。</p>
+<h3 id="File类作用"><a href="#File类作用" class="headerlink" title="File类作用"></a>File类作用</h3><p>常用的字段：<code>static String separator</code>：会根据底层平台，动态生成一个分隔符（目录之间的分隔符）windows –&gt;\ ;linux –&gt; /</p>
+<h3 id="File类的构造方法"><a href="#File类的构造方法" class="headerlink" title="File类的构造方法"></a>File类的构造方法</h3><p><code>File(File parent, String child)</code>：根据父目录对应的文件对象和该目录下的文件</p>
+<p><code>File(String pathname)</code> ：将参数指定的目录封装成一个file对象（绝对路径和相对路径）</p>
+<p><code>File(String parent, String child)</code> ：根据父目录对应的路径，和该目录下的文件或目录<br>xxx</p>
+<h3 id="File类文件属性方法"><a href="#File类文件属性方法" class="headerlink" title="File类文件属性方法"></a>File类文件属性方法</h3><h3 id="使用File类对文件进行操作"><a href="#使用File类对文件进行操作" class="headerlink" title="使用File类对文件进行操作"></a>使用File类对文件进行操作</h3><h3 id="使用File类浏览目录中的文件和子目录"><a href="#使用File类浏览目录中的文件和子目录" class="headerlink" title="使用File类浏览目录中的文件和子目录"></a>使用File类浏览目录中的文件和子目录</h3><h2 id="IO概念和种类"><a href="#IO概念和种类" class="headerlink" title="IO概念和种类:"></a>IO概念和种类:</h2><h3 id="什么是IO流？"><a href="#什么是IO流？" class="headerlink" title="什么是IO流？"></a>什么是IO流？</h3><p>IO流：磁盘上的文件与内存进行数据传递的管道（通路、媒介）。</p>
+<p>###流的作用和原理？    </p>
+<h2 id="IO流的种类"><a href="#IO流的种类" class="headerlink" title="IO流的种类:"></a>IO流的种类:</h2><h3 id="输入流、输出流-相对于内存而言"><a href="#输入流、输出流-相对于内存而言" class="headerlink" title="输入流、输出流    (相对于内存而言)"></a>输入流、输出流    (<strong>相对于内存而言</strong>)</h3><h3 id="字符流、字节流"><a href="#字符流、字节流" class="headerlink" title="字符流、字节流"></a>字符流、字节流</h3><h3 id="节点流、处理流"><a href="#节点流、处理流" class="headerlink" title="节点流、处理流"></a>节点流、处理流</h3><ol>
+<li><strong>节点流：</strong>与具体的存储介质直接进行交互的流。（API中涉及到的类：FileInputStream –&gt;文件字节输入流，FileOutputStream–&gt;文件字节输出流FileReader–&gt;文件字符输入流，FileWriter–&gt;文件字符输出流）</li>
+<li><strong>处理流：</strong>不与具体的存储介质直接进行交互的流。（API中涉及到的类：    <ol>
+<li>BufferedInputStream –&gt;带缓存的字节输入流，</li>
+<li>BufferedOutputStream–&gt;带缓存的字节输出流；                 3. BufferedReader –&gt;带缓存的字符输入流</li>
+<li>BufferedWriter –&gt;带缓存的字符输出流）</li>
 </ol>
 </li>
-<li><p>服务端跳转</p>
-<ol>
-<li>地址栏不会发生变化</li>
-<li>能传递request对象</li>
-<li>request.getRequestDispatcher(“目的页面地址”).forward(resp,req);</li>
 </ol>
+</blockquote>
+<p>##字节输入流:    </p>
+<p>###InputStream类的常用方法    </p>
+<ol>
+<li>int available() ：返回的是流中所有数据的长度（单位：字节）。</li>
+<li>void close()：关闭此输入流并释放与该流关联的所有系统资源。 </li>
+</ol>
+<p>###InputStream类的子类:文件输入流FileInputStream    </p>
+<p>###FileInputStream构造方法和常用方法    </p>
+<p>##字节输出流:    </p>
+<p>###OutputStream类的常用方法</p>
+<ol>
+<li>void close() 关闭此输出流并释放与此流有关的所有系统资源。 </li>
+<li>void flush() 将输出流中的数据刷新。</li>
+<li>void write(byte[] b)：将参数指定的字节数组写入到输出流中。</li>
+<li>void write(byte[] b, int off, int len) ：将参数指定的字节数组的一部分写入到输出流中。</li>
+<li><p>abstract  void write(int b) ：将参数指定的字节写入到字节输出流中。</p>
+<p> 需求：使用InputStream,OutputStream,实现文件的拷贝。将指定目录下的文件，拷贝到另外一个目录中去。</p>
+<p> 思路：<br> 1、构建文件字节输入流对象（理解：建立了一条磁盘文件到内存的通路）<br> 2、构建文件字节输出流对象（理解：建立了一条内存到磁盘存储介质的通路）<br> 3、通过循环从输入流中读取数据，与此同时，将数据写入到输出流中，直到数据处理完毕。<br> 4、释放资源</p>
+<p> 字节流的适用场景：</p>
+<pre><code>拷贝具有特定格式的源文件（声音、图像、视频、压缩包、doc、excel、exe文件表格等等）时，要使用字节流，
+</code></pre><p> 不会破坏源的格式，否则，拷贝后，文件无法打开、运行等等。</p>
+<p> 路径：<br>  绝对路径：从盘符开始的路径。  如：c:/temp.txt<br>  相对路径：不从盘符开始的路径。如： ../../tmp/test.txt</p>
+<p> 目录和目录、目录和文件之间的分隔符：<br> windows:  c:\temp\test.txt<br> linux :   temp/test.txt</p>
+<p> File.seperator; —&gt;根据系统运行的平台，动态生成一个分隔符<br>###OuputStream类的子类:文件输出类FileOutputStream<br>###FileOutputStream构造方法和常用方法<br>##字符输入流:<br>###Reader类的常用方法<br>###Reader类的子类:FileReader<br>###FileReader构造方法和常用方法<br>##字符输出流<br>###Writer类的常用方法    </p>
+</li>
+<li>Writer append(char c) ：将字符追加到字符输出流的末尾。</li>
+<li>Writer append(CharSequence csq) ：将字符追加到字符输出流的末尾。</li>
+<li>void write(char[] cbuf) ：将参数指定的字符数组中的数据写入到字符输出流中。(字符流中的read(char[]cbuf)，作用是：将流中的数据读取出来填充字符数组)</li>
+<li><p>void write(String str) ：直接将字符串写入到字符输出流中。<br>###Writer类的子类:FileWriter    </p>
+<p> 需求：使用Writer，将内存中的数据写入到磁盘一个文件中。</p>
+<p> 案例：使用字符流，实现文件的拷贝。</p>
+<p> 字符流的适用场景：操作文本文件时，建议使用。若操作一些带有特殊格式（声音、图像、视频、压缩包等等）的文件，不要使用。</p>
 </li>
 </ol>
-<p>验证：模拟用户登入到新浪邮箱的情形</p>
-<p>页面：</p>
-<ol>
-<li>登入界面(html)</li>
-<li>登入成功界面</li>
-<li>登入失败界面</li>
-</ol>
-<p>###字符集乱码解决<br>表单提交方式不同，字符集处理乱码问题的解决方案也不同</p>
-<ol>
-<li><p>get提交方式</p>
-<ol>
-<li><p>方案一：硬编码方式–常用方式但是不推荐：</p>
-<pre><code>req.setCharacterEncoding(&quot;UTF-8&quot;);
-String name = req.getParameter(&quot;name&quot;);//iso-8859-1
-String name = new String(name.getBytes(&quot;iso-8859-1&quot;),&quot;UTF-8&quot;);
-</code></pre></li>
-<li><p>方案二：配置文件修改方式（推荐）</p>
-<pre><code>&lt;Connector connectionTimeout=&quot;20000&quot; URIEncoding=&quot;UTF-8&quot;
-</code></pre><p>   disableUploadTimeout=”false” executor=”tomcatThreadPool” port=”8080” protocol=”HTTP/1.1” redirectPort=”8443”/&gt;</p>
-</li>
-</ol>
-</li>
-<li><p>post提交方式</p>
-<pre><code>req.setCharacterEncoding(&quot;UTF-8&quot;);
-response.setContentType(&quot;text/html;charset=UTF-8&quot;);
-</code></pre><p>###servlet服务器端涉及的api</p>
-</li>
-<li>HttpServlet类<ol>
-<li>doGet(HttpServletRequest req, HttpServletResponse resp)</li>
-<li>dePost(HttpServletRequest req, HttpServletResponse resp)</li>
-</ol>
-</li>
-</ol>
-<p>服务器编程步骤：</p>
-<p>###servlet客户端编程涉及的api<br>URL类：代表一个统一资源定位符，指向互联网资源的指针</p>
-<ol>
-<li>URL(String spec):通过参数指定的url地址构建对象</li>
-<li>URLConnection openConnection():构建客户端到服务器连接的对象</li>
-</ol>
-<p>URLConnection类：代表应用程序和URL之间的通信链接</p>
-<ol>
-<li>InputStream getInputStream():从网络上获得数据(网络到本地客户端的通路)</li>
-<li>OnputStream getOutputStream():客户端向远程服务器传递数据(客户端到网络的通路)</li>
-<li>void setDoInput(boolean doinput):将服务器到客户端的通路设置为闭合或者通畅(默认是true)</li>
-<li>void setDoOuput(boolean doouput):将客户端到服务器的通路设置为闭合或者通畅(默认是false)</li>
-</ol>
-<p>URLConnection的子类HttpURLConnection:</p>
-<ol>
-<li>常用字段<ol>
-<li>static int HTTP_OK:客户端发送的数据服务器已经处理完毕，并给出了正常的反馈</li>
-<li>static int HTTP_NOT_FOUND:客户端请求的服务端的资源为找到</li>
-</ol>
-</li>
-</ol>
-<p>需求：从本地服务器下载和上传图片</p>
-<p>前提：</p>
-<ol>
-<li>在本地服务器相应网站下准备资源</li>
-<li>启动服务器，使其处于运行状态</li>
-</ol>
-<p>客户端编程步骤：</p>
-<ol>
-<li>将网址封装成URL对象</li>
-<li>构建连接获取对象HttpURLConnection</li>
-<li>获取网络字节输入流对象</li>
-<li>构建FileOutputStream对象(将图片下载到本地)</li>
-<li>资源释放</li>
-</ol>
+<p>###FileWriter构造方法和常用方法</p>
 
           
         
@@ -2153,7 +1987,7 @@ response.setContentType(&quot;text/html;charset=UTF-8&quot;);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day12总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day11总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -2172,7 +2006,7 @@ response.setContentType(&quot;text/html;charset=UTF-8&quot;);
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2015/12/28/java/java_day/Day12总结/" itemprop="url">java -- day12</a></h1>
+                <a class="post-title-link" href="/2015/12/28/java/java_day/Day11总结/" itemprop="url">java -- day11</a></h1>
         
 
         <div class="post-meta">
@@ -2243,102 +2077,452 @@ response.setContentType(&quot;text/html;charset=UTF-8&quot;);
       
         
           
-            <h1 id="Day-12"><a href="#Day-12" class="headerlink" title="Day 12"></a>Day 12</h1><h2 id="集合的概念以及集合框架介绍"><a href="#集合的概念以及集合框架介绍" class="headerlink" title="集合的概念以及集合框架介绍"></a>集合的概念以及集合框架介绍</h2><h3 id="集合的概念"><a href="#集合的概念" class="headerlink" title="集合的概念"></a>集合的概念</h3><blockquote>
-<p>存储引用数据对象的变长的容器。</p>
+            <h1 id="Day-11"><a href="#Day-11" class="headerlink" title="Day 11"></a>Day 11</h1><h2 id="基本数据类型的包装类"><a href="#基本数据类型的包装类" class="headerlink" title="基本数据类型的包装类"></a>基本数据类型的包装类</h2><blockquote>
+<p>char – Charactor<br>int – integer</p>
+<h3 id="基本数据类型与其包装类"><a href="#基本数据类型与其包装类" class="headerlink" title="基本数据类型与其包装类"></a>基本数据类型与其包装类</h3><h3 id="数据的装箱和拆箱"><a href="#数据的装箱和拆箱" class="headerlink" title="数据的装箱和拆箱"></a>数据的装箱和拆箱</h3><p>在Jdk1.5以后java加入了自动装箱和拆箱功能；    </p>
 </blockquote>
-<p>特点：</p>
+<p>装箱:将基本数据类型封装为对应的包装类型对象的过程。</p>
+<pre><code>语法：①若jdk的版本&gt;= 1.5,会自动装箱
+  包装类型 对象 = 基本数据类型的数据（变量或者是值）;  
+如：int age = 12;
+Integer ageObj = age;
+
+ ②若jdk的版本&lt;1.5,必须手动装箱
+   包装类型 对象 = new  包装类型(基本数据类型（变量或者值）); 
+如：int age = 3;
+Integer ageObj = new Integer(age);
+</code></pre><p>拆箱:将包装类型的对象转换为对应的基本数据类型的过程。</p>
+<pre><code>语法：①若jdk的版本&gt;= 1.5,会自动拆箱
+  基本数据类型 变量 = 包装类型的对象;
+如：Integer ageObj = new Integer(&quot;88&quot;);
+int age = ageObj;
+
+ ②若jdk的版本&lt;1.5,必须手动装箱
+  基本数据类型 变量 = 包装类型的对象.方法（实参）;
+如：Integer ageObj = new Integer(&quot;88&quot;);
+int age = ageObj.intValue();
+</code></pre><p>基本数据类型：byte,short,int ,long ,char,float,double –&gt;兼容关系</p>
+<p>对应的包装类型：Byte，Integer –&gt;不兼容，不存在继承关系，有一点点关系：都是Number的子类型。</p>
+<p><strong>Arrays工具类</strong>：负责对数组进行排序、查询、填充等等操作。（主要是用来操作一维数组）</p>
+<p>常用方法：</p>
 <ol>
-<li>存储的数据是引用类型；</li>
-<li><p>长度可变；</p>
-<h3 id="集合的框架结构介绍"><a href="#集合的框架结构介绍" class="headerlink" title="集合的框架结构介绍"></a>集合的框架结构介绍</h3><p>Collection接口</p>
-</li>
-<li><p>list接口</p>
+<li>static int binarySearch(int[] a, int key)  使用二分法从一个排好序的数组中查询指定的元素，若存在，返回索引值；否则，返回负数。</li>
+<li>static int[] copyOf(int[] original, int newLength)：是创建一个当前数组的备份(全新的数组)，且指定了长度（从旧数组中复制元素的个数） ，若长度&gt;旧数组的长度，不足的部分使用默认值填充。</li>
+<li>static int[] copyOfRange(int[] original, int from, int to)  ：同copyOf（xxx）,指定了索引范围，但是拷贝后的数组中不包含结束索引对应的元素。</li>
+<li>static boolean equals(int[] a, int[] a2) ：比较两个数组的元素值是否完全相同，与元素的位置有关系。</li>
+<li>static void fill(int[] a, int val) ：使用指定值对数组中的每一个元素进行初始化（或者是覆盖）。<br>6 .static void sort(int[] a) ：对应数组中的元素进行升序排列。</li>
+<li>static String toString(int[] a)：以指定的格式将数组遍历输出。<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="String类"><a href="#String类" class="headerlink" title="String类"></a>String类</h3>常用方法：</li>
+</ol>
+<p>构造方法：</p>
 <ol>
-<li>ArrayList类：</li>
-<li>LinkedList类</li>
-<li>Vector类</li>
-<li><p>Strck类:继承Vector，栈结构</p>
-<pre><code>常用方法：
- E peek() 查看堆栈顶部的对象，但不从堆栈中移除它。 
- E pop()  移除堆栈顶部的对象，并作为此函数的值返回该对象。 
- E push(E item) 把项压入堆栈顶部。 
- int search(Object o) 返回对象在堆栈中的位置，以 1 为基数。
-</code></pre></li>
+<li>String(byte[] bytes)：将参数指定的字节数组转换为String 的对象。</li>
+<li>String(byte[] bytes, Charset charset) 将指定了字符集的字节数组转换为String 的对象。</li>
 </ol>
-</li>
-</ol>
-<p>list中特有的方法：</p>
-<pre><code>E get(int index) ：根据索引值取出元素
-int indexOf(Object o) ：返回一个元素在集合中的索引值
-ListIterator&lt;E&gt; listIterator()  ：返回一个列表迭代器对象
-E set(int index, E element) ：使用指定的元素替换集合中相应位置的元素
-List&lt;E&gt; subList(int fromIndex, int toIndex)：返回指定区间的子集合，子集合中不存在结束索引对应的元素        
-</code></pre><ol>
-<li>set接口    <ol>
-<li>HashSet类</li>
-<li>LinkedHashSet</li>
-<li>TreeSet<h3 id="集合与数组的对比"><a href="#集合与数组的对比" class="headerlink" title="集合与数组的对比"></a>集合与数组的对比</h3></li>
-</ol>
-</li>
-<li>存储的元素不同：数值存储的是基本数据类型或者引用类型，而集合只能存储引用类型；</li>
-<li>长度是否可变；<h2 id="Collection接口"><a href="#Collection接口" class="headerlink" title="Collection接口"></a>Collection接口</h2><blockquote>
-<p>语法：Collection 对象名 = new Collection 接口实现类的构造方法；</p>
-<h3 id="集合对象的创建"><a href="#集合对象的创建" class="headerlink" title="集合对象的创建"></a>集合对象的创建</h3><h3 id="Collection中常用的方法"><a href="#Collection中常用的方法" class="headerlink" title="Collection中常用的方法"></a>Collection中常用的方法</h3></blockquote>
-</li>
-</ol>
-<h2 id="泛型的使用"><a href="#泛型的使用" class="headerlink" title="泛型的使用"></a>泛型的使用</h2><h3 id="泛型应用在集合上"><a href="#泛型应用在集合上" class="headerlink" title="泛型应用在集合上"></a>泛型应用在集合上</h3><h3 id="泛型应用在类上"><a href="#泛型应用在类上" class="headerlink" title="泛型应用在类上"></a>泛型应用在类上</h3><h3 id="泛型应用在方法上"><a href="#泛型应用在方法上" class="headerlink" title="泛型应用在方法上"></a>泛型应用在方法上</h3><p>泛型：泛指的类型，指的是：将类型可以当成参数，在子类和父类，实现类和接口之间进行传递。<br>泛型的本质：类型的传递。</p>
-<p>泛型的分类：<br>①泛型接口<br>语法：访问权限修饰符 interface 接口名&lt;类型1,类型2,…,类型n&gt;{<br>      }</p>
-<p>注意：1、此处，类型1等等与接口之间不存在实现的关系，关系仅限于：<br>      将明示出来的类型当成一个普通的类型，在整个接口体中可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
-<p>②泛型类<br>语法：访问权限修饰符 class 类名&lt;类型1,类型2,…,类型n&gt;{<br>      }</p>
-<p>注意：1、此处，类型1等等与类之间不存在继承关系，关系仅限于：<br>      将明示出来的类型当成一个普通的类型，在整个类体中都可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
-<p>③泛型方法</p>
-<p>语法：访问权限修饰符 &lt;类型1,类型2,…,类型n&gt; 返回值类型 方法名(..){<br>      }</p>
-<p>注意：1、此处，类型1等等与方法的关系是：<br>      将明示出来的类型当成一个普通的类型，在整个方法体中以及方法的声明部分都可以使用。<br>      2、泛型参数的名字是合法的java标识符<br>      3、至于泛型到底指的是何种具体类型，由调用处来决定，来传入具体的类型。</p>
-<p>泛型语法设计的目的：<br>  ①最大限度提高代码的复用性。<br>  ②将运行时的异常提前到编译时。</p>
-<p>需求：通过一个集合，存储班级学生的分数，求总成绩。</p>
-<h2 id="Iterator迭代器"><a href="#Iterator迭代器" class="headerlink" title="Iterator迭代器"></a>Iterator迭代器</h2><h3 id="迭代器的工作原理"><a href="#迭代器的工作原理" class="headerlink" title="迭代器的工作原理"></a>迭代器的工作原理</h3><h3 id="迭代器的使用"><a href="#迭代器的使用" class="headerlink" title="迭代器的使用"></a>迭代器的使用</h3><p>作用：遍历集合；</p>
-<p>集合中有一个方法的返回值是Iterator，赋值给Iterator对象，然后用Iterator的方法来处理集合；</p>
-<h2 id="List接口"><a href="#List接口" class="headerlink" title="List接口"></a>List接口</h2><h3 id="List接口的存储特点"><a href="#List接口的存储特点" class="headerlink" title="List接口的存储特点"></a>List接口的存储特点</h3><ol>
-<li>可重复；</li>
-<li>有序；<h3 id="List接口的实现类"><a href="#List接口的实现类" class="headerlink" title="List接口的实现类"></a>List接口的实现类</h3></li>
-<li>ArrayList：底层的数据结构是数值，查询和修改元素的效率高，增删元素的效率低。    </li>
-<li>LinkedList：底层的数据结构是“双向链表”（可以从链表的两头对数据进行处理，里面的每个节点不仅保存了数据也保存的该节点前后对象的地址），查询、修改的效率低，增删的效率高；</li>
-<li>ArrayList与LinkedList存储的比较    </li>
-</ol>
-<p>特有的方法：</p>
+<p>普通方法：</p>
 <ol>
-<li>void addFirst(E e) ：将参数指定的元素添加到集合的开始位置</li>
-<li>void addLast(E e) ：将参数指定的元素添加到集合的最后的位置</li>
-<li>Iterator<e> descendingIterator()：将集合中的元素反转存入迭代器</e></li>
-<li>E getFirst() ：取出集合中第一个元素           </li>
-<li>E getLast() ：取出集合中最后一个元素  </li>
-<li>E pop()：取出集合中的元素（栈顶）<br>void push(E e) ：将参数指定的元素入栈<h2 id="Set集合的存储特点"><a href="#Set集合的存储特点" class="headerlink" title="Set集合的存储特点"></a>Set集合的存储特点</h2></li>
-<li>不能重复</li>
-<li>无序<h3 id="HashSet的实现原理"><a href="#HashSet的实现原理" class="headerlink" title="HashSet的实现原理"></a>HashSet的实现原理</h3></li>
-<li>底层数据结构是哈希表</li>
-<li>无序（存储的顺序和输入顺序无关，但是在数据存储的时候按照底层算法实现）    <h4 id="重写equals"><a href="#重写equals" class="headerlink" title="重写equals()"></a>重写equals()</h4><h4 id="重写equals-1"><a href="#重写equals-1" class="headerlink" title="重写equals()"></a>重写equals()</h4><h3 id="TreeSet的实现原理"><a href="#TreeSet的实现原理" class="headerlink" title="TreeSet的实现原理"></a>TreeSet的实现原理</h3><h4 id="Comparable接口的使用"><a href="#Comparable接口的使用" class="headerlink" title="Comparable接口的使用"></a>Comparable接口的使用</h4><h4 id="Comparator接口的使用"><a href="#Comparator接口的使用" class="headerlink" title="Comparator接口的使用"></a>Comparator接口的使用</h4><h3 id="LinkedHashSet-继承hashSet，没有特别的方法"><a href="#LinkedHashSet-继承hashSet，没有特别的方法" class="headerlink" title="LinkedHashSet 继承hashSet，没有特别的方法"></a>LinkedHashSet 继承hashSet，没有特别的方法</h3></li>
-<li>底层是链表</li>
-<li>有序：元素的顺序和添加顺序一样</li>
+<li>char charAt(int index) –》取出字符串中对应索引的字符 index从0开始</li>
+<li>int compareTo(String anotherString)–》比较两个字符串的大小（根据字典顺序）</li>
+<li>String concat(String str)–&gt;拼接两个字符串为一个新的字符串，等价于连接符“+”</li>
+<li>boolean contains(CharSequence s)–》判断字符串对象中是否包含参数所指定的字符串</li>
+<li>boolean endsWith(String suffix) –&gt;判断字符串是否以指定的后缀结束</li>
+<li>boolean equals(Object anObject) –》比较两个字符串对象的内容是否完全相同</li>
+<li>static String format(String format,Object… args) –》使用指定的格式格式变长参数值。</li>
+<li>byte[] getBytes() –&gt;将一个字符串转换为字节数组</li>
+<li>byte[] getBytes(Charset charset) –》将一个使用参数指定的字符集编号码的字符串转换为字节数组。</li>
+<li>indexOf(int ch)–》从当前字符串中查找参数指定的字符，找到一个与之匹配的返回该字符在字符串中对应的索引值<br>11.int indexOf(int ch, int fromIndex)  –》从当前字符串中指定索引处往后查找参数指定的字符，找到一个与之匹配的返回该字符在字符串中对应的索引值</li>
+<li>int indexOf(String str) –》从当前字符串中查找参数指定的字符串，找到一个与之匹配的返回该字符串第一个字符在字符串中对应的索引值 </li>
+<li>boolean isEmpty()：判断字符串是否为空，就是其中不包含元素 ，与null是不等价。null-&gt;一个对象在堆中尚未开辟存储空间</li>
+<li>int lastIndexOf(int ch)： 从当前字符串中从后往前查找参数指定的字符，找到一个与之匹配的返回该字符在字符串中对应的索引值 （索引：永远是从前往后计数）</li>
+<li>int length() ：返回字符串中所包含的字符个数（无论是半角还是全角都占用一个字符）</li>
+<li><em>*</em>boolean matches(String regex) ：用户判定当前字符串对象其格式是否与参数所指定的正则表达式相吻合</li>
+<li>String replace(char oldChar, char newChar) ：使用新的字符替换字符串中旧的字符</li>
+<li>String replace(CharSequence target, CharSequence replacement) ：使用新的字符序列替换字符串中旧的字符序列</li>
+<li>String[] split(String regex) ：使用参数指定的正则表达式将字符串分割为一个字符串数组。（分割后的数组中元素不包含分隔符）</li>
+<li>boolean startsWith(String prefix)：判断字符串对象是否以参数指定的前缀开始</li>
+<li>String substring(int beginIndex) ：返回一个从参数指定的索引开始一直到结束的子串</li>
+<li>String substring(int beginIndex, int endIndex) ：返回一个从参数指定的索引开始，指定的索引结束的子串，子串中不包含结束索引对应的字符</li>
+<li>char[] toCharArray()：将一个字符串转换为字符数组</li>
+<li>String toLowerCase()  ：将大写字符串转换为小写。（针对半角的英文字符有效）</li>
+<li>String toUpperCase() ：将小写字符串转换为大写。（针对半角的英文字符有效）</li>
+<li>String trim() :去掉字符串前后的半角空格。</li>
+<li>static String valueOf(int i) ：将参数指定的int型的数据封装成字符串对象。<h3 id="StringBuffer类"><a href="#StringBuffer类" class="headerlink" title="StringBuffer类"></a>StringBuffer类</h3>常用方法：</li>
 </ol>
-<p><strong>遍历List集</strong>合时，可以使用四种：</p>
+<p>构造方法：</p>
 <ol>
-<li>迭代器</li>
-<li>增强for —》只能取出集合中的元素，不能修改。</li>
-<li>普通for —&gt;可以取出集合中的元素，同时还可以修改</li>
-<li>转换为数组</li>
+<li>StringBuffer() </li>
+<li>StringBuffer(String str)</li>
 </ol>
-<h3 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h3><p>TreeSet实现类的特点：<br>①排序的 （集合中的元素根据指定的顺序进行升序排列后，存入集合）<br>②无序的 （元素添加的顺序与底层存储的顺序不一致，特例：添加时是排好序的）<br>③底层存储元素时采用的数据结构是二叉树</p>
-<p>深度挖掘TreeSet集合：<br>存储在该种集合中的元素为什么能够排序呢？<br>就对象本质而言，不具备可比性。但是，程序是用来描述现实世界，需求要求对象<br>能进行比较。所以，必须人为给定一个比较规则。</p>
-<p>如何给定规则：<br>方式①：让需要进行比较的实例所对应的类实现Comparable接口，实现其中的copareTo（）方法，在该方法中指定比较规则。（让实例具备可比性）<br>    compareToz（xxx）方法，有三个返回值：0  –》当前对象与参数指定的对象相等</p>
-<pre><code>&gt;0 --&gt; 当前对象大于参数指定的对象
-&lt;0 --》当前对象小于参数指定的对象
-</code></pre><p>方式②：构建TreeSet集合对象时，传入一个比较器对象，让容器具备可比性。<br>   比较器： 设计一个类，让该类实现Comparator接口,实现接口中的compare方法，在该方法中定制比较规则。</p>
-<p>需求：定义一个TreeSet的集合，存储班级学生的信息，根据学生的年龄来排序，若年龄相同，根据身高来排序，若身高相同，根据体重来排序，若<br>      体重也相同，根据名字来排序。</p>
-<p>思路：①设计一个Student实例类<br>      ②测试类，main–》构建容器对象，存储学生实例，遍历，观察结果</p>
-<p>注意：<br>1、TreeSet集合中的元素要进行比较，有两种实现方式，在真实项目中选择其一即可，不要“双管齐下”。<br>   效果：对象的比较会优先选择Comparable方式；那么，Comparator方式就成了冗余的代码。</p>
-<p>2、向一个TreeSet集合中的存入元素，元素一般要具备可比性，否则抛出ClassCastException。除非：是让容器具备可比性（Comprator方式）。</p>
-<p>–》拓展：一般TreeSet中存放的是同一个类的对象，让同类对象之间进行比较，然后排序。但是，现实需求是变动的，让不同种类的对象进行比较，<br>         现实中也有很多。如何实现呢？<br>需求：让人、老虎、狮子赛跑，看那个物种速度快，速度升序，若速度一样，根据体重来比较，体重降序。</p>
-<p>分析：<br>1）设计三个实体类：人，老虎，狮子，且类要实现Comparable接口。<br>2）测试类 main：构建不同物种的对象，存入集合，打印，观察结果。</p>
+<p>普通方法：</p>
+<ol>
+<li>StringBuffer append(int i) ：将参数指定的int型的数据追加到字符串构建器的末尾。</li>
+<li>int capacity() ：返回字符串构建器的容量</li>
+<li>StringBuffer delete(int start, int end)：从字符串构建器中删除指定区间的字符序列。结束索引对应的字符不删除。</li>
+<li>StringBuffer deleteCharAt(int index) ：将指定索引处的字符从 字符串构建器中删除</li>
+<li>StringBuffer insert(int offset, int i) ：将参数指定的数值i插入指定的索引offset处，之后的元素自动后移。</li>
+<li>int length() ：字符串构建器中字符的个数</li>
+<li>StringBuffer replace(int start, int end, String str) ：使用指定的字符串替换指定区间的字符串。</li>
+<li>StringBuffer reverse() ：将字符串中的字符反转。</li>
+<li>void setCharAt(int index, char ch) ：使用指定的字符替换相应索引处的字符。</li>
+</ol>
+<p><strong>StringBuffer与String的异同点：</strong></p>
+<p>同：都是用来操作字符串的。</p>
+<p>异：</p>
+<ol>
+<li>从生成对象个数的角度考虑，在拼接多个字符串为一个新的字符串的时候，String每拼接一个字符串，会生成一个全新的String字符串对象（堆，字符串串池）；StringBuffer每次追加一个数据时，操作的是同一块堆内存空间，只会生成一个对象。</li>
+<li>从效率来看，在拼接多个字符串时，StringBuffer的速度远远高于String.</li>
+<li>从消耗内存的角度看，在拼接多个字符串时，StringBuffer占用的内存要远远小于String.<h3 id="StringBuilder类-与-StringBuffer基本一样"><a href="#StringBuilder类-与-StringBuffer基本一样" class="headerlink" title="StringBuilder类 与 StringBuffer基本一样"></a>StringBuilder类 与 StringBuffer基本一样</h3><strong>StringBuffer与StringBuilder异同点说明：</strong></li>
+</ol>
+<p>同：都是字符串构建器，都是用来操作字符串的。</p>
+<p>异：StringBuffer 线程安全的。（说明：在多线程并发访问该类相应方法时，同一时刻，只有一个线程能访问，该线程执行完后，别的线程才有可能执行该方法。）StringBuilder 线程不安全的。（说明：在多线程并发访问该类相应方法时，同一时刻，多个线程都有机会执行该方法，会造成临界资源访问的冲突）</p>
+<h2 id="Math类"><a href="#Math类" class="headerlink" title="Math类"></a>Math类</h2><p>  max(x)</p>
+<p>  min（）</p>
+<p>  abs()</p>
+<p>  sqrt()</p>
+<p>  pow()</p>
+<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h3 id="静态导入"><a href="#静态导入" class="headerlink" title="静态导入"></a>静态导入</h3><blockquote>
+<p>静态导入:为了方便使用工具类中的工具方法，导入时，将该方法直接引入，类体中只需要书写方法名即可。</p>
+<p>语法：import 类的全限定名.工具方法名；</p>
+<p>使用：在类体中直接–&gt; 方法名(实参)</p>
+<h2 id="Random类"><a href="#Random类" class="headerlink" title="Random类"></a>Random类</h2><p>Random：随机数生成器类，其中的方法nextInt(1)与Math类中的 random()工具方法作用一样。</p>
+</blockquote>
+<p>常用方法：</p>
+<p>构造方法：</p>
+<ol>
+<li>Random(long seed)  –》使用的不多，注意：使用同一个种子生成的Random类对象，生成的随机数也相同。</li>
+<li>Random() </li>
+</ol>
+<p>普通方法：</p>
+<ol>
+<li>int nextInt()  –》随机产生一个int取值范围之内的数</li>
+<li>int nextInt(int n) –》等价于Math.random()*n,取值范围是[0,n)，不同之处在于：返回值类型不同，Math.random()返回double<h2 id="System类"><a href="#System类" class="headerlink" title="System类"></a>System类</h2><blockquote>
+<p>封装了一些与当前os进行信息交互的工具方法。</p>
+</blockquote>
+</li>
+</ol>
+<p>常用的属性：</p>
+<ol>
+<li>System.in –&gt;InputStream,“标准”输入流。</li>
+<li>System.out –&gt;PrintStream, “标准”输出流。</li>
+<li>System.out.println(“xx”);</li>
+</ol>
+<p>常用的方法：</p>
+<ol>
+<li>static long currentTimeMillis() –》以毫秒值返回的系统当前时间</li>
+<li>static long nanoTime()  –》以纳秒值返回的系统当前时间</li>
+<li>static void exit(int status)  –》无条件终止jvm的执行</li>
+<li>static void gc() –》调用该方法，给垃圾回收器一个暗示，至于垃圾回收器是否会立即执行，完全取决于其底层的算法。</li>
+<li>static String getenv(String name)  –》根据参数指定的环境变量名获得其对应的环境变量值。<h2 id="Date类"><a href="#Date类" class="headerlink" title="Date类"></a>Date类</h2><blockquote>
+<p>对时间的抽取和封装，类 Date 表示特定的瞬间，精确到毫秒。</p>
+</blockquote>
+</li>
+</ol>
+<p>常用方法：</p>
+<p>构造方法：</p>
+<ol>
+<li>Date() ：表示系统当前时间。</li>
+</ol>
+<p>普通方法：</p>
+<ol>
+<li>boolean after(Date when)  测试此日期是否在指定日期之后。 </li>
+<li>boolean before(Date when) 测试此日期是否在指定日期之前。  </li>
+<li>int compareTo(Date anotherDate) 比较两个日期的顺序。 </li>
+<li>boolean equals(Object obj) 比较两个日期的相等性。<h2 id="Calendar类"><a href="#Calendar类" class="headerlink" title="Calendar类"></a>Calendar类</h2></li>
+<li>Calendar类：Calendar 类是一个抽象类，它为特定瞬间与一组诸如 YEAR、MONTH、DAY_OF_MONTH、HOUR 等 日历字段之间的转换提供了一些方法，并为操作日历字段（例如获得下星期的日期）提供了一些方法。<br><strong>Calendar类中封装了一些操作日历的方法。</strong></li>
+</ol>
+<p>常用方法：</p>
+<ol>
+<li>int get(int field)  –》根据参数指定的日历字段，获得值。</li>
+<li>static Calendar getInstance() –》返回Calendar类对象。</li>
+<li>void set(int field, int value)–》设置日历实例某个属性的值。</li>
+<li>void set(int year, int month, int date)—》定制当前日历对象中封装的具体时间  <h2 id="SimpleDateFormat类"><a href="#SimpleDateFormat类" class="headerlink" title="SimpleDateFormat类"></a>SimpleDateFormat类</h2><blockquote>
+<p>使用来将一个Date型的对象格式化输出，或者是将一个日&gt;期格式的字符串封装成一个Date型的实例。    </p>
+</blockquote>
+</li>
+</ol>
+<p>SimpleDateFormat类常用的方法：</p>
+<ol>
+<li>Date parse(String source) 从给定字符串的开始解析文本，以生成一个日期。</li>
+<li>String format(Date date) 将一个 Date 格式化为日期/时间字符串。  </li>
+</ol>
+<p><strong>过时：</strong>某个类中的方法或者是属性不推荐使用了，目前有更好的替代方案。<br>如何达到让方法过时的目的？<br>语法：在方法之前添加注解：<code>@Deprecated</code></p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><blockquote>
+<p>是一个特殊的字符串，用于验证别的字符串格式的合法性。</p>
+</blockquote>
+<p>分类：</p>
+<ol>
+<li>字符类：[abc] a、b 或 c（简单类） –》当前字符串中的内部是a是b或者是c，是就匹配；否则，不匹配。</li>
+<li><p>预定义字符类</p>
+<p> . –&gt;任何字符任何字符</p>
+<p> \d 数字：[0-9] </p>
+<p> \D 非数字： [^0-9] </p>
+<p> \s 空白字符：[ \t\n\x0B\f\r] </p>
+<p> \S 非空白字符：[^\s] </p>
+<p> \w 单词字符：[a-zA-Z_0-9] </p>
+<p> \W 非单词字符：[^\w] </p>
+</li>
+<li><p>边界匹配器 </p>
+<p> ^ 行的开头 </p>
+<p> $ 行的结尾 </p>
+</li>
+<li><p>Greedy 数量词</p>
+<p> +：一个或者多个</p>
+<p> ?：一次或0次</p>
+<p> *：0次或多次</p>
+<p> {n}:出现的次数恰好是n次</p>
+<p> {n,}:出现的次数至少是n次</p>
+<p> {n,m}:出现的次数至少是n次,最多是m次</p>
+</li>
+</ol>
+<h3 id="枚举的简单使用"><a href="#枚举的简单使用" class="headerlink" title="枚举的简单使用"></a>枚举的简单使用</h3><p>枚举：也是引用类型，用法与类类似。有七种用法。</p>
+<p>在实际项目中使用最多是：<strong>枚举常量</strong>。</p>
+<p>语法：访问权限修饰符 enum 枚举名{ 枚举常量1,枚举常量2,枚举常量3,…,枚举常量n</p>
+<p>访问方式：枚举名.枚举常量</p>
+<p>需求：定义一个封装了各个季节的枚举类，再测试（某人根据不同的季节进行相应的活动）</p>
+<p>使用枚举的本质原因：提高代码的可读性。</p>
+<p>使用时注意：switch分支语句的case分支后，是枚举常量值，直接书写即可。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/java_day/Day10总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/12/28/java/java_day/Day10总结/" itemprop="url">java -- day10</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T21:18:12+08:00">
+                2015-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Day10"><a href="#Day10" class="headerlink" title="Day10"></a>Day10</h1><h2 id="异常机制"><a href="#异常机制" class="headerlink" title="异常机制"></a>异常机制</h2><h3 id="异常的概念"><a href="#异常的概念" class="headerlink" title="异常的概念"></a>异常的概念</h3><blockquote>
+<p>程序在运行或者编译的时候出现的不正常的现象。    </p>
+<h3 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类</h3><p>Thorwsable:异常的根类，直接继承至<code>Object</code></p>
+</blockquote>
+<p>两个子类：</p>
+<ol>
+<li><code>Error</code>程序不能处理的jvm级别的异常。如：<code>StackOverflowError</code></li>
+<li><code>Exception:</code>程序能够捕获或者处理的异常。<ol>
+<li><code>RuntimeException：</code>运行时异常：程序在运行过程中出现的异常</li>
+<li><code>Checked：</code>：程序在编译时的错误，且必须处理的异常。</li>
+</ol>
+</li>
+</ol>
+<p>常见的<code>RuntimeException</code>异常：</p>
+<ol>
+<li><code>ArithmeticException：</code>算术异常，例子：两个整数相除，除数为0；</li>
+<li><code>InputMismaticException:</code>输入不匹配异常，例子：<code>Scanner</code>扫描器对象试图从控制台获得一个与该对象取出的数据不吻合如：<code>input.next();</code></li>
+<li><code>NullPointerException:</code>空指针异常，例子：一个引用类型的实例为<code>null</code>，调用方法。如：<code>String str = null; boolean isTrue = str.equals(&quot;&quot;)</code>;</li>
+<li><code>ArrayIndexOutOfBoundsException:</code>数据下标越界异常，例子：访问数组中的元素，下标&gt;=数组的长度。</li>
+<li><code>NumberFormatException:</code>数据格式化异常，例子：将一个非数字的字符串转换成数据包装类型，如：<code>new Integer(&quot;abs&quot;)</code></li>
+<li><code>ClassCastException：</code>强制类型转换异常，例子：将一个父类的引用强制转换为没有继承关系的类型时；</li>
+</ol>
+<p>异常的特点</p>
+<ol>
+<li>若某行的代码在执行过程中抛出异常，那么后续的语句都不会执行；</li>
+<li>若异常已经被处理，那么后续的语句会继续执行；</li>
+</ol>
+<p>常见的<code>Checked</code>异常：</p>
+<ol>
+<li><code>ClassNotFoundException:</code>找不到类的异常，例子：通过<code>Class.forName(&quot;类的全限定名对应的字符串&quot;)</code>如：<code>Class.forName(&quot;a.b.bc.Dog&quot;);</code></li>
+<li><code>ParseaException:</code>日期解析异常，将一个与定制格式不匹配的日期字符串解析为Date类型对象；</li>
+<li><code>DataFormatException:</code></li>
+</ol>
+<p><strong>如何鉴别异常的类型：</strong></p>
+<ol>
+<li><code>RuntimeException:</code><ol>
+<li>编译能通过</li>
+<li>查看该异常类型的层次结构图，该异常直接或者间接继承与<code>RuntimeException</code></li>
+</ol>
+</li>
+<li><code>Checked：</code><ol>
+<li>若不处理，编译报错</li>
+<li>查看该异常的类型层次结构图<h3 id="异常的处理方式"><a href="#异常的处理方式" class="headerlink" title="异常的处理方式"></a>异常的处理方式</h3>①try{<br>//可能产生异常的代码<br>}catch(异常类型 e){//捕获<br>//处理措施（补救方案）<br>}</li>
+</ol>
+</li>
+</ol>
+<p>适用场景：可能出现异常的情形只有一个（很多–》捕获的异常类型是Exception,可以接收任意子类型异常对象），处理方式一样。</p>
+<p>②<em>**</em>使用得最外广泛</p>
+<pre><code>try{
+//可能产生异常的代码
+  }catch(异常类型1 e){//捕获
+  //处理措施（补救方案）
+  }catch(异常类型2 e){//捕获
+  //处理措施（补救方案）
+  }
+  ...
+  catch(异常类型n e){//捕获
+  //处理措施（补救方案）
+  }
+</code></pre><p><strong>注意点</strong>：</p>
+<p>1、若异常类型之间有继承关系，那么，子异常类型的捕获必须置于父类型异常之前。<br>2、若异常类型之间没有继承关系，那么，与顺序无关。</p>
+<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的。</p>
+<p>③<em>**</em>使用得最外广泛</p>
+<pre><code> try{
+//可能产生异常的代码
+  }catch(异常类型1 e){//捕获
+  //处理措施（补救方案）
+  }catch(异常类型2 e){//捕获
+  //处理措施（补救方案）
+  }
+  ...
+  catch(异常类型n e){//捕获
+  //处理措施（补救方案）
+  }finally{
+ //无论异常发生与否，都会执行的代码
+ //----&gt;在真实项目中，一般书写资源释放的语句（如：io的关闭）
+  }
+</code></pre><p>注意：<br>1、finally语句块一般都会执行，但是例外的情况：<br>  ①若jvm异常退出  System.exit(负数);<br>  ②jvm正常退出    System.exit(正常);<br>    –》无条件终结jvm的执行<br>2、fianlly语句块中对于之前书写的return 变量值是没有影响的。</p>
+<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的,且要单独进行资源释放。（io流）</p>
+<p>④   </p>
+<pre><code> try{
+}finally{
+}
+</code></pre><p>使用场景：所有异常的处理，以及资源释放的语法都置于finally语句块中。    </p>
+<h5 id="抛出异常：throws和throw"><a href="#抛出异常：throws和throw" class="headerlink" title="抛出异常：throws和throw"></a>抛出异常：throws和throw</h5><ol>
+<li>throws：<ol>
+<li>使用在方法的声明部分，表示抛出本方法中可能产生的所有异常类型</li>
+<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常类型1，异常类型2.。。。{方法体}</li>
+<li>从设计者角度，在设计方法的时候若可能发生异常，而且处理的时机不成熟，就需要抛给能够处理的调用者，若该调用者处理的时机还不成熟，继续向上抛，直到能处理为止（到main中不能抛必须处理） 时机：若方法有参数，参数值从外部传入，此时就不成熟。</li>
+</ol>
+</li>
+<li>throw：<ol>
+<li>使用在方法同中，后接一个定制了异常信息的异常对象。</li>
+<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常对象所对应的异常{方法体 throw 异常对象；}</li>
+<li>语法  把 throws 去掉</li>
+<li>从设计者角度，设计throw是为了便于定制异常信息。</li>
+</ol>
+</li>
+</ol>
+<p>throw 和 throws 是否同时出现：不用。</p>
+<p>根据throw后异常对象所属的类型来确定。前提：方法体中处理异常的时机不成熟，而且，需要对异常信息进行人性化定制的场合。</p>
+<ol>
+<li>必须出现：throw后异常对象属于编译时异常</li>
+<li>不用出现，throw后异常对象属于运行时异常。<h4 id="自定义异常"><a href="#自定义异常" class="headerlink" title="自定义异常"></a>自定义异常</h4></li>
+</ol>
+<p>自定义异常:jdk中设计好的异常类型，不能满足现实的需求，定制的异常类型。</p>
+<p>自定义异常的书写方式：</p>
+<p>第一种：继承RuntimeException<br>   不需要立即进行处理的异常。 –》运行时时异常 </p>
+<p>第二种：继承Exception<br>   需要立即进行处理的异常，否则编译报错。 –》编译时异常 </p>
+<p>需求：家具厂生产桌子，桌子的半径若在范围[30.567,31.889]cm区间之内，就是<br>合格的产品，否则，就是残次品，次品需要返工的。模拟场景：木匠师傅搬着刚刚精心制作完成的桌子，去质检部检测，检查合格，师傅休息；不合格，让其返工，直到合格为止。</p>
 
           
         

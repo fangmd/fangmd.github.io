@@ -500,7 +500,7 @@ class Track(models.Model):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -519,7 +519,7 @@ class Track(models.Model):
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/" itemprop="url">12. django-rest-framework -- Authentication</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/" itemprop="url">django-rest-framework -- ViewSets</a></h1>
         
 
         <div class="post-meta">
@@ -590,7 +590,80 @@ class Track(models.Model):
       
         
           
-            <h1 id="Authtication"><a href="#Authtication" class="headerlink" title="Authtication"></a>Authtication</h1>
+            <h1 id="ViewSets"><a href="#ViewSets" class="headerlink" title="ViewSets"></a>ViewSets</h1><h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><pre><code>from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from myapps.serializers import UserSerializer
+from rest_framework import viewsets
+from rest_framework.response import Response
+
+class UserViewSet(viewsets.ViewSet):
+    &quot;&quot;&quot;
+    A simple ViewSet for listing or retrieving users.
+    &quot;&quot;&quot;
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = User.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+</code></pre><p>ViewSet 可分离：</p>
+<pre><code>user_list = UserViewSet.as_view({&apos;get&apos;: &apos;list&apos;})
+user_detail = UserViewSet.as_view({&apos;get&apos;: &apos;retrieve&apos;})
+</code></pre><p>通常 url 设置：通过 router</p>
+<pre><code>from myapp.views import UserViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r&apos;users&apos;, UserViewSet)
+urlpatterns = router.urls
+</code></pre><p>通常使用时可以继承 ModelViewSet ：</p>
+<pre><code>class UserViewSet(viewsets.ModelViewSet):
+    &quot;&quot;&quot;
+    A viewset for viewing and editing user instances.
+    &quot;&quot;&quot;
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+</code></pre><h2 id="Marking-extra-actions-for-routing"><a href="#Marking-extra-actions-for-routing" class="headerlink" title="Marking extra actions for routing"></a>Marking extra actions for routing</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="ViewSet"><a href="#ViewSet" class="headerlink" title="ViewSet"></a>ViewSet</h2><p>继承 APIView，</p>
+<blockquote>
+<p>The ViewSet class does not provide any implementations of actions. In order to use a ViewSet class you’ll override the class and define the action implementations explicitly.</p>
+</blockquote>
+<p>属于抽象类，如果使用这个类作为父类，需要自己实现方法</p>
+<h2 id="GenericViewSet"><a href="#GenericViewSet" class="headerlink" title="GenericViewSet"></a>GenericViewSet</h2><p>继承 GenericAPIView</p>
+<p>同样属于抽象类</p>
+<h2 id="ModelViewSet"><a href="#ModelViewSet" class="headerlink" title="ModelViewSet"></a>ModelViewSet</h2><p>继承 GenericAPIView</p>
+<p>提供的方法：.list(), .retrieve(), .create(), .update(), .partial_update(), and .destroy()</p>
+<h3 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h3><p>使用 ModelViewSet ， 需要最少提供：queryset，serializer_class 属性</p>
+<pre><code>class AccountViewSet(viewsets.ModelViewSet):
+    &quot;&quot;&quot;
+    A simple ViewSet for viewing and editing accounts.
+    &quot;&quot;&quot;
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = [IsAccountAdminOrReadOnly]
+</code></pre><h2 id="ReadOnlyModelViewSet"><a href="#ReadOnlyModelViewSet" class="headerlink" title="ReadOnlyModelViewSet"></a>ReadOnlyModelViewSet</h2><p>继承 GenericAPIView</p>
+<p>only provides the ‘read-only’ actions：.list() and .retrieve()</p>
+<h3 id="Example-2"><a href="#Example-2" class="headerlink" title="Example"></a>Example</h3><pre><code>class AccountViewSet(viewsets.ReadOnlyModelViewSet):
+    &quot;&quot;&quot;
+    A simple ViewSet for viewing accounts.
+    &quot;&quot;&quot;
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+</code></pre><h1 id="Custom-ViewSet-base-classes"><a href="#Custom-ViewSet-base-classes" class="headerlink" title="Custom ViewSet base classes"></a>Custom ViewSet base classes</h1><pre><code>class CreateListRetrieveViewSet(mixins.CreateModelMixin,
+                                mixins.ListModelMixin,
+                                mixins.RetrieveModelMixin,
+                                viewsets.GenericViewSet):
+    &quot;&quot;&quot;
+    A viewset that provides `retrieve`, `create`, and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    &quot;&quot;&quot;
+    pass
+</code></pre>
           
         
       
@@ -1547,6 +1620,149 @@ export https_proxy=http://127.0.0.1:1086/
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/" itemprop="url">Android5.0 新动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T22:38:14+08:00">
+                2016-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="点击波纹效果使用-touch-feedback"><a href="#点击波纹效果使用-touch-feedback" class="headerlink" title="点击波纹效果使用 touch feedback"></a>点击波纹效果使用 touch feedback</h1><h2 id="drawable-v21-touch-bg-xml"><a href="#drawable-v21-touch-bg-xml" class="headerlink" title="drawable-v21/touch_bg.xml"></a>drawable-v21/touch_bg.xml</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+        android:color=&quot;@color/line_grey&quot;&gt;
+    &lt;item android:drawable=&quot;@color/white&quot;/&gt;
+&lt;/ripple&gt;
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/material_design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2124,149 +2340,6 @@ public void setToolbarColor(Bitmap bitmap) {
 }
 </code></pre>
           
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/" itemprop="url">Android5.0 新动画</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-04T22:38:14+08:00">
-                2016-11-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="点击波纹效果使用-touch-feedback"><a href="#点击波纹效果使用-touch-feedback" class="headerlink" title="点击波纹效果使用 touch feedback"></a>点击波纹效果使用 touch feedback</h1><h2 id="drawable-v21-touch-bg-xml"><a href="#drawable-v21-touch-bg-xml" class="headerlink" title="drawable-v21/touch_bg.xml"></a>drawable-v21/touch_bg.xml</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;ripple xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-        android:color=&quot;@color/line_grey&quot;&gt;
-    &lt;item android:drawable=&quot;@color/white&quot;/&gt;
-&lt;/ripple&gt;
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/04/Android/Android 版本/Android5.0/Android5.0动画/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
