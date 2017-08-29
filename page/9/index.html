@@ -991,6 +991,146 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>Django 实现分页</p>
+</blockquote>
+<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
+<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
+<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/ReadNote/https/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1177,7 +1317,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-方法流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1196,7 +1336,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
+                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/" itemprop="url">自定义View-方法流程</a></h1>
         
 
         <div class="post-meta">
@@ -1208,7 +1348,7 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
                 2016-12-28
               </time>
             
@@ -1231,8 +1371,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -1266,16 +1406,20 @@
 
       
         
-          
-            <blockquote>
-<p>Django 实现分页</p>
-</blockquote>
-<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
-<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
-<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
-
-          
+          <h1 id="自定义View-整体流程"><a href="#自定义View-整体流程" class="headerlink" title="自定义View 整体流程"></a>自定义View 整体流程</h1><p><img src="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png" alt="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png"></p>
+<h2 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h2><p>构造方法：在这里做 view 的各种初始化操作：</p>
+<ol>
+<li>初始化一些值，从 style 中取值</li>
+<li>初始化画笔</li>
+</ol>
+<h2 id="onAttachedToWindow"><a href="#onAttachedToWindow" class="headerlink" title="onAttachedToWindow"></a>onAttachedToWindow</h2><p>控件显示在界面上的使用调用这个方法。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1419,150 +1563,6 @@
 <h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
           
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-方法流程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/" itemprop="url">自定义View-方法流程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
-                2016-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="自定义View-整体流程"><a href="#自定义View-整体流程" class="headerlink" title="自定义View 整体流程"></a>自定义View 整体流程</h1><p><img src="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png" alt="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png"></p>
-<h2 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h2><p>构造方法：在这里做 view 的各种初始化操作：</p>
-<ol>
-<li>初始化一些值，从 style 中取值</li>
-<li>初始化画笔</li>
-</ol>
-<h2 id="onAttachedToWindow"><a href="#onAttachedToWindow" class="headerlink" title="onAttachedToWindow"></a>onAttachedToWindow</h2><p>控件显示在界面上的使用调用这个方法。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>

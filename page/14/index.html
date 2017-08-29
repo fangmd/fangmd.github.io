@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/10. django-rest-framework -- Serializer relations/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/10. django-rest-framework -- Serializer relations/" itemprop="url">10. django-rest-framework -- Serializer relations</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/5. django-rest-framework -- Routers/" itemprop="url">5. django-rest-framework -- Routers</a></h1>
         
 
         <div class="post-meta">
@@ -343,327 +343,72 @@
       
         
           
-            <h1 id="Serializer-relations"><a href="#Serializer-relations" class="headerlink" title="Serializer relations"></a>Serializer relations</h1><p>关系字段用来表示 models 之间的关系。</p>
-<h2 id="Inspecting-relationships-查看关系"><a href="#Inspecting-relationships-查看关系" class="headerlink" title="Inspecting relationships. 查看关系"></a>Inspecting relationships. 查看关系</h2><pre><code>&gt;&gt;&gt; from myapp.serializers import AccountSerializer
-&gt;&gt;&gt; serializer = AccountSerializer()
-&gt;&gt;&gt; print repr(serializer)  # Or `print(repr(serializer))` in Python 3.x.
-AccountSerializer():
-    id = IntegerField(label=&apos;ID&apos;, read_only=True)
-    name = CharField(allow_blank=True, max_length=100, required=False)
-    owner = PrimaryKeyRelatedField(queryset=User.objects.all())
-</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><p>例子：2个 models</p>
-<pre><code>class Album(models.Model):
-    album_name = models.CharField(max_length=100)
-    artist = models.CharField(max_length=100)
+            <h1 id="Routers"><a href="#Routers" class="headerlink" title="Routers"></a>Routers</h1><blockquote>
+<p>Resource routing allows you to quickly declare all of the common routes for a given resourceful controller. Instead of declaring separate routes for your index… a resourceful route declares them in a single line of code.<br>— Ruby on Rails Documentation</p>
+</blockquote>
+<h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><pre><code>from rest_framework import routers
 
-class Track(models.Model):
-    album = models.ForeignKey(Album, related_name=&apos;tracks&apos;, on_delete=models.CASCADE)
-    order = models.IntegerField()
-    title = models.CharField(max_length=100)
-    duration = models.IntegerField()
-
-    class Meta:
-        unique_together = (&apos;album&apos;, &apos;order&apos;)
-        ordering = [&apos;order&apos;]
-
-    def __unicode__(self):
-        return &apos;%d: %s&apos; % (self.order, self.title)
-</code></pre><h2 id="StringRelatedField"><a href="#StringRelatedField" class="headerlink" title="StringRelatedField"></a>StringRelatedField</h2><p>StringRelatedField may be used to represent the target of the relationship using its <strong>unicode</strong> method.</p>
-<pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result：</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Things We Lost In The Fire&apos;,
-    &apos;artist&apos;: &apos;Low&apos;,
-    &apos;tracks&apos;: [
-        &apos;1: Sunflower&apos;,
-        &apos;2: Whitetail&apos;,
-        &apos;3: Dinosaur Act&apos;,
-        ...
-    ]
-}
-</code></pre><p>参数:</p>
-<ul>
-<li>many:</li>
-</ul>
-<h2 id="PrimaryKeyRelatedField"><a href="#PrimaryKeyRelatedField" class="headerlink" title="PrimaryKeyRelatedField"></a>PrimaryKeyRelatedField</h2><pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result:</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Undun&apos;,
-    &apos;artist&apos;: &apos;The Roots&apos;,
-    &apos;tracks&apos;: [
-        89,
-        90,
-        91,
-        ...
-    ]
-}
-</code></pre><p>Arguments:</p>
-<ul>
-<li>queryset - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set read_only=True.</li>
-<li>many - If applied to a to-many relationship, you should set this argument to True.</li>
-<li>allow_null - If set to True, the field will accept values of None or the empty string for nullable relationships. Defaults to False.</li>
-<li>pk_field - Set to a field to control serialization/deserialization of the primary key’s value. For example, pk_field=UUIDField(format=’hex’) would serialize a UUID primary key into its compact hex representation.</li>
-</ul>
-<h2 id="HyperlinkedRelatedField"><a href="#HyperlinkedRelatedField" class="headerlink" title="HyperlinkedRelatedField"></a>HyperlinkedRelatedField</h2><pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name=&apos;track-detail&apos;
-    )
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result:</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Graceland&apos;,
-    &apos;artist&apos;: &apos;Paul Simon&apos;,
-    &apos;tracks&apos;: [
-        &apos;http://www.example.com/api/tracks/45/&apos;,
-        &apos;http://www.example.com/api/tracks/46/&apos;,
-        &apos;http://www.example.com/api/tracks/47/&apos;,
-        ...
-    ]
-}
-</code></pre><p>Arguments:</p>
-<ul>
-<li>view_name - The view name that should be used as the target of the relationship. If you’re using the standard router classes this will be a string with the format <modelname>-detail. required.</modelname></li>
-<li>queryset - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set read_only=True.</li>
-<li>many - If applied to a to-many relationship, you should set this argument to True.</li>
-<li>allow_null - If set to True, the field will accept values of None or the empty string for nullable relationships. Defaults to False.<br>lookup_field - The field on the target that should be used for the lookup. Should correspond to a URL keyword argument on the referenced view. Default is ‘pk’.</li>
-<li>lookup_url_kwarg - The name of the keyword argument defined in the URL conf that corresponds to the lookup field. Defaults to using the same value as lookup_field.</li>
-<li>format - If using format suffixes, hyperlinked fields will use the same format suffix for the target unless overridden by using the format argument.</li>
-</ul>
-<h2 id="SlugRelatedField"><a href="#SlugRelatedField" class="headerlink" title="SlugRelatedField"></a>SlugRelatedField</h2><h2 id="HyperlinkedIdentityField"><a href="#HyperlinkedIdentityField" class="headerlink" title="HyperlinkedIdentityField"></a>HyperlinkedIdentityField</h2><pre><code>class AlbumSerializer(serializers.HyperlinkedModelSerializer):
-    track_listing = serializers.HyperlinkedIdentityField(view_name=&apos;track-list&apos;)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;track_listing&apos;)
-</code></pre><p>result：</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;The Eraser&apos;,
-    &apos;artist&apos;: &apos;Thom Yorke&apos;,
-    &apos;track_listing&apos;: &apos;http://www.example.com/api/track_list/12/&apos;,
-}
-</code></pre><p>。。。。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/" itemprop="url">django-rest-framework -- ViewSets</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ViewSets"><a href="#ViewSets" class="headerlink" title="ViewSets"></a>ViewSets</h1><h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><pre><code>from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
-from myapps.serializers import UserSerializer
-from rest_framework import viewsets
-from rest_framework.response import Response
-
-class UserViewSet(viewsets.ViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for listing or retrieving users.
-    &quot;&quot;&quot;
-    def list(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-</code></pre><p>ViewSet 可分离：</p>
-<pre><code>user_list = UserViewSet.as_view({&apos;get&apos;: &apos;list&apos;})
-user_detail = UserViewSet.as_view({&apos;get&apos;: &apos;retrieve&apos;})
-</code></pre><p>通常 url 设置：通过 router</p>
-<pre><code>from myapp.views import UserViewSet
-from rest_framework.routers import DefaultRouter
-
-router = DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r&apos;users&apos;, UserViewSet)
+router.register(r&apos;accounts&apos;, AccountViewSet)
 urlpatterns = router.urls
-</code></pre><p>通常使用时可以继承 ModelViewSet ：</p>
-<pre><code>class UserViewSet(viewsets.ModelViewSet):
-    &quot;&quot;&quot;
-    A viewset for viewing and editing user instances.
-    &quot;&quot;&quot;
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-</code></pre><h2 id="Marking-extra-actions-for-routing"><a href="#Marking-extra-actions-for-routing" class="headerlink" title="Marking extra actions for routing"></a>Marking extra actions for routing</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="ViewSet"><a href="#ViewSet" class="headerlink" title="ViewSet"></a>ViewSet</h2><p>继承 APIView，</p>
-<blockquote>
-<p>The ViewSet class does not provide any implementations of actions. In order to use a ViewSet class you’ll override the class and define the action implementations explicitly.</p>
-</blockquote>
-<p>属于抽象类，如果使用这个类作为父类，需要自己实现方法</p>
-<h2 id="GenericViewSet"><a href="#GenericViewSet" class="headerlink" title="GenericViewSet"></a>GenericViewSet</h2><p>继承 GenericAPIView</p>
-<p>同样属于抽象类</p>
-<h2 id="ModelViewSet"><a href="#ModelViewSet" class="headerlink" title="ModelViewSet"></a>ModelViewSet</h2><p>继承 GenericAPIView</p>
-<p>提供的方法：.list(), .retrieve(), .create(), .update(), .partial_update(), and .destroy()</p>
-<h3 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h3><p>使用 ModelViewSet ， 需要最少提供：queryset，serializer_class 属性</p>
-<pre><code>class AccountViewSet(viewsets.ModelViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for viewing and editing accounts.
-    &quot;&quot;&quot;
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [IsAccountAdminOrReadOnly]
-</code></pre><h2 id="ReadOnlyModelViewSet"><a href="#ReadOnlyModelViewSet" class="headerlink" title="ReadOnlyModelViewSet"></a>ReadOnlyModelViewSet</h2><p>继承 GenericAPIView</p>
-<p>only provides the ‘read-only’ actions：.list() and .retrieve()</p>
-<h3 id="Example-2"><a href="#Example-2" class="headerlink" title="Example"></a>Example</h3><pre><code>class AccountViewSet(viewsets.ReadOnlyModelViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for viewing accounts.
-    &quot;&quot;&quot;
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-</code></pre><h1 id="Custom-ViewSet-base-classes"><a href="#Custom-ViewSet-base-classes" class="headerlink" title="Custom ViewSet base classes"></a>Custom ViewSet base classes</h1><pre><code>class CreateListRetrieveViewSet(mixins.CreateModelMixin,
-                                mixins.ListModelMixin,
-                                mixins.RetrieveModelMixin,
-                                viewsets.GenericViewSet):
-    &quot;&quot;&quot;
-    A viewset that provides `retrieve`, `create`, and `list` actions.
+</code></pre><p><code>register()</code> 方法的两个必填参数：</p>
+<ol>
+<li>prefix：url 前缀</li>
+<li>viewset：viewset 类</li>
+</ol>
+<p>可选参数：</p>
+<ol>
+<li><p>base_name：如果没有设置，会根据 viewset 的 queryset 属性生成，但是如果 viewset 没有设置 queryset 属性就必须设置 base_name  </p>
+<p> Note: The base_name argument is used to specify the initial part of the view name pattern. In the example above, that’s the user or account part.</p>
+</li>
+</ol>
+<h3 id="Using-include-with-routers"><a href="#Using-include-with-routers" class="headerlink" title="Using include with routers"></a>Using include with routers</h3><p>router 的 <code>.url</code> 属性是标准的 URL 模版</p>
+<p>所以把 router 加入到 app 的 url 模版中：</p>
+<pre><code>router = routers.SimpleRouter()
+router.register(r&apos;users&apos;, UserViewSet)
+router.register(r&apos;accounts&apos;, AccountViewSet)
 
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
-    &quot;&quot;&quot;
-    pass
-</code></pre>
+urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+]
+
+urlpatterns += router.urls
+</code></pre><p>也可以使用 <code>include</code> 方法：</p>
+<pre><code>urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+    url(r&apos;^&apos;, include(router.urls)),
+]
+</code></pre><p>设置 namespaces：</p>
+<pre><code>urlpatterns = [
+    url(r&apos;^forgot-password/$&apos;, ForgotPasswordFormView.as_view()),
+    url(r&apos;^api/&apos;, include(router.urls, namespace=&apos;api&apos;)),
+]
+</code></pre><h3 id="Extra-link-and-actions"><a href="#Extra-link-and-actions" class="headerlink" title="Extra link and actions"></a>Extra link and actions</h3><p>viewset 类中的任意方法添加 <code>@detail_route</code>, <code>@list_route</code> 注解也将被路由。</p>
+<pre><code>from myapp.permissions import IsAdminOrIsSelf
+from rest_framework.decorators import detail_route
+
+class UserViewSet(ModelViewSet):
+    ...
+
+    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf])
+    def set_password(self, request, pk=None):
+        ...
+</code></pre><p>会添加下面的 URL：</p>
+<pre><code>URL pattern: ^users/{pk}/set_password/$ Name: &apos;user-set-password&apos;
+</code></pre><p>改变默认的 url_path：</p>
+<pre><code>from myapp.permissions import IsAdminOrIsSelf
+from rest_framework.decorators import detail_route
+
+class UserViewSet(ModelViewSet):
+    ...
+
+    @detail_route(methods=[&apos;post&apos;], permission_classes=[IsAdminOrIsSelf], url_path=&apos;change-password&apos;)
+    def set_password(self, request, pk=None):
+        ...
+</code></pre><p>修改后的URL：</p>
+<pre><code>URL pattern: ^users/{pk}/change-password/$ Name: &apos;user-change-password&apos;
+</code></pre><h1 id="API-Guide"><a href="#API-Guide" class="headerlink" title="API Guide"></a>API Guide</h1><h2 id="SimpleRouter"><a href="#SimpleRouter" class="headerlink" title="SimpleRouter"></a>SimpleRouter</h2><h2 id="DefaultRouter"><a href="#DefaultRouter" class="headerlink" title="DefaultRouter"></a>DefaultRouter</h2>
           
         
       
@@ -706,7 +451,7 @@ urlpatterns = router.urls
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -725,7 +470,7 @@ urlpatterns = router.urls
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/" itemprop="url">Django Model Field reference</a></h1>
+                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/" itemprop="url">12. django-rest-framework -- Authentication</a></h1>
         
 
         <div class="post-meta">
@@ -737,8 +482,8 @@ urlpatterns = router.urls
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
-                2016-11-10
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
               </time>
             
 
@@ -795,19 +540,9 @@ urlpatterns = router.urls
 
       
         
-          <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
-<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
-<blockquote>
-<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
-</blockquote>
-<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <h1 id="Authtication"><a href="#Authtication" class="headerlink" title="Authtication"></a>Authtication</h1>
+          
         
       
     </div>
@@ -1052,6 +787,149 @@ class ListUsers(APIView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/" itemprop="url">Django Model Field reference</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
+                2016-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
+<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
+<blockquote>
+<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
+</blockquote>
+<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/10/Python/django/django-rest-framework/Django Model field reference/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Android/tips/Android 虚拟机访问本地服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1144,140 +1022,6 @@ class ListUsers(APIView):
           
             <p>如果是使用 原生的虚拟机：将地址设置成 10.0.2.2 来访问 <a href="http://localhost/" target="_blank" rel="external">http://localhost/</a></p>
 <p>如果是 Genymotion 使用 10.0.3.2 来访问 <a href="http://localhost/" target="_blank" rel="external">http://localhost/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" itemprop="url">django-rest-framework 提高</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
-                2016-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一个后台架构需要考虑的"><a href="#一个后台架构需要考虑的" class="headerlink" title="一个后台架构需要考虑的"></a>一个后台架构需要考虑的</h1><p>统一的异常处理<br>api权限<br>统一的参数校验<br>缓存如何可以做的更简单统一<br>认证<br>统一的查询过滤<br>代码分层</p>
 
           
         
@@ -1425,6 +1169,140 @@ pip install pygments  # We&apos;ll be using this for the code highlighting
             </a>
           </div>
           <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" itemprop="url">django-rest-framework 提高</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
+                2016-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一个后台架构需要考虑的"><a href="#一个后台架构需要考虑的" class="headerlink" title="一个后台架构需要考虑的"></a>一个后台架构需要考虑的</h1><p>统一的异常处理<br>api权限<br>统一的参数校验<br>缓存如何可以做的更简单统一<br>认证<br>统一的查询过滤<br>代码分层</p>
+
+          
         
       
     </div>
