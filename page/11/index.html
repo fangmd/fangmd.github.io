@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,458 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/14/Python/django/Django Forms - Built-in fields/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/14/Python/django/Django Forms - Built-in fields/" itemprop="url">Django Forms - Built-in fields</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T13:18:12+08:00">
+                2016-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Core-field-arguments"><a href="#Core-field-arguments" class="headerlink" title="Core field arguments"></a>Core field arguments</h1><h3 id="class-Field-kwargs"><a href="#class-Field-kwargs" class="headerlink" title="class Field(**kwargs)"></a>class Field(**kwargs)</h3><p>当创建一个 Form class 的时候，最重要的是定义 form 的 fields。</p>
+<p>每个 field 有自己的验证逻辑。</p>
+<h3 id="Filed-clean-value"><a href="#Filed-clean-value" class="headerlink" title="Filed.clean(value)"></a>Filed.clean(value)</h3><p>每个 Field 实例都有 <code>clean()</code> 方法：接收一个数据参数，数据非法就抛出 <code>django.forms.ValidationError</code> 异常，数据正常就返回数据：</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; f = forms.EmailField()
+&gt;&gt;&gt; f.clean(&apos;foo@example.com&apos;)
+&apos;foo@example.com&apos;
+&gt;&gt;&gt; f.clean(&apos;invalid email address&apos;)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;Enter a valid email address.&apos;]
+</code></pre><h2 id="Core-field-arguments-1"><a href="#Core-field-arguments-1" class="headerlink" title="Core field arguments"></a>Core field arguments</h2><p>Field 类的构造方法通常需要下面的参数</p>
+<h2 id="required"><a href="#required" class="headerlink" title="required"></a>required</h2><h3 id="Field-required"><a href="#Field-required" class="headerlink" title="Field.required"></a>Field.required</h3><p>默认 <code>required=True</code></p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; f = forms.CharField()
+&gt;&gt;&gt; f.clean(&apos;foo&apos;)
+&apos;foo&apos;
+&gt;&gt;&gt; f.clean(&apos;&apos;)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;This field is required.&apos;]
+&gt;&gt;&gt; f.clean(None)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;This field is required.&apos;]
+&gt;&gt;&gt; f.clean(&apos; &apos;)
+&apos; &apos;
+&gt;&gt;&gt; f.clean(0)
+&apos;0&apos;
+&gt;&gt;&gt; f.clean(True)
+&apos;True&apos;
+&gt;&gt;&gt; f.clean(False)
+&apos;False&apos;
+</code></pre><p>定义参数可为空：</p>
+<pre><code>&gt;&gt;&gt; f = forms.CharField(required=False)
+&gt;&gt;&gt; f.clean(&apos;foo&apos;)
+&apos;foo&apos;
+&gt;&gt;&gt; f.clean(&apos;&apos;)
+&apos;&apos;
+&gt;&gt;&gt; f.clean(None)
+&apos;&apos;
+&gt;&gt;&gt; f.clean(0)
+&apos;0&apos;
+&gt;&gt;&gt; f.clean(True)
+&apos;True&apos;
+&gt;&gt;&gt; f.clean(False)
+&apos;False&apos;
+</code></pre><p>表示 field 可以不填</p>
+<h2 id="label"><a href="#label" class="headerlink" title="label"></a>label</h2><h3 id="Field-label"><a href="#Field-label" class="headerlink" title="Field.label"></a>Field.label</h3><p>The label argument lets you specify the “human-friendly” label for this field. This is used when the Field is displayed in a Form.</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; class CommentForm(forms.Form):
+...     name = forms.CharField(label=&apos;Your name&apos;)
+...     url = forms.URLField(label=&apos;Your website&apos;, required=False)
+...     comment = forms.CharField()
+&gt;&gt;&gt; f = CommentForm(auto_id=False)
+&gt;&gt;&gt; print(f)
+&lt;tr&gt;&lt;th&gt;Your name:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;name&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Your website:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;url&quot; name=&quot;url&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Comment:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;comment&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+</code></pre><h2 id="label-suffix"><a href="#label-suffix" class="headerlink" title="label_suffix"></a>label_suffix</h2><h3 id="Field-label-suffix"><a href="#Field-label-suffix" class="headerlink" title="Field.label_suffix"></a>Field.label_suffix</h3><pre><code>&gt;&gt;&gt; class ContactForm(forms.Form):
+...     age = forms.IntegerField()
+...     nationality = forms.CharField()
+...     captcha_answer = forms.IntegerField(label=&apos;2 + 2&apos;, label_suffix=&apos; =&apos;)
+&gt;&gt;&gt; f = ContactForm(label_suffix=&apos;?&apos;)
+&gt;&gt;&gt; print(f.as_p())
+&lt;p&gt;&lt;label for=&quot;id_age&quot;&gt;Age?&lt;/label&gt; &lt;input id=&quot;id_age&quot; name=&quot;age&quot; type=&quot;number&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_nationality&quot;&gt;Nationality?&lt;/label&gt; &lt;input id=&quot;id_nationality&quot; name=&quot;nationality&quot; type=&quot;text&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_captcha_answer&quot;&gt;2 + 2 =&lt;/label&gt; &lt;input id=&quot;id_captcha_answer&quot; name=&quot;captcha_answer&quot; type=&quot;number&quot; required /&gt;&lt;/p&gt;
+</code></pre><h2 id="initial"><a href="#initial" class="headerlink" title="initial"></a>initial</h2><h3 id="Field-initial"><a href="#Field-initial" class="headerlink" title="Field.initial"></a>Field.initial</h3><p>该参数会被使用，当 Field 是在一个 unbound Form 的时候。</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; class CommentForm(forms.Form):
+...     name = forms.CharField(initial=&apos;Your name&apos;)
+...     url = forms.URLField(initial=&apos;http://&apos;)
+...     comment = forms.CharField()
+&gt;&gt;&gt; f = CommentForm(auto_id=False)
+&gt;&gt;&gt; print(f)
+&lt;tr&gt;&lt;th&gt;Name:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;Your name&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Url:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;url&quot; name=&quot;url&quot; value=&quot;http://&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Comment:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;comment&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+</code></pre><p>为什么不把 initial 直接作为 data 传入？</p>
+<blockquote>
+<p>因为作为 data 就会触发数据验证，initial 里的数据通常是非法的可能会报错</p>
+</blockquote>
+<p>可以使用方法作为 initial：</p>
+<pre><code>&gt;&gt;&gt; import datetime
+&gt;&gt;&gt; class DateForm(forms.Form):
+...     day = forms.DateField(initial=datetime.date.today)
+&gt;&gt;&gt; print(DateForm())
+&lt;tr&gt;&lt;th&gt;Day:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;day&quot; value=&quot;12/23/2008&quot; required /&gt;&lt;td&gt;&lt;/tr&gt;
+</code></pre><h2 id="widget"><a href="#widget" class="headerlink" title="widget"></a>widget</h2><h3 id="Field-widget"><a href="#Field-widget" class="headerlink" title="Field.widget"></a>Field.widget</h3><h2 id="help-text"><a href="#help-text" class="headerlink" title="help_text"></a>help_text</h2><h3 id="Field-help-text"><a href="#Field-help-text" class="headerlink" title="Field.help_text"></a>Field.help_text</h3><h2 id="error-messages"><a href="#error-messages" class="headerlink" title="error_messages"></a>error_messages</h2><h3 id="Field-error-messages"><a href="#Field-error-messages" class="headerlink" title="Field.error_messages"></a>Field.error_messages</h3><pre><code>&gt;&gt;&gt; name = forms.CharField(error_messages={&apos;required&apos;: &apos;Please enter your name&apos;})
+&gt;&gt;&gt; name.clean(&apos;&apos;)
+Traceback (most recent call last):
+  ...
+ValidationError: [&apos;Please enter your name&apos;]
+</code></pre><h2 id="validators"><a href="#validators" class="headerlink" title="validators"></a>validators</h2><h3 id="Field-validators"><a href="#Field-validators" class="headerlink" title="Field.validators"></a>Field.validators</h3><h2 id="localize"><a href="#localize" class="headerlink" title="localize"></a>localize</h2><h3 id="Field-localize"><a href="#Field-localize" class="headerlink" title="Field.localize"></a>Field.localize</h3><h2 id="disabled"><a href="#disabled" class="headerlink" title="disabled"></a>disabled</h2><h3 id="Field-disabled"><a href="#Field-disabled" class="headerlink" title="Field.disabled"></a>Field.disabled</h3><h1 id="Checking-if-the-field-data-has-changed"><a href="#Checking-if-the-field-data-has-changed" class="headerlink" title="Checking if the field data has changed"></a>Checking if the field data has changed</h1><h2 id="has-changed"><a href="#has-changed" class="headerlink" title="has_changed()"></a>has_changed()</h2><h3 id="Field-has-changed-）"><a href="#Field-has-changed-）" class="headerlink" title="Field.has_changed(）"></a>Field.has_changed(）</h3><h1 id="Built-in-Field-classes"><a href="#Built-in-Field-classes" class="headerlink" title="Built-in Field classes"></a>Built-in Field classes</h1><h2 id="BooleanField"><a href="#BooleanField" class="headerlink" title="BooleanField"></a>BooleanField</h2><h3 id="class-BooleanField-kwargs"><a href="#class-BooleanField-kwargs" class="headerlink" title="class BooleanField(**kwargs)"></a>class BooleanField(**kwargs)</h3><ul>
+<li>Default widget: CheckboxInput</li>
+<li>Empty value: False</li>
+<li>Normalizes to: A Python True or False value.</li>
+<li>Validates that the value is True (e.g. the check box is checked) if the field has required=True.</li>
+<li>Error message keys: required</li>
+</ul>
+<h2 id="CharField"><a href="#CharField" class="headerlink" title="CharField"></a>CharField</h2><ul>
+<li>Default widget: TextInput</li>
+<li>Empty value: ‘’ (an empty string)</li>
+<li>Normalizes to: A Unicode object.</li>
+<li>Validates max_length or min_length, if they are provided. Otherwise, all inputs are valid.</li>
+<li>Error message keys: required, max_length, min_length</li>
+</ul>
+<p>三个用于验证的参数：</p>
+<ul>
+<li>max_length</li>
+<li>min_length</li>
+<li>strip</li>
+</ul>
+<h2 id="ChoiceField"><a href="#ChoiceField" class="headerlink" title="ChoiceField"></a>ChoiceField</h2><ul>
+<li>Default widget: Select</li>
+<li>Empty value: ‘’ (an empty string)</li>
+<li>Normalizes to: A Unicode object.</li>
+<li>Validates that the given value exists in the list of choices.</li>
+<li>Error message keys: required, invalid_choice</li>
+</ul>
+<h2 id="TypedChoiceField"><a href="#TypedChoiceField" class="headerlink" title="TypedChoiceField"></a>TypedChoiceField</h2><ul>
+<li>Default widget: Select</li>
+<li>Empty value: Whatever you’ve given as empty_value.</li>
+<li>Normalizes to: A value of the type provided by the coerce argument.</li>
+<li>Validates that the given value exists in the list of choices and can be coerced.</li>
+<li>Error message keys: required, invalid_choice</li>
+</ul>
+<h2 id="DateField"><a href="#DateField" class="headerlink" title="DateField"></a>DateField</h2><h2 id="DateTimeField"><a href="#DateTimeField" class="headerlink" title="DateTimeField"></a>DateTimeField</h2><h2 id="DecimalField"><a href="#DecimalField" class="headerlink" title="DecimalField"></a>DecimalField</h2><h2 id="DurationField"><a href="#DurationField" class="headerlink" title="DurationField"></a>DurationField</h2><h2 id="EmailField"><a href="#EmailField" class="headerlink" title="EmailField"></a>EmailField</h2><h2 id="FileField"><a href="#FileField" class="headerlink" title="FileField"></a>FileField</h2><ul>
+<li>Default widget: ClearableFileInput</li>
+<li>Empty value: None</li>
+<li>Normalizes to: An UploadedFile object that wraps the file content and file name into a single object.</li>
+<li>Can validate that non-empty file data has been bound to the form.</li>
+<li>Error message keys: required, invalid, missing, empty, max_length</li>
+</ul>
+<h2 id="FilePathField"><a href="#FilePathField" class="headerlink" title="FilePathField"></a>FilePathField</h2><h2 id="FloatField"><a href="#FloatField" class="headerlink" title="FloatField"></a>FloatField</h2><h2 id="ImageField"><a href="#ImageField" class="headerlink" title="ImageField"></a>ImageField</h2><h2 id="IntegerField"><a href="#IntegerField" class="headerlink" title="IntegerField"></a>IntegerField</h2><h2 id="GenericIPAddressField"><a href="#GenericIPAddressField" class="headerlink" title="GenericIPAddressField"></a>GenericIPAddressField</h2><h2 id="MultipleChoiceField"><a href="#MultipleChoiceField" class="headerlink" title="MultipleChoiceField"></a>MultipleChoiceField</h2><h2 id="TypedMultipleChoiceField"><a href="#TypedMultipleChoiceField" class="headerlink" title="TypedMultipleChoiceField"></a>TypedMultipleChoiceField</h2><h2 id="NullBooleanField"><a href="#NullBooleanField" class="headerlink" title="NullBooleanField"></a>NullBooleanField</h2><h2 id="RegexField"><a href="#RegexField" class="headerlink" title="RegexField"></a>RegexField</h2><h2 id="SlugField"><a href="#SlugField" class="headerlink" title="SlugField"></a>SlugField</h2><h2 id="TimeField"><a href="#TimeField" class="headerlink" title="TimeField"></a>TimeField</h2><h2 id="URLField"><a href="#URLField" class="headerlink" title="URLField"></a>URLField</h2><h2 id="UUIDField"><a href="#UUIDField" class="headerlink" title="UUIDField"></a>UUIDField</h2><h1 id="Slightly-complex-built-in-Field-classes"><a href="#Slightly-complex-built-in-Field-classes" class="headerlink" title="Slightly complex built-in Field classes"></a>Slightly complex built-in Field classes</h1><h2 id="ComboField"><a href="#ComboField" class="headerlink" title="ComboField"></a>ComboField</h2><h2 id="MultiValueField"><a href="#MultiValueField" class="headerlink" title="MultiValueField"></a>MultiValueField</h2><h2 id="SplitDateTimeField"><a href="#SplitDateTimeField" class="headerlink" title="SplitDateTimeField"></a>SplitDateTimeField</h2><h1 id="Fields-which-handle-relationships"><a href="#Fields-which-handle-relationships" class="headerlink" title="Fields which handle relationships"></a>Fields which handle relationships</h1><h1 id="Creating-custom-fields"><a href="#Creating-custom-fields" class="headerlink" title="Creating custom fields"></a>Creating custom fields</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/14/Python/django/Django-Forms-Built-in widgets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/14/Python/django/Django-Forms-Built-in widgets/" itemprop="url">Django Forms - Built-in Widgets</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T13:18:12+08:00">
+                2016-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>A widget is Django’s representation of an HTML input element. The widget handles the rendering of the HTML, and the extraction of data from a GET/POST dictionary that corresponds to the widget.</p>
+<h1 id="Specifying-widgets"><a href="#Specifying-widgets" class="headerlink" title="Specifying widgets"></a>Specifying widgets</h1><p>当我们定义一个 field 在 form 中时，Django 会使用默认的 widget 作为这个 field 在 html 中的显示控件。</p>
+<p>如果要使用非默认的 widget：</p>
+<pre><code>from django import forms
+
+class CommentForm(forms.Form):
+    name = forms.CharField()
+    url = forms.URLField()
+    comment = forms.CharField(widget=forms.Textarea)
+</code></pre><h1 id="Setting-arguments-for-widgets"><a href="#Setting-arguments-for-widgets" class="headerlink" title="Setting arguments for widgets"></a>Setting arguments for widgets</h1><p>很多 widget 都会有一些额外的参数可以设置，可以设置 widget 的时候设置参数：</p>
+<pre><code>from django import forms
+
+BIRTH_YEAR_CHOICES = (&apos;1980&apos;, &apos;1981&apos;, &apos;1982&apos;)
+FAVORITE_COLORS_CHOICES = (
+    (&apos;blue&apos;, &apos;Blue&apos;),
+    (&apos;green&apos;, &apos;Green&apos;),
+    (&apos;black&apos;, &apos;Black&apos;),
+)
+
+class SimpleForm(forms.Form):
+    birth_year = forms.DateField(widget=forms.SelectDateWidget(years=BIRTH_YEAR_CHOICES))
+    favorite_colors = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=FAVORITE_COLORS_CHOICES,
+    )
+</code></pre><h1 id="Widgets-inheriting-from-the-Select-widget"><a href="#Widgets-inheriting-from-the-Select-widget" class="headerlink" title="Widgets inheriting from the Select widget"></a>Widgets inheriting from the Select widget</h1><h1 id="Customizing-widget-instances"><a href="#Customizing-widget-instances" class="headerlink" title="Customizing widget instances"></a>Customizing widget instances</h1><h1 id="Base-widget-classes"><a href="#Base-widget-classes" class="headerlink" title="Base widget classes"></a>Base widget classes</h1><h1 id="Built-in-widgets"><a href="#Built-in-widgets" class="headerlink" title="Built-in widgets"></a>Built-in widgets</h1><h2 id="Widgets-handling-input-of-text"><a href="#Widgets-handling-input-of-text" class="headerlink" title="Widgets handling input of text"></a>Widgets handling input of text</h2><h3 id="TextInput"><a href="#TextInput" class="headerlink" title="TextInput"></a>TextInput</h3><pre><code>&lt;input type=&quot;text&quot; ...&gt;
+</code></pre><h3 id="NumberInput"><a href="#NumberInput" class="headerlink" title="NumberInput"></a>NumberInput</h3><pre><code>&lt;input type=&quot;number&quot; ...&gt;
+</code></pre><h3 id="EmailInput"><a href="#EmailInput" class="headerlink" title="EmailInput"></a>EmailInput</h3><pre><code>&lt;input type=&quot;email&quot; ...&gt;
+</code></pre><h3 id="URLInput"><a href="#URLInput" class="headerlink" title="URLInput"></a>URLInput</h3><pre><code>&lt;input type=&quot;url&quot; ...&gt;
+</code></pre><h3 id="PasswordInput"><a href="#PasswordInput" class="headerlink" title="PasswordInput"></a>PasswordInput</h3><pre><code>&lt;input type=&apos;password&apos; ...&gt;
+</code></pre><h3 id="HiddenInput"><a href="#HiddenInput" class="headerlink" title="HiddenInput"></a>HiddenInput</h3><pre><code>&lt;input type=&apos;hidden&apos; ...&gt;
+</code></pre><h3 id="DateInput"><a href="#DateInput" class="headerlink" title="DateInput"></a>DateInput</h3><pre><code>&lt;input type=&apos;text&apos; ...&gt;
+</code></pre><p><code>format</code> <code>DATE_INPUT_FORMATS</code></p>
+<h3 id="DateTimeInput"><a href="#DateTimeInput" class="headerlink" title="DateTimeInput"></a>DateTimeInput</h3><pre><code>&lt;input type=&apos;text&apos; ...&gt;
+</code></pre><p><code>format</code> <code>DATETIME_INPUT_FORMATS</code></p>
+<h3 id="TimeInput"><a href="#TimeInput" class="headerlink" title="TimeInput"></a>TimeInput</h3><pre><code>&lt;input type=&apos;text&apos; ...&gt;
+</code></pre><p><code>format</code> <code>TIME_INPUT_FORMATS</code></p>
+<h3 id="Textarea"><a href="#Textarea" class="headerlink" title="Textarea"></a>Textarea</h3><pre><code>&lt;textarea&gt;...&lt;/textarea&gt;
+</code></pre><h2 id="Selector-and-checkbox-widgets"><a href="#Selector-and-checkbox-widgets" class="headerlink" title="Selector and checkbox widgets"></a>Selector and checkbox widgets</h2><h3 id="CheckboxInput"><a href="#CheckboxInput" class="headerlink" title="CheckboxInput"></a>CheckboxInput</h3><pre><code>&lt;input type=&apos;checkbox&apos; ...&gt;
+</code></pre><h3 id="Select"><a href="#Select" class="headerlink" title="Select"></a>Select</h3><pre><code>&lt;select&gt;&lt;option ...&gt;...&lt;/select&gt;
+</code></pre><h3 id="NullBooleanSelect"><a href="#NullBooleanSelect" class="headerlink" title="NullBooleanSelect"></a>NullBooleanSelect</h3><h3 id="SelectMultiple"><a href="#SelectMultiple" class="headerlink" title="SelectMultiple"></a>SelectMultiple</h3><pre><code>&lt;select multiple=&apos;multiple&apos;&gt;...&lt;/select&gt;
+</code></pre><h3 id="RadioSelect"><a href="#RadioSelect" class="headerlink" title="RadioSelect"></a>RadioSelect</h3><pre><code>&lt;ul&gt;
+  &lt;li&gt;&lt;input type=&apos;radio&apos; name=&apos;...&apos;&gt;&lt;/li&gt;
+  ...
+&lt;/ul&gt;
+</code></pre><h3 id="CheckboxSelectMultiple"><a href="#CheckboxSelectMultiple" class="headerlink" title="CheckboxSelectMultiple"></a>CheckboxSelectMultiple</h3><pre><code>&lt;ul&gt;
+  &lt;li&gt;&lt;input type=&apos;checkbox&apos; name=&apos;...&apos; &gt;&lt;/li&gt;
+  ...
+&lt;/ul&gt;
+</code></pre><h2 id="File-upload-widgets"><a href="#File-upload-widgets" class="headerlink" title="File upload widgets"></a>File upload widgets</h2><h3 id="FileInput"><a href="#FileInput" class="headerlink" title="FileInput"></a>FileInput</h3><h3 id="ClearableFileInput"><a href="#ClearableFileInput" class="headerlink" title="ClearableFileInput"></a>ClearableFileInput</h3><h2 id="Composite-widgets"><a href="#Composite-widgets" class="headerlink" title="Composite widgets"></a>Composite widgets</h2><h3 id="MultipleHiddenInput"><a href="#MultipleHiddenInput" class="headerlink" title="MultipleHiddenInput"></a>MultipleHiddenInput</h3><h3 id="SplitDateTimeWidget"><a href="#SplitDateTimeWidget" class="headerlink" title="SplitDateTimeWidget"></a>SplitDateTimeWidget</h3><h3 id="SplitHiddenDateTimeWidget"><a href="#SplitHiddenDateTimeWidget" class="headerlink" title="SplitHiddenDateTimeWidget"></a>SplitHiddenDateTimeWidget</h3><h3 id="SelectDateWidget"><a href="#SelectDateWidget" class="headerlink" title="SelectDateWidget"></a>SelectDateWidget</h3><p>###</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Android/Android 版本/Android7.0/FileProvider/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +734,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T22:38:14+08:00">
                 2016-12-13
@@ -303,7 +755,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -363,7 +815,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/13/Android/Android 版本/Android7.0/FileProvider/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -437,7 +889,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
                 2016-12-13
@@ -458,7 +910,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -679,7 +1131,7 @@ True
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
                 2016-12-13
@@ -700,7 +1152,7 @@ True
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -995,7 +1447,7 @@ if form.is_valid():
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T21:38:14+08:00">
                 2016-12-12
@@ -1016,7 +1468,7 @@ if form.is_valid():
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1081,7 +1533,7 @@ if form.is_valid():
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/12/Android/进程保活/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1155,7 +1607,7 @@ if form.is_valid():
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T13:18:12+08:00">
                 2016-12-12
@@ -1176,7 +1628,7 @@ if form.is_valid():
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1540,7 +1992,7 @@ mJobScheduler.cancelAll();
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-05T14:38:14+08:00">
                 2016-12-05
@@ -1561,7 +2013,7 @@ mJobScheduler.cancelAll();
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2023,7 +2475,7 @@ private void startBatterMonitor() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-04T12:18:12+08:00">
                 2016-12-04
@@ -2044,7 +2496,7 @@ private void startBatterMonitor() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2258,7 +2710,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T09:13:12+08:00">
                 2016-12-01
@@ -2279,7 +2731,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2358,500 +2810,11 @@ DaggerStatisticsComponent.builder()
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/" itemprop="url">看了一些 RxJava 的文章我依然不知道的事</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T13:18:12+08:00">
-                2016-11-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>以下代码基于 RxJava2</p>
-</blockquote>
-<h1 id="内存泄露处理"><a href="#内存泄露处理" class="headerlink" title="内存泄露处理"></a>内存泄露处理</h1><p>基本代码：</p>
-<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
-
-public void doSomeWork2() {
-    // 1. 创建一个普通的 observable
-    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
-        @Override
-        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
-            if (e.isDisposed()) return;
-            SystemClock.sleep(2000);
-            e.onNext(&quot;next&quot;);
-            e.onComplete();
-        }
-    });
-
-    // 2. 创建一个可被 CompositeDisposable 管理的 observer
-    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
-        @Override
-        public void onNext(String value) {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onComplete() {
-
-        }
-    };
-
-    // 3. 订阅事件
-    observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer);
-
-    // 4. 将需要被 CompositeDisposable 管理的 observer 加入到管理集合中
-    disposables.add(observer);
-}
-</code></pre><p>在 Activity／Fragment 销毁生命周期中取消异步操作防止内存泄露：</p>
-<pre><code>@Override
-protected void onDestroy() {
-    super.onDestroy();
-    // 将所有的 observer 取消订阅
-    disposables.clear();
-}
-</code></pre><h1 id="在-mvp-的项目中处理内存泄露"><a href="#在-mvp-的项目中处理内存泄露" class="headerlink" title="在 mvp 的项目中处理内存泄露"></a>在 mvp 的项目中处理内存泄露</h1><p>基于 <a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a> 搭建项目 mvp 框架：</p>
-<p>BasePresenter :</p>
-<pre><code>public abstract class BasePresenter {
-
-    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-
-    public void unSubscribe() {
-        mCompositeDisposable.clear();
-    }
-
-
-    public void register(Disposable disposable) {
-        mCompositeDisposable.add(disposable);
-    }
-
-
-}
-</code></pre><p>一个例子 SimplePresenter extends BasePresenter :</p>
-<pre><code>public class SimplePresenter extends BasePresenter {
-    private static final String TAG = SimplePresenter.class.getSimpleName();
-
-
-    //.....
-
-    public void startWork() {
-
-        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
-            @Override
-            public void onNext(Long value) {
-                Log.d(TAG, &quot;onNext: &quot;);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-        Observable.interval(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-
-        register(observer);
-
-    }
-
-}
-</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
-<p>Activity/Fragment:</p>
-<pre><code>@Override
-protected void onDestroy() {
-    super.onDestroy();
-    mSimplePresenter.unSubscribe();
-}
-</code></pre><h1 id="慎用-functions"><a href="#慎用-functions" class="headerlink" title="慎用 functions"></a>慎用 functions</h1><p>functions：Action，Consumer，Function 等</p>
-<p>原因：这些方法只会对 <code>onNext</code> 事件进行处理，如果 observable 中出现异常产生了 <code>onError</code> 事件就会导致 app 奔溃。</p>
-<p>解决方案：</p>
-<ol>
-<li>不用简化方法</li>
-<li>自己封装一个：</li>
-</ol>
-<p>封装一个类似下面的基类：</p>
-<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
-
-    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
-
-    @Override
-    public void onError(Throwable e) {
-        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
-    }
-
-    @Override
-    public void onComplete() {
-
-    }
-}
-</code></pre><p>使用的时候和 functions 是一样的：（这样下面的代码就不会导致app奔溃了）</p>
-<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
-    @Override
-    public void onNext(Long value) {
-        Log.d(TAG, &quot;onNext: &quot;);
-    }
-};
-
-Observable.interval(2000, TimeUnit.MILLISECONDS)
-        .filter(new Predicate&lt;Long&gt;() {
-            @Override
-            public boolean test(Long aLong) throws Exception {
-                Log.d(TAG, &quot;test: along:&quot; + aLong);
-
-                if (aLong &gt; 2) {
-                    throw new Exception(&quot;sdf&quot;);
-                }
-
-                return true;
-            }
-        })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(baseDisposableObserver);
-</code></pre><blockquote>
-<p>RxJava 看的还不多，如有错误还请指出</p>
-</blockquote>
-<p>参考</p>
-<ul>
-<li><a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/" itemprop="url">RecyclerView悬浮条</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:38:14+08:00">
-                2016-11-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><pre><code>&lt;FrameLayout
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot;&gt;
-
-
-    &lt;android.support.v7.widget.RecyclerView
-        android:id=&quot;@+id/rv_float&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        app:layoutManager=&quot;LinearLayoutManager&quot;/&gt;
-
-
-    &lt;TextView
-        android:id=&quot;@+id/tv_float&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;60dp&quot;
-        android:background=&quot;#fff&quot;
-        android:gravity=&quot;center&quot;
-        android:text=&quot;head&quot;
-        android:textSize=&quot;20sp&quot;/&gt;
-
-
-&lt;/FrameLayout&gt;
-</code></pre><h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><pre><code>mRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
-    @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-
-    }
-
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        View view = layoutManager.findViewByPosition(mFloatItemCurrentPos + 1);
-
-        if (view != null &amp;&amp; view.getTop() &lt;= mFloatItemHeight) {
-            mTV.setY(-(mFloatItemHeight - view.getTop()));
-        }else {
-            mTV.setY(0);
-        }
-
-        if (mFloatItemCurrentPos != layoutManager.findFirstVisibleItemPosition()) {
-            mFloatItemCurrentPos = layoutManager.findFirstVisibleItemPosition();
-            mTV.setY(0);
-
-            updateFloatItem();
-        }
-    }
-});
-
-private void updateFloatItem() {
-     String s = mStrings.get(mFloatItemCurrentPos);
-     mTV.setText(s);
- }
-</code></pre><p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab" target="_blank" rel="external">http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab</a>)</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2896,8 +2859,8 @@ private void updateFloatItem() {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">400</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">402</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -2908,7 +2871,7 @@ private void updateFloatItem() {
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">15</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -2919,7 +2882,7 @@ private void updateFloatItem() {
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -2969,7 +2932,7 @@ private void updateFloatItem() {
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
