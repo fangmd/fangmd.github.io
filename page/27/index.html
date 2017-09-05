@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/视屏播放/SurfaceView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/" itemprop="url">RecyclerView LayoutManager</a></h1>
+                <a class="post-title-link" href="/2016/04/18/Android/视屏播放/SurfaceView/" itemprop="url">SurfaceView</a></h1>
         
 
         <div class="post-meta">
@@ -282,10 +282,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
-                2016-04-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T11:38:14+08:00">
+                2016-04-18
               </time>
             
 
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -342,14 +342,111 @@
 
       
         
-          <h1 id="RecyclerView-LayoutManager"><a href="#RecyclerView-LayoutManager" class="headerlink" title="RecyclerView LayoutManager"></a>RecyclerView LayoutManager</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><h2 id="和自定义view比较"><a href="#和自定义view比较" class="headerlink" title="和自定义view比较"></a>和自定义view比较</h2><p>自定义View：</p>
+<ol>
+<li>只能在主线程中绘制</li>
+<li>绘制效率低</li>
+<li>封装性好，便于复用</li>
+<li>可以通过自定义属性配置</li>
+</ol>
+<p>SurfaceView：</p>
+<ol>
+<li>封装性差</li>
+<li>可以在子线程中绘制</li>
+<li>绘制速度是普通view绘制的5倍，主要用于游戏和视频播放</li>
+<li>不可配置</li>
+</ol>
+<h2 id="一个基本的使用"><a href="#一个基本的使用" class="headerlink" title="一个基本的使用"></a>一个基本的使用</h2><h3 id="run接口实现类"><a href="#run接口实现类" class="headerlink" title="run接口实现类"></a>run接口实现类</h3><pre><code>public class DrawRunnable implements Runnable {
+    private static final String TAG = DrawRunnable.class.getName();
+    private SurfaceHolder mHolder;
+    private boolean running;
+    private final Paint mPaint;
+
+    public DrawRunnable(SurfaceHolder holder) {
+        mHolder = holder;
+        running = true;
+        mPaint = new Paint(); // 创建画笔耗时
+        mPaint.setTextSize(100);
+        mPaint.setColor(Color.BLUE);
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            Canvas canvas = mHolder.lockCanvas();
+            if (canvas != null) {
+                canvas.drawColor(Color.WHITE);
+                canvas.drawText(&quot;Surface绘制&quot;, 200, 200, mPaint);
+                mHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    }
+
+    public void setRunning(boolean runable) {
+        running = runable;
+    }
+}
+</code></pre><h3 id="mainactivity"><a href="#mainactivity" class="headerlink" title="mainactivity"></a>mainactivity</h3><pre><code>mSurface = (SurfaceView) findViewById(R.id.main_surface);
+SurfaceHolder holder = mSurface.getHolder();
+holder.addCallback(this);
+mDrawRunnable = new DrawRunnable(holder);
+new Thread(mDrawRunnable).start();
+</code></pre><h3 id="holder-addCallback-this-接口方法"><a href="#holder-addCallback-this-接口方法" class="headerlink" title="holder.addCallback(this);接口方法"></a>holder.addCallback(this);接口方法</h3><pre><code>@Override
+public void surfaceCreated(SurfaceHolder holder) {
+
+}
+
+@Override
+public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+}
+
+@Override
+public void surfaceDestroyed(SurfaceHolder holder) {
+    mDrawRunnable.setRunning(false); // 结束绘制
+}
+</code></pre><h2 id="播放视频"><a href="#播放视频" class="headerlink" title="播放视频"></a>播放视频</h2><pre><code>try {
+    mMediaPlayer = new MediaPlayer();
+    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;);
+    File externalStorageDirectory = Environment.getExternalStorageDirectory();
+    mMediaPlayer.setDataSource(file.getAbsolutePath());
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+@Override
+public void surfaceCreated(SurfaceHolder holder) {
+    mMediaPlayer.setDisplay(holder); // 设定展示平台
+    mMediaPlayer.setOnPreparedListener(this);
+    mMediaPlayer.prepareAsync();
+}
+
+@Override
+public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+}
+
+@Override
+public void surfaceDestroyed(SurfaceHolder holder) {
+    // 及时关闭
+    mMediaPlayer.stop();
+    mMediaPlayer.release();
+}
+
+@Override
+public void onPrepared(MediaPlayer mp) {
+    int videoWidth = mMediaPlayer.getVideoWidth();
+    int videoHeight = mMediaPlayer.getVideoHeight();
+    ViewGroup.LayoutParams layoutParams = mSurface.getLayoutParams();
+    layoutParams.height = videoHeight;
+    layoutParams.width = videoWidth;
+    mSurface.setLayoutParams(layoutParams);
+    //mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+    mMediaPlayer.start();
+}
+</code></pre>
+          
         
       
     </div>
@@ -420,7 +517,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
                 2016-04-17
@@ -441,7 +538,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -484,7 +581,145 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/" itemprop="url">RecyclerView LayoutManager</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
+                2016-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="RecyclerView-LayoutManager"><a href="#RecyclerView-LayoutManager" class="headerlink" title="RecyclerView LayoutManager"></a>RecyclerView LayoutManager</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/17/Android/view/RecyclerView/RecyclerViewLayoutManager/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -558,7 +793,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T11:38:14+08:00">
                 2016-04-17
@@ -579,7 +814,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -710,7 +945,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-16T09:38:14+08:00">
                 2016-04-16
@@ -731,7 +966,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -774,7 +1009,7 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/16/Android/多点触控/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -848,7 +1083,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-15T12:18:12+08:00">
                 2016-04-15
@@ -869,7 +1104,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -912,7 +1147,7 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/15/Android/加解密/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -986,7 +1221,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-15T09:13:12+08:00">
                 2016-04-15
@@ -1007,7 +1242,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1050,7 +1285,145 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/15/Android/触摸事件分发/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/14/Android/Bitmap和Drawable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/14/Android/Bitmap和Drawable/" itemprop="url">Bitmap和Drawable</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-14T21:38:14+08:00">
+                2016-04-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Bitmap和Drawable"><a href="#Bitmap和Drawable" class="headerlink" title="Bitmap和Drawable"></a>Bitmap和Drawable</h1><p>转自：<a href="http://dyh7077063.iteye.com/blog/970672">http://dyh7077063.iteye.com/blog/970672</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/14/Android/Bitmap和Drawable/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1124,7 +1497,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-14T21:38:14+08:00">
                 2016-04-14
@@ -1145,7 +1518,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1236,7 +1609,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/14/Android/Bitmap和Drawable/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/13/Android/features/高斯模糊/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1255,7 +1628,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/14/Android/Bitmap和Drawable/" itemprop="url">Bitmap和Drawable</a></h1>
+                <a class="post-title-link" href="/2016/04/13/Android/features/高斯模糊/" itemprop="url">高斯模糊</a></h1>
         
 
         <div class="post-meta">
@@ -1265,145 +1638,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-14T21:38:14+08:00">
-                2016-04-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Bitmap和Drawable"><a href="#Bitmap和Drawable" class="headerlink" title="Bitmap和Drawable"></a>Bitmap和Drawable</h1><p>转自：<a href="http://dyh7077063.iteye.com/blog/970672">http://dyh7077063.iteye.com/blog/970672</a></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/14/Android/Bitmap和Drawable/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/13/Android/OAuth/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/13/Android/OAuth/" itemprop="url">OAuth</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-13T14:38:14+08:00">
                 2016-04-13
@@ -1424,7 +1659,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1463,159 +1698,11 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
 
       
         
-          
-            <h1 id="OAuth"><a href="#OAuth" class="headerlink" title="OAuth"></a>OAuth</h1><ol>
-<li>开发授权协议；应用于HTTP协议之上</li>
-<li>能够让用户进行一次授权，可以上事件使用，不需要登入的功能</li>
-<li>能够实现多方登入：一个网站的用户，可以登入到另一个网站，被登入的网站不用记录用户登入的信息；相当于用户共享</li>
-<li>用户自己可以进行授权，让任何第三方服务费访问用户的私有数据</li>
-</ol>
-<h2 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h2><p>作用：是一种访问令牌，能够让客户端通过Token访问用户的私有数据，而不需要密码</p>
-<p>生成：当第三方需要访问用户的数据或者客户端需要访问用户的数据的时候，就会向用户进行申请，用户进行授权，授权后，存储用户数据的服务器，就会生成Token，交给客户端，客户端直接使用Token就可以使用用户的数据了；</p>
-<p>过期时间：每个申请的Token，服务器都会设置过期时间，时间过期后客户端需要重新向用户申请授权。</p>
-<p>Token和Token的秘钥：生成Token的时候，同样会生成Token密钥，Token的密钥也参与到数字签名的运算中；确保Token的安全性；</p>
-<p><strong>总结：</strong>OAuth：实际上就是组织各种参数；申请Token</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/13/Android/Android 版本/Android5.0/design包/CoordinatorLayout/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/13/Android/Android 版本/Android5.0/design包/CoordinatorLayout/" itemprop="url">CoordinatorLayout/design包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-13T14:38:14+08:00">
-                2016-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="导包"><a href="#导包" class="headerlink" title="导包"></a>导包</h1><pre><code>compile &apos;com.android.support:design:23.3.0&apos;
-</code></pre><h1 id="特有属性"><a href="#特有属性" class="headerlink" title="特有属性"></a>特有属性</h1><ul>
-<li>layout_behavior</li>
-</ul>
-<h1 id="behavior"><a href="#behavior" class="headerlink" title="behavior"></a>behavior</h1><p>CoordinatorLayout 通过 Behavior 协调里面的之布局</p>
+          <h1 id="高斯模糊"><a href="#高斯模糊" class="headerlink" title="高斯模糊"></a>高斯模糊</h1>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/13/Android/Android 版本/Android5.0/design包/CoordinatorLayout/#more" rel="contents">
-              Read more &raquo;
+            <a class="btn" href="/2016/04/13/Android/features/高斯模糊/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1700,8 +1787,8 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">406</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">407</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1711,8 +1798,8 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">15</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1723,7 +1810,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1773,7 +1860,7 @@ radioButton.setCompoundDrawables(null, drawable, null, null);
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
