@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,167 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/01/Python/nginx/启动nginx status状态/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/01/01/Python/nginx/启动nginx status状态/" itemprop="url">启动 nginx status</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-01T13:18:12+08:00">
+                2017-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>system version : macos 10.12.2</p>
+<h1 id="启用-nginx-status-配置"><a href="#启用-nginx-status-配置" class="headerlink" title="启用 nginx status 配置"></a>启用 nginx status 配置</h1><h2 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h2><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen  *:8181 default_server;</div><div class="line">    server_name _;</div><div class="line">    location /ngx_status </div><div class="line">    &#123;</div><div class="line">        stub_status on;</div><div class="line">        access_log off;</div><div class="line">        #allow 127.0.0.1;</div><div class="line">        #deny all;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="重启-nginx"><a href="#重启-nginx" class="headerlink" title="重启 nginx"></a>重启 nginx</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -s reload</div></pre></td></tr></table></figure>
+<p>or</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo nginx -s quit</div><div class="line"></div><div class="line">sudo nginx</div></pre></td></tr></table></figure>
+<p>查看 nginx 配置文件的地址和是否启动成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -t</div></pre></td></tr></table></figure></p>
+<h2 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h2><p><a href="http://127.0.0.1:8181/ngx_status" target="_blank" rel="external">http://127.0.0.1:8181/ngx_status</a> </p>
+<p>可以看到的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Active connections: 6 </div><div class="line">server accepts handled requests</div><div class="line"> 34 34 58 </div><div class="line">Reading: 0 Writing: 1 Waiting: 5</div></pre></td></tr></table></figure>
+<p>解释：</p>
+<ul>
+<li>active connections – 活跃的连接数量</li>
+<li>server accepts handled requests — 总共处理了11989个连接 , 成功创建11989次握手, 总共处理了11991个请求</li>
+<li>reading — 读取客户端的连接数.</li>
+<li>writing — 响应数据到客户端的数量</li>
+<li>waiting — 开启 keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx 已经处理完正在等候下一次请求指令的驻留连接.</li>
+</ul>
+<h1 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h1><h2 id="mac-brew-nginx-安装额外模块"><a href="#mac-brew-nginx-安装额外模块" class="headerlink" title="mac brew nginx 安装额外模块"></a>mac brew nginx 安装额外模块</h2><p>查看默认安装的模块有哪些：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew options nginx</div></pre></td></tr></table></figure></p>
+<p>输出的内容是默认会安装的模块</p>
+<h3 id="安装-nginx-full"><a href="#安装-nginx-full" class="headerlink" title="安装 nginx-full"></a>安装 nginx-full</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew tap homebrew/nginx</div></pre></td></tr></table></figure>
+<p>再查看一下可选参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew options nginx-full</div></pre></td></tr></table></figure></p>
+<p>如果已经安装了 nginx 可能需要先取消 link:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew unlink nginx</div><div class="line"># brew link nginx-full</div></pre></td></tr></table></figure></p>
+<p>安装 nginx-full 添加模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install nginx-full --with-geoip</div></pre></td></tr></table></figure>
+<h2 id="编译-nginx"><a href="#编译-nginx" class="headerlink" title="编译 nginx"></a>编译 nginx</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./configure --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module</div></pre></td></tr></table></figure>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><code>Undefined symbols for architecture x86_64:</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">--with-cc-opt=&quot;-I/usr/local/include -I/usr/local/opt/openssl/include&quot;</div><div class="line">--with-ld-opt=&quot;-L/usr/local/lib -L/usr/local/opt/openssl/lib&quot;</div></pre></td></tr></table></figure>
+<h2 id="openssl-安装方法"><a href="#openssl-安装方法" class="headerlink" title="openssl 安装方法"></a>openssl 安装方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install openssl</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s /usr/local/Cellar/openssl/&#123;version&#125;/include/openssl /usr/local/include/openssl</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/31/Python/django/django-Performance and optimization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +443,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-31T13:18:12+08:00">
                 2016-12-31
@@ -303,7 +464,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -416,7 +577,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T11:38:14+08:00">
                 2016-12-29
@@ -437,7 +598,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -538,6 +699,146 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>Django 实现分页</p>
+</blockquote>
+<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
+<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
+<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/ReadNote/https/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -567,7 +868,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
                 2016-12-28
@@ -588,7 +889,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -724,146 +1025,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
-                2016-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>Django 实现分页</p>
-</blockquote>
-<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
-<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
-<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-方法流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -893,7 +1054,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
                 2016-12-28
@@ -914,7 +1075,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -963,7 +1124,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/28/Android/view/自定义View/自定义View-方法流程/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1037,7 +1198,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
                 2016-12-28
@@ -1058,7 +1219,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1180,7 +1341,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-27T13:18:12+08:00">
                 2016-12-27
@@ -1201,7 +1362,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1314,7 +1475,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-27T09:23:14+08:00">
                 2016-12-27
@@ -1335,7 +1496,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1453,7 +1614,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-26T09:23:14+08:00">
                 2016-12-26
@@ -1474,7 +1635,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1521,169 +1682,6 @@
 <h2 id="分状态动画"><a href="#分状态动画" class="headerlink" title="分状态动画"></a>分状态动画</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// draw</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawCenter</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    mCenterPaint.setColor(mIDLEColor);</div><div class="line">    <span class="keyword">if</span> (mStatus == LoadingViewStatus.IDLE) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.SELECTED) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.LOADING) &#123;</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mStatus == LoadingViewStatus.OK) &#123;</div><div class="line">        mCenterPaint.setColor(mOkColor);</div><div class="line">        canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, mWidth / <span class="number">6</span>, mCenterPaint);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">circleLoading</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            <span class="keyword">int</span> angleDiffer = mProgress * <span class="number">180</span> / <span class="number">100</span>;</div><div class="line">            RectF rectF = <span class="keyword">new</span> RectF(<span class="number">10</span>, <span class="number">10</span>, mWidth - <span class="number">10</span>, mHeight - <span class="number">10</span>);</div><div class="line">            canvas.drawArc(rectF, <span class="number">0</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            canvas.drawArc(rectF, <span class="number">80</span> + <span class="number">40</span> + <span class="number">80</span> + <span class="number">40</span> + angleDiffer, <span class="number">80</span>, <span class="keyword">false</span>, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            <span class="keyword">int</span> radius = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            <span class="keyword">int</span> radius2 = mProgress * ((mWidth - <span class="number">10</span>) / <span class="number">2</span>) / <span class="number">100</span>;</div><div class="line">            canvas.drawCircle(mWidth / <span class="number">2</span>, mHeight / <span class="number">2</span>, radius2, mCirclePaint);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// loading view mStatus --------------------------------</span></div><div class="line"><span class="comment">// color</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mOkColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mIDLEColor;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mSelectedColor;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToIDLEAniamte;</div><div class="line"><span class="keyword">private</span> ValueAnimator mLoadingAnimate;</div><div class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> mAnimating;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToSelectedAnimate;</div><div class="line"><span class="keyword">private</span> ValueAnimator mToOkAnimate;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mProgress;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> mStatus = <span class="number">0</span>; <span class="comment">// 0:idle , 1:loading , 2 selected</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStatus</span><span class="params">(<span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> lastStatus = mStatus;</div><div class="line">    mStatus = status;</div><div class="line">    stopAllAnimate();</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.IDLE:</div><div class="line">            startToIDLEAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.LOADING:</div><div class="line">            startLoadingAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.SELECTED:</div><div class="line">            startToSelectedAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> LoadingViewStatus.OK:</div><div class="line">            startToOkAnimate();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToOkAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToOkAnimate = ValueAnimator.ofInt(<span class="number">100</span>, <span class="number">0</span>);</div><div class="line">        mToOkAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToOkAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToOkAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">100</span>;</div><div class="line">    mToOkAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToSelectedAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mToSelectedAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToSelectedAnimate.setDuration(<span class="number">200</span>);</div><div class="line">        mToSelectedAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToSelectedAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToSelectedAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startLoadingAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate == <span class="keyword">null</span>) &#123;</div><div class="line">        mLoadingAnimate = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mLoadingAnimate.setRepeatMode(ValueAnimator.RESTART);</div><div class="line">        mLoadingAnimate.setRepeatCount(ValueAnimator.INFINITE);</div><div class="line">        mLoadingAnimate.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mLoadingAnimate.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mLoadingAnimate.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startToIDLEAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte == <span class="keyword">null</span>) &#123;</div><div class="line">        mToIDLEAniamte = ValueAnimator.ofInt(<span class="number">0</span>, <span class="number">100</span>);</div><div class="line">        mToIDLEAniamte.addUpdateListener(animation -&gt; &#123;</div><div class="line">            mProgress = ((<span class="keyword">int</span>) animation.getAnimatedValue());</div><div class="line">            invalidate();</div><div class="line">        &#125;);</div><div class="line">        mToIDLEAniamte.addListener(listener);</div><div class="line">    &#125;</div><div class="line">    mProgress = <span class="number">0</span>;</div><div class="line">    mToIDLEAniamte.start();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopAllAnimate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mLoadingAnimate != <span class="keyword">null</span> &amp;&amp; mLoadingAnimate.isStarted()) &#123;</div><div class="line">        mLoadingAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToIDLEAniamte != <span class="keyword">null</span> &amp;&amp; mToIDLEAniamte.isStarted()) &#123;</div><div class="line">        mToIDLEAniamte.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToSelectedAnimate != <span class="keyword">null</span> &amp;&amp; mToSelectedAnimate.isStarted()) &#123;</div><div class="line">        mToSelectedAnimate.end();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (mToOkAnimate != <span class="keyword">null</span> &amp;&amp; mToOkAnimate.isStarted()) &#123;</div><div class="line">        mToOkAnimate.end();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">Animator.AnimatorListener listener = <span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        mAnimating = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadingViewStatus</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> IDLE = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LOADING = <span class="number">1</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SELECTED = <span class="number">2</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> OK = <span class="number">3</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>效果：</p>
 <p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/circleview.gif"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/25/linux/linux-command/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/25/linux/linux-command/" itemprop="url">Linux Command</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-25T12:18:12+08:00">
-                2016-12-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="查看文件大小"><a href="#查看文件大小" class="headerlink" title="查看文件大小"></a>查看文件大小</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls -lh</div></pre></td></tr></table></figure>
-<h1 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h1><p>插卡内核<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">uname -a</div><div class="line"></div><div class="line">#or </div><div class="line"></div><div class="line">uname -r</div></pre></td></tr></table></figure></p>
-<h1 id="kill-process-by-pid-file"><a href="#kill-process-by-pid-file" class="headerlink" title="kill process by pid file"></a>kill process by pid file</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill $(cat ~/code/posbox/posbox.pid)</div></pre></td></tr></table></figure>
-<p>-9  杀死父进程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill -9 $(cat ~/code/posbox/posbox.pid)</div></pre></td></tr></table></figure>
-<h1 id="ps-进程管理"><a href="#ps-进程管理" class="headerlink" title="ps 进程管理"></a>ps 进程管理</h1><p>Process Status</p>
-<blockquote>
-<p>ps 为我们提供了进程的一次性的查看，它所提供的查看结果并不动态连续的；如果想对进程时间监控，应该用 top 工具。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps [参数]</div></pre></td></tr></table></figure>
-<p>命令参数：<br>查看所有进程信息：<code>ps -A</code></p>
-<p><code>ps ax</code>:</p>
-<ul>
-<li>a: all</li>
-<li>x: x参数会显示没有控制终端的进程。</li>
-</ul>
-<h1 id="tail-监听文件"><a href="#tail-监听文件" class="headerlink" title="tail 监听文件"></a>tail 监听文件</h1><p>常用于 log 的监听</p>
-<p>tail[必要参数][选择参数][文件]   </p>
-<p>-f ： 表示循环读取</p>
-<p>常用例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tail -f [文件]</div></pre></td></tr></table></figure></p>
-<h1 id="杀进程-uwsgi"><a href="#杀进程-uwsgi" class="headerlink" title="杀进程 uwsgi"></a>杀进程 uwsgi</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps ax | grep uwsgi</div></pre></td></tr></table></figure>
-<p>kill:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">udo pkill -f uwsgi -9</div></pre></td></tr></table></figure></p>
-<h1 id="fuser"><a href="#fuser" class="headerlink" title="fuser"></a>fuser</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">fuser: [-cfu] file ...</div><div class="line">    -c  file is treated as mount point</div><div class="line">    -f  the report is only for the named files</div><div class="line">    -u  print username of pid in parenthesis</div></pre></td></tr></table></figure>
-<p>例子：查看谁正在使用数据库,并关闭该进程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">fuser db.sqlite3</div><div class="line"></div><div class="line"># db.sqlite3: 35756 </div><div class="line"></div><div class="line">kill 35756</div></pre></td></tr></table></figure>
-<h1 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[minute] [hour] [day] [month] [week] [command]</div></pre></td></tr></table></figure>
-<p>例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">* * * * * scrapy crawl douban</div></pre></td></tr></table></figure>
-<h1 id="which"><a href="#which" class="headerlink" title="which"></a>which</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">which python3</div></pre></td></tr></table></figure>
-<p>获取某个命令的位置</p>
 
           
         
@@ -1767,8 +1765,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">407</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">409</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1779,7 +1777,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1789,8 +1787,8 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -1840,7 +1838,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

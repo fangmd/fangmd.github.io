@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/07/ReadNote/廖雪峰js/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/07/ReadNote/App研发录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/07/ReadNote/廖雪峰js/" itemprop="url">廖雪峰 js</a></h1>
+                <a class="post-title-link" href="/2016/08/07/ReadNote/App研发录/" itemprop="url">App 研发录</a></h1>
         
 
         <div class="post-meta">
@@ -282,7 +282,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-07T13:18:12+08:00">
                 2016-08-07
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -342,17 +342,99 @@
 
       
         
-          <h1 id="JavaScript-简介"><a href="#JavaScript-简介" class="headerlink" title="JavaScript 简介"></a>JavaScript 简介</h1><h2 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h2><p>网景公司员工 Brendan Eich 10天完成了javaScript的初期设计。</p>
-<p>它与java毫无关系。</p>
-<h2 id="ECMAScript"><a href="#ECMAScript" class="headerlink" title="ECMAScript"></a>ECMAScript</h2><p>是JavaScript语言的标准</p>
-<h2 id="JavaScript-版本"><a href="#JavaScript-版本" class="headerlink" title="JavaScript 版本"></a>JavaScript 版本</h2><p>2015年6月 ECMAScript 6（ES6）</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/08/07/ReadNote/廖雪峰js/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <h1 id="高效App框架设计与重构"><a href="#高效App框架设计与重构" class="headerlink" title="高效App框架设计与重构"></a>高效App框架设计与重构</h1><h2 id="重构，也未眠"><a href="#重构，也未眠" class="headerlink" title="重构，也未眠"></a>重构，也未眠</h2><h3 id="重新规划Android项目结构"><a href="#重新规划Android项目结构" class="headerlink" title="重新规划Android项目结构"></a>重新规划Android项目结构</h3><p>目前自己项目的目录结构：</p>
+<ul>
+<li>data</li>
+<li>module</li>
+<li>net</li>
+<li>widgets</li>
+<li>util</li>
+<li>br</li>
+<li>service</li>
+<li>permission</li>
+</ul>
+<p>目的：</p>
+<ul>
+<li>每个文件只有一个单独类，不要有嵌套</li>
+<li>讲Activity按照模块拆分，可以迅速定位到具体页面</li>
+</ul>
+<p>需要改进的地方：</p>
+<pre><code>bean －－》 Entity
+</code></pre><h3 id="为Activity定义新的生命周期"><a href="#为Activity定义新的生命周期" class="headerlink" title="为Activity定义新的生命周期"></a>为Activity定义新的生命周期</h3><p>单一职责：一个类或者一个方法，只做一件事。</p>
+<p>书中推荐：</p>
+<pre><code>onCreate() 拆分出三个方法：
+initVariables();
+initViews(savedInstanceState);
+loadData();
+</code></pre><h3 id="统一事件编程模型"><a href="#统一事件编程模型" class="headerlink" title="统一事件编程模型"></a>统一事件编程模型</h3><p>书中推荐在写点击事件的时候使用内部类。</p>
+<p>个人推荐使用Butterknife实现点击事件</p>
+<h3 id="实体化编程"><a href="#实体化编程" class="headerlink" title="实体化编程"></a>实体化编程</h3><h4 id="在网络请求中使用实体"><a href="#在网络请求中使用实体" class="headerlink" title="在网络请求中使用实体"></a>在网络请求中使用实体</h4><p>书中举了一个反例：讲网络请求返回的数据包装程JSONObject／JSONArray，在项目中直接使用，需要跨Activity传递数据时还将对象封装成全局的。</p>
+<p>书中推荐：使用自定义class将网络数据进行转化。配合GSON</p>
+<p>需要避免混淆：</p>
+<pre><code>-keepattributes Signature // 不混淆泛型
+-keepattributes *Annotation* // 不混淆注解
+</code></pre><h4 id="实体生成器"><a href="#实体生成器" class="headerlink" title="实体生成器"></a>实体生成器</h4><p>推荐一个插件：GsonFormat,利用json数据快速生成实体类</p>
+<h4 id="在页面跳转中使用实体类"><a href="#在页面跳转中使用实体类" class="headerlink" title="在页面跳转中使用实体类"></a>在页面跳转中使用实体类</h4><ol>
+<li><p>方法一：对象全全局化</p>
+<blockquote>
+<p>书中使用的是使用自定义的一个全局对象来引用实体类对象，app切换到后台的时候，如果内存不足，全局变量就会被回收不推荐使用。<br> 目前如果App需要有全局参数或者变量，推荐使用自定义的Application对象来引用</p>
+</blockquote>
+</li>
+<li><p>方法二：Intent传值</p>
+<p> 需要对象实现序列化<br> 推荐一个序列化插件：Android Parcelable code generator</p>
+</li>
+</ol>
+<h3 id="Adapter-模版"><a href="#Adapter-模版" class="headerlink" title="Adapter 模版"></a>Adapter 模版</h3><h3 id="类型安全转换函数"><a href="#类型安全转换函数" class="headerlink" title="类型安全转换函数"></a>类型安全转换函数</h3><p>常出现的错误：</p>
+<ol>
+<li><p>Object类型对象,对其直接使用字符串操作函数toString，如果为null就会奔溃</p>
+<pre><code>int result = Integer.valueOf(obj.toString());
+</code></pre><p> 解决方法：编写一个类型安全转换函数convertToInt：</p>
+<pre><code>public final static int convertToInt(Object value, int defaultValue){
+    if(value==null || &quot;&quot;.equals(valur.toString().trim())){
+        return defaultValue;
+    }
+    try{
+        return Integer.valueOf(value.toString());
+    } catch (Exception e){
+        try{
+            return Double.valueOf(value.toString()).intValue();
+        } catch (Exception e1){
+            return defaultValue;
+        }
+    }
+}
+</code></pre><p> 最后使用：</p>
+<pre><code>int result = Utils.convertToInt(obj, 0);
+</code></pre><p> Utils类中还需要自定义其他的类型转换安全函数。</p>
+</li>
+<li><p>如果长度不够，substring函数时就会奔溃</p>
+<p> 加<code>try..catch</code>处理<br> 不同数据不同处理：1. 不需要加工的数据：数据为空，或者长度符合要求，直接显示。 2. 对于重要数据：比如金额不能为空，应该弹出窗口提示用户</p>
+</li>
+</ol>
+<h2 id="Android-网络底层框架设计"><a href="#Android-网络底层框架设计" class="headerlink" title="Android 网络底层框架设计"></a>Android 网络底层框架设计</h2><h2 id="Android-经典场景设计"><a href="#Android-经典场景设计" class="headerlink" title="Android 经典场景设计"></a>Android 经典场景设计</h2><h3 id="App-图片缓存设计"><a href="#App-图片缓存设计" class="headerlink" title="App 图片缓存设计"></a>App 图片缓存设计</h3><p>书中介绍了ImageLoader,Fresco</p>
+<p>本人使用的是Glide</p>
+<h3 id="对网络流量进行优化"><a href="#对网络流量进行优化" class="headerlink" title="对网络流量进行优化"></a>对网络流量进行优化</h3><h4 id="通信层面优化"><a href="#通信层面优化" class="headerlink" title="通信层面优化"></a>通信层面优化</h4><ol>
+<li>接口返回的数据压缩：gzip</li>
+<li>新的数据传输协议ProtoBuffer</li>
+<li>避免频繁发起请求，能一次请求完的就尽量一次解决</li>
+<li>TCP长连接，提高访问速度</li>
+<li><strong>建立取消网络请求机制</strong></li>
+<li>增加重试机制：为get请求建立重试，不要为post请求建立重试</li>
+</ol>
+<h4 id="图片策略优化"><a href="#图片策略优化" class="headerlink" title="图片策略优化"></a>图片策略优化</h4><ol>
+<li><p>确保下载的图片，符合ImageView控件的大小</p>
+<p> 在请求中设置需要的width，height</p>
+</li>
+<li><p>低流量模式</p>
+<p> 请求中quality</p>
+</li>
+<li><p>极速模式</p>
+</li>
+</ol>
+<h3 id="城市列表的设计"><a href="#城市列表的设计" class="headerlink" title="城市列表的设计"></a>城市列表的设计</h3><p>P61</p>
+
+          
         
       
     </div>
@@ -423,7 +505,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-07T13:18:12+08:00">
                 2016-08-07
@@ -444,7 +526,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -532,7 +614,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/29/ReadNote/设计模式/设计模式之蝉-门面模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/07/Android/UI/贝塞尔曲线/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -551,7 +633,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/29/ReadNote/设计模式/设计模式之蝉-门面模式/" itemprop="url">设计模式之蝉 - 门面模式</a></h1>
+                <a class="post-title-link" href="/2016/08/07/Android/UI/贝塞尔曲线/" itemprop="url">贝塞尔曲线</a></h1>
         
 
         <div class="post-meta">
@@ -561,10 +643,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-29T21:38:14+08:00">
-                2016-07-29
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-07T13:18:12+08:00">
+                2016-08-07
               </time>
             
 
@@ -582,12 +664,12 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -621,13 +703,24 @@
 
       
         
-          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>写信</p>
-<p>ILetterProcess:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILetterProcess</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeContext</span><span class="params">(String context)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fillEnvelope</span><span class="params">(String address)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">letterInotoEnvelope</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendLetter</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <p>参考：</p>
+<ul>
+<li><a href="http://gold.xitu.io/entry/5771cb966be3ff00639ffcb2">http://gold.xitu.io/entry/5771cb966be3ff00639ffcb2</a></li>
+<li><a href="http://blog.csdn.net/lupengfei1009/article/details/51995385">http://blog.csdn.net/lupengfei1009/article/details/51995385</a></li>
+</ul>
+<h2 id="数学中的贝塞尔"><a href="#数学中的贝塞尔" class="headerlink" title="数学中的贝塞尔"></a>数学中的贝塞尔</h2><p>贝塞尔曲线于1962年，由法国工程师皮埃尔·贝塞尔（Pierre Bézier）所广泛发表，他运用贝塞尔曲线来为汽车的主体进行设计。贝塞尔曲线最初由Paul de Casteljau于1959年运用de Casteljau算法开发，以稳定数值的方法求出贝塞尔曲线。</p>
+<p>在计算机图形学中贝赛尔曲线的运用也很广泛，Photoshop中的钢笔效果，Flash5的贝塞尔曲线工具，在软件GUI开发中一般也会提供对应的方法来实现贝赛尔曲线。</p>
+<ul>
+<li>线性贝塞尔曲线</li>
+<li>二次贝塞尔曲线</li>
+<li>三阶贝塞尔曲线</li>
+</ul>
+<p>详情介绍：<a href="https://zh.wikipedia.org/wiki/%E8%B2%9D%E8%8C%B2%E6%9B%B2%E7%B7%9A">wiki</a></p>
+<h2 id="Android-中实现贝塞尔曲线"><a href="#Android-中实现贝塞尔曲线" class="headerlink" title="Android 中实现贝塞尔曲线"></a>Android 中实现贝塞尔曲线</h2><h3 id="quadTo-一次贝塞尔"><a href="#quadTo-一次贝塞尔" class="headerlink" title="quadTo 一次贝塞尔"></a>quadTo 一次贝塞尔</h3><h3 id="rQuadTo-二次贝塞尔"><a href="#rQuadTo-二次贝塞尔" class="headerlink" title="rQuadTo 二次贝塞尔"></a>rQuadTo 二次贝塞尔</h3><h3 id="cubicTo-三次贝塞尔"><a href="#cubicTo-三次贝塞尔" class="headerlink" title="cubicTo 三次贝塞尔"></a>cubicTo 三次贝塞尔</h3>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/29/ReadNote/设计模式/设计模式之蝉-门面模式/#more" rel="contents">
-              Weiterlesen &raquo;
+            <a class="btn" href="/2016/08/07/Android/UI/贝塞尔曲线/#more" rel="contents">
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -672,7 +765,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/23/ReadNote/设计模式/设计模式之蝉-迭代器模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/29/ReadNote/设计模式/包装模式/设计模式之蝉-门面模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -691,7 +784,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/23/ReadNote/设计模式/设计模式之蝉-迭代器模式/" itemprop="url">设计模式之蝉 - 迭代器模式</a></h1>
+                <a class="post-title-link" href="/2016/07/29/ReadNote/设计模式/包装模式/设计模式之蝉-门面模式/" itemprop="url">设计模式之蝉 - 门面模式</a></h1>
         
 
         <div class="post-meta">
@@ -701,7 +794,147 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-29T21:38:14+08:00">
+                2016-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>写信</p>
+<p>ILetterProcess:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ILetterProcess</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeContext</span><span class="params">(String context)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fillEnvelope</span><span class="params">(String address)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">letterInotoEnvelope</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendLetter</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/07/29/ReadNote/设计模式/包装模式/设计模式之蝉-门面模式/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/23/ReadNote/设计模式/行为设计模式/设计模式之蝉-迭代器模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/23/ReadNote/设计模式/行为设计模式/设计模式之蝉-迭代器模式/" itemprop="url">设计模式之蝉 - 迭代器模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-23T21:38:14+08:00">
                 2016-07-23
@@ -722,7 +955,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -773,8 +1006,8 @@
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/23/ReadNote/设计模式/设计模式之蝉-迭代器模式/#more" rel="contents">
-              Weiterlesen &raquo;
+            <a class="btn" href="/2016/07/23/ReadNote/设计模式/行为设计模式/设计模式之蝉-迭代器模式/#more" rel="contents">
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -848,7 +1081,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-22T13:18:12+08:00">
                 2016-07-22
@@ -869,7 +1102,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1261,7 +1494,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-17T13:18:12+08:00">
                 2016-07-17
@@ -1282,7 +1515,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1339,7 +1572,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/07/17/ReadNote/Android开发艺术探索/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1384,7 +1617,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/16/ReadNote/设计模式/设计模式之蝉-抽象工厂模式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1403,7 +1636,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/16/ReadNote/设计模式/设计模式之蝉-抽象工厂模式/" itemprop="url">设计模式之蝉 - 抽象工厂方法模式</a></h1>
+                <a class="post-title-link" href="/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/" itemprop="url">设计模式之蝉 - 抽象工厂方法模式</a></h1>
         
 
         <div class="post-meta">
@@ -1413,7 +1646,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-16T21:38:14+08:00">
                 2016-07-16
@@ -1434,7 +1667,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1483,8 +1716,8 @@ private ServiceConnection mConnection = new ServiceConnection() {
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FemaleYellowHuman</span> <span class="keyword">extends</span> <span class="title">AbstractYellowHuman</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getSex</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"Female"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MaleYellowHuman</span></div></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/16/ReadNote/设计模式/设计模式之蝉-抽象工厂模式/#more" rel="contents">
-              Weiterlesen &raquo;
+            <a class="btn" href="/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/#more" rel="contents">
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1558,7 +1791,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-12T13:18:12+08:00">
                 2016-07-12
@@ -1579,7 +1812,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1764,7 +1997,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-12T13:18:12+08:00">
                 2016-07-12
@@ -1785,7 +2018,7 @@ private ServiceConnection mConnection = new ServiceConnection() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1869,259 +2102,6 @@ private ServiceConnection mConnection = new ServiceConnection() {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/11/Android/Android 版本/Android5.0/design包/Behavior-低栏拉出/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/07/11/Android/Android 版本/Android5.0/design包/Behavior-低栏拉出/" itemprop="url">CoordinatorLayout Behavior - 底栏拉出</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-11T14:38:14+08:00">
-                2016-07-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><ol>
-<li>根布局为<code>CoordinatorLayout</code></li>
-<li>正常布局占满整个屏幕</li>
-<li><p>(可选) 添加一个底布局全部拉出的时候显示的头布局, 相关属性:</p>
-<pre><code>&lt;RelativeLayout
-android:id=&quot;@+id/design_bottom_sheet_bar&quot;
-android:layout_width=&quot;match_parent&quot;
-android:layout_height=&quot;?attr/actionBarSize&quot;
-android:background=&quot;@color/colorAccent&quot;
-app:layout_anchor=&quot;@+id/design_bottom_sheet&quot;
-app:layout_anchorGravity=&quot;top&quot;
-android:layout_gravity=&quot;bottom&quot;
-android:visibility=&quot;gone&quot;&gt;
-
-&lt;TextView
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    android:text=&quot;点击收起BottomSheet&quot;
-    android:textColor=&quot;#ffffff&quot;
-    android:layout_centerInParent=&quot;true&quot;/&gt;
-
-&lt;/RelativeLayout&gt;
-</code></pre></li>
-<li><p>可拉出的底布布局: 下面的<code>ImageView</code>为占位控件可替换成正常的布局控件,</p>
-<pre><code>&lt;RelativeLayout
-android:id=&quot;@+id/design_bottom_sheet&quot;
-android:layout_width=&quot;match_parent&quot;
-android:layout_height=&quot;match_parent&quot;
-android:minHeight=&quot;100dp&quot;
-app:behavior_peekHeight=&quot;56dp&quot;
-app:behavior_hideable=&quot;false&quot;
-app:layout_behavior=&quot;@string/bottom_sheet_behavior&quot;
-android:background=&quot;#ffffff&quot;
-&gt;
-&lt;TextView
-    android:id=&quot;@+id/bottom_sheet_tv&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;56dp&quot;
-    android:layout_centerHorizontal=&quot;true&quot;
-    android:gravity=&quot;center&quot;
-    android:text=&quot;这是一个BottomSheet&quot;/&gt;
-&lt;ImageView
-    android:id=&quot;@+id/bottom_sheet_iv&quot;
-    android:layout_width=&quot;wrap_content&quot;
-    android:layout_height=&quot;match_parent&quot;
-    android:layout_centerInParent=&quot;true&quot;
-    android:padding=&quot;10dp&quot;
-    android:minHeight=&quot;100dp&quot;
-    android:adjustViewBounds=&quot;true&quot;
-    android:scaleType=&quot;centerInside&quot;
-    android:layout_gravity=&quot;center&quot;/&gt;
-&lt;/RelativeLayout&gt;
-</code></pre></li>
-<li><p>活动代码:</p>
-<pre><code>private void initBehavior() {
-mBehavior = BottomSheetBehavior.from(mDesignBottomSheet);
-mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-    @Override
-    public void onStateChanged(@NonNull View bottomSheet, int newState) {
-        // if(newState!=BottomSheetBehavior.STATE_COLLAPSED&amp;&amp;bottom_sheet_tv.getVisibility()==View.VISIBLE){
-        //  bottom_sheet_tv.setVisibility(View.GONE);    
-        //bottom_sheet_iv.setVisibility(View.VISIBLE);
-        //  }else if(newState==BottomSheetBehavior.STATE_COLLAPSED&amp;&amp;bottom_sheet_tv.getVisibility()==View.GONE){
-        // bottom_sheet_tv.setVisibility(View.VISIBLE);
-        //bottom_sheet_iv.setVisibility(View.GONE);
-        //}
-
-        if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-            mDesignBottomSheetBar.setVisibility(View.GONE);
-        } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-            mDesignBottomSheetBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * 滑动过程中
-     * @param bottomSheet
-     * @param slideOffset
-     */
-    @Override
-    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-        if (bottomSheet.getTop() &lt; 2 * mDesignBottomSheetBar.getHeight()) {
-            mDesignBottomSheetBar.setVisibility(View.VISIBLE);
-            mDesignBottomSheetBar.setAlpha(slideOffset);
-            mDesignBottomSheetBar.setTranslationY(bottomSheet.getTop() - 2 * mDesignBottomSheetBar.getHeight());
-        } else {
-            mDesignBottomSheetBar.setVisibility(View.INVISIBLE);
-        }
-    }
-});
-}
-</code></pre></li>
-<li><p>修改底部拉出布局的高度:</p>
-<pre><code>/**
- * 修改底部拉出布局的高度,流出标题栏的位置
- *
- * @param hasFocus
- */
-@Override
-public void onWindowFocusChanged(boolean hasFocus) {
-super.onWindowFocusChanged(hasFocus);
-//修改SetBottomSheet的高度 留出顶部工具栏的位置
-
-// 下面的代码可以调整拉出的高度,也可以直接在布局中写死高度
-if (!isSetBottomSheetHeight) {
-    CoordinatorLayout.LayoutParams linearParams = (CoordinatorLayout.LayoutParams) mDesignBottomSheet.getLayoutParams();
-    linearParams.height = mBaiduMapCoordinatorLayout.getHeight() - mDesignBottomSheetBar.getHeight();
-    mDesignBottomSheet.setLayoutParams(linearParams);
-    isSetBottomSheetHeight = true;//设置标记 只执行一次
-}
-}
-</code></pre></li>
-<li><p>点击折叠布局:</p>
-<pre><code>@OnClick(R.id.design_bottom_sheet_bar)
-public void onClick() {
-mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-}
-</code></pre></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2171,8 +2151,8 @@ mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">407</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">409</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -2183,7 +2163,7 @@ mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -2193,8 +2173,8 @@ mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">251</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -2244,7 +2224,7 @@ mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
