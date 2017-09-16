@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/ndk/NDK实战/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/Android 版本/Android5.0/design包/共享元素/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/03/Android/ndk/NDK实战/" itemprop="url">NDK Hello</a></h1>
+                <a class="post-title-link" href="/2016/04/03/Android/Android 版本/Android5.0/design包/共享元素/" itemprop="url">android 5.0 共享元素</a></h1>
         
 
         <div class="post-meta">
@@ -282,7 +282,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
                 2016-04-03
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -343,35 +343,17 @@
       
         
           
-            <h1 id="创建一个Jni类"><a href="#创建一个Jni类" class="headerlink" title="创建一个Jni类"></a>创建一个Jni类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class JniTest &#123;</div><div class="line">    public static native getStringFromNative();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Make（构建）Module-app生成字节码（-class）文件"><a href="#Make（构建）Module-app生成字节码（-class）文件" class="headerlink" title="Make（构建）Module app生成字节码（*.class）文件"></a>Make（构建）Module app生成字节码（*.class）文件</h1><p><code>build-&gt;make module&#39;app&#39;</code></p>
-<p>目的是生成 <code>.class</code> 文件，文件地址在：<code>NdkBuilderDemo/app/build/intermediates/classes/debug/com/adouble/ndkbuilderdemo/JniTest.class</code></p>
-<h1 id="生成头文件（-h）"><a href="#生成头文件（-h）" class="headerlink" title="生成头文件（*.h）"></a>生成头文件（*.h）</h1><ol>
-<li>首先打开工具栏的Terminal工具</li>
-<li><code>cd app/src/main</code></li>
-<li><code>javah -d jni -classpath ../../build/intermediates/classes/debug com.adouble.ndkbuilderdemo.JniTest</code></li>
+            <h1 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h1><ol>
+<li>源布局中的一个控件设置属性:<code>android:transitionName=&quot;transitionName&quot;</code></li>
+<li>目标布局中的一个控件设置属性:<code>android:transitionName=&quot;transitionName&quot;</code></li>
 </ol>
-<ul>
-<li><code>javah</code> 执行javah命令生成头文件（*.h）</li>
-<li><code>-d jni</code> 在当前目录创建一个文件，文件名称是jni</li>
-<li><code>-classpath xxx/debug</code> 指定要生成头文件（.h）的字节码文件路径（class）</li>
-</ul>
-<h1 id="创建JniTest-c文件"><a href="#创建JniTest-c文件" class="headerlink" title="创建JniTest.c文件"></a>创建JniTest.c文件</h1><p>方法JNICALL Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative，这相当于是java的抽象方法，它只声明但是没有任何实现，一般情况下需要创建一个c或cpp文件去实现相应的方法。</p>
-<ol>
-<li>首先创建一个文件JniTest.c</li>
-<li>编辑JniTest.c，导入头文件com_sandwich_jelly_myapplication_JniTest.h</li>
-<li>实现头文件的抽象方法</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> com_adouble_ndkbuilderdemo_JniTest.h</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative</span><span class="params">(JNIEnv *e, jobject obj)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> (**e).NewStringUTF(e,<span class="string">"Hello from JniTest Function"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Jni类的配置及引用"><a href="#Jni类的配置及引用" class="headerlink" title="Jni类的配置及引用"></a>Jni类的配置及引用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    defaultConfig &#123;</div><div class="line">...</div><div class="line">        ndk &#123;</div><div class="line">            moduleName &quot;NdkJniDemo&quot;          //生成的so名字</div><div class="line">            ldLibs &quot;log&quot;//实现__android_log_print</div><div class="line">            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot; //输出指定三种abi体系结构下的so库，目前可有可无。</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>修改原文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JniTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        System.loadLibrary(<span class="string">"NdkJniDemo"</span>);<span class="comment">//之前在build.gradle里面设置的so名字，必须一致</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> String <span class="title">getStringFromNative</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="项目中引用so"><a href="#项目中引用so" class="headerlink" title="项目中引用so"></a>项目中引用so</h1><p>以上项目编译完后，可以在app/build/intermediates/ndk/debug/lib下面找到生成的so</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/3e9f3055d7a6" target="_blank" rel="external">http://www.jianshu.com/p/3e9f3055d7a6</a></li>
-<li><a href="http://xyzlf.github.io/2016/07/17/android-jni.html" target="_blank" rel="external">http://xyzlf.github.io/2016/07/17/android-jni.html</a></li>
-</ul>
-
+<p>跳转方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">actionStart</span><span class="params">(Activity context)</span></span>&#123;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(context, LearnNewsActivity.class);</div><div class="line">    <span class="keyword">if</span> (android.os.Build.VERSION.SDK_INT &gt;= android.os.Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">        Pair&lt;View, String&gt;[] pairs = TransitionHelper.createSafeTransitionParticipants(context, <span class="keyword">true</span>);</div><div class="line">        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, pairs);</div><div class="line">        ActivityCompat.startActivity(context, intent, optionsCompat.toBundle());</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        context.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>style 21 主题中增加:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;item name="android:windowContentTransitions"&gt;true&lt;/item&gt;</div></pre></td></tr></table></figure>
+<h1 id="导航栏闪白处理"><a href="#导航栏闪白处理" class="headerlink" title="导航栏闪白处理"></a>导航栏闪白处理</h1><p><a href="https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti" target="_blank" rel="external">https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti</a><br><a href="https://codeday.me/bug/20170630/29499.html" target="_blank" rel="external">https://codeday.me/bug/20170630/29499.html</a></p>
+<p>在目标 Activity 中调用下面的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setupWindowAnimations</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.setupWindowAnimations();</div><div class="line">    </div><div class="line"></div><div class="line">    Fade fade = <span class="keyword">new</span> Fade();</div><div class="line">    fade.setDuration(<span class="number">500</span>);</div><div class="line">    fade.excludeTarget(android.R.id.statusBarBackground, <span class="keyword">true</span>);</div><div class="line">    fade.excludeTarget(android.R.id.navigationBarBackground, <span class="keyword">true</span>);</div><div class="line">    getWindow().setReturnTransition(fade);</div><div class="line">    getWindow().setEnterTransition(fade);</div><div class="line"></div><div class="line">    <span class="comment">// or</span></div><div class="line">    <span class="comment">//getWindow().setEnterTransition(null);</span></div><div class="line">    <span class="comment">//getWindow().setReturnTransition(null);</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
           
         
       
@@ -443,7 +425,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T09:23:14+08:00">
                 2016-04-03
@@ -464,7 +446,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -511,7 +493,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/03/Android/view/menu/Menu/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -585,7 +567,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
                 2016-04-02
@@ -606,7 +588,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -705,295 +687,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Fragment/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Fragment/" itemprop="url">Fragment</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
-                2016-04-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/控件使用/Fragment/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/html/html-菜鸟教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/02/html/html-菜鸟教程/" itemprop="url">html-w3school 教程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
-                2016-04-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><a href="http://w3school.com.cn/html/html_intro.asp">w3school</a></p>
-<h1 id="什么是html"><a href="#什么是html" class="headerlink" title="什么是html"></a>什么是html</h1><p>用来描述网页的语音。</p>
-<ul>
-<li>HTML指的是超文本标记语言(Hyper Text Markup Language)</li>
-<li>HTML不是一种编程语言，而是一种标记语言(markup language)</li>
-<li>标记语言是一套标记标签(markup tag)</li>
-<li>HTML使用标记标签来描述网页</li>
-</ul>
-<h1 id="HTML标签"><a href="#HTML标签" class="headerlink" title="HTML标签"></a>HTML标签</h1><ul>
-<li>由尖括号包围的关键词</li>
-<li>成对出现</li>
-<li>开始标签和结束标签</li>
-<li>开始和结束也称为开放标签和闭合标签</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/html/html-菜鸟教程/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/view/LayoutInflater 原理分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1023,7 +716,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
                 2016-04-02
@@ -1044,7 +737,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1150,7 +843,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/html/html-菜鸟教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1169,7 +862,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/" itemprop="url">AlertDialog调出方法</a></h1>
+                <a class="post-title-link" href="/2016/04/02/html/html-菜鸟教程/" itemprop="url">html-w3school 教程</a></h1>
         
 
         <div class="post-meta">
@@ -1179,9 +872,9 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
                 2016-04-02
               </time>
             
@@ -1200,7 +893,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1239,11 +932,24 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
 
       
         
-          <h1 id="AlertDialog调出方法"><a href="#AlertDialog调出方法" class="headerlink" title="AlertDialog调出方法"></a>AlertDialog调出方法</h1>
+          <p><a href="http://w3school.com.cn/html/html_intro.asp">w3school</a></p>
+<h1 id="什么是html"><a href="#什么是html" class="headerlink" title="什么是html"></a>什么是html</h1><p>用来描述网页的语音。</p>
+<ul>
+<li>HTML指的是超文本标记语言(Hyper Text Markup Language)</li>
+<li>HTML不是一种编程语言，而是一种标记语言(markup language)</li>
+<li>标记语言是一套标记标签(markup tag)</li>
+<li>HTML使用标记标签来描述网页</li>
+</ul>
+<h1 id="HTML标签"><a href="#HTML标签" class="headerlink" title="HTML标签"></a>HTML标签</h1><ul>
+<li>由尖括号包围的关键词</li>
+<li>成对出现</li>
+<li>开始标签和结束标签</li>
+<li>开始和结束也称为开放标签和闭合标签</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/#more" rel="contents">
-              Read more &raquo;
+            <a class="btn" href="/2016/04/02/html/html-菜鸟教程/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1288,7 +994,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Toast大全/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Fragment/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1307,7 +1013,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Toast大全/" itemprop="url">Toast</a></h1>
+                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Fragment/" itemprop="url">Fragment</a></h1>
         
 
         <div class="post-meta">
@@ -1317,9 +1023,9 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T21:38:14+08:00">
                 2016-04-02
               </time>
             
@@ -1338,7 +1044,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1377,12 +1083,149 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
 
       
         
-          <h2 id="默认Toast"><a href="#默认Toast" class="headerlink" title="默认Toast"></a>默认Toast</h2><pre><code>Toast.makeText(getApplicationContext(), &quot;默认Toast样式&quot;,Toast.LENGTH_SHORT).show();
-</code></pre>
+          <h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/02/Android/控件使用/Toast大全/#more" rel="contents">
-              Read more &raquo;
+            <a class="btn" href="/2016/04/02/Android/控件使用/Fragment/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/" itemprop="url">AlertDialog调出方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
+                2016-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="AlertDialog调出方法"><a href="#AlertDialog调出方法" class="headerlink" title="AlertDialog调出方法"></a>AlertDialog调出方法</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/02/Android/view/DialogFragment/AlertDialog的其他调出方法/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1456,7 +1299,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
                 2016-04-02
@@ -1477,7 +1320,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1545,7 +1388,146 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/02/Android/tips/android tips/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/02/Android/控件使用/Toast大全/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/02/Android/控件使用/Toast大全/" itemprop="url">Toast</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-02T12:18:12+08:00">
+                2016-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="默认Toast"><a href="#默认Toast" class="headerlink" title="默认Toast"></a>默认Toast</h2><pre><code>Toast.makeText(getApplicationContext(), &quot;默认Toast样式&quot;,Toast.LENGTH_SHORT).show();
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/02/Android/控件使用/Toast大全/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1619,7 +1601,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-01T09:13:12+08:00">
                 2016-04-01
@@ -1640,7 +1622,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1685,7 +1667,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/01/Android/序列化/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1770,8 +1752,8 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">409</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">410</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1782,7 +1764,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1792,8 +1774,8 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1843,7 +1825,7 @@ LayoutInflater layoutInflater = (LayoutInflater)conext.getSystemService(Context.
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
