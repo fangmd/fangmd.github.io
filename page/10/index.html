@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/01/Python/nginx/启动nginx status状态/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/01/Python/docker/docker-command/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/01/01/Python/nginx/启动nginx status状态/" itemprop="url">启动 nginx status</a></h1>
+                <a class="post-title-link" href="/2017/01/01/Python/docker/docker-command/" itemprop="url">Docker Command</a></h1>
         
 
         <div class="post-meta">
@@ -307,8 +307,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
                   </a>
                 </span>
 
@@ -343,35 +343,26 @@
       
         
           
-            <p>system version : macos 10.12.2</p>
-<h1 id="启用-nginx-status-配置"><a href="#启用-nginx-status-配置" class="headerlink" title="启用 nginx status 配置"></a>启用 nginx status 配置</h1><h2 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h2><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">    listen  *:8181 default_server;</div><div class="line">    server_name _;</div><div class="line">    location /ngx_status </div><div class="line">    &#123;</div><div class="line">        stub_status on;</div><div class="line">        access_log off;</div><div class="line">        #allow 127.0.0.1;</div><div class="line">        #deny all;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="重启-nginx"><a href="#重启-nginx" class="headerlink" title="重启 nginx"></a>重启 nginx</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -s reload</div></pre></td></tr></table></figure>
-<p>or</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo nginx -s quit</div><div class="line"></div><div class="line">sudo nginx</div></pre></td></tr></table></figure>
-<p>查看 nginx 配置文件的地址和是否启动成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo nginx -t</div></pre></td></tr></table></figure></p>
-<h2 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h2><p><a href="http://127.0.0.1:8181/ngx_status" target="_blank" rel="external">http://127.0.0.1:8181/ngx_status</a> </p>
-<p>可以看到的内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Active connections: 6 </div><div class="line">server accepts handled requests</div><div class="line"> 34 34 58 </div><div class="line">Reading: 0 Writing: 1 Waiting: 5</div></pre></td></tr></table></figure>
-<p>解释：</p>
-<ul>
-<li>active connections – 活跃的连接数量</li>
-<li>server accepts handled requests — 总共处理了11989个连接 , 成功创建11989次握手, 总共处理了11991个请求</li>
-<li>reading — 读取客户端的连接数.</li>
-<li>writing — 响应数据到客户端的数量</li>
-<li>waiting — 开启 keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx 已经处理完正在等候下一次请求指令的驻留连接.</li>
-</ul>
-<h1 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h1><h2 id="mac-brew-nginx-安装额外模块"><a href="#mac-brew-nginx-安装额外模块" class="headerlink" title="mac brew nginx 安装额外模块"></a>mac brew nginx 安装额外模块</h2><p>查看默认安装的模块有哪些：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew options nginx</div></pre></td></tr></table></figure></p>
-<p>输出的内容是默认会安装的模块</p>
-<h3 id="安装-nginx-full"><a href="#安装-nginx-full" class="headerlink" title="安装 nginx-full"></a>安装 nginx-full</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew tap homebrew/nginx</div></pre></td></tr></table></figure>
-<p>再查看一下可选参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew options nginx-full</div></pre></td></tr></table></figure></p>
-<p>如果已经安装了 nginx 可能需要先取消 link:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">brew unlink nginx</div><div class="line"># brew link nginx-full</div></pre></td></tr></table></figure></p>
-<p>安装 nginx-full 添加模块</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install nginx-full --with-geoip</div></pre></td></tr></table></figure>
-<h2 id="编译-nginx"><a href="#编译-nginx" class="headerlink" title="编译 nginx"></a>编译 nginx</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./configure --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module</div></pre></td></tr></table></figure>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><code>Undefined symbols for architecture x86_64:</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">--with-cc-opt=&quot;-I/usr/local/include -I/usr/local/opt/openssl/include&quot;</div><div class="line">--with-ld-opt=&quot;-L/usr/local/lib -L/usr/local/opt/openssl/lib&quot;</div></pre></td></tr></table></figure>
-<h2 id="openssl-安装方法"><a href="#openssl-安装方法" class="headerlink" title="openssl 安装方法"></a>openssl 安装方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">brew install openssl</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s /usr/local/Cellar/openssl/&#123;version&#125;/include/openssl /usr/local/include/openssl</div></pre></td></tr></table></figure>
+            <p>command: python blog/manage.py runserver 0.0.0.0:8000</p>
+<p>/etc/nginx/logs/error.log</p>
+<p>getting INI configuration from blog/myconf.ini</p>
+<h1 id="docker-ps"><a href="#docker-ps" class="headerlink" title="docker ps"></a>docker ps</h1><p>进程处理，查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">docker ps --help</div><div class="line"></div><div class="line">docker ps -l</div><div class="line"></div><div class="line">docker kill [CONTAINER ID]</div><div class="line">docker rm [CONTAINER ID]</div></pre></td></tr></table></figure>
+<h1 id="docker-images"><a href="#docker-images" class="headerlink" title="docker images"></a>docker images</h1><p>查看 docker 中的镜像</p>
+<h1 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h1><p>给 Image 命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker tag [id] [new image tag]</div><div class="line">docker tag [id] [account name/image tag:latest]</div></pre></td></tr></table></figure>
+<h1 id="login"><a href="#login" class="headerlink" title="login"></a>login</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker login</div></pre></td></tr></table></figure>
+<h1 id="push"><a href="#push" class="headerlink" title="push"></a>push</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker push [image tag]</div></pre></td></tr></table></figure>
+<h1 id="rm-image"><a href="#rm-image" class="headerlink" title="rm image"></a>rm image</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rmi -f [image tag or image id]</div></pre></td></tr></table></figure>
+<h1 id="remove-container"><a href="#remove-container" class="headerlink" title="remove container"></a>remove container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker rm [container name]</div></pre></td></tr></table></figure>
+<h1 id="stop-container"><a href="#stop-container" class="headerlink" title="stop container"></a>stop container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker stop [container id or names]</div></pre></td></tr></table></figure>
+<h1 id="restart-container"><a href="#restart-container" class="headerlink" title="restart container"></a>restart container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker start [container name]</div></pre></td></tr></table></figure>
+<h1 id="查看-docker-machine-ip"><a href="#查看-docker-machine-ip" class="headerlink" title="查看 docker machine ip"></a>查看 docker machine ip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-machine ip</div></pre></td></tr></table></figure>
+<h1 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker compose"></a>docker compose</h1><h2 id="start-compose"><a href="#start-compose" class="headerlink" title="start compose"></a>start compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-compose up</div></pre></td></tr></table></figure>
+<h2 id="update-code"><a href="#update-code" class="headerlink" title="update code"></a>update code</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-compose build</div></pre></td></tr></table></figure>
+<h2 id="停止-compose"><a href="#停止-compose" class="headerlink" title="停止 compose"></a>停止 compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">docker-compose ps</div><div class="line"></div><div class="line">docker-compose rm -all</div></pre></td></tr></table></figure>
+<h1 id="SEE-FILE-IN-CONTAINER"><a href="#SEE-FILE-IN-CONTAINER" class="headerlink" title="SEE FILE IN CONTAINER"></a>SEE FILE IN CONTAINER</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker export dockerblog_web_1 &gt; contents.tar</div></pre></td></tr></table></figure>
+
           
         
       
@@ -699,6 +690,146 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>Django 实现分页</p>
+</blockquote>
+<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
+<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
+<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/ReadNote/https/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -885,7 +1016,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Python/django/Django-Pagination/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -904,7 +1035,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/12/28/Python/django/Django-Pagination/" itemprop="url">Django - Pagination</a></h1>
+                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" itemprop="url">自定义View -- 自定义属性</a></h1>
         
 
         <div class="post-meta">
@@ -916,7 +1047,7 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T13:18:12+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
                 2016-12-28
               </time>
             
@@ -939,8 +1070,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -975,14 +1106,17 @@
       
         
           
-            <blockquote>
-<p>Django 实现分页</p>
-</blockquote>
-<h1 id="在-View-中使用-Paginator"><a href="#在-View-中使用-Paginator" class="headerlink" title="在 View 中使用 Paginator"></a>在 View 中使用 Paginator</h1><p>view class </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> models</div><div class="line"><span class="keyword">from</span> django.views.generic <span class="keyword">import</span> ListView</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CarListView</span><span class="params">(ListView)</span>:</span></div><div class="line">    model = models.Car      <span class="comment"># shorthand for setting queryset = models.Car.objects.all()</span></div><div class="line">    template_name = <span class="string">'app/car_list.html'</span>  <span class="comment"># optional (the default is app_name/modelNameInLowerCase_list.html; which will look into your templates folder for that path and file)</span></div><div class="line">    context_object_name = <span class="string">"car_list"</span>    <span class="comment">#default is object_list as well as model's_verbose_name_list and/or model's_verbose_name_plural_list, if defined in the model's inner Meta class</span></div><div class="line">    paginate_by = <span class="number">10</span>  <span class="comment">#and that's it !!</span></div></pre></td></tr></table></figure>
-<p>上面也可以通过 url 设置 <code>paginate_by</code> 属性：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">url(r&apos;^cars/$&apos;, ListView.as_view( model=Car, paginate_by=10 ))</div></pre></td></tr></table></figure></p>
-<p>template:<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&#123;% if is_paginated %&#125;</div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pagination"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-links"</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_previous %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.previous_page_number &#125;&#125;"</span>&gt;</span>previous<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">                <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"page-current"</span>&gt;</span></div><div class="line">                    Page &#123;&#123; page_obj.number &#125;&#125; of &#123;&#123; page_obj.paginator.num_pages &#125;&#125;.</div><div class="line">                <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">                &#123;% if page_obj.has_next %&#125;</div><div class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/cars?page=&#123;&#123; page_obj.next_page_number &#125;&#125;"</span>&gt;</span>next<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">                &#123;% endif %&#125;</div><div class="line">            <span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure></p>
-
+            <h2 id="创建按照正常步骤创建-自定义View"><a href="#创建按照正常步骤创建-自定义View" class="headerlink" title="创建按照正常步骤创建 自定义View"></a>创建按照正常步骤创建 自定义View</h2><h2 id="在-values-attrs-xml-中创建自定义属性"><a href="#在-values-attrs-xml-中创建自定义属性" class="headerlink" title="在 values/attrs.xml 中创建自定义属性"></a>在 values/attrs.xml 中创建自定义属性</h2><p>例子：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyView"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_center_color"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_text_size"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Note：</p>
+<ul>
+<li>属性命名添加前缀防止重复</li>
+</ul>
+<h2 id="在布局中使用自定义属性"><a href="#在布局中使用自定义属性" class="headerlink" title="在布局中使用自定义属性"></a>在布局中使用自定义属性</h2><p>例子：</p>
+<p>需要在跟布局中加入命名空间：<code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.waytone.animationdemo.indicate.MyView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/status_indicate_view"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></div><div class="line">    <span class="attr">app:siv_center_color</span>=<span class="string">"#f23"</span></div><div class="line">    <span class="attr">app:siv_text_size</span>=<span class="string">"12"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span>/&gt;</div></pre></td></tr></table></figure>
+<h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
           
         
       
@@ -1128,149 +1262,6 @@
             </a>
           </div>
           <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/28/Android/view/自定义View/自定义View-自定义属性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/28/Android/view/自定义View/自定义View-自定义属性/" itemprop="url">自定义View -- 自定义属性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-28T09:23:14+08:00">
-                2016-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="创建按照正常步骤创建-自定义View"><a href="#创建按照正常步骤创建-自定义View" class="headerlink" title="创建按照正常步骤创建 自定义View"></a>创建按照正常步骤创建 自定义View</h2><h2 id="在-values-attrs-xml-中创建自定义属性"><a href="#在-values-attrs-xml-中创建自定义属性" class="headerlink" title="在 values/attrs.xml 中创建自定义属性"></a>在 values/attrs.xml 中创建自定义属性</h2><p>例子：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyView"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_center_color"</span> <span class="attr">format</span>=<span class="string">"color"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"mv_text_size"</span> <span class="attr">format</span>=<span class="string">"integer"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>Note：</p>
-<ul>
-<li>属性命名添加前缀防止重复</li>
-</ul>
-<h2 id="在布局中使用自定义属性"><a href="#在布局中使用自定义属性" class="headerlink" title="在布局中使用自定义属性"></a>在布局中使用自定义属性</h2><p>例子：</p>
-<p>需要在跟布局中加入命名空间：<code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.waytone.animationdemo.indicate.MyView</span></span></div><div class="line">    <span class="attr">android:id</span>=<span class="string">"@+id/status_indicate_view"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></div><div class="line">    <span class="attr">app:siv_center_color</span>=<span class="string">"#f23"</span></div><div class="line">    <span class="attr">app:siv_text_size</span>=<span class="string">"12"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span>/&gt;</div></pre></td></tr></table></figure>
-<h2 id="在-自定义View-内部解析属性"><a href="#在-自定义View-内部解析属性" class="headerlink" title="在 自定义View 内部解析属性"></a>在 自定义View 内部解析属性</h2><p>例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StatusIndicateView);</div><div class="line"><span class="keyword">int</span> color = a.getColor(R.styleable.StatusIndicateView_siv_center_color, Color.BLACK);</div><div class="line"><span class="keyword">int</span> testSize = a.getInteger(R.styleable.StatusIndicateView_siv_text_size, <span class="number">0</span>);</div><div class="line">mCenterPaint.setColor(color);</div></pre></td></tr></table></figure>
-          
         
       
     </div>

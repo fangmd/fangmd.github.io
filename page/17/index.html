@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/Python/django/Django Views Built-in Views/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/Python/django/Django_Models/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/10/03/Python/django/Django Views Built-in Views/" itemprop="url">Django Views Built-in Views</a></h1>
+                <a class="post-title-link" href="/2016/10/03/Python/django/Django_Models/" itemprop="url">Django Models</a></h1>
         
 
         <div class="post-meta">
@@ -342,24 +342,37 @@
 
       
         
-          
-            <h1 id="Serving-files-in-development"><a href="#Serving-files-in-development" class="headerlink" title="Serving files in development"></a>Serving files in development</h1><p><code>static.serve(request, path, document_root, show_indexes=False)</code></p>
-<p>用于测试环境</p>
-<pre><code>from django.conf import settings
-from django.views.static import serve
+          <p>模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。</p>
+<p>基本：</p>
+<ol>
+<li>每个Models都是<code>django.db.models.Model</code>的子类</li>
+<li>模型的每个属性都代表了数据库中的一个字段</li>
+<li>django提供了一套自动生成的用于访问数据库中api</li>
+</ol>
+<h1 id="Models基本创建"><a href="#Models基本创建" class="headerlink" title="Models基本创建"></a>Models基本创建</h1><pre><code>from django.db import models
 
-# ... the rest of your URLconf goes here ...
-
-if settings.DEBUG:
-    urlpatterns += [
-        url(r&apos;^media/(?P&lt;path&gt;.*)$&apos;, serve, {
-            &apos;document_root&apos;: settings.MEDIA_ROOT,
-        }),
-    ]
-</code></pre><h1 id="Error-views"><a href="#Error-views" class="headerlink" title="Error views"></a>Error views</h1><h2 id="The-404-page-not-found-view¶"><a href="#The-404-page-not-found-view¶" class="headerlink" title="The 404 (page not found) view¶"></a>The 404 (page not found) view¶</h2><p><code>defaults.page_not_found(request, exception, template_name=&#39;404.html&#39;)</code></p>
-<h2 id="The-500-server-error-view"><a href="#The-500-server-error-view" class="headerlink" title="The 500 (server error) view"></a>The 500 (server error) view</h2><p><code>defaults.server_error(request, template_name=&#39;500.html&#39;)</code></p>
-<h2 id="The-403-HTTP-Forbidden-view"><a href="#The-403-HTTP-Forbidden-view" class="headerlink" title="The 403 (HTTP Forbidden) view"></a>The 403 (HTTP Forbidden) view</h2><h2 id="The-400-bad-request-view"><a href="#The-400-bad-request-view" class="headerlink" title="The 400 (bad request) view"></a>The 400 (bad request) view</h2>
-          
+class Person(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+</code></pre><p>这里的每个属性都对应数据库中的一个字段，默认会创建一个id。</p>
+<p>创建上面的Models的sql：</p>
+<pre><code>CREATE TABLE myapp_person (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;first_name&quot; varchar(30) NOT NULL,
+    &quot;last_name&quot; varchar(30) NOT NULL
+);
+</code></pre><h1 id="使用Models"><a href="#使用Models" class="headerlink" title="使用Models"></a>使用Models</h1><p>在使用前要告诉django你定义了这些models，需要在<code>INSTANCE_APP</code>中注册Models所在的app，然后执行：</p>
+<pre><code>python3 manage.py makemigrations
+</code></pre><p>生成sql脚本</p>
+<pre><code>python3 manage.py migrate
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/10/03/Python/django/Django_Models/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -964,7 +977,7 @@ class ContactView(FormView):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/Python/django/Django_Models/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/Python/django/Django Views Built-in Views/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -983,7 +996,7 @@ class ContactView(FormView):
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/10/03/Python/django/Django_Models/" itemprop="url">Django Models</a></h1>
+                <a class="post-title-link" href="/2016/10/03/Python/django/Django Views Built-in Views/" itemprop="url">Django Views Built-in Views</a></h1>
         
 
         <div class="post-meta">
@@ -1053,179 +1066,24 @@ class ContactView(FormView):
 
       
         
-          <p>模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。</p>
-<p>基本：</p>
-<ol>
-<li>每个Models都是<code>django.db.models.Model</code>的子类</li>
-<li>模型的每个属性都代表了数据库中的一个字段</li>
-<li>django提供了一套自动生成的用于访问数据库中api</li>
-</ol>
-<h1 id="Models基本创建"><a href="#Models基本创建" class="headerlink" title="Models基本创建"></a>Models基本创建</h1><pre><code>from django.db import models
-
-class Person(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-</code></pre><p>这里的每个属性都对应数据库中的一个字段，默认会创建一个id。</p>
-<p>创建上面的Models的sql：</p>
-<pre><code>CREATE TABLE myapp_person (
-    &quot;id&quot; serial NOT NULL PRIMARY KEY,
-    &quot;first_name&quot; varchar(30) NOT NULL,
-    &quot;last_name&quot; varchar(30) NOT NULL
-);
-</code></pre><h1 id="使用Models"><a href="#使用Models" class="headerlink" title="使用Models"></a>使用Models</h1><p>在使用前要告诉django你定义了这些models，需要在<code>INSTANCE_APP</code>中注册Models所在的app，然后执行：</p>
-<pre><code>python3 manage.py makemigrations
-</code></pre><p>生成sql脚本</p>
-<pre><code>python3 manage.py migrate
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/10/03/Python/django/Django_Models/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/01/Python/django/Django_FileUpload/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/01/Python/django/Django_FileUpload/" itemprop="url">Django FileUpload</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-01T13:18:12+08:00">
-                2016-10-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
+            <h1 id="Serving-files-in-development"><a href="#Serving-files-in-development" class="headerlink" title="Serving files in development"></a>Serving files in development</h1><p><code>static.serve(request, path, document_root, show_indexes=False)</code></p>
+<p>用于测试环境</p>
+<pre><code>from django.conf import settings
+from django.views.static import serve
 
-                
-                
-              
-            </span>
+# ... the rest of your URLconf goes here ...
+
+if settings.DEBUG:
+    urlpatterns += [
+        url(r&apos;^media/(?P&lt;path&gt;.*)$&apos;, serve, {
+            &apos;document_root&apos;: settings.MEDIA_ROOT,
+        }),
+    ]
+</code></pre><h1 id="Error-views"><a href="#Error-views" class="headerlink" title="Error views"></a>Error views</h1><h2 id="The-404-page-not-found-view¶"><a href="#The-404-page-not-found-view¶" class="headerlink" title="The 404 (page not found) view¶"></a>The 404 (page not found) view¶</h2><p><code>defaults.page_not_found(request, exception, template_name=&#39;404.html&#39;)</code></p>
+<h2 id="The-500-server-error-view"><a href="#The-500-server-error-view" class="headerlink" title="The 500 (server error) view"></a>The 500 (server error) view</h2><p><code>defaults.server_error(request, template_name=&#39;500.html&#39;)</code></p>
+<h2 id="The-403-HTTP-Forbidden-view"><a href="#The-403-HTTP-Forbidden-view" class="headerlink" title="The 403 (HTTP Forbidden) view"></a>The 403 (HTTP Forbidden) view</h2><h2 id="The-400-bad-request-view"><a href="#The-400-bad-request-view" class="headerlink" title="The 400 (bad request) view"></a>The 400 (bad request) view</h2>
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h1><h2 id="定义一个有文件属性的-Forms"><a href="#定义一个有文件属性的-Forms" class="headerlink" title="定义一个有文件属性的 Forms"></a>定义一个有文件属性的 Forms</h2><pre><code>class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=20)
-    file = forms.FileField()
-</code></pre><p>文件上传后通过<code>request.FILES</code>获取上传的文件,<code>request.FILES[&#39;file&#39;]</code></p>
-<p>注意：请求方法必须是<code>post</code>并且<code>from</code>请求中有属性<code>enctype=&quot;multipart/form-data&quot;</code> 否则 <code>request.FILES</code> 会是空的</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/10/01/Python/django/Django_FileUpload/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1423,6 +1281,148 @@ python3 manage.py migreate
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/01/Python/django/Django_FileUpload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/10/01/Python/django/Django_FileUpload/" itemprop="url">Django FileUpload</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-01T13:18:12+08:00">
+                2016-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h1><h2 id="定义一个有文件属性的-Forms"><a href="#定义一个有文件属性的-Forms" class="headerlink" title="定义一个有文件属性的 Forms"></a>定义一个有文件属性的 Forms</h2><pre><code>class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=20)
+    file = forms.FileField()
+</code></pre><p>文件上传后通过<code>request.FILES</code>获取上传的文件,<code>request.FILES[&#39;file&#39;]</code></p>
+<p>注意：请求方法必须是<code>post</code>并且<code>from</code>请求中有属性<code>enctype=&quot;multipart/form-data&quot;</code> 否则 <code>request.FILES</code> 会是空的</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/10/01/Python/django/Django_FileUpload/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/28/Android/gradle/gradle/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1521,140 +1521,6 @@ python3 manage.py migreate
             </a>
           </div>
           <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/23/macos/Mac/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/09/23/macos/Mac/" itemprop="url">Mac</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-23T13:18:12+08:00">
-                2016-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="aria2-启动方式"><a href="#aria2-启动方式" class="headerlink" title="aria2 启动方式"></a>aria2 启动方式</h2><p>aria2c –conf-path=/Users/Double/.aria2/aria2.conf -D</p>
-
-          
         
       
     </div>
@@ -1796,6 +1662,140 @@ python3 manage.py migreate
             </a>
           </div>
           <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/23/macos/Mac/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/23/macos/Mac/" itemprop="url">Mac</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-09-23T13:18:12+08:00">
+                2016-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/program/" itemprop="url" rel="index">
+                    <span itemprop="name">program</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="aria2-启动方式"><a href="#aria2-启动方式" class="headerlink" title="aria2 启动方式"></a>aria2 启动方式</h2><p>aria2c –conf-path=/Users/Double/.aria2/aria2.conf -D</p>
+
+          
         
       
     </div>
