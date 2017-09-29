@@ -253,6 +253,1268 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/25/看源码/transitionseverywhere源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/25/看源码/transitionseverywhere源码分析/" itemprop="url">Transition 动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-25T09:38:14+08:00">
+                2017-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="关于-transition"><a href="#关于-transition" class="headerlink" title="关于 transition"></a>关于 transition</h1><p>google 关于 transition 的文档地址 <a href="https://developer.android.com/training/transitions/index.html" target="_blank" rel="external">https://developer.android.com/training/transitions/index.html</a></p>
+<p>下面是文档的部分渣翻：</p>
+<h2 id="The-Transitions-Framework"><a href="#The-Transitions-Framework" class="headerlink" title="The Transitions Framework"></a>The Transitions Framework</h2><p>这个框架用于帮助开发者创建动画，帮助用户了解界面的变化过程。</p>
+<p>这个框架具有的特性：</p>
+<ol>
+<li>Group-level animations：可以同时创建多个动画</li>
+<li>Transition-based animation：基于开始和结束时候 view 的属性创建动画</li>
+<li>Build-in animations：内置了一些已经实现好的动画效果，比如 渐入，渐出，移动</li>
+<li>Resource file support：支持使用 xml 文件定义动画</li>
+<li>Lifecycle callbacks：支持动画过程的回调</li>
+</ol>
+<p><img src="https://developer.android.com/images/transitions/transitions_diagram.png" alt="transitions 动画"></p>
+<h3 id="Scenes"><a href="#Scenes" class="headerlink" title="Scenes"></a>Scenes</h3><p>存储了 View hierarchy 的状态，包含内部的所有 view 和 view 的属性。</p>
+<p>The transitions framework 帮助我们从 xml 文件或者 ViewGroup 对象中 创建 Scenes 。</p>
+<h4 id="创建一个-Scene"><a href="#创建一个-Scene" class="headerlink" title="创建一个 Scene"></a>创建一个 Scene</h4><blockquote>
+<p>The transitions framework can run animations between a starting and an ending scene. The starting scene is often determined automatically from the current state of the user interface. For the ending scene, the framework enables you to create a scene from a layout resource file or from a group of views in your code.</p>
+</blockquote>
+<h5 id="create-a-scene-from-a-layout-resource"><a href="#create-a-scene-from-a-layout-resource" class="headerlink" title="create a scene from a layout resource"></a>create a scene from a layout resource</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Scene <span class="title">getSceneForLayout</span><span class="params">(ViewGroup sceneRoot, <span class="keyword">int</span> layoutId, Context context)</span></span></div><div class="line"></div><div class="line"><span class="comment">//....</span></div><div class="line"></div><div class="line">Scene.<span class="title">getSceneForLayout</span><span class="params">()</span></div></pre></td></tr></table></figure>
+<h6 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h6><p>res/layout/activity_main.xml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:id=&quot;@+id/master_layout&quot;&gt;</div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/title&quot;</div><div class="line">        ...</div><div class="line">        android:text=&quot;Title&quot;/&gt;</div><div class="line">    &lt;FrameLayout</div><div class="line">        android:id=&quot;@+id/scene_root&quot;&gt;</div><div class="line">        &lt;include layout=&quot;@layout/a_scene&quot; /&gt;</div><div class="line">    &lt;/FrameLayout&gt;</div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
+<p>res/layout/a_scene.xml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:id=&quot;@+id/scene_container&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot; &gt;</div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/text_view1</div><div class="line">        android:text=&quot;Text Line 1&quot; /&gt;</div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/text_view2</div><div class="line">        android:text=&quot;Text Line 2&quot; /&gt;</div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+<p>res/layout/another_scene.xml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:id=&quot;@+id/scene_container&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot; &gt;</div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/text_view2</div><div class="line">        android:text=&quot;Text Line 2&quot; /&gt;</div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/text_view1</div><div class="line">        android:text=&quot;Text Line 1&quot; /&gt;</div><div class="line">&lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+<p>创建 Scenes：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Scene mAScene;</div><div class="line">Scene mAnotherScene;</div><div class="line"></div><div class="line"><span class="comment">// Create the scene root for the scenes in this app</span></div><div class="line">mSceneRoot = (ViewGroup) findViewById(R.id.scene_root);</div><div class="line"></div><div class="line"><span class="comment">// Create the scenes</span></div><div class="line">mAScene = Scene.getSceneForLayout(mSceneRoot, R.layout.a_scene, <span class="keyword">this</span>);</div><div class="line">mAnotherScene =</div><div class="line">    Scene.getSceneForLayout(mSceneRoot, R.layout.another_scene, <span class="keyword">this</span>);</div></pre></td></tr></table></figure>
+<h5 id="create-a-scene-in-your-code"><a href="#create-a-scene-in-your-code" class="headerlink" title="create a scene in your code"></a>create a scene in your code</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Scene mScene;</div><div class="line"></div><div class="line"><span class="comment">// Obtain the scene root element</span></div><div class="line">mSceneRoot = (ViewGroup) mSomeLayoutElement;</div><div class="line"></div><div class="line"><span class="comment">// Obtain the view hierarchy to add as a child of</span></div><div class="line"><span class="comment">// the scene root when this scene is entered</span></div><div class="line">mViewHierarchy = (ViewGroup) someOtherLayoutElement;</div><div class="line"></div><div class="line"><span class="comment">// Create a scene</span></div><div class="line">mScene = <span class="keyword">new</span> Scene(mSceneRoot, mViewHierarchy);</div></pre></td></tr></table></figure>
+<h5 id="Create-Scene-Actions"><a href="#Create-Scene-Actions" class="headerlink" title="Create Scene Actions"></a>Create Scene Actions</h5><blockquote>
+<p>The framework enables you to define custom scene actions that the system &gt;&gt;runs when entering or exiting a scene. In many cases, defining custom scene actions is not necessary, since the framework animates the change between scenes automatically.</p>
+</blockquote>
+<h3 id="Transitions"><a href="#Transitions" class="headerlink" title="Transitions"></a>Transitions</h3><p>动画信息被存储在 Transitin 对象中。</p>
+<p>使用 TransitionManager 对象来使用 Transition 对象。</p>
+<h4 id="Applying-a-Transition"><a href="#Applying-a-Transition" class="headerlink" title="Applying a Transition"></a>Applying a Transition</h4><p>Transition 里面包含了动画的信息。执行一个动画，需要提供一个 Transitin 和 一个 ending scene 给 TransitionManager。</p>
+<h5 id="Create-a-Transition"><a href="#Create-a-Transition" class="headerlink" title="Create a Transition"></a>Create a Transition</h5><h6 id="Create-a-transition-instance-from-a-resource-file"><a href="#Create-a-transition-instance-from-a-resource-file" class="headerlink" title="Create a transition instance from a resource file"></a>Create a transition instance from a resource file</h6><ol>
+<li>创建资源文件夹 <code>res/transition/</code></li>
+<li>在这个文件夹中创建 xml</li>
+</ol>
+<p>xml 例子:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">fade</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/"</span></span></div><div class="line">      <span class="attr">android:duration</span>=<span class="string">"500"</span>/&gt;</div></pre></td></tr></table></figure>
+<p>使用:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Transition mFadeTransition =</div><div class="line">        TransitionInflater.from(<span class="keyword">this</span>).</div><div class="line">        inflateTransition(R.transition.fade_transition);</div></pre></td></tr></table></figure>
+<h6 id="Create-a-transition-instance-in-code"><a href="#Create-a-transition-instance-in-code" class="headerlink" title="Create a transition instance in code"></a>Create a transition instance in code</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Transition mFadeTransition = <span class="keyword">new</span> Fade();</div></pre></td></tr></table></figure>
+<h5 id="Apply-a-Transition"><a href="#Apply-a-Transition" class="headerlink" title="Apply a Transition"></a>Apply a Transition</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TransitionManager.go(mEndingScene, mFadeTransition);</div><div class="line"></div><div class="line">TransitionManager.go(mEndingScene);</div></pre></td></tr></table></figure>
+<p>startScene: 不提供的时候，就是当前 View 的状态   </p>
+<p>在没有提供 Transition 的时候 TransitionManager 会使用一个默认的 Transition <code>private static Transition sDefaultTransition = new AutoTransition();</code></p>
+<h5 id="Choose-Specific-Target-Views"><a href="#Choose-Specific-Target-Views" class="headerlink" title="Choose Specific Target Views"></a>Choose Specific Target Views</h5><p>默认 Transition 会作用于 ViewGroup 中的所有子 View。但是也可以指定某些 View 可以有动画。</p>
+<p>通过 <code>removeTarget()</code> 方法设置哪些不执行动画的 View</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">transition.removeTarget(view)</div></pre></td></tr></table></figure>
+<h5 id="Specify-Multiple-Transitions"><a href="#Specify-Multiple-Transitions" class="headerlink" title="Specify Multiple Transitions"></a>Specify Multiple Transitions</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">transitionSet</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:transitionOrdering</span>=<span class="string">"sequential"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">fade</span> <span class="attr">android:fadingMode</span>=<span class="string">"fade_out"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">changeBounds</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">fade</span> <span class="attr">android:fadingMode</span>=<span class="string">"fade_in"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">transitionSet</span>&gt;</span></div></pre></td></tr></table></figure>
+<h5 id="Apply-a-Transition-Without-Scenes"><a href="#Apply-a-Transition-Without-Scenes" class="headerlink" title="Apply a Transition Without Scenes"></a>Apply a Transition Without Scenes</h5><p>改变 View hierarchies 不是改变用户界面唯一方式，可以通过在一个 view hierarchies 中添加一个 view，删除一个 view 或者改变 view 的属性改变界面。</p>
+<p>如果 view hierarchies 没有改变，只是改变 view hierarchies 中子控件的属性，就不需要提供 scene。</p>
+<p>这种情况下实现 transition 动画的步骤：</p>
+<ol>
+<li><code>TransitionManager.beginDelayedTransition(mViewGroup);</code></li>
+<li>改变 子view 的属性</li>
+</ol>
+<h5 id="Define-Transition-Lifecycle-Callbacks"><a href="#Define-Transition-Lifecycle-Callbacks" class="headerlink" title="Define Transition Lifecycle Callbacks"></a>Define Transition Lifecycle Callbacks</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Transition transition = TransitionInfthis).inflateTransition(R.transition.temp);</div><div class="line">transition.addListener(<span class="keyword">new</span> Transition.Transition&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTransitionStart</span><span class="params">(Transition transition)</span> </span>&#123;</div><div class="line">        </div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTransitionEnd</span><span class="params">(Transition tra</span></span></div><div class="line"></div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onTransitionCancel(Transition tra</div><div class="line"></div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onTransitionPause(Transition tra</div><div class="line"></div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onTransitionResume(Transition tra</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h5 id="Creating-Custom-Transitions"><a href="#Creating-Custom-Transitions" class="headerlink" title="Creating Custom Transitions"></a>Creating Custom Transitions</h5><ol>
+<li>继承自 Transition</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomTransition</span> <span class="keyword">extends</span> <span class="title">Transition</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureStartValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureEndValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Nullable</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Animator <span class="title">createAnimator</span><span class="params">(@NonNull ViewGroup sceneRoot, @Nullable TransitionValues startValues, @Nullable TransitionValues endValues)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.createAnimator(sceneRoot, startValues, endValues);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h6 id="Capture-View-Property-Values"><a href="#Capture-View-Property-Values" class="headerlink" title="Capture View Property Values"></a>Capture View Property Values</h6><p>Transition 动画是通过属性动画实现的。</p>
+<p>所以 Transition 动画需要捕获 View 的属性值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Define a key for storing a property value in</span></div><div class="line"><span class="comment">// TransitionValues.values with the syntax</span></div><div class="line"><span class="comment">// package_name:transition_class:property_name to avoid collisions</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PROPNAME_BACKGROUND =</div><div class="line">        <span class="string">"com.nerc.myapplication.transitionAnimate:CustomTransition:background"</span>;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureStartValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">    captureValues(transitionValues);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureEndValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">    captureValues(transitionValues);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// For the view in transitionValues.view, get the values you</span></div><div class="line"><span class="comment">// want and put them in transitionValues.values</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">captureValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">    <span class="comment">// Get a reference to the view</span></div><div class="line">    View view = transitionValues.view;</div><div class="line">    <span class="comment">// Store its background property in the values map</span></div><div class="line">    transitionValues.values.put(PROPNAME_BACKGROUND, view.getBackground());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>PROPNAME_BACKGROUND: 用于定义控件的那些属性需要被记录</li>
+</ul>
+<h6 id="Create-a-Custom-Animator"><a href="#Create-a-Custom-Animator" class="headerlink" title="Create a Custom Animator"></a>Create a Custom Animator</h6><p>定义属性变化过程中的动画效果。</p>
+<p>覆盖 <code>createAnimator()</code> 方法</p>
+<h6 id="一个渐变色例子"><a href="#一个渐变色例子" class="headerlink" title="一个渐变色例子"></a>一个渐变色例子</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomTransition</span> <span class="keyword">extends</span> <span class="title">Transition</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Define a key for storing a property value in</span></div><div class="line">    <span class="comment">// TransitionValues.values with the syntax</span></div><div class="line">    <span class="comment">// package_name:transition_class:property_name to avoid collisions</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PROPNAME_BACKGROUND =</div><div class="line">            <span class="string">"com.nerc.myapplication.transitionAnimate:CustomTransition:background"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Property&lt;ColorDrawable, Integer&gt; COLORDRAWABLE_COLOR  = <span class="keyword">new</span> IntProperty&lt;ColorDrawable&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(ColorDrawable object, <span class="keyword">int</span> value)</span> </span>&#123;</div><div class="line">            object.setColor(value);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> Integer <span class="title">get</span><span class="params">(ColorDrawable object)</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> object.getColor();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;.optimize();</div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureStartValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">        captureValues(transitionValues);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">captureEndValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">        captureValues(transitionValues);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// For the view in transitionValues.view, get the values you</span></div><div class="line">    <span class="comment">// want and put them in transitionValues.values</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">captureValues</span><span class="params">(TransitionValues transitionValues)</span> </span>&#123;</div><div class="line">        <span class="comment">// Get a reference to the view</span></div><div class="line">        View view = transitionValues.view;</div><div class="line">        <span class="comment">// Store its background property in the values map</span></div><div class="line">        transitionValues.values.put(PROPNAME_BACKGROUND, view.getBackground());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Nullable</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Animator <span class="title">createAnimator</span><span class="params">(@NonNull ViewGroup sceneRoot, @Nullable TransitionValues startValues, @Nullable TransitionValues endValues)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (startValues == <span class="keyword">null</span> || endValues == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">final</span> View view = endValues.view;</div><div class="line">        Drawable startBackground = (Drawable) startValues.values.get(PROPNAME_BACKGROUND);</div><div class="line">        Drawable endBackground = (Drawable) endValues.values.get(PROPNAME_BACKGROUND);</div><div class="line">        ObjectAnimator bgAnimator = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span> (startBackground <span class="keyword">instanceof</span> ColorDrawable &amp;&amp; endBackground <span class="keyword">instanceof</span> ColorDrawable) &#123;</div><div class="line">            ColorDrawable startColor = (ColorDrawable) startBackground;</div><div class="line">            ColorDrawable endColor = (ColorDrawable) endBackground;</div><div class="line">            <span class="keyword">if</span> (startColor.getColor() != endColor.getColor()) &#123;</div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> finalColor = endColor.getColor();</div><div class="line">                endColor.setColor(startColor.getColor());</div><div class="line">                bgAnimator = ObjectAnimator.ofInt(endColor, COLORDRAWABLE_COLOR, startColor.getColor(), finalColor);</div><div class="line">                bgAnimator.setEvaluator(<span class="keyword">new</span> ArgbEvaluator());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> bgAnimator;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/24/看源码/EventBus肢解-事件队列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/24/看源码/EventBus肢解-事件队列/" itemprop="url">EventBus肢解-事件队列</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-24T09:38:14+08:00">
+                2017-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity.class.getSimpleName();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mToggle = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">private</span> DealEventThread mDealEventThread;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> cnt = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line">        mMyPostQueue = <span class="keyword">new</span> MyPostQueue();</div><div class="line">        executorService = Executors.newCachedThreadPool();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startMyLogger</span><span class="params">(View view)</span> </span>&#123;</div><div class="line"></div><div class="line">        mToggle = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> AddEventThread()).start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stopMyLooper</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">        mToggle = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">// 事件队列</span></div><div class="line">    <span class="keyword">private</span> MyPostQueue mMyPostQueue;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AddEventThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">while</span> (mToggle)&#123;</div><div class="line">                MyPost myPost = MyPost.obtainMyPost(cnt++ + <span class="string">""</span>);</div><div class="line">                <span class="keyword">synchronized</span> (MainActivity.<span class="keyword">this</span>) &#123;</div><div class="line">                    mMyPostQueue.enqueue(myPost);</div><div class="line">                    Log.d(TAG, <span class="string">"run: add event"</span> + myPost.mMsg);</div><div class="line">                    <span class="keyword">if</span> (!executorRunning) &#123;</div><div class="line">                        executorRunning = <span class="keyword">true</span>;</div><div class="line">                        <span class="keyword">if</span> (mDealEventThread==<span class="keyword">null</span>) &#123;</div><div class="line">                            mDealEventThread = <span class="keyword">new</span> DealEventThread();</div><div class="line">                        &#125;</div><div class="line">                        executorService.execute(mDealEventThread);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        Thread.sleep(<span class="number">500</span>);</div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executorService;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> executorRunning;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">DealEventThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line"></div><div class="line">                    MyPost pendingPost = mMyPostQueue.poll();</div><div class="line">                    <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">                            <span class="comment">// Check again, this time in synchronized</span></div><div class="line">                            pendingPost = mMyPostQueue.poll();</div><div class="line">                            <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                                executorRunning = <span class="keyword">false</span>;</div><div class="line">                                <span class="keyword">return</span>;</div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    Thread.sleep(<span class="number">1000</span>);</div><div class="line"></div><div class="line">                    <span class="comment">// deal</span></div><div class="line">                    Log.d(TAG, <span class="string">"run: deal event:"</span> + pendingPost.mMsg);</div><div class="line">                    <span class="comment">//...</span></div><div class="line">                &#125;</div><div class="line"></div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                executorRunning = <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/24/Android/view/RecyclerView/RecyclerView使用DiffUtils实现差异更新/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/24/Android/view/RecyclerView/RecyclerView使用DiffUtils实现差异更新/" itemprop="url">RecyclerView 使用 DiffUtil 实现差异更新</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-24T09:23:14+08:00">
+                2017-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="RecyclerView-的-Adapter-提供的局部更新方法"><a href="#RecyclerView-的-Adapter-提供的局部更新方法" class="headerlink" title="RecyclerView 的 Adapter 提供的局部更新方法"></a>RecyclerView 的 Adapter 提供的局部更新方法</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">adapter.notifyItemChange()</div><div class="line">adapter.notifyItemInserted()</div><div class="line">adapter.notifyItemRemoved()</div><div class="line">adapter.notifyItemMoved();</div></pre></td></tr></table></figure>
+<p>需要实现局部更新，只需要计算出更新的 item 的 position 就可以了</p>
+<h1 id="DiffUtil"><a href="#DiffUtil" class="headerlink" title="DiffUtil"></a>DiffUtil</h1><p>作用：对比两个数据集，计算出变动项，使用 RecyclerView.Adapter 的局部更新方法。</p>
+<h2 id="DiffUtil-Callback"><a href="#DiffUtil-Callback" class="headerlink" title="DiffUtil.Callback"></a>DiffUtil.Callback</h2><p>Callback 中有 4 个方法需要实现：</p>
+<ol>
+<li>getOldListSize()：旧数据集的长度。</li>
+<li>getNewListSize()：新数据集的长度</li>
+<li>areItemsTheSame()：判断是否是同一个Item。</li>
+<li>areContentsTheSame()：如果是通一个Item，此方法用于判断是否同一个 Item 的内容也相同。</li>
+</ol>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>数据源格式是 String:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AdapterDiffCallback</span> <span class="keyword">extends</span> <span class="title">DiffUtil</span>.<span class="title">Callback</span> </span>&#123;</div><div class="line"></div><div class="line">    List&lt;String&gt; mOldData;</div><div class="line">    List&lt;String&gt; mNewData;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AdapterDiffCallback</span><span class="params">(List&lt;String&gt; oldData, List&lt;String&gt; newData)</span> </span>&#123;</div><div class="line">        mOldData = oldData;</div><div class="line">        mNewData = newData;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getOldListSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mOldData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNewListSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mNewData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areItemsTheSame</span><span class="params">(<span class="keyword">int</span> oldItemPosition, <span class="keyword">int</span> newItemPosition)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mOldData.get(oldItemPosition).getClass().equals(mNewData.get(newItemPosition).getClass());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areContentsTheSame</span><span class="params">(<span class="keyword">int</span> oldItemPosition, <span class="keyword">int</span> newItemPosition)</span> </span>&#123;</div><div class="line">        String s = mOldData.get(oldItemPosition);</div><div class="line">        String s1 = mNewData.get(newItemPosition);</div><div class="line">        <span class="keyword">return</span> s.equals(s1);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用这个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(<span class="keyword">new</span> AdapterDiffCallback(mNewData, mOldData));</div><div class="line">diffResult.dispatchUpdatesTo(mAdapter);</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/21/Android/Android 版本/Android8.0/Android8.0 新特性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/21/Android/Android 版本/Android8.0/Android8.0 新特性/" itemprop="url">Android7.0 新特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-21T22:38:14+08:00">
+                2017-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Adaptive-Icons"><a href="#Adaptive-Icons" class="headerlink" title="Adaptive Icons"></a>Adaptive Icons</h1><p><a href="https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive.html#creating_adaptive_icons_in_xml" target="_blank" rel="external">https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive.html#creating_adaptive_icons_in_xml</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Android/view/RecyclerView/RecyclerViewLayoutManager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/20/Android/view/RecyclerView/RecyclerViewLayoutManager/" itemprop="url">RecyclerView LayoutManager</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-20T18:38:14+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="自定义-LayoutManager"><a href="#自定义-LayoutManager" class="headerlink" title="自定义 LayoutManager"></a>自定义 LayoutManager</h1><p>参考：<a href="http://www.jianshu.com/p/08d998d047d8">http://www.jianshu.com/p/08d998d047d8</a></p>
+<h2 id="继承-RecyclerView-LayoutManager-抽象类"><a href="#继承-RecyclerView-LayoutManager-抽象类" class="headerlink" title="继承 RecyclerView.LayoutManager 抽象类"></a>继承 RecyclerView.LayoutManager 抽象类</h2><p>实现 抽象方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> RecyclerView.<span class="function">LayoutParams <span class="title">generateDefaultLayoutParams</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="管理子-View-的布局"><a href="#管理子-View-的布局" class="headerlink" title="管理子 View 的布局"></a>管理子 View 的布局</h2><p>重写 <code>onLayoutChildren</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLayoutChildren</span><span class="params">(RecyclerView.Recycler recycler, RecyclerView.State state)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onLayoutChildren(recycler, state);</div><div class="line"></div><div class="line">    <span class="comment">// 1. 先移除所有view</span></div><div class="line">    removeAllViews();</div><div class="line"></div><div class="line">    <span class="comment">// 2. 在布局之前，将所有的子 View 先 Detach 掉，放入到 Scrap 缓存中</span></div><div class="line">    detachAndScrapAttachedViews(recycler);</div><div class="line"></div><div class="line">    <span class="comment">// 3. 获取 View，获取 View 的宽高，计算 View 应该的布局位置，注意要对所有的 子 View 设置位置所以下面代码在循环中操作</span></div><div class="line"></div><div class="line">    <span class="comment">// 获取 View Item 的数量</span></div><div class="line">    <span class="keyword">int</span> itemCount = getItemCount();</div><div class="line"></div><div class="line">    <span class="comment">// 从缓存中取 View</span></div><div class="line">    <span class="keyword">final</span> View view = recycler.getViewForPosition(position);</div><div class="line">    <span class="comment">// 将 Item View 加入到 RecyclerView 中</span></div><div class="line">    addView(view);</div><div class="line"></div><div class="line">    <span class="comment">// 获取 View 的宽高</span></div><div class="line">    <span class="comment">// 测量 Item View</span></div><div class="line">    measureChildWithMargins(view, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    <span class="keyword">int</span> viewWidth = getDecoratedMeasuredWidth(view);</div><div class="line">    <span class="keyword">int</span> viewHeight = getDecoratedMeasuredHeight(view);</div><div class="line"></div><div class="line">    <span class="comment">// 4 放置 View，没有 layoutDecoratedWithMargins 的 View 不会显示</span></div><div class="line">    layoutDecoratedWithMargins(view, left, top, right, bottom)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/20/Android/view/RecyclerView/RecyclerViewLayoutManager/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Android/view/RecyclerView/RecyclerView-ItemTouchHelper-探探左右滑动效果/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/20/Android/view/RecyclerView/RecyclerView-ItemTouchHelper-探探左右滑动效果/" itemprop="url">RecyclerView ItemTouchHelper 探探左右滑动效果</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-20T18:38:14+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>来自：<a href="http://www.jianshu.com/p/b873b717d1ea">http://www.jianshu.com/p/b873b717d1ea</a></p>
+<p>ItemTouchHelper.Callback：滑动处理类</p>
+<p>实现滑动过程中 控件的动画</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/20/Android/view/RecyclerView/RecyclerView-ItemTouchHelper-探探左右滑动效果/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Android/view/RecyclerView/RecyclerView 滑动视差效果/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/20/Android/view/RecyclerView/RecyclerView 滑动视差效果/" itemprop="url">RecyclerView 滑动视差效果</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-20T09:38:14+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>来自：<a href="http://www.jianshu.com/p/7ddb265f6250" target="_blank" rel="external">http://www.jianshu.com/p/7ddb265f6250</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by SouthernBox on 2017/2/4.</div><div class="line"> * 带视差折叠效果的列表控件</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ParallaxRecyclerView</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ParallaxRecyclerView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(context, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ParallaxRecyclerView</span><span class="params">(<span class="keyword">final</span> Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (isInEditMode()) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(context));</div><div class="line"></div><div class="line">        addItemDecoration(<span class="keyword">new</span> ItemDecoration() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, View view, RecyclerView parent, State state)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.getItemOffsets(outRect, view, parent, state);</div><div class="line">                <span class="comment">//获取当前项的下标</span></div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> currentPosition = parent.getChildLayoutPosition(view);</div><div class="line">                <span class="comment">//获取最后一项的下标</span></div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> lastPosition = state.getItemCount() - <span class="number">1</span>;</div><div class="line">                <span class="keyword">if</span> (currentPosition != lastPosition) &#123;</div><div class="line">                    outRect.bottom = -dp2px(context, <span class="number">10</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addOnScrollListener(<span class="keyword">new</span> OnScrollListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrollStateChanged</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> newState)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.onScrollStateChanged(recyclerView, newState);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrolled</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.onScrolled(recyclerView, dx, dy);</div><div class="line">                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();</div><div class="line">                <span class="keyword">int</span> firstPosition = layoutManager.findFirstVisibleItemPosition();</div><div class="line">                <span class="keyword">int</span> lastPosition = layoutManager.findLastVisibleItemPosition();</div><div class="line">                <span class="keyword">int</span> visibleCount = lastPosition - firstPosition;</div><div class="line">                <span class="comment">//重置控件的位置及高度</span></div><div class="line">                <span class="keyword">int</span> elevation = <span class="number">1</span>;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = firstPosition - <span class="number">1</span>; i &lt;= (firstPosition + visibleCount) + <span class="number">1</span>; i++) &#123;</div><div class="line">                    View view = layoutManager.findViewByPosition(i);</div><div class="line">                    <span class="keyword">if</span> (view != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span> (view <span class="keyword">instanceof</span> CardView) &#123;</div><div class="line">                            ((CardView) view).setCardElevation(dp2px(context, elevation));</div><div class="line">                            elevation += <span class="number">5</span>;</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">float</span> translationY = view.getTranslationY();</div><div class="line">                        <span class="keyword">if</span> (i &gt; firstPosition &amp;&amp; translationY != <span class="number">0</span>) &#123;</div><div class="line">                            view.setTranslationY(<span class="number">0</span>);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                View firstView = layoutManager.findViewByPosition(firstPosition);</div><div class="line">                <span class="keyword">float</span> firstViewTop = firstView.getTop();</div><div class="line">                firstView.setTranslationY(-firstViewTop / <span class="number">2.0f</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dp2px</span><span class="params">(Context context, <span class="keyword">float</span> dipValue)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">float</span> scale = context.getResources().getDisplayMetrics().density;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>) (dipValue * scale + <span class="number">0.5f</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/19/Android/UI/ConstraintLayout使用小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/19/Android/UI/ConstraintLayout使用小结/" itemprop="url">ConstraintLayout 使用小结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-19T12:18:12+08:00">
+                2017-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用-ConstraintLayout-代替-RelativeLayout"><a href="#使用-ConstraintLayout-代替-RelativeLayout" class="headerlink" title="使用 ConstraintLayout 代替 RelativeLayout"></a>使用 ConstraintLayout 代替 RelativeLayout</h1><p>两者之间相似的属性对应表：</p>
+<table>
+<thead>
+<tr>
+<th>CL属性</th>
+<th>RL属性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>layout_constraintLeft_toLeftOf</td>
+<td>layout_alignLeft</td>
+</tr>
+<tr>
+<td>layout_constraintLeft_toRightOf</td>
+<td>layout_toRightOf</td>
+</tr>
+<tr>
+<td>layout_constraintRight_toLeftOf</td>
+<td>layout_toLeftOf</td>
+</tr>
+<tr>
+<td>layout_constraintRight_toRightOf</td>
+<td>layout_alignRight</td>
+</tr>
+<tr>
+<td>layout_constraintTop_toTopOf</td>
+<td>layout_alignTop</td>
+</tr>
+<tr>
+<td>layout_constraintTop_toBottomOf</td>
+<td>layout_below</td>
+</tr>
+<tr>
+<td>layout_constraintBottom_toTopOf</td>
+<td>layout_above</td>
+</tr>
+<tr>
+<td>layout_constraintBottom_toBottomOf</td>
+<td>layout_alignBottom</td>
+</tr>
+<tr>
+<td>layout_constraintBaseline_toBaselineOf</td>
+<td>layout_alignBaseline</td>
+</tr>
+<tr>
+<td>layout_constraintStart_toEndOf</td>
+<td>layout_toEndOf (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintStart_toStartOf</td>
+<td>layout_alignStart (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintEnd_toStartOf</td>
+<td>layout_toStartOf (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintEnd_toEndOf</td>
+<td>layout_alignEnd (API 17)</td>
+</tr>
+</tbody>
+</table>
+<p>在 ConstraintLayout 用一个 <strong>id=parent 的对象表示当前控件的父控件</strong></p>
+<h2 id="实现空间相对父空间居中-layout-centerInParent-”true”"><a href="#实现空间相对父空间居中-layout-centerInParent-”true”" class="headerlink" title="实现空间相对父空间居中 (layout_centerInParent=”true”)"></a>实现空间相对父空间居中 (layout_centerInParent=”true”)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">app:layout_constraintTop_toTopOf=&quot;parent&quot;</div><div class="line">app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div></pre></td></tr></table></figure>
+<p>同时需要设置控件的固定宽高或者 <code>wrap_content</code></p>
+<blockquote>
+<p>当 View 设置成 <code>wrap_content</code> 的时候，View 和其父控件一样大，于设置成 <code>match_parent</code> ,<code>0dp</code> 的结果一样; TextView 设置成 <code>wrap_content</code> 正常。</p>
+</blockquote>
+<p>居中实现方法2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">app:layout_constraintHorizontal_bias=&quot;0.5&quot;</div><div class="line">app:layout_constraintTop_toTopOf=&quot;parent&quot;</div><div class="line">app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">app:layout_constraintVertical_bias=&quot;0.5&quot;</div></pre></td></tr></table></figure>
+<h1 id="使用-ConstraintLayout-代替-LinearLayout"><a href="#使用-ConstraintLayout-代替-LinearLayout" class="headerlink" title="使用 ConstraintLayout 代替 LinearLayout"></a>使用 ConstraintLayout 代替 LinearLayout</h1><h2 id="加权链-实现-weigth"><a href="#加权链-实现-weigth" class="headerlink" title="加权链 实现 weigth"></a>加权链 实现 <code>weigth</code></h2><p>链的默认行为是在可用空间中平均分配位置。 如果一个或多个元素使用MATCH_CONSTRAINT，它们将使用剩余的空白空间（在它们之间相等）</p>
+<p>属性 <code>layout_constraintHorizontal_weight</code>, <code>layout_constraintVertical_weight</code> 定义控件在剩余空间中能分到的位置。</p>
+<h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_0&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_green_dark&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintHorizontal_chainStyle=&quot;spread&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;2&quot;</div><div class="line">    /&gt;</div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_1&quot;</div><div class="line">    android:layout_width=&quot;0dp&quot;</div><div class="line">    android:background=&quot;@color/colorPrimary&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@id/chain_view_0&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_2&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;1&quot;/&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_2&quot;</div><div class="line">    android:layout_width=&quot;0dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_purple&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;1&quot;/&gt;</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_weight.png" alt="chain_weight"></p>
+<h2 id="bias"><a href="#bias" class="headerlink" title="bias"></a>bias</h2><p>通过 layout_constraintHorizontal_bias 和 layout_constraintVertical_bias 两个属性，可以简单直观的完成间距比例的设置。</p>
+<h1 id="设置控件-固定比例宽高"><a href="#设置控件-固定比例宽高" class="headerlink" title="设置控件 固定比例宽高"></a>设置控件 固定比例宽高</h1><p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;!--layout_constraintDimensionRatio的H/W表示被动调整的是高(H)或是宽(W)--&gt;</div><div class="line"></div><div class="line">app:layout_constraintDimensionRatio=&quot;H,4:3&quot;</div></pre></td></tr></table></figure>
+<p>按照宽高比4:3展示，宽为固定边，高为被动边</p>
+<h1 id="GoneMargin"><a href="#GoneMargin" class="headerlink" title="GoneMargin"></a>GoneMargin</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">layout_goneMarginStart</div><div class="line">layout_goneMarginEnd</div><div class="line">layout_goneMarginLeft</div><div class="line">layout_goneMarginTop</div><div class="line">layout_goneMarginRight</div><div class="line">layout_goneMarginBottom</div></pre></td></tr></table></figure>
+<p>其中一方Visibility == Gone时，另外一方将会根据layout_goneMargin系列属性的值重新规划自己的间距。</p>
+<h1 id="chain"><a href="#chain" class="headerlink" title="chain"></a>chain</h1><p>chain 是 ConstraintLayout 中加入的控件与控件间的关系。组成 chain 的多个控件，可以在同一方向上更加方便的完成复杂的布局要求。</p>
+<h2 id="组成-chain"><a href="#组成-chain" class="headerlink" title="组成 chain"></a>组成 chain</h2><p>两个控件组成 chain 需要满足的条件：</p>
+<ol>
+<li>控件间的布局存在相互依赖关系（你依赖我布局，我也依赖你布局）</li>
+<li>两个以上的控件，相互依赖关系需要保持在同一个方向上（都是水平方向上的依赖：Left_toRightOf / Right_toLeftOf；或者都是垂直方向上的依赖：Top_toBottomOf / Bottom_toTopOf）</li>
+</ol>
+<h2 id="设置-chain-style"><a href="#设置-chain-style" class="headerlink" title="设置 chain style"></a>设置 chain style</h2><p><img src="https://mmbiz.qpic.cn/mmbiz_png/6GYDCe0a268PLcpvXmbU3LncJiaZMiaDpJdeByyMzFfas5KE2SjBCITdPBztRz2aSVFkR3URBicMAh3hpftALA4tQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="chain style"></p>
+<h3 id="demo-1-chain-style"><a href="#demo-1-chain-style" class="headerlink" title="demo 1 chain style"></a>demo 1 chain style</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_0&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_green_dark&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintHorizontal_chainStyle=&quot;spread&quot;/&gt;</div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_1&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@color/colorPrimary&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@id/chain_view_0&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_2&quot;/&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_2&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_purple&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_spread.png" alt="chain_style_spread"></p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_spread_inside.png" alt="chain_style_spread_inside"></p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_packed.png" alt="chain_style_spread_packed"></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/X01KpEbegR47Qnl9TmUd5w" target="_blank" rel="external">https://mp.weixin.qq.com/s/X01KpEbegR47Qnl9TmUd5w</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/15/看源码/EventBus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -342,8 +1604,7 @@
 
       
         
-          
-            <p>可见的设计模式：</p>
+          <p>可见的设计模式：</p>
 <ol>
 <li>单例模式</li>
 <li>构建者模式</li>
@@ -354,173 +1615,14 @@
 <ol>
 <li>链表结构（PendingPostQueue 事件队列）</li>
 </ol>
-<h1 id="EventBus-class"><a href="#EventBus-class" class="headerlink" title="EventBus.class"></a>EventBus.class</h1><h2 id="创建方法-是单例模式"><a href="#创建方法-是单例模式" class="headerlink" title="创建方法 是单例模式"></a>创建方法 是单例模式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> EventBus defaultInstance;</div><div class="line"></div><div class="line"><span class="comment">/** Convenience singleton for apps using a process-wide EventBus instance. */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>创建方法使用了 构建者模式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 自定义 构建者</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBusBuilder <span class="title">builder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EventBusBuilder();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 默认的构造方法，里面使用了默认的构建者</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EventBusBuilder DEFAULT_BUILDER = <span class="keyword">new</span> EventBusBuilder();</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">EventBus</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(DEFAULT_BUILDER);</div><div class="line">&#125;</div><div class="line"></div><div class="line">EventBus(EventBusBuilder builder) &#123;</div><div class="line">    subscriptionsByEventType = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    typesBySubscriber = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    stickyEvents = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</div><div class="line">    mainThreadPoster = <span class="keyword">new</span> HandlerPoster(<span class="keyword">this</span>, Looper.getMainLooper(), <span class="number">10</span>);</div><div class="line">    backgroundPoster = <span class="keyword">new</span> BackgroundPoster(<span class="keyword">this</span>);</div><div class="line">    asyncPoster = <span class="keyword">new</span> AsyncPoster(<span class="keyword">this</span>);</div><div class="line">    indexCount = builder.subscriberInfoIndexes != nulbuilder.subscriberInfoIndexes.size() : <span class="number">0</span>;</div><div class="line">    subscriberMethodFinder = <span class="keyword">new</span> SubscriberMethodFinder(builder.subscriberInfoIndexes,</div><div class="line">            builder.strictMethodVerification, builder.ignoreGeneratedIndex);</div><div class="line">    logSubscriberExceptions = builder.logSubscriberExceptions;</div><div class="line">    logNoSubscriberMessages = builder.logNoSubscriberMessages;</div><div class="line">    sendSubscriberExceptionEvent = builder.sendSubscriberExceptionEvent;</div><div class="line">    sendNoSubscriberEvent = builder.sendNoSubscriberEvent;</div><div class="line">    throwSubscriberException = builder.throwSubscriberException;</div><div class="line">    eventInheritance = builder.eventInheritance;</div><div class="line">    executorService = builder.executorService;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="几个重要方法"><a href="#几个重要方法" class="headerlink" title="几个重要方法"></a>几个重要方法</h2><h3 id="注册接收者-register"><a href="#注册接收者-register" class="headerlink" title="注册接收者 register"></a>注册接收者 register</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Registers the given subscriber to receive events. Subscribers must call &#123;<span class="doctag">@l</span>#unregister(Object)&#125; once they</div><div class="line"> * are no longer interested in receiving events.</div><div class="line"> * &lt;p/&gt;</div><div class="line"> * Subscribers have event handling methods that must be annotated by &#123;<span class="doctag">@link</span> Subscribe&#125;.</div><div class="line"> * The &#123;<span class="doctag">@link</span> Subscribe&#125; annotation also allows configuration like &#123;<span class="doctag">@link</span></div><div class="line"> * ThreadMode&#125; and priority.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Object subscriber)</span> </span>&#123;</div><div class="line">    Class&lt;?&gt; subscriberClass = subscriber.getClass();</div><div class="line">    List&lt;SubscriberMethod&gt; subscriberMethodsubscriberMethodFinder.findSubscriberMethods(subscriberClass);</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (SubscriberMethod subscriberMethod : subscriberMethods) &#123;</div><div class="line">            subscribe(subscriber, subscriberMethod);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>注册一个事件的接收者。</p>
-<ul>
-<li><code>List&lt;SubscriberMethod&gt; subscriberMethodsubscriberMethodFinder.findSubscriberMethods(subscriberClass);</code> 这个方法获取事件接收者类中定义的事件接收方法（使用 @Subscribe 注解的方法）</li>
-<li>SubscriberMethod：对接收者接收方法的封装</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Must be called in synchronized block</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Object subscriber, SubscriberMethod subscriberMethod)</span> </span>&#123;</div><div class="line">    Class&lt;?&gt; eventType = subscriberMethod.eventType;</div><div class="line">    Subscription newSubscription = <span class="keyword">new</span> Subscription(subscriber, subscriberMethod);</div><div class="line">    CopyOnWriteArrayList&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);</div><div class="line">    <span class="keyword">if</span> (subscriptions == <span class="keyword">null</span>) &#123;</div><div class="line">        subscriptions = <span class="keyword">new</span> CopyOnWriteArrayList&lt;&gt;();</div><div class="line">        subscriptionsByEventType.put(eventType, subscriptions);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (subscriptions.contains(newSubscription)) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Subscriber "</span> + subscriber.getClass() + <span class="string">" already registered to event "</span></div><div class="line">                    + eventType);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">int</span> size = subscriptions.size();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= size; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (i == size || subscriberMethod.priority &gt; subscriptions.get(i).subscriberMethod.priority) &#123;</div><div class="line">            subscriptions.add(i, newSubscription);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    List&lt;Class&lt;?&gt;&gt; subscribedEvents = typesBySubscriber.get(subscriber);</div><div class="line">    <span class="keyword">if</span> (subscribedEvents == <span class="keyword">null</span>) &#123;</div><div class="line">        subscribedEvents = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        typesBySubscriber.put(subscriber, subscribedEvents);</div><div class="line">    &#125;</div><div class="line">    subscribedEvents.add(eventType);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (subscriberMethod.sticky) &#123;</div><div class="line">        <span class="keyword">if</span> (eventInheritance) &#123;</div><div class="line">            <span class="comment">// Existing sticky events of all subclasses of eventType have to be considered.</span></div><div class="line">            <span class="comment">// Note: Iterating over all events may be inefficient with lots of sticky events,</span></div><div class="line">            <span class="comment">// thus data structure should be changed to allow a more efficient lookup</span></div><div class="line">            <span class="comment">// (e.g. an additional map storing sub classes of super classes: Class -&gt; List&lt;Class&gt;).</span></div><div class="line">            Set&lt;Map.Entry&lt;Class&lt;?&gt;, Object&gt;&gt; entries = stickyEvents.entrySet();</div><div class="line">            <span class="keyword">for</span> (Map.Entry&lt;Class&lt;?&gt;, Object&gt; entry : entries) &#123;</div><div class="line">                Class&lt;?&gt; candidateEventType = entry.getKey();</div><div class="line">                <span class="keyword">if</span> (eventType.isAssignableFrom(candidateEventType)) &#123;</div><div class="line">                    Object stickyEvent = entry.getValue();</div><div class="line">                    checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Object stickyEvent = stickyEvents.get(eventType);</div><div class="line">            checkPostStickyEventToSubscription(newSubscription, stickyEvent);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>Subscription: 封装了事件接收者（Object）和 事件接收者内部事件接收方法（SubscriberMethod）</li>
-<li>EventBus 成员变量：<code>Map&lt;Class&lt;?&gt;, CopyOnWriteArrayList&lt;Subscription&gt;&gt; subscriptionsByEventType</code> 存储了 事件 和 事件接收者相关的Subscription</li>
-<li>subscriptionsByEventType: 中会按照事件接收的优先级对 Subscription 进行排序</li>
-<li>eventType：实际上就是 事件.class</li>
-<li>EventBus 成员变量：<code>Map&lt;Object, List&lt;Class&lt;?&gt;&gt;&gt; typesBySubscriber</code>: 保存 key-接收者对象， value：eventType（事件.class）</li>
-<li>sticky 事件的实现 ？？？？</li>
-</ul>
-<h3 id="unregister-取消注册"><a href="#unregister-取消注册" class="headerlink" title="unregister 取消注册"></a>unregister 取消注册</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** Unregisters the given subscriber from all event classes. */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">unregister</span><span class="params">(Object subscriber)</span> </span>&#123;</div><div class="line">    List&lt;Class&lt;?&gt;&gt; subscribedTypes = typesBySubscriber.get(subscriber);</div><div class="line">    <span class="keyword">if</span> (subscribedTypes != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (Class&lt;?&gt; eventType : subscribedTypes) &#123;</div><div class="line">            unsubscribeByEventType(subscriber, eventType);</div><div class="line">        &#125;</div><div class="line">        typesBySubscriber.remove(subscriber);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Log.w(TAG, <span class="string">"Subscriber to unregister was not registered before: "</span> + subscriber.getClass());</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Only updates subscriptionsByEventType, not typesBySubscriber! Caller must update typesBySubscriber. */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unsubscribeByEventType</span><span class="params">(Object subscriber, Class&lt;?&gt; eventType)</span> </span>&#123;</div><div class="line">    List&lt;Subscription&gt; subscriptions = subscriptionsByEventType.get(eventType);</div><div class="line">    <span class="keyword">if</span> (subscriptions != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">int</span> size = subscriptions.size();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</div><div class="line">            Subscription subscription = subscriptions.get(i);</div><div class="line">            <span class="keyword">if</span> (subscription.subscriber == subscriber) &#123;</div><div class="line">                subscription.active = <span class="keyword">false</span>;</div><div class="line">                subscriptions.remove(i);</div><div class="line">                i--;</div><div class="line">                size--;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>从 <code>typesBySubscriber</code> 获取 接收者对应的 【eventType s】</li>
-<li>通过 【eventType s】 从 <code>subscriptionsByEventType</code> 删除 eventType-List<subscription></subscription></li>
-<li>从 <code>typesBySubscriber</code> 删除 接收者-【eventType s】</li>
-</ul>
-<h3 id="发送事件"><a href="#发送事件" class="headerlink" title="发送事件"></a>发送事件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** Posts the given event to the event bus. */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">post</span><span class="params">(Object event)</span> </span>&#123;</div><div class="line">    PostingThreadState postingState = currentPostingThreadState.get();</div><div class="line">    List&lt;Object&gt; eventQueue = postingState.eventQueue;</div><div class="line">    eventQueue.add(event);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!postingState.isPosting) &#123;</div><div class="line">        postingState.isMainThread = Looper.getMainLooper() == Looper.myLooper();</div><div class="line">        postingState.isPosting = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span> (postingState.canceled) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Internal error. Abort state was not reset"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">while</span> (!eventQueue.isEmpty()) &#123;</div><div class="line">                postSingleEvent(eventQueue.remove(<span class="number">0</span>), postingState);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            postingState.isPosting = <span class="keyword">false</span>;</div><div class="line">            postingState.isMainThread = <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>EventBus 成员变量：<code>ThreadLocal&lt;PostingThreadState&gt; currentPostingThreadState</code></li>
-<li>这个方法中初始化了用于记录发送事件的线程的线程状态类：PostingThreadState</li>
-</ul>
-<p>事件发送方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">private void postSingleEvent(Object event, PostingThreadState postingState) throws Error &#123;</div><div class="line">    Class&lt;?&gt; eventClass = event.getClass();</div><div class="line">    boolean subscriptionFound = false;</div><div class="line">    if (eventInheritance) &#123;</div><div class="line">        List&lt;Class&lt;?&gt;&gt; eventTypes = lookupAllEventTypes(eventClass);</div><div class="line">        int countTypes = eventTypes.size();</div><div class="line">        for (int h = 0; h &lt; countTypes; h++) &#123;</div><div class="line">            Class&lt;?&gt; clazz = eventTypes.get(h);</div><div class="line">            subscriptionFound |= postSingleEventForEventType(event, postingState, clazz);</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        subscriptionFound = postSingleEventForEventType(event, postingState, eventClass);</div><div class="line">    &#125;</div><div class="line">    if (!subscriptionFound) &#123;</div><div class="line">        if (logNoSubscriberMessages) &#123;</div><div class="line">            Log.d(TAG, &quot;No subscribers registered for event &quot; + eventClass);</div><div class="line">        &#125;</div><div class="line">        if (sendNoSubscriberEvent &amp;&amp; eventClass != NoSubscriberEvent.class &amp;&amp;</div><div class="line">                eventClass != SubscriberExceptionEvent.class) &#123;</div><div class="line">            post(new NoSubscriberEvent(this, event));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li><code>lookupAllEventTypes(Class&lt;?&gt; eventClass)</code> 方法通过 事件类 寻找 eventTypes(事件类集合)</li>
-<li>EventBus 成员变量 <code>Map&lt;Class&lt;?&gt;, List&lt;Class&lt;?&gt;&gt;&gt; eventTypesCache</code> 实现 事件类-eventTypes 关联</li>
-</ul>
-<p>事件不同线程之前切换代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="keyword">boolean</span> isMainThread)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</div><div class="line">        <span class="keyword">case</span> POSTING:</div><div class="line">            invokeSubscriber(subscription, event);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> MAIN:</div><div class="line">            <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                invokeSubscriber(subscription, event);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                mainThreadPoster.enqueue(subscription, event);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> BACKGROUND:</div><div class="line">            <span class="keyword">if</span> (isMainThread) &#123;</div><div class="line">                backgroundPoster.enqueue(subscription, event);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                invokeSubscriber(subscription, event);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> ASYNC:</div><div class="line">            asyncPoster.enqueue(subscription, event);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown thread mode: "</span> + subscription.subscriberMethod.threadMode);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="事件队列"><a href="#事件队列" class="headerlink" title="事件队列"></a>事件队列</h3><p>EventBus 成员变量：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> HandlerPoster mainThreadPoster;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> BackgroundPoster backgroundPoster;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> AsyncPoster asyncPoster;</div></pre></td></tr></table></figure>
-<ul>
-<li>mainThreadPoster：存放所有需要在主线程中执行的事件。</li>
-<li>backgroundPoster：存放所有需要在子线程中执行的事件。（使用 ExecutorService 获取一个子线程让后执行，BackgroundPoster 实现了 Runnable 接口）</li>
-<li>asyncPoster：存放所有需要在子线程中执行的事件（使用 ExecutorService 获取一个子线程让后执行，AsyncPoster 实现了 Runnable 接口）</li>
-</ul>
-<h4 id="BackgroundPoster-vs-AsyncPoster"><a href="#BackgroundPoster-vs-AsyncPoster" class="headerlink" title="BackgroundPoster vs AsyncPoster"></a>BackgroundPoster vs AsyncPoster</h4><p>区别</p>
-<ul>
-<li>从事件队列中取事件的时候：BackgroundPoster 采用延迟取事件（1000），AsyncPoster 马上取事件</li>
-</ul>
-<h4 id="HandlerPoster-class"><a href="#HandlerPoster-class" class="headerlink" title="HandlerPoster.class"></a>HandlerPoster.class</h4><h5 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h5><p>是 Handler 的子类，在 EventBus 中创建，创建时使用 mainLopper 创建：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mainThreadPoster = <span class="keyword">new</span> HandlerPoster(<span class="keyword">this</span>, Looper.getMainLooper(), <span class="number">10</span>);</div><div class="line"></div><div class="line"><span class="comment">//...</span></div><div class="line">HandlerPoster(EventBus eventBus, Looper looper, <span class="keyword">int</span> maxMillisInsideHandleMessage)</div></pre></td></tr></table></figure>
-<h5 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> maxMillisInsideHandleMessage;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</div><div class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> handlerActive;</div></pre></td></tr></table></figure>
-<ul>
-<li>queue: 需要在主线程执行的事件队列</li>
-<li>eventBus：EventBus 对象</li>
-<li>handlerActive：记录是否有事件正在执行</li>
-<li>maxMillisInsideHandleMessage：超时记录</li>
-</ul>
-<h5 id="向队列中添加一个事件"><a href="#向队列中添加一个事件" class="headerlink" title="向队列中添加一个事件"></a>向队列中添加一个事件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(Subscription subscription, Object event)</span> </span>&#123;</div><div class="line">    PendingPost pendingPost = PendingPost.obtainPendingPost(subscription, event);</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        queue.enqueue(pendingPost);</div><div class="line">        <span class="keyword">if</span> (!handlerActive) &#123;</div><div class="line">            handlerActive = <span class="keyword">true</span>;</div><div class="line">            <span class="keyword">if</span> (!sendMessage(obtainMessage())) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Could not send handler message"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>通过 Subscription（事件接收者Object 和 事件接收者内部事件处理方法SubscriberMethod 的封装） 创建一个 PendingPost （延迟事件）</li>
-<li>handlerActive：如果为 true 表示事件队列的处理机制已经启动（这个机制会在 事件队列queue 中的所有事件被处理完成后停止），如果为 false 表示当前事件处理机制处于停止状态。</li>
-<li><code>queue.enqueue(pendingPost);</code>: 向队列中加入一个 延迟事件</li>
-<li><code>sendMessage(obtainMessage())</code>: 启动事件处理机制</li>
-</ul>
-<h5 id="handleMessage"><a href="#handleMessage" class="headerlink" title="handleMessage"></a>handleMessage</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> rescheduled = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">long</span> started = SystemClock.uptimeMillis();</div><div class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">            PendingPost pendingPost = queue.poll();</div><div class="line">            <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">                    <span class="comment">// Check again, this time in synchronized</span></div><div class="line">                    pendingPost = queue.poll();</div><div class="line">                    <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                        handlerActive = <span class="keyword">false</span>;</div><div class="line">                        <span class="keyword">return</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            eventBus.invokeSubscriber(pendingPost);</div><div class="line">            <span class="keyword">long</span> timeInMethod = SystemClock.uptimeMillis() - started;</div><div class="line">            <span class="keyword">if</span> (timeInMethod &gt;= maxMillisInsideHandleMessage) &#123;</div><div class="line">                <span class="keyword">if</span> (!sendMessage(obtainMessage())) &#123;</div><div class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> EventBusException(<span class="string">"Could not send handler message"</span>);</div><div class="line">                &#125;</div><div class="line">                rescheduled = <span class="keyword">true</span>;</div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        handlerActive = rescheduled;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>maxMillisInsideHandleMessage：内部定义为 10</li>
-<li>rescheduled：表示本次循环处理了一个事件</li>
-</ul>
-<h4 id="BackgroundPoster-class"><a href="#BackgroundPoster-class" class="headerlink" title="BackgroundPoster.class"></a>BackgroundPoster.class</h4><p>实线了 Runnable 接口</p>
-<h5 id="成员变量-1"><a href="#成员变量-1" class="headerlink" title="成员变量"></a>成员变量</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> executorRunning;</div></pre></td></tr></table></figure>
-<ul>
-<li>queue: 事件队列</li>
-<li>EventBus</li>
-<li>executorRunning： 事件处理机制（一个死循环）是否正在执行</li>
-</ul>
-<h5 id="添加事件"><a href="#添加事件" class="headerlink" title="添加事件"></a>添加事件</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(Subscription subscription, Object event)</span> </span>&#123;</div><div class="line">    PendingPost pendingPost = PendingPost.obtainPendingPost(subscription, event);</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        queue.enqueue(pendingPost);</div><div class="line">        <span class="keyword">if</span> (!executorRunning) &#123;</div><div class="line">            executorRunning = <span class="keyword">true</span>;</div><div class="line">            eventBus.getExecutorService().execute(<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>同样的需要将 Subscription + event = PendingPost （将事件相关信息进行封装，让后放入事件队列中处理）</p>
-<p>添加事件后启动事件处理机制</p>
-<h5 id="事件处理机制（死循环）"><a href="#事件处理机制（死循环）" class="headerlink" title="事件处理机制（死循环）"></a>事件处理机制（死循环）</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">                PendingPost pendingPost = queue.poll(<span class="number">1000</span>);</div><div class="line">                <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">                        <span class="comment">// Check again, this time in synchronized</span></div><div class="line">                        pendingPost = queue.poll();</div><div class="line">                        <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">                            executorRunning = <span class="keyword">false</span>;</div><div class="line">                            <span class="keyword">return</span>;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                eventBus.invokeSubscriber(pendingPost);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            Log.w(<span class="string">"Event"</span>, Thread.currentThread().getName() + <span class="string">" was interruppted"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        executorRunning = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li><code>PendingPost pendingPost = queue.poll(1000);</code>: 延迟 1s 从队列中取事件</li>
-</ul>
-<h4 id="AsyncPoster-class"><a href="#AsyncPoster-class" class="headerlink" title="AsyncPoster.class"></a>AsyncPoster.class</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AsyncPoster</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</div><div class="line"></div><div class="line">    AsyncPoster(EventBus eventBus) &#123;</div><div class="line">        <span class="keyword">this</span>.eventBus = eventBus;</div><div class="line">        queue = <span class="keyword">new</span> PendingPostQueue();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(Subscription subscription, Object event)</span> </span>&#123;</div><div class="line">        PendingPost pendingPost = PendingPost.obtainPendingPost(subscription, event);</div><div class="line">        queue.enqueue(pendingPost);</div><div class="line">        eventBus.getExecutorService().execute(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        PendingPost pendingPost = queue.poll();</div><div class="line">        <span class="keyword">if</span>(pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"No pending post available"</span>);</div><div class="line">        &#125;</div><div class="line">        eventBus.invokeSubscriber(pendingPost);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>和 BackgroundPoster 类似</p>
-<h3 id="接收者处理事件的方法"><a href="#接收者处理事件的方法" class="headerlink" title="接收者处理事件的方法"></a>接收者处理事件的方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">invokeSubscriber</span><span class="params">(Subscription subscription, Object event)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        subscription.subscriberMethod.method.invoke(subscription.subscriber, event);</div><div class="line">    &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">        handleSubscriberException(subscription, event, e.getCause());</div><div class="line">    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unexpected exception"</span>, e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li><code>method.invoke</code> 调用接收者的事件接收方法（类似反射）</li>
-</ul>
-<p>延迟事件处理：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">invokeSubscriber</span><span class="params">(PendingPost pendingPost)</span> </span>&#123;</div><div class="line">    Object event = pendingPost.event;</div><div class="line">    Subscription subscription = pendingPost.subscription;</div><div class="line">    PendingPost.releasePendingPost(pendingPost);</div><div class="line">    <span class="keyword">if</span> (subscription.active) &#123;</div><div class="line">        invokeSubscriber(subscription, event);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="重要的成员变量"><a href="#重要的成员变量" class="headerlink" title="重要的成员变量"></a>重要的成员变量</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EventBusBuilder DEFAULT_BUILDER = <span class="keyword">new</span> EventBusBuilder();</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, List&lt;Class&lt;?&gt;&gt;&gt; eventTypesCache = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, CopyOnWriteArrayList&lt;Subscription&gt;&gt; subscriptionsByEventType;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Object, List&lt;Class&lt;?&gt;&gt;&gt; typesBySubscriber;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, Object&gt; stickyEvents;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> ThreadLocal&lt;PostingThreadState&gt; currentPostingThreadState = <span class="keyword">new</span> ThreadLocal&lt;PostingThreadState&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> PostingThreadState <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PostingThreadState();</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> HandlerPoster mainThreadPoster;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> BackgroundPoster backgroundPoster;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> AsyncPoster asyncPoster;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> SubscriberMethodFinder subscriberMethodFinder;</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> ExecutorService executorService;</div></pre></td></tr></table></figure>
-<ul>
-<li>eventType: 实际上是 被发送的事件类 (CustomEvent.class)</li>
-<li>DEFAULT_BUILDER: 默认的构建者对象</li>
-<li>eventTypesCache：缓存 EventType(事件类.class) 和 EventType子类，EventType相关接口类</li>
-<li>subscriptionsByEventType：记录 EventType(事件类) 和 事件接收者 之间的联系</li>
-<li>typesBySubscriber： 记录 事件接收对象（Object）和 EventType（事件类.class）</li>
-<li>stickyEvents： 记录粘性事件 </li>
-<li>currentPostingThreadState：记录线程状态</li>
-<li>mainThreadPoster：主线程事件队列管理类（保存事件队列，有从事件队列中取事件给 EventBus 处理的功能）</li>
-<li>backgroundPoster：Background 事件类型的事件队列管理类</li>
-<li>AsyncPoster：Async 事件类型的事件队列管理类</li>
-<li>subscriberMethodFinder： 从 事件接收者 中解析 事件接收方法（加了 @Subscribe 注解的方法），获取 SubscriberMethod</li>
-<li>executorService: 相当于线程池的作用，执行所有在子线程中执行的事件</li>
-</ul>
-<h1 id="EventBusBuilder-class"><a href="#EventBusBuilder-class" class="headerlink" title="EventBusBuilder.class"></a>EventBusBuilder.class</h1><p>用于创建 EventBus </p>
-<p>里面保存的参数有：</p>
-<h1 id="SubscriberMethod-class"><a href="#SubscriberMethod-class" class="headerlink" title="SubscriberMethod.class"></a>SubscriberMethod.class</h1><p>对接收者接收方法的封装</p>
-<p>成员熟悉：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> Method method;</div><div class="line"><span class="keyword">final</span> ThreadMode threadMode;</div><div class="line"><span class="keyword">final</span> Class&lt;?&gt; eventType;</div><div class="line"><span class="keyword">final</span> <span class="keyword">int</span> priority;</div><div class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> sticky;</div><div class="line"><span class="comment">/** Used for efficient comparison */</span></div><div class="line">String methodString;</div></pre></td></tr></table></figure>
-<ul>
-<li>method: 接收者中的事件接收方法，在执行事件处理的时候调用</li>
-<li>threadMode：记录接受者事件接收方法在哪个线程中执行</li>
-<li>priority：优先级</li>
-<li>sticky：是否是粘性事件接收方法</li>
-<li>methodString：用来对比两个接收方法是否是同一个</li>
-</ul>
-<h1 id="Subscription-class"><a href="#Subscription-class" class="headerlink" title="Subscription.class"></a>Subscription.class</h1><p>封装了事件接收者（Object）和 事件接收者内部事件接收方法（SubscriberMethod）</p>
-<p>成员变量</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> Object subscriber;</div><div class="line"><span class="keyword">final</span> SubscriberMethod subscriberMethod;</div></pre></td></tr></table></figure>
-<ul>
-<li>subscriber: 事件接收者</li>
-<li>subscriberMethod：事件接收者中的事件接收方法</li>
-</ul>
-<h1 id="PostingThreadState-class"><a href="#PostingThreadState-class" class="headerlink" title="PostingThreadState.class"></a>PostingThreadState.class</h1><p>作用：</p>
-<ol>
-<li>里面有事件队列：EventBus 发送的数据存储在队列中 <code>eventQueue</code></li>
-<li>记录线程状态</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** For ThreadLocal, much faster to set (and get multiple values). */</span></div><div class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">PostingThreadState</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> List&lt;Object&gt; eventQueue = <span class="keyword">new</span> ArrayList&lt;Object&gt;();</div><div class="line">    <span class="keyword">boolean</span> isPosting;</div><div class="line">    <span class="keyword">boolean</span> isMainThread;</div><div class="line">    Subscription subscription;</div><div class="line">    Object event;</div><div class="line">    <span class="keyword">boolean</span> canceled;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>isMainThread：记录当前线程是不是主线程（在 EventBus post 方法中初始化）</li>
-<li>isPosting： 是否正在发送事件</li>
-<li>eventQueue：记录当前线程所有需要被处理的 事件</li>
-<li>subscription: 记录当前正在被处理的事件，的事件接收者</li>
-<li>event：记录当前正在被处理的 事件对象</li>
-<li>canceled：当前的处理是否被取消</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> ThreadLocal&lt;PostingThreadState&gt; currentPostingThreadState = <span class="keyword">new</span> ThreadLocal&lt;PostingThreadState&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> PostingThreadState <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PostingThreadState();</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>使用 ThreadLocal 实现线程内部的单例（保证一个线程中只有一个 PostingThreadState）</p>
-<h1 id="ExecutorService-class"><a href="#ExecutorService-class" class="headerlink" title="ExecutorService.class"></a>ExecutorService.class</h1><p>表述了异步执行的机制，并且可以让任务在后台执行。 类似一个线程池。</p>
-<h1 id="PendingPost-class"><a href="#PendingPost-class" class="headerlink" title="PendingPost.class"></a>PendingPost.class</h1><p>一个延迟事件，不被马上处理的事件都会被封装成 PendingPost 对象，让后被放置到指定的 事件队列 中等待处理。</p>
-<p>Subscription -》PendingPost</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> PendingPost <span class="title">obtainPendingPost</span><span class="params">(Subscription subscription, Object event)</span> </span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (pendingPostPool) &#123;</div><div class="line">        <span class="keyword">int</span> size = pendingPostPool.size();</div><div class="line">        <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123;</div><div class="line">            PendingPost pendingPost = pendingPostPool.remove(size - <span class="number">1</span>);</div><div class="line">            pendingPost.event = event;</div><div class="line">            pendingPost.subscription = subscription;</div><div class="line">            pendingPost.next = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">return</span> pendingPost;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> PendingPost(event, subscription);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>延迟事件被处理的时候需要先从 PendingPost 中获取 Subscription：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Subscription subscription = pendingPost.subscription;</div></pre></td></tr></table></figure>
-<p>然后释放延迟事件：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">releasePendingPost</span><span class="params">(PendingPost pendingPost)</span> </span>&#123;</div><div class="line">    pendingPost.event = <span class="keyword">null</span>;</div><div class="line">    pendingPost.subscription = <span class="keyword">null</span>;</div><div class="line">    pendingPost.next = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">synchronized</span> (pendingPostPool) &#123;</div><div class="line">        <span class="comment">// Don't let the pool grow indefinitely</span></div><div class="line">        <span class="keyword">if</span> (pendingPostPool.size() &lt; <span class="number">10000</span>) &#123;</div><div class="line">            pendingPostPool.add(pendingPost);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="构造方法-1"><a href="#构造方法-1" class="headerlink" title="构造方法"></a>构造方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">PendingPost</span><span class="params">(Object event, Subscription subscription)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.event = event;</div><div class="line">    <span class="keyword">this</span>.subscription = subscription;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>是私有的，只能通过静态方法创建 PendingPost</p>
-<h2 id="成员变量-2"><a href="#成员变量-2" class="headerlink" title="成员变量"></a>成员变量</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> List&lt;PendingPost&gt; pendingPostPool = <span class="keyword">new</span> ArrayList&lt;PendingPost&gt;();</div><div class="line"></div><div class="line">    Object event;</div><div class="line">    Subscription subscription;</div><div class="line">    PendingPost next;</div></pre></td></tr></table></figure>
-<ul>
-<li>pendingPostPool: 延迟事件池，较少不断创建对象对性能的消耗。</li>
-<li>event：是用户发送的  事件对象</li>
-</ul>
-<h1 id="PendingPostQueue-class-事件队列的实现"><a href="#PendingPostQueue-class-事件队列的实现" class="headerlink" title="PendingPostQueue.class 事件队列的实现"></a>PendingPostQueue.class 事件队列的实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PendingPostQueue</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> PendingPost head;</div><div class="line">    <span class="keyword">private</span> PendingPost tail;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(PendingPost pendingPost)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (pendingPost == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"null cannot be enqueued"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (tail != <span class="keyword">null</span>) &#123;</div><div class="line">            tail.next = pendingPost;</div><div class="line">            tail = pendingPost;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</div><div class="line">            head = tail = pendingPost;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Head present, but no tail"</span>);</div><div class="line">        &#125;</div><div class="line">        notifyAll();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">synchronized</span> PendingPost <span class="title">poll</span><span class="params">()</span> </span>&#123;</div><div class="line">        PendingPost pendingPost = head;</div><div class="line">        <span class="keyword">if</span> (head != <span class="keyword">null</span>) &#123;</div><div class="line">            head = head.next;</div><div class="line">            <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</div><div class="line">                tail = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> pendingPost;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">synchronized</span> PendingPost <span class="title">poll</span><span class="params">(<span class="keyword">int</span> maxMillisToWait)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">        <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</div><div class="line">            wait(maxMillisToWait);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> poll();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>单链结构</p>
-<ul>
-<li>当队列中只有一个事件的时候，head，tail 指向同一个事件对象 <code>head = tail = pendingPost;</code>，它们的 next 都指向 null</li>
-<li>当队列中事件 = 2 的时候，head.next 指向第二个事件，tail.next 指向 自己</li>
-<li>当队列中事件 &gt;2 的时候，最后一个事件（tail.next 指向 自己）, 中间的事件(mid.next 指向下一个事件)</li>
-</ul>
-<h1 id="SubscriberMethodFinder"><a href="#SubscriberMethodFinder" class="headerlink" title="SubscriberMethodFinder"></a>SubscriberMethodFinder</h1><p>作用：从事件接收者中获取所有的事件接收方法 得到 <code>List&lt;SubscriberMethod&gt;</code></p>
-<p>通过反射的方法获取 【事件接收类】 中所有的方法，然后遍历所有的方法，获取方法的注解，通过注解判断是否是 【事件处理方法】。</p>
-
-          
+<h1 id="EventBus-class"><a href="#EventBus-class" class="headerlink" title="EventBus.class"></a>EventBus.class</h1><h2 id="创建方法-是单例模式"><a href="#创建方法-是单例模式" class="headerlink" title="创建方法 是单例模式"></a>创建方法 是单例模式</h2>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/15/看源码/EventBus/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -697,1140 +1799,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/05/uml/uml使用记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/05/uml/uml使用记录/" itemprop="url">UML 使用记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-05T13:18:12+08:00">
-                2017-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/readnote/" itemprop="url" rel="index">
-                    <span itemprop="name">readnote</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="继承-泛化关系-generalization"><a href="#继承-泛化关系-generalization" class="headerlink" title="继承 泛化关系 generalization"></a>继承 泛化关系 generalization</h1><p>实线-空心三角形</p>
-<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><p>接口实现</p>
-<p>虚线-空心三角形</p>
-<h1 id="依赖-Dependency"><a href="#依赖-Dependency" class="headerlink" title="依赖 Dependency"></a>依赖 Dependency</h1><p>这种关系具有偶然性和临时性</p>
-<p>在一个类中使用到了另一个类</p>
-<p>虚线-箭头</p>
-<p>比如</p>
-<ul>
-<li>A 类中的一个方法参数中有 B 类</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/05/uml/uml使用记录/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/03/ReadNote/设计模式/设计模式之蝉-黑板模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-黑板模式/" itemprop="url">设计模式之蝉 - 黑板模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
-                2017-09-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="黑板模式的意图"><a href="#黑板模式的意图" class="headerlink" title="黑板模式的意图"></a>黑板模式的意图</h1><p>Blackboard Design Pattern 是观察者模式的一个扩展：允许消息读写同时进行，广泛地交互消息。</p>
-<p>消息的生产者和消费者完全分开。</p>
-<p>黑板模式也是一个简单的消息广播。</p>
-<h1 id="黑板模式的实现方法"><a href="#黑板模式的实现方法" class="headerlink" title="黑板模式的实现方法"></a>黑板模式的实现方法</h1><p>黑板模式一般不会对架构产生影响，但它通常会要求有一个清晰的消息结构。</p>
-<ul>
-<li>数据库作为黑板：这是最常见的实现方式，但是如果有大量消息和高频率访问的情况下，性能会受到一定影响。</li>
-<li>消息队列最为黑板：通过 订阅-发布模型</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/" itemprop="url">设计模式之蝉 - 空对象模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
-                2017-09-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Null Object Pattern 是通过实现一个默认的无意义的对象来避免 null 值出现，就是为了避免程序中出现 null 值判断而诞生的一种设计方式。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/03/ReadNote/设计模式/设计模式之蝉-雇工模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-雇工模式/" itemprop="url">设计模式之蝉 - 雇工模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
-                2017-09-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="雇工合作"><a href="#雇工合作" class="headerlink" title="雇工合作"></a>雇工合作</h1><p>一个富豪家里有很多佣人，供他指挥。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-雇工模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/02/ReadNote/设计模式/设计模式之蝉-对象池模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/02/ReadNote/设计模式/设计模式之蝉-对象池模式/" itemprop="url">设计模式之蝉 - 对象池模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-02T21:38:14+08:00">
-                2017-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>无缓存的 SQL 随机读取：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Service</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WisdomProvider</span></span>&#123;</div><div class="line">    <span class="meta">@Autowire</span></div><div class="line">    <span class="keyword">private</span> WisdomDao wisdomDao;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getOneWord</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> wisdomDao.randomOnWisdom();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/02/ReadNote/设计模式/设计模式之蝉-对象池模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/02/Android/ndk/v26新特性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/02/Android/ndk/v26新特性/" itemprop="url">What’s New in Support Library v26</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-02T21:38:14+08:00">
-                2017-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://www.youtube.com/watch?v=2GTivnMCR-Y" target="_blank" rel="external">视频</a></p>
-<h1 id="Fonts"><a href="#Fonts" class="headerlink" title="Fonts"></a>Fonts</h1><h1 id="emojis"><a href="#emojis" class="headerlink" title="emojis"></a>emojis</h1><h1 id="autosize-text-view"><a href="#autosize-text-view" class="headerlink" title="autosize text view"></a>autosize text view</h1><h1 id="physics-based-animation"><a href="#physics-based-animation" class="headerlink" title="physics-based animation"></a>physics-based animation</h1><h1 id="vector-graphics"><a href="#vector-graphics" class="headerlink" title="vector graphics"></a>vector graphics</h1><p># </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/30/ReadNote/设计模式/模式组合/设计模式之蝉-观察者+中介着模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/30/ReadNote/设计模式/模式组合/设计模式之蝉-观察者+中介着模式/" itemprop="url">设计模式之蝉 - 观察者 + 中介者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-30T21:38:14+08:00">
-                2017-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>事件触发器的开发</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/30/ReadNote/设计模式/模式组合/设计模式之蝉-观察者+中介着模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/" itemprop="url">设计模式之蝉 - 工厂方法模式 + 策略模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-29T21:38:14+08:00">
-                2017-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>迷你版的交易系统</p>
-<p>一卡通</p>
-<p>卡内有两种金额：1. 固定金额（不能用于提现的金额，只能消费） 2. 自由金额</p>
-<p>扣款策略： </p>
-<ol>
-<li><p>扣款策略一</p>
-<p> 固定余额 = 现有固定余额 - 交易金额 ／ 2<br> 自由余额 = 现有余额 - 交易金额 ／ 2</p>
-</li>
-<li><p>扣款策略二</p>
-<p> 全部从自由金额中扣除</p>
-</li>
-</ol>
-<p>IC 卡类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Card</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String cardNo = <span class="string">""</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> steadyMoney = <span class="number">0</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> freeMoney = <span class="number">0</span>;</div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>交易类： 负责记录每一笔交易</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trade</span></span>&#123;</div><div class="line">    <span class="comment">//交易编号</span></div><div class="line">    <span class="keyword">private</span> String tradeNo = <span class="string">""</span>;</div><div class="line">    <span class="comment">//交易金额</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> amount = <span class="number">0</span>;</div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/41/">41</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1875,7 +1848,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">410</span>
+                <span class="site-state-item-count">412</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1897,7 +1870,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">254</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

@@ -104,7 +104,7 @@
 
 链表结构（PendingPostQueue 事件队列）
 
-EventBus.class创建方法 是单例模式12345678910111213static volatile EventBus defaultInstance;/** C">
+EventBus.class创建方法 是单例模式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="EventBus 源码分析">
 <meta property="og:url" content="http://yoursite.com/2017/09/15/看源码/EventBus/index.html">
@@ -120,8 +120,8 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
 
 链表结构（PendingPostQueue 事件队列）
 
-EventBus.class创建方法 是单例模式12345678910111213static volatile EventBus defaultInstance;/** C">
-<meta property="og:updated_time" content="2017-09-17T10:15:24.000Z">
+EventBus.class创建方法 是单例模式">
+<meta property="og:updated_time" content="2017-09-29T13:27:45.029Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EventBus 源码分析">
 <meta name="twitter:description" content="可见的设计模式：
@@ -135,7 +135,7 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
 
 链表结构（PendingPostQueue 事件队列）
 
-EventBus.class创建方法 是单例模式12345678910111213static volatile EventBus defaultInstance;/** C">
+EventBus.class创建方法 是单例模式">
 
 
 
@@ -385,7 +385,8 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
 <ol>
 <li>链表结构（PendingPostQueue 事件队列）</li>
 </ol>
-<h1 id="EventBus-class"><a href="#EventBus-class" class="headerlink" title="EventBus.class"></a>EventBus.class</h1><h2 id="创建方法-是单例模式"><a href="#创建方法-是单例模式" class="headerlink" title="创建方法 是单例模式"></a>创建方法 是单例模式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> EventBus defaultInstance;</div><div class="line"></div><div class="line"><span class="comment">/** Convenience singleton for apps using a process-wide EventBus instance. */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="EventBus-class"><a href="#EventBus-class" class="headerlink" title="EventBus.class"></a>EventBus.class</h1><h2 id="创建方法-是单例模式"><a href="#创建方法-是单例模式" class="headerlink" title="创建方法 是单例模式"></a>创建方法 是单例模式</h2><a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">volatile</span> EventBus defaultInstance;</div><div class="line"></div><div class="line"><span class="comment">/** Convenience singleton for apps using a process-wide EventBus instance. */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBus <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">synchronized</span> (EventBus.class) &#123;</div><div class="line">            <span class="keyword">if</span> (defaultInstance == <span class="keyword">null</span>) &#123;</div><div class="line">                defaultInstance = <span class="keyword">new</span> EventBus();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> defaultInstance;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>创建方法使用了 构建者模式：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 自定义 构建者</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EventBusBuilder <span class="title">builder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EventBusBuilder();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 默认的构造方法，里面使用了默认的构建者</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EventBusBuilder DEFAULT_BUILDER = <span class="keyword">new</span> EventBusBuilder();</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">EventBus</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(DEFAULT_BUILDER);</div><div class="line">&#125;</div><div class="line"></div><div class="line">EventBus(EventBusBuilder builder) &#123;</div><div class="line">    subscriptionsByEventType = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    typesBySubscriber = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    stickyEvents = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</div><div class="line">    mainThreadPoster = <span class="keyword">new</span> HandlerPoster(<span class="keyword">this</span>, Looper.getMainLooper(), <span class="number">10</span>);</div><div class="line">    backgroundPoster = <span class="keyword">new</span> BackgroundPoster(<span class="keyword">this</span>);</div><div class="line">    asyncPoster = <span class="keyword">new</span> AsyncPoster(<span class="keyword">this</span>);</div><div class="line">    indexCount = builder.subscriberInfoIndexes != nulbuilder.subscriberInfoIndexes.size() : <span class="number">0</span>;</div><div class="line">    subscriberMethodFinder = <span class="keyword">new</span> SubscriberMethodFinder(builder.subscriberInfoIndexes,</div><div class="line">            builder.strictMethodVerification, builder.ignoreGeneratedIndex);</div><div class="line">    logSubscriberExceptions = builder.logSubscriberExceptions;</div><div class="line">    logNoSubscriberMessages = builder.logNoSubscriberMessages;</div><div class="line">    sendSubscriberExceptionEvent = builder.sendSubscriberExceptionEvent;</div><div class="line">    sendNoSubscriberEvent = builder.sendNoSubscriberEvent;</div><div class="line">    throwSubscriberException = builder.throwSubscriberException;</div><div class="line">    eventInheritance = builder.eventInheritance;</div><div class="line">    executorService = builder.executorService;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="几个重要方法"><a href="#几个重要方法" class="headerlink" title="几个重要方法"></a>几个重要方法</h2><h3 id="注册接收者-register"><a href="#注册接收者-register" class="headerlink" title="注册接收者 register"></a>注册接收者 register</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Registers the given subscriber to receive events. Subscribers must call &#123;<span class="doctag">@l</span>#unregister(Object)&#125; once they</div><div class="line"> * are no longer interested in receiving events.</div><div class="line"> * &lt;p/&gt;</div><div class="line"> * Subscribers have event handling methods that must be annotated by &#123;<span class="doctag">@link</span> Subscribe&#125;.</div><div class="line"> * The &#123;<span class="doctag">@link</span> Subscribe&#125; annotation also allows configuration like &#123;<span class="doctag">@link</span></div><div class="line"> * ThreadMode&#125; and priority.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Object subscriber)</span> </span>&#123;</div><div class="line">    Class&lt;?&gt; subscriberClass = subscriber.getClass();</div><div class="line">    List&lt;SubscriberMethod&gt; subscriberMethodsubscriberMethodFinder.findSubscriberMethods(subscriberClass);</div><div class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">for</span> (SubscriberMethod subscriberMethod : subscriberMethods) &#123;</div><div class="line">            subscribe(subscriber, subscriberMethod);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -602,6 +603,10 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/09/19/Android/UI/ConstraintLayout使用小结/" rel="prev" title="ConstraintLayout 使用小结">
+                ConstraintLayout 使用小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -672,7 +677,7 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">410</span>
+                <span class="site-state-item-count">412</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -694,7 +699,7 @@ EventBus.class创建方法 是单例模式12345678910111213static volatile Event
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">254</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
