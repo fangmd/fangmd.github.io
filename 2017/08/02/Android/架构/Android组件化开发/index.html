@@ -93,31 +93,19 @@
 
 
 
-<meta name="description" content="背景路由实现使用 ARouter 实现跳转
-0 集成 ARouter创建一个新的工程导入旧代码在新工程中创建一个新的 module
-将老代码中的代码复制到新工程的 module 文件中
-需要注意的点
-build.gradle 不要直接替换文件，应该把老项目中的 build.gradle 中特殊的配置一个个复制过来
-ActivityManifest merge 问题处理：在主工程 AndroidMa">
+<meta name="description" content="模块独立的实现在 Module 的 build.gradle 中加入下面代码：
+12345if(isBuildModule.toBoolean())&amp;#123;    apply plugin: &amp;apos;com.android.application&amp;apos;&amp;#125;else&amp;#123;    apply plugin: &amp;apos;com.android.library&amp;apos;&amp;#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 组件化开发 -- 老项目改善">
+<meta property="og:title" content="Android 组件化开发">
 <meta property="og:url" content="http://yoursite.com/2017/08/02/Android/架构/Android组件化开发/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="背景路由实现使用 ARouter 实现跳转
-0 集成 ARouter创建一个新的工程导入旧代码在新工程中创建一个新的 module
-将老代码中的代码复制到新工程的 module 文件中
-需要注意的点
-build.gradle 不要直接替换文件，应该把老项目中的 build.gradle 中特殊的配置一个个复制过来
-ActivityManifest merge 问题处理：在主工程 AndroidMa">
-<meta property="og:updated_time" content="2017-08-02T15:23:01.000Z">
+<meta property="og:description" content="模块独立的实现在 Module 的 build.gradle 中加入下面代码：
+12345if(isBuildModule.toBoolean())&amp;#123;    apply plugin: &amp;apos;com.android.application&amp;apos;&amp;#125;else&amp;#123;    apply plugin: &amp;apos;com.android.library&amp;apos;&amp;#">
+<meta property="og:updated_time" content="2017-10-02T00:19:28.030Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 组件化开发 -- 老项目改善">
-<meta name="twitter:description" content="背景路由实现使用 ARouter 实现跳转
-0 集成 ARouter创建一个新的工程导入旧代码在新工程中创建一个新的 module
-将老代码中的代码复制到新工程的 module 文件中
-需要注意的点
-build.gradle 不要直接替换文件，应该把老项目中的 build.gradle 中特殊的配置一个个复制过来
-ActivityManifest merge 问题处理：在主工程 AndroidMa">
+<meta name="twitter:title" content="Android 组件化开发">
+<meta name="twitter:description" content="模块独立的实现在 Module 的 build.gradle 中加入下面代码：
+12345if(isBuildModule.toBoolean())&amp;#123;    apply plugin: &amp;apos;com.android.application&amp;apos;&amp;#125;else&amp;#123;    apply plugin: &amp;apos;com.android.library&amp;apos;&amp;#">
 
 
 
@@ -151,7 +139,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
 
 
 
-  <title>Android 组件化开发 -- 老项目改善 | Double</title>
+  <title>Android 组件化开发 | Double</title>
   
 
 
@@ -217,7 +205,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -227,7 +215,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -287,7 +275,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android 组件化开发 -- 老项目改善</h1>
+          <h1 class="post-title" itemprop="name headline">Android 组件化开发</h1>
         
 
         <div class="post-meta">
@@ -297,7 +285,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-02T12:18:12+08:00">
                 2017-08-02
@@ -318,7 +306,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -356,7 +344,23 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
       
 
       
-        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="路由实现"><a href="#路由实现" class="headerlink" title="路由实现"></a>路由实现</h1><p>使用 <a href="https://github.com/alibaba/ARouter" target="_blank" rel="external">ARouter</a> 实现跳转</p>
+        <h1 id="模块独立的实现"><a href="#模块独立的实现" class="headerlink" title="模块独立的实现"></a>模块独立的实现</h1><p>在 Module 的 build.gradle 中加入下面代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if(isBuildModule.toBoolean())&#123;</div><div class="line">    apply plugin: &apos;com.android.application&apos;</div><div class="line">&#125;else&#123;</div><div class="line">    apply plugin: &apos;com.android.library&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>isBuildModule 在项目根目录的 gradle.properties 中定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">isBuildModule=false</div></pre></td></tr></table></figure>
+<p>同样 Manifest.xml 也需要有两套：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">sourceSets &#123;</div><div class="line">   main &#123;</div><div class="line">       if (isBuildModule.toBoolean()) &#123;</div><div class="line">           manifest.srcFile &apos;src/main/debug/AndroidManifest.xml&apos;</div><div class="line">       &#125; else &#123;</div><div class="line">           manifest.srcFile &apos;src/main/release/AndroidManifest.xml&apos;</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>debug 模式下的 AndroidManifest.xml :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;application</div><div class="line">   ...</div><div class="line">   &gt;</div><div class="line">   &lt;activity</div><div class="line">       android:name=&quot;com.baronzhang.android.newhouse.NewHouseMainActivity&quot;</div><div class="line">       android:label=&quot;@string/new_house_label_home_page&quot;&gt;</div><div class="line">       &lt;intent-filter&gt;</div><div class="line">           &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;</div><div class="line">           &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;</div><div class="line">       &lt;/intent-filter&gt;</div><div class="line">   &lt;/activity&gt;</div><div class="line">&lt;/application&gt;</div></pre></td></tr></table></figure>
+<p>realease 模式下的 AndroidManifest.xml :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;application</div><div class="line">   ...</div><div class="line">   &gt;</div><div class="line">   &lt;activity</div><div class="line">       android:name=&quot;com.baronzhang.android.newhouse.NewHouseMainActivity&quot;</div><div class="line">       android:label=&quot;@string/new_house_label_home_page&quot;&gt;</div><div class="line">       &lt;intent-filter&gt;</div><div class="line">           &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</div><div class="line">           &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;</div><div class="line">           &lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;</div><div class="line">           &lt;data android:host=&quot;com.baronzhang.android.newhouse&quot;</div><div class="line">               android:scheme=&quot;router&quot; /&gt;</div><div class="line">       &lt;/intent-filter&gt;</div><div class="line">   &lt;/activity&gt;</div><div class="line">&lt;/application&gt;</div></pre></td></tr></table></figure>
+<p>模块设计规则：</p>
+<ol>
+<li>Business Module Layer: 业务模块之间不能相互依赖，它们之间的跳转通过 路由框架 Router 实现</li>
+</ol>
+<h1 id="资源名冲突处理"><a href="#资源名冲突处理" class="headerlink" title="资源名冲突处理"></a>资源名冲突处理</h1><p>对于多个 Bussines Module 中资源名冲突的问题，可以通过在 build.gradle 定义前缀的方式解决：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">defaultConfig &#123;</div><div class="line">   ...</div><div class="line">   resourcePrefix &quot;new_house_&quot;</div><div class="line">   ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="路由实现"><a href="#路由实现" class="headerlink" title="路由实现"></a>路由实现</h1><p>使用 <a href="https://github.com/alibaba/ARouter" target="_blank" rel="external">ARouter</a> 实现跳转</p>
 <h2 id="0-集成-ARouter"><a href="#0-集成-ARouter" class="headerlink" title="0 集成 ARouter"></a>0 集成 ARouter</h2><h1 id="创建一个新的工程"><a href="#创建一个新的工程" class="headerlink" title="创建一个新的工程"></a>创建一个新的工程</h1><h2 id="导入旧代码"><a href="#导入旧代码" class="headerlink" title="导入旧代码"></a>导入旧代码</h2><p>在新工程中创建一个新的 module</p>
 <p>将老代码中的代码复制到新工程的 module 文件中</p>
 <h3 id="需要注意的点"><a href="#需要注意的点" class="headerlink" title="需要注意的点"></a>需要注意的点</h3><ol>
@@ -378,6 +382,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
 <h1 id="关于依赖"><a href="#关于依赖" class="headerlink" title="关于依赖"></a>关于依赖</h1><ol>
 <li>主工程依赖所有的 module ？？</li>
 </ol>
+<p>参考：<a href="http://baronzhang.com/blog/Framework/Android-%E6%A8%A1%E5%9D%97%E5%8C%96%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/" target="_blank" rel="external">http://baronzhang.com/blog/Framework/Android-%E6%A8%A1%E5%9D%97%E5%8C%96%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/</a></p>
 
       
     </div>
@@ -420,8 +425,8 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/30/ReadNote/设计模式/行为设计模式/设计模式之蝉-备忘录模式/" rel="next" title="设计模式之蝉 - 备忘录模式">
-                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 备忘录模式
+              <a href="/2017/07/30/ReadNote/设计模式/设计模式之蝉-访问者模式/" rel="next" title="设计模式之蝉 - 访问者模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 访问者模式
               </a>
             
           </div>
@@ -481,10 +486,10 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -504,8 +509,8 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">412</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">414</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -516,7 +521,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -527,7 +532,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">254</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -561,7 +566,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#路由实现"><span class="nav-number">2.</span> <span class="nav-text">路由实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-集成-ARouter"><span class="nav-number">2.1.</span> <span class="nav-text">0 集成 ARouter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建一个新的工程"><span class="nav-number">3.</span> <span class="nav-text">创建一个新的工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入旧代码"><span class="nav-number">3.1.</span> <span class="nav-text">导入旧代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需要注意的点"><span class="nav-number">3.1.1.</span> <span class="nav-text">需要注意的点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于依赖"><span class="nav-number">4.</span> <span class="nav-text">关于依赖</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#模块独立的实现"><span class="nav-number">1.</span> <span class="nav-text">模块独立的实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源名冲突处理"><span class="nav-number">2.</span> <span class="nav-text">资源名冲突处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#路由实现"><span class="nav-number">3.</span> <span class="nav-text">路由实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-集成-ARouter"><span class="nav-number">3.1.</span> <span class="nav-text">0 集成 ARouter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建一个新的工程"><span class="nav-number">4.</span> <span class="nav-text">创建一个新的工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入旧代码"><span class="nav-number">4.1.</span> <span class="nav-text">导入旧代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需要注意的点"><span class="nav-number">4.1.1.</span> <span class="nav-text">需要注意的点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于依赖"><span class="nav-number">5.</span> <span class="nav-text">关于依赖</span></a></li></ol></div>
             
 
           </div>
@@ -593,7 +598,7 @@ ActivityManifest merge 问题处理：在主工程 AndroidMa">
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
