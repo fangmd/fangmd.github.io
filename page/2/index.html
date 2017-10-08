@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,369 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/20/Android/view/RecyclerView/RecyclerView 滑动视差效果/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/20/Android/view/RecyclerView/RecyclerView 滑动视差效果/" itemprop="url">RecyclerView 滑动视差效果</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-20T09:38:14+08:00">
+                2017-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>来自：<a href="http://www.jianshu.com/p/7ddb265f6250" target="_blank" rel="external">http://www.jianshu.com/p/7ddb265f6250</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by SouthernBox on 2017/2/4.</div><div class="line"> * 带视差折叠效果的列表控件</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ParallaxRecyclerView</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ParallaxRecyclerView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(context, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ParallaxRecyclerView</span><span class="params">(<span class="keyword">final</span> Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (isInEditMode()) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(context));</div><div class="line"></div><div class="line">        addItemDecoration(<span class="keyword">new</span> ItemDecoration() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, View view, RecyclerView parent, State state)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.getItemOffsets(outRect, view, parent, state);</div><div class="line">                <span class="comment">//获取当前项的下标</span></div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> currentPosition = parent.getChildLayoutPosition(view);</div><div class="line">                <span class="comment">//获取最后一项的下标</span></div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> lastPosition = state.getItemCount() - <span class="number">1</span>;</div><div class="line">                <span class="keyword">if</span> (currentPosition != lastPosition) &#123;</div><div class="line">                    outRect.bottom = -dp2px(context, <span class="number">10</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addOnScrollListener(<span class="keyword">new</span> OnScrollListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrollStateChanged</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> newState)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.onScrollStateChanged(recyclerView, newState);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrolled</span><span class="params">(RecyclerView recyclerView, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</div><div class="line">                <span class="keyword">super</span>.onScrolled(recyclerView, dx, dy);</div><div class="line">                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();</div><div class="line">                <span class="keyword">int</span> firstPosition = layoutManager.findFirstVisibleItemPosition();</div><div class="line">                <span class="keyword">int</span> lastPosition = layoutManager.findLastVisibleItemPosition();</div><div class="line">                <span class="keyword">int</span> visibleCount = lastPosition - firstPosition;</div><div class="line">                <span class="comment">//重置控件的位置及高度</span></div><div class="line">                <span class="keyword">int</span> elevation = <span class="number">1</span>;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = firstPosition - <span class="number">1</span>; i &lt;= (firstPosition + visibleCount) + <span class="number">1</span>; i++) &#123;</div><div class="line">                    View view = layoutManager.findViewByPosition(i);</div><div class="line">                    <span class="keyword">if</span> (view != <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">if</span> (view <span class="keyword">instanceof</span> CardView) &#123;</div><div class="line">                            ((CardView) view).setCardElevation(dp2px(context, elevation));</div><div class="line">                            elevation += <span class="number">5</span>;</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">float</span> translationY = view.getTranslationY();</div><div class="line">                        <span class="keyword">if</span> (i &gt; firstPosition &amp;&amp; translationY != <span class="number">0</span>) &#123;</div><div class="line">                            view.setTranslationY(<span class="number">0</span>);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                View firstView = layoutManager.findViewByPosition(firstPosition);</div><div class="line">                <span class="keyword">float</span> firstViewTop = firstView.getTop();</div><div class="line">                firstView.setTranslationY(-firstViewTop / <span class="number">2.0f</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">dp2px</span><span class="params">(Context context, <span class="keyword">float</span> dipValue)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">float</span> scale = context.getResources().getDisplayMetrics().density;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>) (dipValue * scale + <span class="number">0.5f</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/19/Android/UI/ConstraintLayout使用小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/19/Android/UI/ConstraintLayout使用小结/" itemprop="url">ConstraintLayout 使用小结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-19T12:18:12+08:00">
+                2017-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用-ConstraintLayout-代替-RelativeLayout"><a href="#使用-ConstraintLayout-代替-RelativeLayout" class="headerlink" title="使用 ConstraintLayout 代替 RelativeLayout"></a>使用 ConstraintLayout 代替 RelativeLayout</h1><p>两者之间相似的属性对应表：</p>
+<table>
+<thead>
+<tr>
+<th>CL属性</th>
+<th>RL属性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>layout_constraintLeft_toLeftOf</td>
+<td>layout_alignLeft</td>
+</tr>
+<tr>
+<td>layout_constraintLeft_toRightOf</td>
+<td>layout_toRightOf</td>
+</tr>
+<tr>
+<td>layout_constraintRight_toLeftOf</td>
+<td>layout_toLeftOf</td>
+</tr>
+<tr>
+<td>layout_constraintRight_toRightOf</td>
+<td>layout_alignRight</td>
+</tr>
+<tr>
+<td>layout_constraintTop_toTopOf</td>
+<td>layout_alignTop</td>
+</tr>
+<tr>
+<td>layout_constraintTop_toBottomOf</td>
+<td>layout_below</td>
+</tr>
+<tr>
+<td>layout_constraintBottom_toTopOf</td>
+<td>layout_above</td>
+</tr>
+<tr>
+<td>layout_constraintBottom_toBottomOf</td>
+<td>layout_alignBottom</td>
+</tr>
+<tr>
+<td>layout_constraintBaseline_toBaselineOf</td>
+<td>layout_alignBaseline</td>
+</tr>
+<tr>
+<td>layout_constraintStart_toEndOf</td>
+<td>layout_toEndOf (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintStart_toStartOf</td>
+<td>layout_alignStart (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintEnd_toStartOf</td>
+<td>layout_toStartOf (API 17)</td>
+</tr>
+<tr>
+<td>layout_constraintEnd_toEndOf</td>
+<td>layout_alignEnd (API 17)</td>
+</tr>
+</tbody>
+</table>
+<p>在 ConstraintLayout 用一个 <strong>id=parent 的对象表示当前控件的父控件</strong></p>
+<h2 id="实现空间相对父空间居中-layout-centerInParent-”true”"><a href="#实现空间相对父空间居中-layout-centerInParent-”true”" class="headerlink" title="实现空间相对父空间居中 (layout_centerInParent=”true”)"></a>实现空间相对父空间居中 (layout_centerInParent=”true”)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">app:layout_constraintTop_toTopOf=&quot;parent&quot;</div><div class="line">app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div></pre></td></tr></table></figure>
+<p>同时需要设置控件的固定宽高或者 <code>wrap_content</code></p>
+<blockquote>
+<p>当 View 设置成 <code>wrap_content</code> 的时候，View 和其父控件一样大，于设置成 <code>match_parent</code> ,<code>0dp</code> 的结果一样; TextView 设置成 <code>wrap_content</code> 正常。</p>
+</blockquote>
+<p>居中实现方法2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">app:layout_constraintHorizontal_bias=&quot;0.5&quot;</div><div class="line">app:layout_constraintTop_toTopOf=&quot;parent&quot;</div><div class="line">app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">app:layout_constraintVertical_bias=&quot;0.5&quot;</div></pre></td></tr></table></figure>
+<h1 id="使用-ConstraintLayout-代替-LinearLayout"><a href="#使用-ConstraintLayout-代替-LinearLayout" class="headerlink" title="使用 ConstraintLayout 代替 LinearLayout"></a>使用 ConstraintLayout 代替 LinearLayout</h1><h2 id="加权链-实现-weigth"><a href="#加权链-实现-weigth" class="headerlink" title="加权链 实现 weigth"></a>加权链 实现 <code>weigth</code></h2><p>链的默认行为是在可用空间中平均分配位置。 如果一个或多个元素使用MATCH_CONSTRAINT，它们将使用剩余的空白空间（在它们之间相等）</p>
+<p>属性 <code>layout_constraintHorizontal_weight</code>, <code>layout_constraintVertical_weight</code> 定义控件在剩余空间中能分到的位置。</p>
+<h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_0&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_green_dark&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintHorizontal_chainStyle=&quot;spread&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;2&quot;</div><div class="line">    /&gt;</div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_1&quot;</div><div class="line">    android:layout_width=&quot;0dp&quot;</div><div class="line">    android:background=&quot;@color/colorPrimary&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@id/chain_view_0&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_2&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;1&quot;/&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_2&quot;</div><div class="line">    android:layout_width=&quot;0dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_purple&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintHorizontal_weight=&quot;1&quot;/&gt;</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_weight.png" alt="chain_weight"></p>
+<h2 id="bias"><a href="#bias" class="headerlink" title="bias"></a>bias</h2><p>通过 layout_constraintHorizontal_bias 和 layout_constraintVertical_bias 两个属性，可以简单直观的完成间距比例的设置。</p>
+<h1 id="设置控件-固定比例宽高"><a href="#设置控件-固定比例宽高" class="headerlink" title="设置控件 固定比例宽高"></a>设置控件 固定比例宽高</h1><p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;!--layout_constraintDimensionRatio的H/W表示被动调整的是高(H)或是宽(W)--&gt;</div><div class="line"></div><div class="line">app:layout_constraintDimensionRatio=&quot;H,4:3&quot;</div></pre></td></tr></table></figure>
+<p>按照宽高比4:3展示，宽为固定边，高为被动边</p>
+<h1 id="GoneMargin"><a href="#GoneMargin" class="headerlink" title="GoneMargin"></a>GoneMargin</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">layout_goneMarginStart</div><div class="line">layout_goneMarginEnd</div><div class="line">layout_goneMarginLeft</div><div class="line">layout_goneMarginTop</div><div class="line">layout_goneMarginRight</div><div class="line">layout_goneMarginBottom</div></pre></td></tr></table></figure>
+<p>其中一方Visibility == Gone时，另外一方将会根据layout_goneMargin系列属性的值重新规划自己的间距。</p>
+<h1 id="chain"><a href="#chain" class="headerlink" title="chain"></a>chain</h1><p>chain 是 ConstraintLayout 中加入的控件与控件间的关系。组成 chain 的多个控件，可以在同一方向上更加方便的完成复杂的布局要求。</p>
+<h2 id="组成-chain"><a href="#组成-chain" class="headerlink" title="组成 chain"></a>组成 chain</h2><p>两个控件组成 chain 需要满足的条件：</p>
+<ol>
+<li>控件间的布局存在相互依赖关系（你依赖我布局，我也依赖你布局）</li>
+<li>两个以上的控件，相互依赖关系需要保持在同一个方向上（都是水平方向上的依赖：Left_toRightOf / Right_toLeftOf；或者都是垂直方向上的依赖：Top_toBottomOf / Bottom_toTopOf）</li>
+</ol>
+<h2 id="设置-chain-style"><a href="#设置-chain-style" class="headerlink" title="设置 chain style"></a>设置 chain style</h2><p><img src="https://mmbiz.qpic.cn/mmbiz_png/6GYDCe0a268PLcpvXmbU3LncJiaZMiaDpJdeByyMzFfas5KE2SjBCITdPBztRz2aSVFkR3URBicMAh3hpftALA4tQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="chain style"></p>
+<h3 id="demo-1-chain-style"><a href="#demo-1-chain-style" class="headerlink" title="demo 1 chain style"></a>demo 1 chain style</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_0&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_green_dark&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintHorizontal_chainStyle=&quot;spread&quot;/&gt;</div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_1&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@color/colorPrimary&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@id/chain_view_0&quot;</div><div class="line">    app:layout_constraintRight_toLeftOf=&quot;@+id/chain_view_2&quot;/&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;View</div><div class="line">    android:id=&quot;@+id/chain_view_2&quot;</div><div class="line">    android:layout_width=&quot;40dp&quot;</div><div class="line">    android:background=&quot;@android:color/holo_purple&quot;</div><div class="line">    android:layout_height=&quot;40dp&quot;</div><div class="line"></div><div class="line">    app:layout_constraintLeft_toRightOf=&quot;@+id/chain_view_1&quot;</div><div class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_spread.png" alt="chain_style_spread"></p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_spread_inside.png" alt="chain_style_spread_inside"></p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ConstrainsLayout/chain_style_packed.png" alt="chain_style_spread_packed"></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/X01KpEbegR47Qnl9TmUd5w" target="_blank" rel="external">https://mp.weixin.qq.com/s/X01KpEbegR47Qnl9TmUd5w</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/15/看源码/EventBus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +645,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-15T09:38:14+08:00">
                 2017-09-15
@@ -303,7 +666,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -357,7 +720,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/15/看源码/EventBus/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -431,7 +794,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-11T13:18:12+08:00">
                 2017-09-11
@@ -452,7 +815,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -575,7 +938,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-05T13:18:12+08:00">
                 2017-09-05
@@ -596,7 +959,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -648,7 +1011,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/05/uml/uml使用记录/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -722,7 +1085,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
                 2017-09-03
@@ -743,7 +1106,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -786,7 +1149,145 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-雇工模式/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/" itemprop="url">设计模式之蝉 - 空对象模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Null Object Pattern 是通过实现一个默认的无意义的对象来避免 null 值出现，就是为了避免程序中出现 null 值判断而诞生的一种设计方式。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/#more" rel="contents">
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -860,7 +1361,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
                 2017-09-03
@@ -881,7 +1382,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -972,144 +1473,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/" itemprop="url">设计模式之蝉 - 空对象模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-03T21:38:14+08:00">
-                2017-09-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Null Object Pattern 是通过实现一个默认的无意义的对象来避免 null 值出现，就是为了避免程序中出现 null 值判断而诞生的一种设计方式。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/03/ReadNote/设计模式/设计模式之蝉-空对象模式/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/02/ReadNote/设计模式/设计模式之蝉-对象池模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1139,7 +1502,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-02T21:38:14+08:00">
                 2017-09-02
@@ -1160,7 +1523,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1204,7 +1567,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/02/ReadNote/设计模式/设计模式之蝉-对象池模式/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1278,7 +1641,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-30T21:38:14+08:00">
                 2017-08-30
@@ -1299,7 +1662,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1342,300 +1705,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/08/30/ReadNote/设计模式/模式组合/设计模式之蝉-观察者+中介着模式/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/" itemprop="url">设计模式之蝉 - 工厂方法模式 + 策略模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-29T21:38:14+08:00">
-                2017-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>迷你版的交易系统</p>
-<p>一卡通</p>
-<p>卡内有两种金额：1. 固定金额（不能用于提现的金额，只能消费） 2. 自由金额</p>
-<p>扣款策略： </p>
-<ol>
-<li><p>扣款策略一</p>
-<p> 固定余额 = 现有固定余额 - 交易金额 ／ 2<br> 自由余额 = 现有余额 - 交易金额 ／ 2</p>
-</li>
-<li><p>扣款策略二</p>
-<p> 全部从自由金额中扣除</p>
-</li>
-</ol>
-<p>IC 卡类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Card</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String cardNo = <span class="string">""</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> steadyMoney = <span class="number">0</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> freeMoney = <span class="number">0</span>;</div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>交易类： 负责记录每一笔交易</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trade</span></span>&#123;</div><div class="line">    <span class="comment">//交易编号</span></div><div class="line">    <span class="keyword">private</span> String tradeNo = <span class="string">""</span>;</div><div class="line">    <span class="comment">//交易金额</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> amount = <span class="number">0</span>;</div><div class="line">    <span class="comment">// getter/setter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/29/ReadNote/设计模式/模式组合/设计模式之蝉-工厂方法模式+策略模式/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/20/ReadNote/设计模式/模式组合/设计模式之蝉-命令模式+责任链模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/20/ReadNote/设计模式/模式组合/设计模式之蝉-命令模式+责任链模式/" itemprop="url">设计模式之蝉 - 命令模式 + 责任链模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-20T21:38:14+08:00">
-                2017-08-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>移植 *inux 命令到 windows</p>
-<p>抽象命令类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CommandName</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> CommandName nextOpertor;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">handleMessage</span><span class="params">(CommandVP vp)</span></span>&#123;</div><div class="line">        String result = <span class="string">""</span>;</div><div class="line">        <span class="keyword">if</span>(vo.getparam().size() == <span class="number">0</span> || vo.getParam().contains(<span class="keyword">this</span>.getOperator()))&#123;</div><div class="line">            result = <span class="keyword">this</span>.echo(vo);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.nextOperator != <span class="keyword">null</span>)&#123;</div><div class="line">                result = <span class="keyword">this</span>.nextOperator.handleMessage(vo);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                result = <span class="string">"命令无法执行"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNext</span><span class="params">(CommandName _operator)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.nextOperator = _operator;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">getOperateParam</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">echo</span><span class="params">(CommandVO vo)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/20/ReadNote/设计模式/模式组合/设计模式之蝉-命令模式+责任链模式/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1720,8 +1790,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">414</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">416</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1732,7 +1802,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1743,7 +1813,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">254</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1793,7 +1863,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

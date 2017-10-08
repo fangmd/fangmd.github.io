@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,482 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Python/django/Django-Forms-Overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/13/Python/django/Django-Forms-Overview/" itemprop="url">Django Forms - Overview</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
+                2016-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Overview</p>
+<h1 id="HTML-Forms"><a href="#HTML-Forms" class="headerlink" title="HTML Forms"></a>HTML Forms</h1><p>在 HTML 中表单由<code>&lt;form&gt;...&lt;/form&gt;</code>标签生成。</p>
+<p><code>&lt;input&gt;</code>元素，需要定义：</p>
+<ol>
+<li>where:用户的输入该返回什么 URL</li>
+<li>how:数据应该使用哪种 HTTP method 返回</li>
+</ol>
+<h2 id="GET-and-POST"><a href="#GET-and-POST" class="headerlink" title="GET and POST"></a>GET and POST</h2><p>GET and POST are the only HTTP methods to use when dealing with forms.</p>
+<h1 id="Django’s-role-in-forms"><a href="#Django’s-role-in-forms" class="headerlink" title="Django’s role in forms"></a>Django’s role in forms</h1><ul>
+<li>preparing and restructuring data to make it ready for rendering</li>
+<li>creating HTML forms for the data</li>
+<li>receiving and processing submitted forms and data from the client</li>
+</ul>
+<h1 id="Forms-in-Django"><a href="#Forms-in-Django" class="headerlink" title="Forms in Django"></a>Forms in Django</h1><p>We’ve described HTML forms briefly, but an HTML <form> is just one part of the machinery required.</form></p>
+<h2 id="The-Django-Form-class"><a href="#The-Django-Form-class" class="headerlink" title="The Django Form class"></a>The Django Form class</h2><h2 id="Instantiating-processing-and-rendering-forms"><a href="#Instantiating-processing-and-rendering-forms" class="headerlink" title="Instantiating, processing, and rendering forms"></a>Instantiating, processing, and rendering forms</h2><ol>
+<li>get hold of it in the view (fetch it from the database, for example)</li>
+<li>pass it to the template context</li>
+<li>expand it to HTML markup using template variables</li>
+</ol>
+<h1 id="Building-a-form"><a href="#Building-a-form" class="headerlink" title="Building a form"></a>Building a form</h1><h2 id="The-work-that-needs-to-be-done"><a href="#The-work-that-needs-to-be-done" class="headerlink" title="The work that needs to be done"></a>The work that needs to be done</h2><p>比如需要创建一个下面的 html：</p>
+<pre><code>&lt;form action=&quot;/your-name/&quot; method=&quot;post&quot;&gt;
+    &lt;label for=&quot;your_name&quot;&gt;Your name: &lt;/label&gt;
+    &lt;input id=&quot;your_name&quot; type=&quot;text&quot; name=&quot;your_name&quot; value=&quot;{{ current_name }}&quot;&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;OK&quot;&gt;
+&lt;/form&gt;
+</code></pre><h2 id="Building-a-form-in-Django"><a href="#Building-a-form-in-Django" class="headerlink" title="Building a form in Django"></a>Building a form in Django</h2><h3 id="The-Form-class"><a href="#The-Form-class" class="headerlink" title="The Form class"></a>The Form class</h3><p>forms.py:</p>
+<pre><code>from django import forms
+
+class NameForm(forms.Form):
+    your_name = forms.CharField(label=&apos;Your name&apos;, max_length=100)
+</code></pre><p>forms class 有一个 is_valid() 方法，用于验证数据的有效性</p>
+<p>这个 forms 被渲染后的 html：</p>
+<pre><code>&lt;label for=&quot;your_name&quot;&gt;Your name: &lt;/label&gt;
+&lt;input id=&quot;your_name&quot; type=&quot;text&quot; name=&quot;your_name&quot; maxlength=&quot;100&quot; required /&gt;
+</code></pre><p>没有包含 <code>&lt;form&gt;</code> 标签，和 submit button</p>
+<h3 id="The-view"><a href="#The-view" class="headerlink" title="The view"></a>The view</h3><p>views.py：</p>
+<pre><code>from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
+from .forms import NameForm
+
+def get_name(request):
+    # if this is a POST request we need to process the form data
+    if request.method == &apos;POST&apos;:
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.POST)
+        # check whether it&apos;s valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect(&apos;/thanks/&apos;)
+
+    # if a GET (or any other method) we&apos;ll create a blank form
+    else:
+        form = NameForm()
+
+    return render(request, &apos;name.html&apos;, {&apos;form&apos;: form})
+</code></pre><h1 id="Form-classes"><a href="#Form-classes" class="headerlink" title="Form classes"></a>Form classes</h1><p>所有的 Form class 都继承自 <code>django.forms.Form</code>, 包括 Django 的 admin 中使用的 <code>ModelForm</code></p>
+<blockquote>
+<p>Form 用于直接添加和编辑 Django model。</p>
+</blockquote>
+<h2 id="Bound-and-unbound-form-instances"><a href="#Bound-and-unbound-form-instances" class="headerlink" title="Bound and unbound form instances"></a>Bound and unbound form instances</h2><p>Bound 和 unbound 的区别：</p>
+<ol>
+<li>一个 unbound 的 form 没有和它连接的数据，当它被渲染显示给用户的时候，它是空的或者包含默认的值。</li>
+<li>一个 bound form，渲染后是包含数据的。</li>
+</ol>
+<p>form 的 <code>is_bound</code> 属性表示了是否绑定数据。</p>
+<h2 id="More-on-fields"><a href="#More-on-fields" class="headerlink" title="More on fields"></a>More on fields</h2><p>下面创建一个更有意义的 form：</p>
+<p>forms.py:</p>
+<pre><code>from django import forms
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    message = forms.CharField(widget=forms.Textarea)
+    sender = forms.EmailField()
+    cc_myself = forms.BooleanField(required=False)
+</code></pre><h3 id="Widgets"><a href="#Widgets" class="headerlink" title="Widgets"></a>Widgets</h3><p>每个 form field 都有一个对应的 Widget class,用于设置其 input 的 type，默认 type=”text”</p>
+<h4 id="Field-data"><a href="#Field-data" class="headerlink" title="Field data"></a>Field data</h4><p>通过调用 <code>forms.is_valid()</code> 来验证用户数据,验证后的数据会被保存的到 <code>form.cleaned_data</code> dictionary,这里的数据可以很好的转化成 Python 数据</p>
+<p>views.py:</p>
+<pre><code>from django.core.mail import send_mail
+
+if form.is_valid():
+    subject = form.cleaned_data[&apos;subject&apos;]
+    message = form.cleaned_data[&apos;message&apos;]
+    sender = form.cleaned_data[&apos;sender&apos;]
+    cc_myself = form.cleaned_data[&apos;cc_myself&apos;]
+
+    recipients = [&apos;info@example.com&apos;]
+    if cc_myself:
+        recipients.append(sender)
+
+    send_mail(subject, message, sender, recipients)
+    return HttpResponseRedirect(&apos;/thanks/&apos;)
+</code></pre><p>一些 field 类型需要一些额外的处理，比如 使用 form 上传文件</p>
+<h1 id="Working-with-form-templates"><a href="#Working-with-form-templates" class="headerlink" title="Working with form templates"></a>Working with form templates</h1><p>把 form 对象放到 template 的 conext 中就可以把 form 添加到 template 中，比如表单的变量名是 form，<code></code> 加入到 template 中就可以了。</p>
+<h2 id="Form-rendering-options"><a href="#Form-rendering-options" class="headerlink" title="Form rendering options"></a>Form rendering options</h2><p>一些定制：</p>
+<ul>
+<li><code></code>: 生成的 html 会被 <code>&lt;tr&gt;</code> 标签包裹</li>
+<li><code></code>: 被 <code>&lt;p&gt;</code> 包裹</li>
+<li><code></code>: 被 <code>&lt;li&gt;</code> 包裹</li>
+</ul>
+<p>在 template 中需要自己写 <code>&lt;table&gt;</code>,<code>&lt;ul&gt;</code> 标签</p>
+<p><code></code> ContactForm 的输出：</p>
+<pre><code>&lt;p&gt;&lt;label for=&quot;id_subject&quot;&gt;Subject:&lt;/label&gt;
+    &lt;input id=&quot;id_subject&quot; type=&quot;text&quot; name=&quot;subject&quot; maxlength=&quot;100&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_message&quot;&gt;Message:&lt;/label&gt;
+    &lt;textarea name=&quot;message&quot; id=&quot;id_message&quot; required&gt;&lt;/textarea&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_sender&quot;&gt;Sender:&lt;/label&gt;
+    &lt;input type=&quot;email&quot; name=&quot;sender&quot; id=&quot;id_sender&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_cc_myself&quot;&gt;Cc myself:&lt;/label&gt;
+    &lt;input type=&quot;checkbox&quot; name=&quot;cc_myself&quot; id=&quot;id_cc_myself&quot; /&gt;&lt;/p&gt;
+</code></pre><p>每个 field 都有一个 ID <code>id_&lt;field-name&gt;</code></p>
+<h2 id="Rendering-fields-manually"><a href="#Rendering-fields-manually" class="headerlink" title="Rendering fields manually"></a>Rendering fields manually</h2><p>手动渲染 fields，每个 field 都可以通过属性 <code></code> 获取</p>
+<p>ex：</p>
+<pre><code>{{ form.non_field_errors }}
+&lt;div class=&quot;fieldWrapper&quot;&gt;
+    {{ form.subject.errors }}
+    &lt;label for=&quot;{{ form.subject.id_for_label }}&quot;&gt;Email subject:&lt;/label&gt;
+    {{ form.subject }}
+&lt;/div&gt;
+&lt;div class=&quot;fieldWrapper&quot;&gt;
+    {{ form.message.errors }}
+    &lt;label for=&quot;{{ form.message.id_for_label }}&quot;&gt;Your message:&lt;/label&gt;
+    {{ form.message }}
+&lt;/div&gt;
+&lt;div class=&quot;fieldWrapper&quot;&gt;
+    {{ form.sender.errors }}
+    &lt;label for=&quot;{{ form.sender.id_for_label }}&quot;&gt;Your email address:&lt;/label&gt;
+    {{ form.sender }}
+&lt;/div&gt;
+&lt;div class=&quot;fieldWrapper&quot;&gt;
+    {{ form.cc_myself.errors }}
+    &lt;label for=&quot;{{ form.cc_myself.id_for_label }}&quot;&gt;CC yourself?&lt;/label&gt;
+    {{ form.cc_myself }}
+&lt;/div&gt;
+</code></pre><p><code>&lt;label&gt;</code> 可以通过 <code>label_tag()</code> 方法生成，ex：</p>
+<pre><code>&lt;div class=&quot;fieldWrapper&quot;&gt;
+    {{ form.subject.errors }}
+    {{ form.subject.label_tag }}
+    {{ form.subject }}
+&lt;/div&gt;
+</code></pre><h3 id="Rendering-form-error-messages"><a href="#Rendering-form-error-messages" class="headerlink" title="Rendering form error messages"></a>Rendering form error messages</h3><p>。。。</p>
+<h2 id="Looping-over-the-form’s-fields"><a href="#Looping-over-the-form’s-fields" class="headerlink" title="Looping over the form’s fields"></a>Looping over the form’s fields</h2><p>使用遍历 field 的方式生成 forms：</p>
+<pre><code>{% for field in form %}
+        <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</code></pre><p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<p><code></code></p>
+<h3 id="Looping-over-hidden-and-visible-fields"><a href="#Looping-over-hidden-and-visible-fields" class="headerlink" title="Looping over hidden and visible fields"></a>Looping over hidden and visible fields</h3><pre><code>{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+
+{% for field in form.visible_fields %}
+        <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        </div>
+    {% endfor %}
+</code></pre><h2 id="Reusable-form-templates"><a href="#Reusable-form-templates" class="headerlink" title="Reusable form templates"></a>Reusable form templates</h2><p>把 form 的 html 写到一个 html 文件文件中，通过 <code>include</code> 达到复用的效果</p>
+<pre><code># In your form template:
+{% include "form_snippet.html" %}
+
+# In form_snippet.html:
+{% for field in form %}
+        <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        </div>
+    {% endfor %}
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/Android/进程保活/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/12/Android/进程保活/" itemprop="url">进程保活</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T21:38:14+08:00">
+                2016-12-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>原文地址：<a href="http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8">http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8</a></p>
+<p>进程保活包括两个层面：</p>
+<ol>
+<li>提高进程的优先级，降低其被杀死的概率</li>
+<li>在进程被杀死后，进行拉活</li>
+</ol>
+<h1 id="进程的优先级"><a href="#进程的优先级" class="headerlink" title="进程的优先级"></a>进程的优先级</h1><p>进程重要性分 5 级：</p>
+<ol>
+<li>前台进程(Foreground process)</li>
+<li>可见进程(Visible process)</li>
+<li>服务进程(Service process)</li>
+<li>后台进程(Background process)</li>
+<li>空进程(Empty process)</li>
+</ol>
+<h2 id="Foreground-process"><a href="#Foreground-process" class="headerlink" title="Foreground process"></a>Foreground process</h2><p>只有在内存不足的时候才会被回收</p>
+<p>实现前台进程的情况：</p>
+<ul>
+<li>拥有用户正在交互的 Activity（已调用 onResume()）</li>
+<li>拥有某个 Service，后者绑定到用户正在交互的 Activity</li>
+<li>拥有正在“前台”运行的 Service（服务已调用 startForeground()）</li>
+<li>拥有正执行一个生命周期回调的 Service（onCreate()、onStart() 或 onDestroy()）</li>
+<li>拥有正执行其 onReceive() 方法的 BroadcastReceiver</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/12/Android/进程保活/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/Android/后台任务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +758,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T13:18:12+08:00">
                 2016-12-12
@@ -303,7 +779,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -667,7 +1143,7 @@ mJobScheduler.cancelAll();
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-05T14:38:14+08:00">
                 2016-12-05
@@ -688,7 +1164,7 @@ mJobScheduler.cancelAll();
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1150,7 +1626,7 @@ private void startBatterMonitor() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-04T12:18:12+08:00">
                 2016-12-04
@@ -1171,7 +1647,7 @@ private void startBatterMonitor() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1385,7 +1861,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T09:13:12+08:00">
                 2016-12-01
@@ -1406,7 +1882,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1523,7 +1999,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T13:18:12+08:00">
                 2016-11-27
@@ -1544,7 +2020,7 @@ DaggerStatisticsComponent.builder()
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1819,7 +2295,7 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:38:14+08:00">
                 2016-11-27
@@ -1840,7 +2316,7 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2012,7 +2488,7 @@ private void updateFloatItem() {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:23:14+08:00">
                 2016-11-27
@@ -2033,7 +2509,7 @@ private void updateFloatItem() {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2184,7 +2660,7 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-24T13:18:12+08:00">
                 2016-11-24
@@ -2205,7 +2681,7 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2723,460 +3199,6 @@ brandDeferObservable
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/23/html/BootstrapW3C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/23/html/BootstrapW3C/" itemprop="url">Bootstrap w3c 学习记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-23T13:18:12+08:00">
-                2016-11-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="http://www.w3cschool.cn/bootstrap/bootstrap-v2-grid-system.html" target="_blank" rel="external">w3c Bootstrap</a><br><a href="http://v3.bootcss.com/css/" target="_blank" rel="external">Bootstrap中文网</a></p>
-<h1 id="Bootstrap-css"><a href="#Bootstrap-css" class="headerlink" title="Bootstrap css"></a>Bootstrap css</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><h3 id="HTML-5-文档类型（Doctype）"><a href="#HTML-5-文档类型（Doctype）" class="headerlink" title="HTML 5 文档类型（Doctype）"></a>HTML 5 文档类型（Doctype）</h3><pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-....
-&lt;/html&gt;
-</code></pre><h3 id="移动设备优先"><a href="#移动设备优先" class="headerlink" title="移动设备优先"></a>移动设备优先</h3><p>head 中添加：</p>
-<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-</code></pre><ul>
-<li>width 属性控制设备的宽度，设置为 device-width 可以确保它能正确呈现在不同设备上。</li>
-<li>initial-scale=1.0 确保网页加载时，以 1:1 的比例呈现，不会有任何的缩放。</li>
-<li>移动设备浏览器上，通过为 viewport meta 标签添加 user-scalable=no 可以禁用其缩放（zooming）功能。</li>
-<li><p>maximum-scale=1.0 与 user-scalable=no 一起使用。这样禁用缩放功能后，用户只能滚动屏幕，就能让您的网站看上去更像原生应用的感觉。</p>
-<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,                                                           initial-scale=1.0,                                       
-maximum-scale=1.0,                                       
-user-scalable=no&quot;&gt;
-</code></pre></li>
-</ul>
-<h3 id="响应式图像"><a href="#响应式图像" class="headerlink" title="响应式图像"></a>响应式图像</h3><pre><code>&lt;img src=&quot;...&quot; class=&quot;img-responsive&quot; alt=&quot;响应式图像&quot;&gt;
-</code></pre><ul>
-<li>img-responsive class 可以让 Bootstrap 3 中的图像对响应式布局的支持更友好。</li>
-</ul>
-<h3 id="全局显示、排版和链接"><a href="#全局显示、排版和链接" class="headerlink" title="全局显示、排版和链接"></a>全局显示、排版和链接</h3><p><code>bootstrap.css</code> 文件中查看css</p>
-<p>基本的全局显示：</p>
-<pre><code>body {
-  font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143;
-  color: #333;
-  background-color: #fff;
-}
-</code></pre><h3 id="容器（Container）"><a href="#容器（Container）" class="headerlink" title="容器（Container）"></a>容器（Container）</h3><pre><code>&lt;div class=&quot;container&quot;&gt;
-  ...
-&lt;/div&gt;
-</code></pre><p>用于包裹页面上的内容:</p>
-<pre><code>.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-</code></pre><h1 id="Bootstrap-网格系统"><a href="#Bootstrap-网格系统" class="headerlink" title="Bootstrap 网格系统"></a>Bootstrap 网格系统</h1><p>系统会自动分为最多12列。</p>
-<h2 id="Bootstrap-网格系统（Grid-System）的工作原理"><a href="#Bootstrap-网格系统（Grid-System）的工作原理" class="headerlink" title="Bootstrap 网格系统（Grid System）的工作原理:"></a>Bootstrap 网格系统（Grid System）的工作原理:</h2><p>网格系统通过一系列包含内容的行和列来创建页面布局。</p>
-<ol>
-<li>行必须放置在 .container class 内，以便获得适当的对齐（alignment）和内边距（padding）。</li>
-<li>使用行来创建列的水平组。</li>
-<li>内容应该放置在列内，且唯有列可以是行的直接子元素。</li>
-<li>预定义的网格类，比如 .row 和 .col-xs-4，可用于快速创建网格布局。LESS 混合类可用于更多语义布局。</li>
-<li>列通过内边距（padding）来创建列内容之间的间隙。该内边距是通过 .rows 上的外边距（margin）取负，表示第一列和最后一列的行偏移。</li>
-<li>网格系统是通过指定您想要横跨的十二个可用的列来创建的。例如，要创建三个相等的列，则使用三个 .col-xs-4。</li>
-</ol>
-<h2 id="基本的网格结构"><a href="#基本的网格结构" class="headerlink" title="基本的网格结构"></a>基本的网格结构</h2><pre><code>&lt;div class=&quot;container&quot;&gt;
-   &lt;div class=&quot;row&quot;&gt;
-      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;
-      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;      
-   &lt;/div&gt;
-   &lt;div class=&quot;row&quot;&gt;...&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;container&quot;&gt;....
-</code></pre><h3 id="列偏移"><a href="#列偏移" class="headerlink" title="列偏移"></a>列偏移</h3><p><code>.col-md-offset-*</code> 类可以将列向右侧偏移</p>
-<h3 id="嵌套列"><a href="#嵌套列" class="headerlink" title="嵌套列"></a>嵌套列</h3><h3 id="列排序"><a href="#列排序" class="headerlink" title="列排序"></a>列排序</h3><p>使用 <code>.col-md-push-*</code> 和 <code>.col-md-pull-*</code> 类就可以很容易的改变列（column）的顺序</p>
-<h2 id="Less-mixin-和变量"><a href="#Less-mixin-和变量" class="headerlink" title="Less mixin 和变量"></a>Less mixin 和变量</h2><h1 id="排版"><a href="#排版" class="headerlink" title="排版"></a>排版</h1><h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>文字标题: <h1~h6></h1~h6></p>
-<p>副标题: <small></small></p>
-<p>段落：</p><p></p>
-<p>引导主体副本:class=”lead” (给段落添加)</p>
-<h2 id="内联文本元素"><a href="#内联文本元素" class="headerlink" title="内联文本元素"></a>内联文本元素</h2><ol>
-<li><mark>:Marked text</mark></li>
-<li><del>:被删除的文本</del></li>
-<li><s>:无用文本</s></li>
-<li><ins>:插入文本</ins></li>
-<li><u>:带下划线的文本</u></li>
-<li><small>:小号文本</small></li>
-<li><strong>:（设置文本为更粗的文本）</strong></li>
-<li><em>（设置文本为斜体）<h2 id="对齐"><a href="#对齐" class="headerlink" title="对齐"></a>对齐</h2></em></li>
-</ol>
-<p>class=”text-left”，class=”text-center”，class=”text-right”，class=”text-justify”，class=”text-nowrap”</p>
-<h2 id="改变大小写"><a href="#改变大小写" class="headerlink" title="改变大小写"></a>改变大小写</h2><p>class=”text-lowercase”，class=”text-uppercase”，class=”text-capitalize”</p>
-<h2 id="缩略语"><a href="#缩略语" class="headerlink" title="缩略语"></a>缩略语</h2><p><abbr title="World Wide Web">WWW</abbr>， class=”initialism” 缩小字体</p>
-<p>强调:</p>
-<ol>
-<li><p class="text-muted">本行内容是减弱的</p></li>
-<li><p class="text-primary">本行内容带有一个 primary class</p></li>
-<li><p class="text-success">本行内容带有一个 success class</p></li>
-<li><p class="text-info">本行内容带有一个 info class</p></li>
-<li><p class="text-warning">本行内容带有一个 warning class</p></li>
-<li><p class="text-danger">本行内容带有一个 danger class</p>
-
-
-</li>
-</ol>
-<h2 id="地址（Address）"><a href="#地址（Address）" class="headerlink" title="地址（Address）"></a>地址（Address）</h2><address>
-
-<h2 id="引用（Blockquote）"><a href="#引用（Blockquote）" class="headerlink" title="引用（Blockquote）"></a>引用（Blockquote）</h2><blockquote>
-
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li>.lead    使段落突出显示</li>
-<li>.text-left    设定文本左对齐</li>
-<li>.text-center    设定文本居中对齐</li>
-<li>.text-right    设定文本右对齐</li>
-<li>.text-justify    设定文本对齐,段落中超出屏幕部分文字自动换行</li>
-<li>.text-nowrap    段落中超出屏幕部分不换行</li>
-<li>.text-lowercase    设定文本小写</li>
-<li>.text-uppercase    设定文本大写</li>
-<li>.text-capitalize    设定单词首字母大写</li>
-<li>.initialism    显示在 <abbr> 元素中的文本以小号字体展示</abbr></li>
-<li>.blockquote-reverse    设定引用右对齐</li>
-<li>.list-unstyled    移除默认的列表样式，列表项中左对齐 ( <ul> 和 <ol> 中)。 这个类仅适用于直接子列表项    (如果需要移除嵌套的列表项，你需要在嵌套的列表中使用该样式)</ol></ul></li>
-<li>.list-inline    将所有列表项放置同一行</li>
-<li>.dl-horizontal    该类设置了浮动和偏移，应用于 <dl> 元素和 <dt> 元素中，具体实现可以查看实例</dt></dl></li>
-<li>.pre-scrollable    使 <pre> 元素可滚动 scrollable</pre></li>
-</ul>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ol>
-<li>class .list-inline 把所有的列表项放在同一行中</li>
-</ol>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>为任意 <table> 标签添加 .table 类可以为其赋予基本的样式</table></p>
-<p>example:</p>
-<pre><code>&lt;table class=&quot;table&quot;&gt;
-    &lt;caption&gt;Optional table caption.&lt;/caption&gt;
-    &lt;thead&gt;
-    &lt;tr&gt;
-        &lt;th&gt;#&lt;/th&gt;
-        &lt;th&gt;First Name&lt;/th&gt;
-        &lt;th&gt;Last Name&lt;/th&gt;
-        &lt;th&gt;Username&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tbody&gt;
-    &lt;tr&gt;
-        &lt;td&gt;1&lt;/td&gt;
-        &lt;td&gt;Mark&lt;/td&gt;
-        &lt;td&gt;Otto&lt;/td&gt;
-        &lt;td&gt;@mdo&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-        &lt;td&gt;2&lt;/td&gt;
-        &lt;td&gt;Jacob&lt;/td&gt;
-        &lt;td&gt;Thornton&lt;/td&gt;
-        &lt;td&gt;@fat&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-        &lt;td&gt;3&lt;/td&gt;
-        &lt;td&gt;Larry&lt;/td&gt;
-        &lt;td&gt;the Bird&lt;/td&gt;
-        &lt;td&gt;@twitter&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;/tbody&gt;
-
-&lt;/table&gt;
-</code></pre><h2 id="条纹状表格"><a href="#条纹状表格" class="headerlink" title="条纹状表格"></a>条纹状表格</h2><p>通过 .table-striped 类可以给 <tbody> 之内的每一行增加斑马条纹样式。</tbody></p>
-<pre><code>&lt;table class=&quot;table table-striped&quot;&gt;
-  ...
-&lt;/table&gt;
-</code></pre><h2 id="带边框的表格"><a href="#带边框的表格" class="headerlink" title="带边框的表格"></a>带边框的表格</h2><h1 id="表单"><a href="#表单" class="headerlink" title="表单"></a>表单</h1><h2 id="基本实例"><a href="#基本实例" class="headerlink" title="基本实例"></a>基本实例</h2><pre><code>&lt;form role=&quot;form&quot;&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputEmail1&quot;&gt;Email address&lt;/label&gt;
-    &lt;input type=&quot;email&quot; class=&quot;form-control&quot; id=&quot;exampleInputEmail1&quot; placeholder=&quot;Enter email&quot;&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputPassword1&quot;&gt;Password&lt;/label&gt;
-    &lt;input type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;exampleInputPassword1&quot; placeholder=&quot;Password&quot;&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputFile&quot;&gt;File input&lt;/label&gt;
-    &lt;input type=&quot;file&quot; id=&quot;exampleInputFile&quot;&gt;
-    &lt;p class=&quot;help-block&quot;&gt;Example block-level help text here.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;checkbox&quot;&gt;
-    &lt;label&gt;
-      &lt;input type=&quot;checkbox&quot;&gt; Check me out
-    &lt;/label&gt;
-  &lt;/div&gt;
-  &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-</code></pre><h2 id="内连表单"><a href="#内连表单" class="headerlink" title="内连表单"></a>内连表单</h2><p>表单添加下面的 class 属性</p>
-<ul>
-<li>.form-inline</li>
-</ul>
-<p>注意：label 一定要添加，否则屏幕阅读器无法正确识别</p>
-<h2 id="水平排列的表单"><a href="#水平排列的表单" class="headerlink" title="水平排列的表单"></a>水平排列的表单</h2><p>label 和 input 在一行上</p>
-<ul>
-<li>.form-horizontal 配合 栅格类</li>
-</ul>
-</blockquote></address>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/Python/django/Django 报错记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/21/Python/django/Django 报错记录/" itemprop="url">Django 报错记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-21T13:18:12+08:00">
-                2016-11-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="NoReverseMatch"><a href="#NoReverseMatch" class="headerlink" title="NoReverseMatch"></a>NoReverseMatch</h1><pre><code>Reverse for &apos;index&apos; with arguments &apos;()&apos; and keyword arguments &apos;{}&apos; not found. 0 pattern(s) tried: []
-</code></pre><p>原因：URLconf 设置错误</p>
-<p>错误例子：</p>
-<pre><code>主urls.py中的
-url(r&apos;^$&apos;, include(&apos;blog.urls&apos;)),
-修改成
-url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
-</code></pre><p>$判断字符串结束，所以后面的子url她没法解析了</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -3226,8 +3248,8 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">414</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">416</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -3238,7 +3260,7 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -3249,7 +3271,7 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">254</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -3299,7 +3321,7 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
