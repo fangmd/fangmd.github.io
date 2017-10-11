@@ -253,6 +253,424 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Android/优化/Android错误日志收集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/03/Android/优化/Android错误日志收集/" itemprop="url">Android错误日志 收集</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T21:03:14+08:00">
+                2016-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="创建一个异常类"><a href="#创建一个异常类" class="headerlink" title="创建一个异常类"></a>创建一个异常类</h1><pre><code>public class CrashHandler implements Thread.UncaughtExceptionHandler {
+
+    private static final String TAG = &quot;CrashHandler&quot;;
+    private static final boolean DEBUG = true;
+
+    public static final String PATH = Environment.getExternalStorageDirectory().getPath() + &quot;/qchat/log/&quot;;
+    private static final String FILE_NAME = &quot;crash&quot;;
+    //log文件的后缀名
+    private static final String FILE_NAME_SUFFIX = &quot;.txt&quot;;
+
+    private static CrashHandler sInstance = new CrashHandler();
+
+    //系统默认的异常处理（默认情况下，系统会终止当前的异常程序）
+    private Thread.UncaughtExceptionHandler mDefaultCrashHandler;
+
+    private Context mContext;
+
+    //构造方法私有，防止外部构造多个实例，即采用单例模式
+    private CrashHandler() {
+    }
+
+    public static CrashHandler getInstance() {
+        return sInstance;
+    }
+
+    //这里主要完成初始化工作
+    public void init(Context context) {
+        //获取系统默认的异常处理器
+        mDefaultCrashHandler = Thread.getDefaultUncaughtExceptionHandler();
+        //将当前实例设为系统默认的异常处理器
+        Thread.setDefaultUncaughtExceptionHandler(this);
+        //获取Context，方便内部使用
+        mContext = context.getApplicationContext();
+    }
+
+
+    @Override
+    public void uncaughtException(Thread thread, Throwable ex) {
+        //读取stacktrace信息
+        try {
+            //导出异常信息到SD卡中
+            dumpExceptionToSDCard(ex);
+            //这里可以通过网络上传异常信息到服务器，便于开发人员分析日志从而解决bug
+            uploadExceptionToServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //打印出当前调用栈信息
+        ex.printStackTrace();
+
+        //如果系统提供了默认的异常处理器，则交给系统去结束我们的程序，否则就由我们自己结束自己
+        if (mDefaultCrashHandler != null) {
+            mDefaultCrashHandler.uncaughtException(thread, ex);
+        } else {
+            Process.killProcess(Process.myPid());
+        }
+
+    }
+
+    private void dumpExceptionToSDCard(Throwable ex) throws IOException {
+        //如果SD卡不存在或无法使用，则无法把异常信息写入SD卡
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            if (DEBUG) {
+                Log.w(TAG, &quot;sdcard unmounted,skip dump exception&quot;);
+                return;
+            }
+        }
+
+        File dir = new File(PATH);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        long current = System.currentTimeMillis();
+        String time = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;).format(new Date(current));
+        //以当前时间创建log文件
+        File file = new File(PATH + FILE_NAME + time + FILE_NAME_SUFFIX);
+
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+            //导出发生异常的时间
+            pw.println(time);
+
+            //导出手机信息
+            dumpPhoneInfo(pw);
+
+            pw.println();
+            //导出异常的调用栈信息
+            ex.printStackTrace(pw);
+
+            pw.close();
+        } catch (Exception e) {
+            Log.e(TAG, &quot;dump crash info failed&quot;);
+        }
+    }
+
+    private void dumpPhoneInfo(PrintWriter pw) throws PackageManager.NameNotFoundException {
+        //应用的版本名称和版本号
+        PackageManager pm = mContext.getPackageManager();
+        PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(), PackageManager.GET_ACTIVITIES);
+        pw.print(&quot;App Version: &quot;);
+        pw.print(pi.versionName);
+        pw.print(&apos;_&apos;);
+        pw.println(pi.versionCode);
+
+        //android版本号
+        pw.print(&quot;OS Version: &quot;);
+        pw.print(Build.VERSION.RELEASE);
+        pw.print(&quot;_&quot;);
+        pw.println(Build.VERSION.SDK_INT);
+
+        //手机制造商
+        pw.print(&quot;Vendor: &quot;);
+        pw.println(Build.MANUFACTURER);
+
+        //手机型号
+        pw.print(&quot;Model: &quot;);
+        pw.println(Build.MODEL);
+
+        //cpu架构
+        pw.print(&quot;CPU ABI: &quot;);
+        pw.println(Build.CPU_ABI);
+    }
+
+    private void uploadExceptionToServer() {
+        //TODO Upload Exception Message To Your Web Server
+//        FilePostUtils.uploadCrashFile();
+        Logger.e(&quot;crash upload&quot;);
+    }
+}
+</code></pre><h1 id="注册这个类"><a href="#注册这个类" class="headerlink" title="注册这个类"></a>注册这个类</h1><p>在 Application 中</p>
+<pre><code>CrashHandler crashHandler = CrashHandler.getInstance();
+crashHandler.init(this);
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Android/数据存储/SharedPreferences/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/03/Android/数据存储/SharedPreferences/" itemprop="url">数据存储 - SharedPreferences</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T13:18:12+08:00">
+                2016-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><blockquote>
+<p>使用键值对的形式存储数据</p>
+</blockquote>
+<p>一般用于存储一些app有关的设置，属于轻量级的数据存储。</p>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><h2 id="获取SharedPreferences-对象"><a href="#获取SharedPreferences-对象" class="headerlink" title="获取SharedPreferences 对象"></a>获取SharedPreferences 对象</h2><ol>
+<li><p>方法一：Context类中<code>getSharedPreferences()</code>方法</p>
+<p> 参数1：文件名称<br> 参数2：操作模式： MODE_PRIVATE 和 MODE_MULTI_PROCESS</p>
+</li>
+<li><p>方法二：Activity类中<code>getPreferences()</code>的方法</p>
+<p> 和Context类的方法相似，不过只需要一个参数：操作模式；文件名是这个活动的类名；</p>
+</li>
+<li><p>PreferenceManager类中的getDefaultSharedPreferences()方法</p>
+<p> 静态方法，参数：Context；使用当前应用程序包名作为前缀来命名文件；</p>
+</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/03/Android/数据存储/SharedPreferences/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/30/Android/animate/Android 动画原来可以这样写/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -695,154 +1113,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/" itemprop="url">程序员修炼之道 从小工到专家</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-16T13:18:12+08:00">
-                2016-10-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="注重实效的哲学-A-Pragmatic-Philosophy"><a href="#注重实效的哲学-A-Pragmatic-Philosophy" class="headerlink" title="注重实效的哲学 A Pragmatic Philosophy"></a>注重实效的哲学 A Pragmatic Philosophy</h1><p>注重实效的程序员的特征：处理问题的时候，把问题放在更大的语境中去思考，设法注意更大的图景。</p>
-<h2 id="我的源码让猫给吃了"><a href="#我的源码让猫给吃了" class="headerlink" title="我的源码让猫给吃了"></a>我的源码让猫给吃了</h2><p>为自己的行为负责。</p>
-<blockquote>
-<p>Proide Options, Don’t Make Lame Excuses</p>
-</blockquote>
-<h2 id="软件的熵-entropy"><a href="#软件的熵-entropy" class="headerlink" title="软件的熵 entropy"></a>软件的熵 entropy</h2><p>熵 entropy :指某个系统中的“无序”的总量。当软件中的无序增长时称之为“软件腐烂” (software rot)。</p>
-<p>破窗户理论：一扇破窗户，在一段时间内不修理，就会渐渐给建筑的居民带来一种废弃感，于是另一扇窗户破了。人们开始乱扔垃圾，出现乱涂乱画，严重的结构损坏开始了，过了一段时间，建筑被损坏的程度超出业主愿意修理的程度，而废弃就变成了现实。</p>
-<blockquote>
-<p>Don’t Live with Broken Windows.</p>
-</blockquote>
-<p>遇到破窗户（低劣的设计，错误的决策，或者糟糕的代码），及时修理或者加以注释 (comment out) ，或者现实“为实现”消息，或用虚设的数据 (dummy data) 代替。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/16/ReadNote/Android源码设计模式解析与实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -996,6 +1266,154 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/" itemprop="url">程序员修炼之道 从小工到专家</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-16T13:18:12+08:00">
+                2016-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="注重实效的哲学-A-Pragmatic-Philosophy"><a href="#注重实效的哲学-A-Pragmatic-Philosophy" class="headerlink" title="注重实效的哲学 A Pragmatic Philosophy"></a>注重实效的哲学 A Pragmatic Philosophy</h1><p>注重实效的程序员的特征：处理问题的时候，把问题放在更大的语境中去思考，设法注意更大的图景。</p>
+<h2 id="我的源码让猫给吃了"><a href="#我的源码让猫给吃了" class="headerlink" title="我的源码让猫给吃了"></a>我的源码让猫给吃了</h2><p>为自己的行为负责。</p>
+<blockquote>
+<p>Proide Options, Don’t Make Lame Excuses</p>
+</blockquote>
+<h2 id="软件的熵-entropy"><a href="#软件的熵-entropy" class="headerlink" title="软件的熵 entropy"></a>软件的熵 entropy</h2><p>熵 entropy :指某个系统中的“无序”的总量。当软件中的无序增长时称之为“软件腐烂” (software rot)。</p>
+<p>破窗户理论：一扇破窗户，在一段时间内不修理，就会渐渐给建筑的居民带来一种废弃感，于是另一扇窗户破了。人们开始乱扔垃圾，出现乱涂乱画，严重的结构损坏开始了，过了一段时间，建筑被损坏的程度超出业主愿意修理的程度，而废弃就变成了现实。</p>
+<blockquote>
+<p>Don’t Live with Broken Windows.</p>
+</blockquote>
+<p>遇到破窗户（低劣的设计，错误的决策，或者糟糕的代码），及时修理或者加以注释 (comment out) ，或者现实“为实现”消息，或用虚设的数据 (dummy data) 代替。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/10/16/ReadNote/程序员修炼之道-从小工到专家/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/10/Android/第三方/RxJava/Rxjava_异常处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1093,151 +1511,6 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/10/10/Android/第三方/RxJava/Rxjava_异常处理/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/05/Python/django/Django_Views_functions/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/05/Python/django/Django_Views_functions/" itemprop="url">Django Views_functions</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-05T13:18:12+08:00">
-                2016-10-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="A-simple-Views"><a href="#A-simple-Views" class="headerlink" title="A simple Views"></a>A simple Views</h1><pre><code>from django.http import HttpResponse
-import datetime
-
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = &quot;&lt;html&gt;&lt;body&gt;It is now %s.&lt;/body&gt;&lt;/html&gt;&quot; % now
-    return HttpResponse(html)
-</code></pre><p>添加后在urls中定义urlpatterns，重启uwsgi</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/10/05/Python/django/Django_Views_functions/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -1440,7 +1713,7 @@ def current_datetime(request):
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/05/Python/django_setup/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/05/Python/django/Django_Views_functions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1459,7 +1732,7 @@ def current_datetime(request):
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/10/05/Python/django_setup/" itemprop="url">django 部署</a></h1>
+                <a class="post-title-link" href="/2016/10/05/Python/django/Django_Views_functions/" itemprop="url">Django Views_functions</a></h1>
         
 
         <div class="post-meta">
@@ -1529,232 +1802,17 @@ def current_datetime(request):
 
       
         
-          
-            <h1 id="uwsgi-使用"><a href="#uwsgi-使用" class="headerlink" title="uwsgi 使用"></a>uwsgi 使用</h1><h2 id="uWSGI配置文件"><a href="#uWSGI配置文件" class="headerlink" title="uWSGI配置文件"></a>uWSGI配置文件</h2><p>Django 中配置文件地址在工程中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">[uwsgi]</div><div class="line">socket = 127.0.0.1:9000</div><div class="line">#http = 127.0.0.1:8078</div><div class="line">chdir = /Users/double/uwsgi-tutorial/mysite</div><div class="line">env = DJANGO_SETTINGS_MODULE=mysite.settings</div><div class="line">module = mysite.wsgi:application</div><div class="line">pidfile=/tmp/mysite.pid</div><div class="line">processes = 4</div><div class="line">threads = 2</div><div class="line">master=True</div><div class="line">socket=/Users/double/uwsgi-tutorial/mysite.sock</div><div class="line">stats = 127.0.0.1:8079 # 统计端口，统计服务器设置使用，不能和上面的端口重复</div><div class="line">buffer-size = 30000</div><div class="line">vacuum=True</div><div class="line">max-requests=5000</div><div class="line">daemonize=/var/log/uwsgi/mysite.log</div><div class="line">#chmod-socket=664</div></pre></td></tr></table></figure>
-<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>使用配置文件启动：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo uwsgi --ini [filename.ini]</div></pre></td></tr></table></figure>
-<p>测试启动：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">uwsgi --http :8001 --wsgi-file test.py</div><div class="line"></div><div class="line">uwsgi --socket :8001 --wsgi-file test.py</div><div class="line"></div><div class="line">uwsgi --http :8001 --module mysite.wsgi</div><div class="line"></div><div class="line">uwsgi --socket :8001 --module mysite.wsgi</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">the web client &lt;-&gt; the web server &lt;-&gt; the socket &lt;-&gt; uWSGI &lt;-&gt; Python</div></pre></td></tr></table></figure>
-<h2 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h2><p>pid 文件在 uwsgi 配置文件中设置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo uwsgi --stop /tmp/mysite.pid</div></pre></td></tr></table></figure>
-<h2 id="nginx-配置文件"><a href="#nginx-配置文件" class="headerlink" title="nginx 配置文件"></a>nginx 配置文件</h2><p>mac 中配置文件地址：<code>/usr/local/etc/nginx/nginx.conf</code></p>
-<p>通过：添加下面的代码隔离配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include /usr/local/etc/nginx/servers/*;</div></pre></td></tr></table></figure>
-<p>在 servers 文件夹下添加项目的配置：如下 <code>blog.conf</code></p>
-<pre><code># the upstream component nginx needs to connect to
-upstream django {
-    # server unix:/Users/double/PycharmProjects/first_django/mysite/mysite.sock; # for a file socket
-     server 127.0.0.1:8001; # for a web port socket (we&apos;ll use this first)
-}
+          <h1 id="A-simple-Views"><a href="#A-simple-Views" class="headerlink" title="A simple Views"></a>A simple Views</h1><pre><code>from django.http import HttpResponse
+import datetime
 
-# configuration of the server
-server {
-    # the port your site will be served on
-    listen      8000;
-    # the domain name it will serve for
-    server_name localhost; # substitute your machine&apos;s IP address or FQDN
-    charset     utf-8;
-
-    # max upload size
-    client_max_body_size 75M;   # adjust to taste
-
-    # Django media
-    location /media  {
-        alias /Users/double/PycharmProjects/first_django/mysite/media;  # your Django project&apos;s media files - amend as required
-    }
-
-    location /static {
-        alias /Users/double/PycharmProjects/first_django/mysite/static; # your Django project&apos;s static files - amend as required
-    }
-
-    # Finally, send all non-media requests to the Django server.
-    location / {
-        uwsgi_pass  django;
-        include     /Users/double/PycharmProjects/first_django/mysite/uwsgi_params; # the uwsgi_params file you installed
-    }
-}
-</code></pre><p>最终通过访问 8000 端口，访问服务器</p>
-<h2 id="使用自定义的uWSGI配置文件运行uWSGI"><a href="#使用自定义的uWSGI配置文件运行uWSGI" class="headerlink" title="使用自定义的uWSGI配置文件运行uWSGI"></a>使用自定义的uWSGI配置文件运行uWSGI</h2><pre><code>uwsgi --ini mysite_uwsgi.ini # the --ini option is used to specify a file
-</code></pre><h1 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h1><h2 id="nginx-log-地址"><a href="#nginx-log-地址" class="headerlink" title="nginx log 地址"></a>nginx log 地址</h2><p>mac: <code>/usr/local/Cellar/nginx/1.10.2_1/logs/error.log</code></p>
-<h2 id="关闭-重启-nginx"><a href="#关闭-重启-nginx" class="headerlink" title="关闭,重启 nginx"></a>关闭,重启 nginx</h2><p>nginx pid file: <code>&quot;/usr/local/var/run/nginx.pid&quot;</code> </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo nginx -s quit</div><div class="line">sudo nginx</div><div class="line">sudo nginx -s reload</div></pre></td></tr></table></figure>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="Mac-访问权限的问题"><a href="#Mac-访问权限的问题" class="headerlink" title="Mac 访问权限的问题"></a>Mac 访问权限的问题</h2><p>在部署的时候发现：如果把 django 工程放在 文档 目录下会有访问权限的问题，把 django 工程放在用户根目录下就好了 <code>/Users/[User Name]/djangoblog/</code></p>
-<h2 id="如果出现端口占用的问题"><a href="#如果出现端口占用的问题" class="headerlink" title="如果出现端口占用的问题"></a>如果出现端口占用的问题</h2><p>方法一：确认端口，关闭占用端口的进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">lsof -i :[port]</div><div class="line"></div><div class="line">sudo kill [pid number]</div></pre></td></tr></table></figure></p>
-<p>方法二：（如果上面的方法没发现占用端口的程序使用这个方法）<br>查看下面的程序是否在运行, 关闭进程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ps -ax | grep nginx</div><div class="line"></div><div class="line">ps -ax | grep uwsgi</div><div class="line"></div><div class="line">sudo kill -9 [pid number]</div></pre></td></tr></table></figure></p>
-<h2 id="socket-文件访问权限限制"><a href="#socket-文件访问权限限制" class="headerlink" title="socket 文件访问权限限制"></a>socket 文件访问权限限制</h2><p>把工程目录移动到根目录即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/root/djangoblog/blog</div><div class="line"></div><div class="line">to</div><div class="line"></div><div class="line">/djangoblog/blog</div></pre></td></tr></table></figure>
-<h2 id="vps-linux"><a href="#vps-linux" class="headerlink" title="vps linux"></a>vps linux</h2><h3 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h3><p>需要打开 virtualenv 环境：<code>/root/blogenv/</code></p>
-<p>pid: <code>/tmp/djangoblog.pid</code></p>
-<p>log: <code>/var/log/uwsgi/djangoblog.log</code></p>
-<p>参考：</p>
-<ul>
-<li><a href="http://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html" target="_blank" rel="external">官方文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/java/正则表达式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/10/03/java/正则表达式/" itemprop="url">正则表达式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-03T21:38:14+08:00">
-                2016-10-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-                  . 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ol>
-<li><code>^</code>:Start of a String</li>
-<li><code>$</code>:End of a String</li>
-<li><code>.</code>:Match any single character</li>
-<li><code>\</code>Escape special meaning of meta characters</li>
-<li><code>[]</code>:Match one item in this character set</li>
-<li><code>()</code>:Group and remember contents as an item</li>
-<li><code>{}</code>:Repeats the previous item</li>
-<li><code>+</code>:Match one or more of the previous item</li>
-<li><code>|</code>:Either/Or</li>
-<li><code>?</code>:Match 0 or 1 of the previous item</li>
-<li><code>-</code>: Specifies a range of characters</li>
-<li><code>\d</code>: Digit character</li>
-<li><code>\D</code>:Non-digit character</li>
-<li><code>\w</code>:Word</li>
-<li><code>\W</code>:Non-word(e.g punctuation spaces)</li>
-</ol>
+def current_datetime(request):
+    now = datetime.datetime.now()
+    html = &quot;&lt;html&gt;&lt;body&gt;It is now %s.&lt;/body&gt;&lt;/html&gt;&quot; % now
+    return HttpResponse(html)
+</code></pre><p>添加后在urls中定义urlpatterns，重启uwsgi</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/10/03/java/正则表达式/#more" rel="contents">
+            <a class="btn" href="/2016/10/05/Python/django/Django_Views_functions/#more" rel="contents">
               Weiterlesen &raquo;
             </a>
           </div>
@@ -1840,7 +1898,7 @@ server {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">416</span>
+                <span class="site-state-item-count">418</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
