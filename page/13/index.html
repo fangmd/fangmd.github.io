@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,380 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/25/macos/mac设置定时任务/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/25/macos/mac设置定时任务/" itemprop="url">macOS 创建定时任务</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-25T12:18:12+08:00">
+                2016-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mac-OS/" itemprop="url" rel="index">
+                    <span itemprop="name">Mac OS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Mac-上执行定时任务"><a href="#Mac-上执行定时任务" class="headerlink" title="Mac 上执行定时任务"></a>Mac 上执行定时任务</h1><p>有两种方式</p>
+<ol>
+<li>使用 <code>launchctl</code></li>
+<li>使用 Linux 中常用的 <code>crontab</code> 命令</li>
+</ol>
+<h1 id="launchctl"><a href="#launchctl" class="headerlink" title="launchctl"></a>launchctl</h1><h2 id="创建任务"><a href="#创建任务" class="headerlink" title="创建任务"></a>创建任务</h2><p>launchctl 任务以文件形式创建，后缀为 <code>plist</code></p>
+<h3 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;  </div><div class="line"><span class="meta">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>  </div><div class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span>  </div><div class="line">  <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- 名称，要全局唯一 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>Label<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.double.notifier<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 要运行的程序， 如果省略这个选项，会把ProgramArguments的第一个</span></div><div class="line">    元素作为要运行的程序 --&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>Program<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>/Users/double/script.sh<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 命令， 第一个为命令，其它为参数--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>ProgramArguments<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">array</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">string</span>&gt;</span>/Users/double/script.sh<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">array</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 运行时间 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>StartCalendarInterval<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dict</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">key</span>&gt;</span>Minute<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">integer</span>&gt;</span>30<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">key</span>&gt;</span>Hour<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">integer</span>&gt;</span>9<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">key</span>&gt;</span>Day<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">integer</span>&gt;</span>1<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">key</span>&gt;</span>Month<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">integer</span>&gt;</span>5<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">      <span class="comment">&lt;!-- 0和7都指星期天 --&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">key</span>&gt;</span>Weekday<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">integer</span>&gt;</span>0<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 运行间隔，与StartCalenderInterval使用其一，单位为秒 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>StartInterval<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">integer</span>&gt;</span>30<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 标准输入文件 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>StandardInPath<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>/Users/uniflor/run-in.log<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 标准输出文件 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>StandardOutPath<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>/Users/uniflor/Bin/run-out.log<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 标准错误输出文件 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">key</span>&gt;</span>StandardErrorPath<span class="tag">&lt;/<span class="name">key</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">string</span>&gt;</span>/Users/uniflor/Bin/run-err.log<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;/<span class="name">dict</span>&gt;</span>  </div><div class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>文件解析：</p>
+<ul>
+<li>Label</li>
+<li>Program</li>
+<li>ProgramArguments</li>
+</ul>
+<p>定义时间的参数：</p>
+<ul>
+<li>StartCalendarInterval</li>
+<li>StartInterval</li>
+</ul>
+<p>可选输出参数：</p>
+<ul>
+<li>StandardInPath</li>
+<li>StandardOutPath</li>
+<li>StandardErrorPath</li>
+</ul>
+<h3 id="检查任务文件的格式"><a href="#检查任务文件的格式" class="headerlink" title="检查任务文件的格式"></a>检查任务文件的格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">plutil -line [file.plist]</div></pre></td></tr></table></figure>
+<h3 id="任务文件的放置位置"><a href="#任务文件的放置位置" class="headerlink" title="任务文件的放置位置"></a>任务文件的放置位置</h3><p>通常放在 <code>~/Library/LaunchAgents</code> 下即可</p>
+<ul>
+<li>~/Library/LaunchAgents 由用户自己定义的任务项</li>
+<li>/Library/LaunchAgents 由管理员为用户定义的任务项</li>
+<li>/Library/LaunchDaemons 由管理员定义的守护进程任务项</li>
+<li>/System/Library/LaunchAgents 由Mac OS X为用户定义的任务项</li>
+<li>/System/Library/LaunchDaemons 由Mac OS X定义的守护进程任务项</li>
+</ul>
+<h4 id="LaunchDaemons和LaunchAgents的区别"><a href="#LaunchDaemons和LaunchAgents的区别" class="headerlink" title="LaunchDaemons和LaunchAgents的区别"></a>LaunchDaemons和LaunchAgents的区别</h4><p>LaunchDaemons是用户未登陆前就启动的服务（守护进程）。</p>
+<p>LaunchAgents是用户登陆后启动的服务（守护进程）。</p>
+<h3 id="加载任务"><a href="#加载任务" class="headerlink" title="加载任务"></a>加载任务</h3><p>添加任务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">launchctl load [file.plist]</div></pre></td></tr></table></figure>
+<p>移除任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">launchctl unload [file.plist]</div></pre></td></tr></table></figure></p>
+<p>查看任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">launchctl list</div></pre></td></tr></table></figure></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://my.oschina.net/shede333/blog/470377" target="_blank" rel="external">https://my.oschina.net/shede333/blog/470377</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/20/Python/django/Django Request:response objects/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/20/Python/django/Django Request:response objects/" itemprop="url">Django Request/response objects</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-20T13:18:12+08:00">
+                2016-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="HttpRequest"><a href="#HttpRequest" class="headerlink" title="HttpRequest"></a>HttpRequest</h1><h2 id="Attributes"><a href="#Attributes" class="headerlink" title="Attributes"></a>Attributes</h2><ul>
+<li>HttpRequest.scheme</li>
+<li>HttpRequest.body</li>
+<li><p>HttpRequest.path</p>
+<p>  Example: “/music/bands/the_beatles/“</p>
+</li>
+<li><p>HttpRequest.method</p>
+</li>
+<li>HttpRequest.encoding</li>
+<li>HttpRequest.content_type</li>
+<li>HttpRequest.content_params</li>
+<li>HttpRequest.GET</li>
+<li>HttpRequest.POST</li>
+<li>HttpRequest.COOKIES</li>
+<li>HttpRequest.FILES</li>
+<li><p>HttpRequest.META</p>
+<p>  HTTP headers</p>
+<ul>
+<li>CONTENT_LENGTH</li>
+<li>CONTENT_TYPE</li>
+<li>HTTP_ACCEPT</li>
+<li>HTTP_ACCEPT_ENCODING</li>
+<li>HTTP_ACCEPT_LANGUAGE</li>
+<li>HTTP_HOST</li>
+<li>HTTP_REFERER: 进站前链接网页，如果有的话。</li>
+<li>HTTP_USER_AGENT: 用户浏览器的user-agent字符串，如果有的话。</li>
+<li>QUERY_STRING</li>
+<li>REMOTE_ADDR: 客户端IP</li>
+<li>REMOTE_HOST</li>
+<li>REMOTE_USER</li>
+<li>REQUEST_METHOD</li>
+<li>SERVER_NAME</li>
+<li><p>SERVER_PORT</p>
+<p>获取请求头代码例子：</p>
+<p>  try:</p>
+<pre><code>ua = request.META[&apos;HTTP_USER_AGENT&apos;]
+</code></pre><p>  except KeyError:</p>
+<pre><code>ua = &apos;unknown&apos;
+</code></pre><h1 id="或者"><a href="#或者" class="headerlink" title="或者"></a>或者</h1><p>  ua = request.META.get(‘HTTP_USER_AGENT’, ‘unknown’)</p>
+</li>
+</ul>
+</li>
+<li><p>HttpRequest.resolver_match</p>
+</li>
+</ul>
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><ul>
+<li><p>HttpRequest.get_host()</p>
+<p>  Example: “127.0.0.1:8000”</p>
+</li>
+<li>HttpRequest.get_port()</li>
+<li><p>HttpRequest.get_full_path()</p>
+<p>  Example: “/music/bands/the_beatles/?print=true”</p>
+</li>
+<li><p>HttpRequest.build_absolute_uri</p>
+<p>  Example: “<a href="https://example.com/music/bands/the_beatles/?print=true" target="_blank" rel="external">https://example.com/music/bands/the_beatles/?print=true</a>“</p>
+</li>
+<li>HttpRequest.get_signed_cookie(key, default=RAISE_ERROR, salt=’’, max_age=None)</li>
+<li>HttpRequest.is_secure():Returns True if the request is secure; that is, if it was made with HTTPS.</li>
+<li>HttpRequest.is_ajax()</li>
+<li>HttpRequest.read(size=None)</li>
+<li>HttpRequest.readline()</li>
+<li>HttpRequest.readlines()</li>
+<li>HttpRequest.xreadlines()</li>
+<li>HttpRequest.<strong>iter</strong>()</li>
+</ul>
+<h1 id="HttpResponse"><a href="#HttpResponse" class="headerlink" title="HttpResponse"></a>HttpResponse</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/19/Python/django/Django-admin/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +656,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-19T13:18:12+08:00">
                 2016-12-19
@@ -303,7 +677,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -464,7 +838,7 @@ filter_vertical = (&apos;authors&apos;,)
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-18T13:18:12+08:00">
                 2016-12-18
@@ -485,7 +859,7 @@ filter_vertical = (&apos;authors&apos;,)
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -774,7 +1148,7 @@ TEMPLATE_DIRS = (
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-17T13:18:12+08:00">
                 2016-12-17
@@ -795,7 +1169,7 @@ TEMPLATE_DIRS = (
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -844,7 +1218,7 @@ TEMPLATE_DIRS = (
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/17/Python/Django-File-Upload/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -918,7 +1292,7 @@ TEMPLATE_DIRS = (
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T13:18:12+08:00">
                 2016-12-14
@@ -939,7 +1313,7 @@ TEMPLATE_DIRS = (
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1102,7 +1476,7 @@ class SimpleForm(forms.Form):
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T13:18:12+08:00">
                 2016-12-14
@@ -1123,7 +1497,7 @@ class SimpleForm(forms.Form):
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1370,7 +1744,7 @@ ValidationError: [&apos;Please enter your name&apos;]
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T22:38:14+08:00">
                 2016-12-13
@@ -1391,7 +1765,7 @@ ValidationError: [&apos;Please enter your name&apos;]
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1451,7 +1825,7 @@ ValidationError: [&apos;Please enter your name&apos;]
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/12/13/Android/Android 版本/Android7.0/FileProvider/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1525,7 +1899,7 @@ ValidationError: [&apos;Please enter your name&apos;]
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
                 2016-12-13
@@ -1546,7 +1920,7 @@ ValidationError: [&apos;Please enter your name&apos;]
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1841,7 +2215,7 @@ if form.is_valid():
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T13:18:12+08:00">
                 2016-12-13
@@ -1862,7 +2236,7 @@ if form.is_valid():
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2045,551 +2419,6 @@ True
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/Android/进程保活/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/12/Android/进程保活/" itemprop="url">进程保活</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T21:38:14+08:00">
-                2016-12-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>原文地址：<a href="http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8">http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8</a></p>
-<p>进程保活包括两个层面：</p>
-<ol>
-<li>提高进程的优先级，降低其被杀死的概率</li>
-<li>在进程被杀死后，进行拉活</li>
-</ol>
-<h1 id="进程的优先级"><a href="#进程的优先级" class="headerlink" title="进程的优先级"></a>进程的优先级</h1><p>进程重要性分 5 级：</p>
-<ol>
-<li>前台进程(Foreground process)</li>
-<li>可见进程(Visible process)</li>
-<li>服务进程(Service process)</li>
-<li>后台进程(Background process)</li>
-<li>空进程(Empty process)</li>
-</ol>
-<h2 id="Foreground-process"><a href="#Foreground-process" class="headerlink" title="Foreground process"></a>Foreground process</h2><p>只有在内存不足的时候才会被回收</p>
-<p>实现前台进程的情况：</p>
-<ul>
-<li>拥有用户正在交互的 Activity（已调用 onResume()）</li>
-<li>拥有某个 Service，后者绑定到用户正在交互的 Activity</li>
-<li>拥有正在“前台”运行的 Service（服务已调用 startForeground()）</li>
-<li>拥有正执行一个生命周期回调的 Service（onCreate()、onStart() 或 onDestroy()）</li>
-<li>拥有正执行其 onReceive() 方法的 BroadcastReceiver</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/12/12/Android/进程保活/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/Android/后台任务/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/12/Android/后台任务/" itemprop="url">后台任务</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T13:18:12+08:00">
-                2016-12-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Keeping-the-Device-Awake-保持设备唤醒"><a href="#Keeping-the-Device-Awake-保持设备唤醒" class="headerlink" title="Keeping the Device Awake 保持设备唤醒"></a>Keeping the Device Awake 保持设备唤醒</h1><h2 id="方式一：让屏幕一直点亮-Keep-the-Screen-On"><a href="#方式一：让屏幕一直点亮-Keep-the-Screen-On" class="headerlink" title="方式一：让屏幕一直点亮 Keep the Screen On"></a>方式一：让屏幕一直点亮 Keep the Screen On</h2><h3 id="在-Activity-中"><a href="#在-Activity-中" class="headerlink" title="在 Activity 中"></a>在 Activity 中</h3><pre><code>public class MainActivity extends Activity {
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-  }
-</code></pre><h3 id="Manifest-中"><a href="#Manifest-中" class="headerlink" title="Manifest 中"></a>Manifest 中</h3><pre><code>&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot;
-    android:keepScreenOn=&quot;true&quot;&gt;
-    ...
-&lt;/RelativeLayout&gt;
-</code></pre><h2 id="Keep-the-CPU-On"><a href="#Keep-the-CPU-On" class="headerlink" title="Keep the CPU On"></a>Keep the CPU On</h2><h3 id="Use-PowerManager"><a href="#Use-PowerManager" class="headerlink" title="Use PowerManager"></a>Use PowerManager</h3><p>添加权限：</p>
-<pre><code>&lt;uses-permission android:name=&quot;android.permission.WAKE_LOCK&quot; /&gt;
-</code></pre><p>获取锁：</p>
-<pre><code>PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-        &quot;MyWakelockTag&quot;);
-wakeLock.acquire();
-</code></pre><p>在必要的时候释放锁：</p>
-<pre><code>wakelock.release()
-</code></pre><h3 id="Using-WakefulBroadcastReceiver"><a href="#Using-WakefulBroadcastReceiver" class="headerlink" title="Using WakefulBroadcastReceiver"></a>Using WakefulBroadcastReceiver</h3><blockquote>
-<p>A WakefulBroadcastReceiver is a special type of broadcast receiver that takes care of creating and managing a PARTIAL_WAKE_LOCK for your app.</p>
-</blockquote>
-<p>创建 BroadcastReceiver：</p>
-<pre><code>public class MyWakefulReceiver extends WakefulBroadcastReceiver {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-
-        // Start the service, keeping the device awake while the service is
-        // launching. This is the Intent to deliver to the service.
-        Intent service = new Intent(context, MyIntentService.class);
-        startWakefulService(context, service);
-    }
-}
-</code></pre><p>注册：</p>
-<pre><code>&lt;receiver android:name=&quot;.MyWakefulReceiver&quot;&gt;&lt;/receiver&gt;
-</code></pre><p>Service：</p>
-<pre><code>public class MyIntentService extends IntentService {
-    public static final int NOTIFICATION_ID = 1;
-    private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
-    public MyIntentService() {
-        super(&quot;MyIntentService&quot;);
-    }
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        Bundle extras = intent.getExtras();
-        // Do the work that requires your app to keep the CPU running.
-        // ...
-        // Release the wake lock provided by the WakefulBroadcastReceiver.
-        MyWakefulReceiver.completeWakefulIntent(intent);
-    }
-}
-</code></pre><h1 id="Scheduling-Repeating-Alarms-使用-Alarms"><a href="#Scheduling-Repeating-Alarms-使用-Alarms" class="headerlink" title="Scheduling Repeating Alarms 使用 Alarms"></a>Scheduling Repeating Alarms 使用 Alarms</h1><p>Alarms 可以让你脱离应用的生命周期来执行某段代码。</p>
-<p>它有下面的特点／作用：</p>
-<ul>
-<li>它需要你在设置 Alarms 的时候输入时间（事件执行的时间）</li>
-<li>可以用它和广播配合开启 Service 或者执行其他的操作</li>
-<li>它是脱离应用操作的，所以在应用没有运行或者设备休眠的时候它也能执行</li>
-<li>它可以减少应用对设备资源的占用，因为你不用为了在未来执行某个事件而创建一个需要一直运行的 Service</li>
-</ul>
-<p><strong>注意：</strong>如果使用应用内需要进行一些定时操作，不建议使用这个。</p>
-<h2 id="Understand-the-Trade-offs-了解权衡"><a href="#Understand-the-Trade-offs-了解权衡" class="headerlink" title="Understand the Trade-offs 了解权衡"></a>Understand the Trade-offs 了解权衡</h2><p>循环的 Alarm 内部的机制很简单但是不够灵活，在大多数情况下它并不是最好的解决方案，比如应用要铺货手机网络改变如果定义一个 Alarm 来检测就会消耗过多的资源而且达不到很好的效果。</p>
-<p>如果要在应用的生命周期外做和服务器的数据同步操作，最好的方式不是 Alarm 而是 Google Cloud Message （GCM）配合 sync Adapter 做数据同步。</p>
-<h3 id="Best-practices"><a href="#Best-practices" class="headerlink" title="Best practices"></a>Best practices</h3><ul>
-<li>考虑循环 Alarm 的不准确性，Alarm触发的时间可能会不准确<ul>
-<li>做任何的本地操作在每次 Alarm 触发的时候</li>
-<li>调度包含网络请求的警报在某些随机时间段。</li>
-</ul>
-</li>
-<li>尽量减少 Alarm 的触发频率</li>
-<li>不要在不需要的时候唤醒设备（是否会唤醒设备由 alarm 的类型决定）</li>
-<li><p>Don’t make your alarm’s trigger time any more precise than it has to be.</p>
-<p>  使用 <code>setInexactRepeating()</code> 代替 <code>setRepeating()</code>, 当使用 <code>setInexactRepeating()</code> 的时候 Android 系统会同步其他的应用的 Alarm 在同一时刻执行。<br>  在 Android 4.4 (API Level 19) 之后所有的 repeat Alarm 都是不准确的。</p>
-</li>
-<li><p>Avoid basing your alarm on clock time if possible.</p>
-</li>
-</ul>
-<h2 id="Set-a-Repeating-Alarm-设置循环-Alarm"><a href="#Set-a-Repeating-Alarm-设置循环-Alarm" class="headerlink" title="Set a Repeating Alarm 设置循环 Alarm"></a>Set a Repeating Alarm 设置循环 Alarm</h2><p>Repeate Alarm 有以下特性：</p>
-<ol>
-<li>A alarm type. 类型</li>
-<li>A trigger time. 触发时间</li>
-<li>The alarm’s interval. 间隔</li>
-<li>A pending intent that fires when the alarm is triggered. 一个会被执行的 pending intent</li>
-</ol>
-<h3 id="Choose-an-alarm-type"><a href="#Choose-an-alarm-type" class="headerlink" title="Choose an alarm type"></a>Choose an alarm type</h3><p>Alarm 类型分两大类：</p>
-<ol>
-<li><p>elapsed real time</p>
-<p> 使用 the “time since system boot” 作为参考，不受时区／区域的设置</p>
-<p> 如果要 Alarm 每隔一段时间触发一次建议使用</p>
-</li>
-<li><p>real time clock（RTC）</p>
-<p> 使用 UTC (wall clock) time 作为参考</p>
-<p> 如果要 Alarm 在每天的某个时间触发建议使用。</p>
-</li>
-</ol>
-<p>两种类型都有个 WAKEUP 版本（如果屏幕是熄灭的它会唤醒 CPU）：</p>
-<ol>
-<li>ELAPSED_REALTIME</li>
-<li>ELAPSED_REALTIME_WAKEUP</li>
-<li>RTC</li>
-<li>RTC_WAKEUP</li>
-</ol>
-<h4 id="ELAPSED-REALTIME-WAKEUP-examples"><a href="#ELAPSED-REALTIME-WAKEUP-examples" class="headerlink" title="ELAPSED_REALTIME_WAKEUP examples"></a>ELAPSED_REALTIME_WAKEUP examples</h4><p>Wake up the device to fire the alarm in 30 minutes, and every 30 minutes after that:</p>
-<pre><code>// Hopefully your alarm will have a lower frequency than this!
-alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-        SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_HALF_HOUR,
-        AlarmManager.INTERVAL_HALF_HOUR, alarmIntent);
-</code></pre><p>Wake up the device to fire a one-time (non-repeating) alarm in one minute:</p>
-<pre><code>private AlarmManager alarmMgr;
-private PendingIntent alarmIntent;
-...
-alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-Intent intent = new Intent(context, AlarmReceiver.class);
-alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-        SystemClock.elapsedRealtime() +
-        60 * 1000, alarmIntent);
-</code></pre><h4 id="RTC-examples"><a href="#RTC-examples" class="headerlink" title="RTC examples"></a>RTC examples</h4><p>Wake up the device to fire the alarm at approximately 2:00 p.m., and repeat once a day at the same time:</p>
-<pre><code>// Set the alarm to start at approximately 2:00 p.m.
-Calendar calendar = Calendar.getInstance();
-calendar.setTimeInMillis(System.currentTimeMillis());
-calendar.set(Calendar.HOUR_OF_DAY, 14);
-
-// With setInexactRepeating(), you have to use one of the AlarmManager interval
-// constants--in this case, AlarmManager.INTERVAL_DAY.
-alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-        AlarmManager.INTERVAL_DAY, alarmIntent);
-</code></pre><p>Wake up the device to fire the alarm at precisely 8:30 a.m., and every 20 minutes thereafter:</p>
-<pre><code>private AlarmManager alarmMgr;
-private PendingIntent alarmIntent;
-...
-alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-Intent intent = new Intent(context, AlarmReceiver.class);
-alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-// Set the alarm to start at 8:30 a.m.
-Calendar calendar = Calendar.getInstance();
-calendar.setTimeInMillis(System.currentTimeMillis());
-calendar.set(Calendar.HOUR_OF_DAY, 8);
-calendar.set(Calendar.MINUTE, 30);
-
-// setRepeating() lets you specify a precise custom interval--in this case,
-// 20 minutes.
-alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-        1000 * 60 * 20, alarmIntent);
-</code></pre><h3 id="Decide-how-precise-your-alarm-needs-to-be-确定-alarm-的精准度"><a href="#Decide-how-precise-your-alarm-needs-to-be-确定-alarm-的精准度" class="headerlink" title="Decide how precise your alarm needs to be 确定 alarm 的精准度"></a>Decide how precise your alarm needs to be 确定 alarm 的精准度</h3><h2 id="Cancel-an-Alarm-取消-Alarm"><a href="#Cancel-an-Alarm-取消-Alarm" class="headerlink" title="Cancel an Alarm 取消 Alarm"></a>Cancel an Alarm 取消 Alarm</h2><pre><code>// If the alarm has been set, cancel it.
-if (alarmMgr!= null) {
-    alarmMgr.cancel(alarmIntent);
-}
-</code></pre><h2 id="Start-an-Alarm-When-the-Device-Boots"><a href="#Start-an-Alarm-When-the-Device-Boots" class="headerlink" title="Start an Alarm When the Device Boots"></a>Start an Alarm When the Device Boots</h2><h3 id="创建开机广播"><a href="#创建开机广播" class="headerlink" title="创建开机广播"></a>创建开机广播</h3><p>。。。</p>
-<p>注册：</p>
-<pre><code>&lt;receiver android:name=&quot;.SampleBootReceiver&quot;
-        android:enabled=&quot;false&quot;&gt;
-    &lt;intent-filter&gt;
-        &lt;action android:name=&quot;android.intent.action.BOOT_COMPLETED&quot;&gt;&lt;/action&gt;
-    &lt;/intent-filter&gt;
-&lt;/receiver&gt;
-</code></pre><p>这里 <code>android:enabled=&quot;false&quot;</code> ，意味着需要在应用内启动它，否则它不会接收广播。</p>
-<p>启动这个广播：（开启后就是永久生效，即使是手机重启）</p>
-<pre><code>ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
-PackageManager pm = context.getPackageManager();
-
-pm.setComponentEnabledSetting(receiver,
-        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-        PackageManager.DONT_KILL_APP);
-</code></pre><p>关闭这个广播：</p>
-<pre><code>ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
-PackageManager pm = context.getPackageManager();
-
-pm.setComponentEnabledSetting(receiver,
-        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-        PackageManager.DONT_KILL_APP);
-</code></pre><h1 id="Android5-0"><a href="#Android5-0" class="headerlink" title="Android5.0"></a>Android5.0</h1><h2 id="JobScheduler，JobService"><a href="#JobScheduler，JobService" class="headerlink" title="JobScheduler，JobService"></a>JobScheduler，JobService</h2><h3 id="创建-JobService"><a href="#创建-JobService" class="headerlink" title="创建 JobService"></a>创建 JobService</h3><pre><code>@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class Job extends JobService {
-
-    @Override
-    public boolean onStartJob(JobParameters params) {
-        // 需要执行的任务，执行线程在 Main Thread
-        // ....
-
-        // 返回 True：表示这个 Job 还在继续（开启了子线程处理事件），后续需要自己调用 jobFinished 来结束 Job
-        //      False：表示没有异步操作， Job 结束
-        return false;
-    }
-
-    @Override
-    public boolean onStopJob(JobParameters params) {
-        // * 如果 onStartJob 返回 True，这个方法不会被调用
-        return false;
-    }
-
-}
-</code></pre><h3 id="注册："><a href="#注册：" class="headerlink" title="注册："></a>注册：</h3><pre><code>&lt;service android:name=&quot;.Job&quot;
-    android:permission=&quot;android.permission.BIND_JOB_SERVICE&quot; /&gt;
-</code></pre><h3 id="应用如何和-JobService-交互"><a href="#应用如何和-JobService-交互" class="headerlink" title="应用如何和 JobService 交互"></a>应用如何和 JobService 交互</h3><h4 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h4><p>JobScheduler 对象创建：</p>
-<pre><code>mJobScheduler = (JobScheduler)
-    getSystemService( Context.JOB_SCHEDULER_SERVICE );
-</code></pre><p>创建定时任务：（JobInfo）</p>
-<pre><code>JobInfo.Builder builder = new JobInfo.Builder( 1,
-        new ComponentName( getPackageName(),
-            JobSchedulerService.class.getName() ) );
-</code></pre><p>设置时间间隔：</p>
-<pre><code>builder.setPeriodic( 3000 );
-</code></pre><p>JobInfo 其他设置：</p>
-<ul>
-<li>setMinimumLatency(long minLatencyMillis): 这个函数能让你设置任务的延迟执行时间(单位是毫秒),这个函数与setPeriodic(long time)方法不兼容，如果这两个方法同时调用了就会引起异常；</li>
-<li>setOverrideDeadline(long maxExecutionDelayMillis)：这个方法让你可以设置任务最晚的延迟时间。如果到了规定的时间时其他条件还未满足，你的任务也会被启动。与setMinimumLatency(long time)一样，这个方法也会与setPeriodic(long time)，同时调用这两个方法会引发异常。</li>
-<li>setPersisted(boolean isPersisted): 这个方法告诉系统当你的设备重启之后你的任务是否还要继续执行。</li>
-<li>setRequiredNetworkType(int networkType): 这个方法让你这个任务只有在满足指定的网络条件时才会被执行。默认条件是JobInfo.NETWORK_TYPE_NONE，这意味着不管是否有网络这个任务都会被执行。另外两个可选类型，一种是JobInfo.NETWORK_TYPE_ANY，它表明需要任意一种网络才使得任务可以执行。另一种是JobInfo.NETWORK_TYPE_UNMETERED，它表示设备不是蜂窝网络( 比如在WIFI连接时 )时任务才会被执行。</li>
-<li>setRequiresCharging(boolean requiresCharging): 这个方法告诉你的应用，只有当设备在充电时这个任务才会被执行。</li>
-<li>setRequiresDeviceIdle(boolean requiresDeviceIdle): 这个方法告诉你的任务只有当用户没有在使用该设备且有一段时间没有使用时才会启动该任务。</li>
-</ul>
-<p>一旦你预置的条件被设置，你就可以构建一个JobInfo对象，然后通过如下所示的代码将它发送到你的JobScheduler中：</p>
-<pre><code>if( mJobScheduler.schedule( builder.build() ) &lt;= 0 ) {
-    //If something goes wrong
-}
-</code></pre><p>停止某个任务：</p>
-<pre><code>mJobScheduler.cancel(int jobId)
-mJobScheduler.cancelAll();
-</code></pre><h4 id="JobInfo"><a href="#JobInfo" class="headerlink" title="JobInfo"></a>JobInfo</h4><h5 id="JobInfo-Builder"><a href="#JobInfo-Builder" class="headerlink" title="JobInfo.Builder"></a>JobInfo.Builder</h5><pre><code>JobInfo.Builder(int jobId, ComponentName jobService)
-</code></pre><ul>
-<li>jobId: 要求 uid</li>
-</ul>
-<h1 id="Android-7-0-电池-内存变化"><a href="#Android-7-0-电池-内存变化" class="headerlink" title="Android 7.0 电池 内存变化"></a>Android 7.0 电池 内存变化</h1><h2 id="Doze"><a href="#Doze" class="headerlink" title="Doze"></a>Doze</h2><blockquote>
-<p>Introduced in Android 6.0 (API level 23), Doze improves battery life by deferring CPU and network activities when a user leaves a device unplugged, stationary, and with the screen turned off.</p>
-</blockquote>
-<p>Android6.0 中当手机没有在充电，静止，屏幕关闭的时候会进入 Doze 模式限制 CPU， 网络任务来减少电池的消耗。</p>
-<p>Doze 限制规则</p>
-<ul>
-<li>当手机在充电，屏幕关闭一段时间，设备会进入 Doze 模式并开启第一阶段的限制：关闭 app 的网络请求，推出作业和同步。</li>
-<li>当手机处于静止状态一段时间后，Doze 模式开启下一阶段的限制：PowerManager.WakeLock, AlarmManager alarms, GPS, and Wi-Fi scans。</li>
-</ul>
-<p>但是无论是处在哪种阶段的限制，系统都会提供一个时间点允许应用获取网络和执行 jobs／syncs。</p>
-<p><img src="https://developer.android.google.cn/images/android-7.0/doze-diagram-2.png" alt="Doze 模式"></p>
-<p>当手机连接其他设备或者屏幕开启的时候，Doze 模式自动关闭，限制解除。</p>
-<h2 id="Background-Optimizations-后台优化"><a href="#Background-Optimizations-后台优化" class="headerlink" title="Background Optimizations 后台优化"></a>Background Optimizations 后台优化</h2><p>Android.70 移除了 3 个隐式的广播为了帮助优化内存和电量的消耗，因为隐式的广播会频繁启动已经注册它的 app。</p>
-<p>手机通常会不断的产生连接改变，比如 wifi和数据网络 的改变，如果注册了隐私的 CONNECTIVITY_ACTION 广播。还有 ACTION_NEW_PICTURE， ACTION_NEW_VIDEO。</p>
-<p>为了避免这个问题，Android7.0 做了以下优化：</p>
-<ul>
-<li>如果 app target 设置的是 Android7.0 ,通过 Manifest 注册的 CONNECTIVITY_ACTION 广播不会触发。不过在 main thread 中动态注册还是有效的。</li>
-<li>应用不能就收 ACTION_NEW_PICTURE 和 ACTION_NEW_VIDEO 的广播，这个优化影响所有的应用即使它的 target 不是 Android7.0 。</li>
-</ul>
-<p>建议使用 JobScheduler 来检测 Net 变化和手机中 文件的变化。</p>
-<p>参考：</p>
-<ul>
-<li><a href="https://developer.android.google.cn/training/scheduling/index.html" target="_blank" rel="external">官方文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2639,8 +2468,8 @@ mJobScheduler.cancelAll();
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">422</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">424</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -2651,7 +2480,7 @@ mJobScheduler.cancelAll();
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -2661,8 +2490,8 @@ mJobScheduler.cancelAll();
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -2712,7 +2541,7 @@ mJobScheduler.cancelAll();
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
