@@ -106,7 +106,7 @@ getWindow().setSoftInputMode(WindowMa">
 关闭：
 getWindow().setSoftInputMode(WindowMa">
 <meta property="og:image" content="http://static.oschina.net/uploads/img/201302/20134425_3rSk.jpg">
-<meta property="og:updated_time" content="2017-06-24T14:47:45.000Z">
+<meta property="og:updated_time" content="2017-11-02T14:43:12.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="EditText 知识点">
 <meta name="twitter:description" content="设置限制输入android:digits=&amp;quot;1234567890&amp;quot; &amp;lt;!--仅限输入数字--&amp;gt;
@@ -213,7 +213,7 @@ getWindow().setSoftInputMode(WindowMa">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -223,7 +223,7 @@ getWindow().setSoftInputMode(WindowMa">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -293,7 +293,7 @@ getWindow().setSoftInputMode(WindowMa">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
                 2016-04-24
@@ -314,7 +314,7 @@ getWindow().setSoftInputMode(WindowMa">
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -409,15 +409,14 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
 <h1 id="防止界面被软键盘挤压"><a href="#防止界面被软键盘挤压" class="headerlink" title="防止界面被软键盘挤压"></a>防止界面被软键盘挤压</h1><p>在 Manifest 中设置 Activity 的属性：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:windowSoftInputMode=<span class="string">"adjustPan"</span></div></pre></td></tr></table></figure>
 <h1 id="设置-action"><a href="#设置-action" class="headerlink" title="设置 action"></a>设置 action</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">actionUnspecified        未指定         EditorInfo.IME_ACTION_UNSPECIFIED.  </div><div class="line">actionNone                 动作            EditorInfo.IME_ACTION_NONE </div><div class="line">actionGo                    去往            EditorInfo.IME_ACTION_GO</div><div class="line">actionSearch               搜索            EditorInfo.IME_ACTION_SEARCH    </div><div class="line">actionSend                 发送            EditorInfo.IME_ACTION_SEND   </div><div class="line">actionNext                下一项           EditorInfo.IME_ACTION_NEXT   </div><div class="line">actionDone               完成              EditorInfo.IME_ACTION_DONE</div></pre></td></tr></table></figure>
-<p>监听事件：</p>
-<p>```<br>mViewById = (EditText) findViewById(R.id.et);</p>
-<p>mViewById.setOnKeyListener(new View.OnKeyListener() {<br>    @Override<br>    public boolean onKey(View view, int i, KeyEvent keyEvent) {</p>
-<pre><code>    if (i == EditorInfo.IME_ACTION_DONE) {
-
-    }
-    return false;
-}
-</code></pre><p>});</p>
+<p>在 xml 中设置 actions：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:imeOptions="actionSend"</div></pre></td></tr></table></figure>
+<p>在代码中设置 actions:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mEt.setImeOptions(EditorInfo.IME_ACTION_SEARCH);</div></pre></td></tr></table></figure>
+<p>监听事件 写法一：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mViewById = (EditText) findViewById(R.id.et);</div><div class="line"></div><div class="line">mViewById.setOnKeyListener(new View.OnKeyListener() &#123;</div><div class="line">    @Override</div><div class="line">    public boolean onKey(View view, int i, KeyEvent keyEvent) &#123;</div><div class="line"></div><div class="line">        if (i == EditorInfo.IME_ACTION_DONE) &#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">		return false;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>监听事件 写法二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">mEt.setOnKeyListener((v, keyCode, <span class="function">even</span></div><div class="line">    <span class="title">if</span> <span class="params">(keyCode == EditorInfo.IME_ACTION_SEARCH</span></div><div class="line">            || keyCode == EditorInfo.IME_ACTION_DONE</div><div class="line">            || event.getAction() == KeyEvent.ACTION_DOWN</div><div class="line">            &amp;&amp; event.getKeyCode() == KeyEvent.KEYCODE_E</div><div class="line">        String keyword = mEt.getText().toString();</div><div class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(keyword)) &#123;</div><div class="line">            mEt.setError(geR.string.error_et_cannot_be_empty));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            mFragment.search(keyword);</div><div class="line">  </div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -460,8 +459,8 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/24/Android/Android 资源文件的使用/" rel="next" title="Android 资源文件的使用">
-                <i class="fa fa-chevron-left"></i> Android 资源文件的使用
+              <a href="/2016/04/24/Android/features/从系统相册中选择图片/" rel="next" title="Android 系统相机和相册调用的使用">
+                <i class="fa fa-chevron-left"></i> Android 系统相机和相册调用的使用
               </a>
             
           </div>
@@ -521,10 +520,10 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -544,8 +543,8 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">424</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">427</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -556,7 +555,7 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -567,7 +566,7 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">253</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -633,7 +632,7 @@ imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
