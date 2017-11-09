@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -282,7 +282,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
                 2016-04-18
@@ -303,7 +303,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -364,7 +364,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/18/Android/第三方/极光推送/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -409,7 +409,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/软件的统计分析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/ShareSDK使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -428,7 +428,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/软件的统计分析/" itemprop="url">软件的统计分析</a></h1>
+                <a class="post-title-link" href="/2016/04/18/Android/第三方/ShareSDK使用/" itemprop="url">ShareSDK 使用记录</a></h1>
         
 
         <div class="post-meta">
@@ -438,7 +438,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
                 2016-04-18
@@ -459,7 +459,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -499,26 +499,53 @@
       
         
           
-            <h1 id="软件的统计分析"><a href="#软件的统计分析" class="headerlink" title="软件的统计分析"></a>软件的统计分析</h1><ol>
-<li><p>用户量的统计</p>
-</li>
-<li><p>用户行为分析</p>
-</li>
-<li><p>软件运行状态</p>
-</li>
-</ol>
-<h2 id="分析工具-友盟"><a href="#分析工具-友盟" class="headerlink" title="分析工具 友盟"></a>分析工具 友盟</h2><ol>
-<li>注册开发者</li>
-<li>创建应用</li>
-<li>下载SDK</li>
-<li>整合，清单文件设置</li>
-</ol>
-<h2 id="识别机制"><a href="#识别机制" class="headerlink" title="识别机制"></a>识别机制</h2><ol>
-<li>获取手机厂商、型号  android.os.Build</li>
-<li>手机唯一识别码：IMEI，IMSI TelephonyManager</li>
-<li>手机号码：line no TelephonyManager</li>
-<li>android 序列号：“android_id” 从系统获取</li>
-<li>MAC地址</li>
+            <h1 id="ShareSDK-使用记录"><a href="#ShareSDK-使用记录" class="headerlink" title="ShareSDK 使用记录"></a>ShareSDK 使用记录</h1><h2 id="0-集成SDK"><a href="#0-集成SDK" class="headerlink" title="0 集成SDK"></a>0 集成SDK</h2><p>参考<a href="http://wiki.mob.com/android_%E5%BF%AB%E9%80%9F%E9%9B%86
+%E6%88%90%E6%8C%87%E5%8D%97/" target="_blank" rel="external">http://wiki.mob.com/android_%E5%BF%AB%E9%80%9F%E9%9B%86%E6%88%90%E6%8C%87%E5%8D%97/</a></p>
+<p>快速集成，这里不集成快捷分享内容。</p>
+<h2 id="分享模块"><a href="#分享模块" class="headerlink" title="分享模块"></a>分享模块</h2><pre><code>private void showShare() {
+ ShareSDK.initSDK(this);
+ OnekeyShare oks = new OnekeyShare();
+ //关闭sso授权
+ oks.disableSSOWhenAuthorize(); 
+
+// 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
+ //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+ // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+ oks.setTitle(getString(R.string.share));
+ // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+ oks.setTitleUrl(&quot;http://sharesdk.cn&quot;);
+ // text是分享文本，所有平台都需要这个字段
+ oks.setText(&quot;我是分享文本&quot;);
+ // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+ //oks.setImagePath(&quot;/sdcard/test.jpg&quot;);//确保SDcard下面存在此张图片
+ // url仅在微信（包括好友和朋友圈）中使用
+ oks.setUrl(&quot;http://sharesdk.cn&quot;);
+ // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+ oks.setComment(&quot;我是测试评论文本&quot;);
+ // site是分享此内容的网站名称，仅在QQ空间使用
+ oks.setSite(getString(R.string.app_name));
+ // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+ oks.setSiteUrl(&quot;http://sharesdk.cn&quot;);
+
+// 启动分享GUI
+ oks.show(this);
+ }
+</code></pre><p>基本使用：</p>
+<ol>
+<li><p>获取相应的ShareParams对象</p>
+<pre><code>QQ.ShareParams sp = new QQ.ShareParams();
+</code></pre></li>
+<li><p>向<code>ShareParams</code>存入需要分享的数据，可分享数据参考上面的<code>oks</code>的注解</p>
+<pre><code>sp.setTitle(&quot;测试title&quot;);
+sp.setTitleUrl(&quot;http://sharesdk.cn&quot;); // 标题超级链接
+sp.setText(&quot;测试分享文本&quot;);
+sp.setImageUrl(&quot;http://f1.sharesdk.cn/imgs/2014/05/21/oESpJ78_533x800.jpg&quot;); // 分享网络图片
+</code></pre></li>
+<li><p>获得相应平台对象并分享<code>ShareParams</code></p>
+<pre><code>Platform qq = ShareSDK.getPlatform(QQ.NAME);
+qq.setPlatformActionListener(activity);
+qq.share(sp);
+</code></pre></li>
 </ol>
 
           
@@ -563,7 +590,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/第三方登入/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/UI/style快速替换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -582,7 +609,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/第三方登入/" itemprop="url">第三方登入</a></h1>
+                <a class="post-title-link" href="/2016/04/18/Android/UI/style快速替换/" itemprop="url">style快速替换</a></h1>
         
 
         <div class="post-meta">
@@ -592,7 +619,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
                 2016-04-18
@@ -613,7 +640,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -653,43 +680,10 @@
       
         
           
-            <h1 id="第三方登入，QQ"><a href="#第三方登入，QQ" class="headerlink" title="第三方登入，QQ"></a>第三方登入，QQ</h1><ol>
-<li>注册开发者</li>
-<li>创建应用：获得 key，id</li>
-<li>配置信息</li>
-</ol>
-<h2 id="登入代码："><a href="#登入代码：" class="headerlink" title="登入代码："></a>登入代码：</h2><pre><code>private Tencent mTencent;
+            <h1 id="style快速替换"><a href="#style快速替换" class="headerlink" title="style快速替换"></a>style快速替换</h1><pre><code>(android:.+)=&quot;(.*)&quot;
 
-public void btnQqLogin(View view) {
-    //TODO: qq登入
-    // 参数1：appid
-    mTencent = Tencent.createInstance(&quot;1105344126&quot;, this.getApplicationContext());
-    // 登入
-    // 检查单前是否已经进行过qq登入，如果登入过就不用在登入了
-    if (mTencent.isSessionValid()) {
-        // 参数1：activity
-        // 参数2：scope：API的范围，表示登入后客户端能够调用什么功能
-        // 参数3：登入是否成功的接口回调
-        mTencent.login(this, &quot;all&quot;, new IUiListener() {
-            @Override
-            public void onComplete(Object o) {
-                Log.d(TAG, &quot;onComplete: &quot; + o.toString());
-            }
-
-            @Override
-            public void onError(UiError uiError) {
-                Log.d(TAG, &quot;onError: &quot;+uiError.toString());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, &quot;onCancel: &quot;);
-            }
-        });
-    }
-}
-</code></pre><p>login方法：用于登入获取授权的Token，Token用于让客户端可以直接访问用户的私有数据，而不需要密码；使用了OAuth协议的实现，能够保证安全，并且不需要频繁的登入。</p>
-
+&lt;item name=&quot;$1&quot;&gt;$2&lt;/item&gt;
+</code></pre>
           
         
       
@@ -761,7 +755,7 @@ public void btnQqLogin(View view) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T11:38:14+08:00">
                 2016-04-18
@@ -782,7 +776,7 @@ public void btnQqLogin(View view) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -967,6 +961,144 @@ public void onPrepared(MediaPlayer mp) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/" itemprop="url">RecyclerView简单拖动和滑动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
+                2016-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="RecyclerView简单拖动和滑动"><a href="#RecyclerView简单拖动和滑动" class="headerlink" title="RecyclerView简单拖动和滑动"></a>RecyclerView简单拖动和滑动</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerView-添加分割线/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -996,7 +1128,7 @@ public void onPrepared(MediaPlayer mp) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
                 2016-04-17
@@ -1017,7 +1149,7 @@ public void onPrepared(MediaPlayer mp) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1101,144 +1233,6 @@ public void onPrepared(MediaPlayer mp) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/" itemprop="url">RecyclerView简单拖动和滑动</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
-                2016-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="RecyclerView简单拖动和滑动"><a href="#RecyclerView简单拖动和滑动" class="headerlink" title="RecyclerView简单拖动和滑动"></a>RecyclerView简单拖动和滑动</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/17/Android/view/RecyclerView/RecyclerView拖动和滑动/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/ListView/ListView 添加HeaderView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1268,7 +1262,7 @@ public void onPrepared(MediaPlayer mp) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T11:38:14+08:00">
                 2016-04-17
@@ -1289,7 +1283,7 @@ public void onPrepared(MediaPlayer mp) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1420,7 +1414,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-16T09:38:14+08:00">
                 2016-04-16
@@ -1441,7 +1435,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1484,7 +1478,7 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/16/Android/多点触控/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1558,7 +1552,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-15T12:18:12+08:00">
                 2016-04-15
@@ -1579,7 +1573,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1622,7 +1616,7 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/15/Android/加解密/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1696,7 +1690,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-15T09:13:12+08:00">
                 2016-04-15
@@ -1717,7 +1711,7 @@ public Object instantiateItem(ViewGroup container, int position) {
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1760,7 +1754,7 @@ public Object instantiateItem(ViewGroup container, int position) {
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/04/15/Android/源码学习/触摸事件分发/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1846,7 +1840,7 @@ public Object instantiateItem(ViewGroup container, int position) {
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
                 <span class="site-state-item-count">427</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1857,7 +1851,7 @@ public Object instantiateItem(ViewGroup container, int position) {
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">16</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1868,7 +1862,7 @@ public Object instantiateItem(ViewGroup container, int position) {
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">253</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1918,7 +1912,7 @@ public Object instantiateItem(ViewGroup container, int position) {
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
