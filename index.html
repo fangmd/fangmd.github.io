@@ -253,6 +253,330 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/10/Android/架构/官方架构组件/Android组件化开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/10/Android/架构/官方架构组件/Android组件化开发/" itemprop="url">Android Architecture Components 官方文档学习记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-10T12:18:12+08:00">
+                2017-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="https://developer.android.com/topic/libraries/architecture/guide.html#common_architectural_principles" alt="官方文档地址"></p>
+<p>这个 guide 写给那些想要构建好的架构的 Android 开发者</p>
+<h1 id="Common-problems-faced-by-app-developers"><a href="#Common-problems-faced-by-app-developers" class="headerlink" title="Common problems faced by app developers"></a>Common problems faced by app developers</h1><p>you should not store any app data or state in your app components</p>
+<h1 id="Commom-architectural-principles"><a href="#Commom-architectural-principles" class="headerlink" title="Commom architectural principles"></a>Commom architectural principles</h1><ol>
+<li>注意在 App 中分离代码（业务逻辑代码和UI代码分离）</li>
+</ol>
+<p>所有和 UI 无关的代码不应该出现在 Activity 和 Fragment 中。</p>
+<p>保持 Activity 和 Fragment 整洁干净，以避免生命周期倒致相关的问题。</p>
+<ol>
+<li>让 model 来驱动 UI（drive your UI from a model）</li>
+</ol>
+<p>Model 是组件，用于存储应用使用到的数据，它独立于 View 和 Android 应用的相关组件</p>
+<p>保证 UI 代码中不处理业务逻辑</p>
+<h1 id="Recommended-app-architecture"><a href="#Recommended-app-architecture" class="headerlink" title="Recommended app architecture"></a>Recommended app architecture</h1><p>下面是使用例子讲解 如何使用 Architecture Components 来创建 Android 架构。</p>
+<h2 id="创建-UI-界面-（Building-the-user-interface）"><a href="#创建-UI-界面-（Building-the-user-interface）" class="headerlink" title="创建 UI 界面 （Building the user interface）"></a>创建 UI 界面 （Building the user interface）</h2><p>ViewModel: 为提供 UI 界面的数据的组件，它和 View 相互不知道（隔离）</p>
+<p>例子涉及的三个文件:</p>
+<ul>
+<li><code>UserProfileViewModel.class</code></li>
+<li><code>user_profile.xml</code></li>
+<li><code>UserProfileFragment.java</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserprofileViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> String userId;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> LiveData&lt;User&gt; user;</div><div class="line">    <span class="comment">//private User user;</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String userId)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.userId = userId;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> user;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserProfileFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String UID_KEY = <span class="string">"uid"</span>;</div><div class="line">    <span class="keyword">private</span> UserProfileViewModel viewModel;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onActivityCreated</span><span class="params">(@Nullable Bundle savedInstanceState)</span></span>&#123;</div><div class="line">        <span class="keyword">super</span>.onActivityCreated(savedInstanceState);</div><div class="line">        String userId = getArguments().getString(UID_KEY);</div><div class="line">        viewModel = ViewModelProviders.of(<span class="keyword">this</span>).get(UserProfileViewModel.class);</div><div class="line">        viewModel.init(userId);</div><div class="line">        viewModel.getUser().observe(<span class="keyword">this</span>, user -&gt; &#123;</div><div class="line">            <span class="comment">// update UI</span></div><div class="line"></div><div class="line">        &#125;);        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater,</span></span></div><div class="line">                @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) &#123;</div><div class="line">        <span class="keyword">return</span> inflater.inflate(R.layout.user_profile, container, <span class="keyword">false</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面引入 LiveData, 让 ViewModel 中的数据可以加载到 Fragment 中。</p>
+<p><code>LiveData</code>: 实现一个观察者模式。让 ViewModel 中数据加载完成后触发 Fragment 更新UI。</p>
+<p>LiveData 可以使用 RxJava 代替，但是 LiveData 有个优点就是不需要 取消订阅，LiveData 会在 Fragment 销毁的时候 解除关联。</p>
+<p>另外：ViewModel 的生命周期是独立于 Fragment 的 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html#the_lifecycle_of_a_viewmodel" target="_blank" rel="external">The lifecycle of a ViewModel</a></p>
+<h2 id="Fetching-data"><a href="#Fetching-data" class="headerlink" title="Fetching data"></a>Fetching data</h2><p>ViewModel 如何获取数据</p>
+<p>使用 Repository 组件代理数据的获取</p>
+<p>Webservice 是通过 Retrofit 实现的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Webservice webservice;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(<span class="keyword">int</span> userId)</span> </span>&#123;</div><div class="line">        <span class="comment">// This is not an optimal implementation, we'll fix it below</span></div><div class="line">        <span class="keyword">final</span> MutableLiveData&lt;User&gt; data = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</div><div class="line">        webservice.getUser(userId).enqueue(<span class="keyword">new</span> Callback&lt;User&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;User&gt; call, Response&lt;User&gt; response)</span> </span>&#123;</div><div class="line">                <span class="comment">// error case is left out for brevity</span></div><div class="line">                data.setValue(response.body());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">return</span> data;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样做将 数据获取 和 数据持有类 隔离。数据持有类不需要知道数据是如何获取的。</p>
+<h3 id="managing-dependencies-between-components"><a href="#managing-dependencies-between-components" class="headerlink" title="managing dependencies between components:"></a>managing dependencies between components:</h3><p>UserRepository 依赖 Webservice, 如果通过构造方法的方式创建 Webservice 对象的化就需要知道它类中的构造方法结构。并且 UserRepository 不是唯一一个需要 Webservice 的类。如果没有需要 Webservice 的类都通过构造方法创建这个对象，就会导致代码重复。</p>
+<p>两种方法解决这个问题：</p>
+<ol>
+<li>依赖注入（Dependency Injection）: 使用 Dagger2 实现，推荐使用</li>
+<li>Service LocatorL： 比 DI 简单</li>
+</ol>
+<h2 id="Connection-ViewModel-and-the-repository"><a href="#Connection-ViewModel-and-the-repository" class="headerlink" title="Connection ViewModel and the repository"></a>Connection ViewModel and the repository</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserProfileViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> LiveData&lt;User&gt; user;</div><div class="line">    <span class="keyword">private</span> UserRepository userRepo;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span> <span class="comment">// UserRepository parameter is provided by Dagger 2</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserProfileViewModel</span><span class="params">(UserRepository userRepo)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.userRepo = userRepo;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String userId)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.user != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// ViewModel is created per Fragment so</span></div><div class="line">            <span class="comment">// we know the userId won't change</span></div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        user = userRepo.getUser(userId);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.user;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Caching-data"><a href="#Caching-data" class="headerlink" title="Caching data"></a>Caching data</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Singleton</span>  <span class="comment">// informs Dagger that this class should be constructed once</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Webservice webservice;</div><div class="line">    <span class="comment">// simple in memory cache, details omitted for brevity</span></div><div class="line">    <span class="keyword">private</span> UserCache userCache;</div><div class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(String userId)</span> </span>&#123;</div><div class="line">        LiveData&lt;User&gt; cached = userCache.get(userId);</div><div class="line">        <span class="keyword">if</span> (cached != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> cached;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">final</span> MutableLiveData&lt;User&gt; data = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</div><div class="line">        userCache.put(userId, data);</div><div class="line">        <span class="comment">// this is still suboptimal but better than before.</span></div><div class="line">        <span class="comment">// a complete implementation must also handle the error cases.</span></div><div class="line">        webservice.getUser(userId).enqueue(<span class="keyword">new</span> Callback&lt;User&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;User&gt; call, Response&lt;User&gt; response)</span> </span>&#123;</div><div class="line">                data.setValue(response.body());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">return</span> data;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>UserCache 是一个自定义的类，统一保存缓存。</p>
+<h2 id="数据可持续化-Persisting-data"><a href="#数据可持续化-Persisting-data" class="headerlink" title="数据可持续化 Persisting data"></a>数据可持续化 Persisting data</h2><p>Room：一个数据库框架</p>
+<p>基本使用代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">  <span class="meta">@PrimaryKey</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">  <span class="keyword">private</span> String name;</div><div class="line">  <span class="keyword">private</span> String lastName;</div><div class="line">  <span class="comment">// getters and setters for fields</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Dao</span>  <span class="comment">// data access object (DAO).</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</div><div class="line">    <span class="meta">@Insert</span>(onConflict = REPLACE)</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">save</span><span class="params">(User user)</span></span>;</div><div class="line">    <span class="meta">@Query</span>(<span class="string">"SELECT * FROM user WHERE id = :userId"</span>)</div><div class="line">    <span class="function">LiveData&lt;User&gt; <span class="title">load</span><span class="params">(String userId)</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Database</span>(entities = &#123;User.class&#125;, version = <span class="number">1</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">userDao</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Database</span>(entities = &#123;User.class&#125;, version = <span class="number">1</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">userDao</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于上面 <code>load</code> 方法返回的是 <code>LiveData</code> 所以数据库中如果数据变化，会马上反应在 UI 上。</p>
+<p>在 UserRepository 中使用 Room：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Singleton</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Webservice webservice;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> UserDao userDao;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Executor executor;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserRepository</span><span class="params">(Webservice webservice, UserDao userDao, Executor executor)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.webservice = webservice;</div><div class="line">        <span class="keyword">this</span>.userDao = userDao;</div><div class="line">        <span class="keyword">this</span>.executor = executor;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(String userId)</span> </span>&#123;</div><div class="line">        refreshUser(userId);</div><div class="line">        <span class="comment">// return a LiveData directly from the database.</span></div><div class="line">        <span class="keyword">return</span> userDao.load(userId);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">refreshUser</span><span class="params">(<span class="keyword">final</span> String userId)</span> </span>&#123;</div><div class="line">        executor.execute(() -&gt; &#123;</div><div class="line">            <span class="comment">// running in a background thread</span></div><div class="line">            <span class="comment">// check if user was fetched recently</span></div><div class="line">            <span class="keyword">boolean</span> userExists = userDao.hasUser(FRESH_TIMEOUT);</div><div class="line">            <span class="keyword">if</span> (!userExists) &#123;</div><div class="line">                <span class="comment">// refresh the data</span></div><div class="line">                Response response = webservice.getUser(userId).execute();</div><div class="line">                <span class="comment">// TODO check for error etc.</span></div><div class="line">                <span class="comment">// Update the database.The LiveData will automatically refresh so</span></div><div class="line">                <span class="comment">// we don't need to do anything else here besides updating the database</span></div><div class="line">                userDao.save(response.body());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="https://developer.android.com/topic/libraries/architecture/guide.html#recommended_app_architecture" alt="https://developer.android.com/topic/libraries/architecture/guide.html#recommended_app_architecture"></p>
+<h2 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h2><h2 id="The-final-architecture"><a href="#The-final-architecture" class="headerlink" title="The final architecture"></a>The final architecture</h2><h1 id="Guiding-principles"><a href="#Guiding-principles" class="headerlink" title="Guiding principles"></a>Guiding principles</h1><h1 id="Addendum-exposing-network-status"><a href="#Addendum-exposing-network-status" class="headerlink" title="Addendum: exposing network status"></a>Addendum: exposing network status</h1>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/07/Android/gradle/gradle知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/07/Android/gradle/gradle知识点/" itemprop="url">Gradle知识点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-07T13:18:12+08:00">
+                2017-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="gradle-3-0-新内容"><a href="#gradle-3-0-新内容" class="headerlink" title="gradle 3.0 新内容"></a>gradle 3.0 新内容</h1><h2 id="implementation-api"><a href="#implementation-api" class="headerlink" title="implementation api"></a>implementation api</h2><p><a href="https://stackoverflow.com/questions/44413952/gradle-implementation-vs-api-configuration" target="_blank" rel="external">https://stackoverflow.com/questions/44413952/gradle-implementation-vs-api-configuration</a></p>
+<p>原来的 compile 关键词现在变成了 api</p>
+<p>implementation: 使用implementation添加的依赖不会再编译期间被其他组件引用到，但在运行期间是完全可见的。这也是一种代码隔离。</p>
+<h1 id="annotationProcessor-android-apt"><a href="#annotationProcessor-android-apt" class="headerlink" title="annotationProcessor android-apt"></a>annotationProcessor android-apt</h1><p><a href="http://blog.csdn.net/xx326664162/article/details/68490059" target="_blank" rel="external">参考</a></p>
+<p>APT(Annotation Processing Tool)是一种处理注释的工具,它对源代码文件进行检测找出其中的Annotation，根据注解自动生成代码。</p>
+<h2 id="annotationProcessor"><a href="#annotationProcessor" class="headerlink" title="annotationProcessor"></a>annotationProcessor</h2><p>annotationProcessor是APT工具中的一种，他是google开发的内置框架，不需要引入，可以直接在build.gradle文件中使用，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">     annotationProcessor project(&apos;:xx&apos;)</div><div class="line">     annotationProcessor &apos;com.jakewharton:butterknife-compiler:8.4.0&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="android-apt-已经不建议使用了"><a href="#android-apt-已经不建议使用了" class="headerlink" title="android-apt 已经不建议使用了"></a>android-apt 已经不建议使用了</h2><p>android-apt是由一位开发者自己开发的apt框架</p>
+<h1 id="Provided-annotationProcessor"><a href="#Provided-annotationProcessor" class="headerlink" title="Provided annotationProcessor"></a>Provided annotationProcessor</h1><h2 id="annotationProcessor-1"><a href="#annotationProcessor-1" class="headerlink" title="annotationProcessor"></a>annotationProcessor</h2><p>只在编译的时候执行依赖的库，但是库最终不打包到apk中，<br>编译库中的代码没有直接使用的意义，也没有提供开放的api调用，最终的目的是得到编译库中生成的文件，供我们调用。</p>
+<h2 id="Provided"><a href="#Provided" class="headerlink" title="Provided"></a>Provided</h2><p>Provided 虽然也是编译时执行，最终不会打包到apk中，但是跟apt/annotationProcessor有着根本的不同。<br>A 、B、C都是Library。<br>A依赖了C，B也依赖了C<br>App需要同时使用A和B<br>那么其中A（或者B）可以修改与C的依赖关系为Provided<br>A这个Library实际上还是要用到C的，只不过它知道B那里也有一个C，自己再带一个就显得多余了，等app开始运行的时候，A就可以通过B得到C，也就是两人公用这个C。所以自己就在和B汇合之前，假设自己有C。如果运行的时候没有C，肯定就要崩溃了。<br>总结一下，Provided是间接的得到了依赖的Library，运行的时候必须要保证这个Library的存在，否则就会崩溃，起到了避免依赖重复资源的作用。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/04/ReadNote/深入理解计算机系统/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1396,294 +1720,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/25/Android/view/自定义View/自定义View-方法流程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/25/Android/view/自定义View/自定义View-方法流程/" itemprop="url">自定义View-方法流程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-25T09:23:14+08:00">
-                2017-10-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017/10/15 添加 [http://hencoder.com/ui-1-5/](http://hencoder.com/ui-1-5/) 笔记</div></pre></td></tr></table></figure>
-<h1 id="自定义View-整体流程"><a href="#自定义View-整体流程" class="headerlink" title="自定义View 整体流程"></a>自定义View 整体流程</h1><p><img src="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png" alt="https://cdn-images-1.medium.com/max/1600/1*abc0UlGj1myFD0eph4pZjQ.png"></p>
-<p>这个图中有错误：dispatchDraw() 应该在 onDraw() 之后执行</p>
-<h2 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h2><p>构造方法：在这里做 view 的各种初始化操作：</p>
-<ol>
-<li>初始化一些值，从 style 中取值</li>
-<li>初始化画笔</li>
-</ol>
-<h2 id="onAttachedToWindow"><a href="#onAttachedToWindow" class="headerlink" title="onAttachedToWindow"></a>onAttachedToWindow</h2><p>控件显示在界面上的使用调用这个方法。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/25/Android/view/自定义View/自定义View-方法流程/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/22/ReadNote/数据库原理笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/22/ReadNote/数据库原理笔记/" itemprop="url">数据库原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-22T21:18:12+08:00">
-                2017-10-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>原文链接：<a href="http://blog.jobbole.com/100349/">如果有人问你数据库的原理，叫他看这篇文章</a></p>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="O-1-vs-O-n-2"><a href="#O-1-vs-O-n-2" class="headerlink" title="O(1) vs O(n^2)"></a>O(1) vs O(n^2)</h2><p>时间复杂度用来检验某个算法处理一定量的数据要花多长时间。</p>
-<h2 id="合并排序"><a href="#合并排序" class="headerlink" title="合并排序"></a>合并排序</h2><p>讲解一种排序算法</p>
-<h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><p>合并两个已经排好序的数列。</p>
-<p><img src="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif" alt="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif"></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/22/ReadNote/数据库原理笔记/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1733,7 +1769,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">427</span>
+                <span class="site-state-item-count">429</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1755,7 +1791,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">252</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

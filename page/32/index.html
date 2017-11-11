@@ -253,6 +253,229 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/view/TabLayout/TabLayout结合ViewPager的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/05/Android/view/TabLayout/TabLayout结合ViewPager的使用/" itemprop="url">TabLayout</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T20:38:14+08:00">
+                2016-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="TabLayout结合ViewPager"><a href="#TabLayout结合ViewPager" class="headerlink" title="TabLayout结合ViewPager"></a>TabLayout结合ViewPager</h1><h2 id="导入支持包"><a href="#导入支持包" class="headerlink" title="导入支持包"></a>导入支持包</h2><p>在app/目录下按f4或者按<img src="http://i.imgur.com/Ek2HnGa.png" alt=""></p>
+<hr>
+<p>选择Dependencies页面，点击右边的“+”号，选择library dependency<br><img src="http://i.imgur.com/Gtrbzkl.png" alt=""></p>
+<hr>
+<p>搜索design，选择下面出现的一个包，点击ok<br><img src="http://i.imgur.com/le4E1vu.png" alt=""></p>
+<hr>
+<p>这个时候Android studio 会自动重新编译代码，如果没有就需要手动同步代码</p>
+<p><img src="http://i.imgur.com/AYAOn7E.png" alt=""></p>
+<h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h3 id="在xml布局文件中加入tablayout控件"><a href="#在xml布局文件中加入tablayout控件" class="headerlink" title="在xml布局文件中加入tablayout控件"></a>在xml布局文件中加入tablayout控件</h3><pre><code>&lt;!--tablayout 在Design包下android5.0中新的东西--&gt;
+&lt;android.support.design.widget.TabLayout
+    android:id=&quot;@+id/discovery_tab_bar&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;/&gt;
+</code></pre><p>加入viewpager：</p>
+<pre><code>&lt;android.support.v4.view.ViewPager
+    android:id=&quot;@+id/discovery_viewpager&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;&gt;
+</code></pre><h3 id="关联TabLayout和ViewPager"><a href="#关联TabLayout和ViewPager" class="headerlink" title="关联TabLayout和ViewPager"></a>关联TabLayout和ViewPager</h3><p>方法一：</p>
+<pre><code>TabLayout tabLayout = (TabLayout) view.findViewById(R.id.discovery_tab_bar);
+tabLayout.setOnTabSelectedListener(this);
+
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+Collections.addAll(list, &quot;推荐&quot;, &quot;分类&quot;, &quot;广播&quot;, &quot;榜单&quot;, &quot;主播&quot;);
+TabLayout.Tab tab = null;
+for (String s : list) {
+    tab = tabLayout.newTab();
+    tab.setText(s);
+    tabLayout.addTab(tab);
+}
+
+mViewPager = (ViewPager) view.findViewById(R.id.discovery_viewpager);
+DiscoveryFragmentPageAdapter adapter = new DiscoveryFragmentPageAdapter(getActivity().getSupportFragmentManager(), list);
+mViewPager.setAdapter(adapter);
+
+mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+</code></pre><hr>
+<p>方法二：推荐使用</p>
+<pre><code>TabLayout tabLayout = (TabLayout) view.findViewById(R.id.discovery_tab_bar);
+
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+Collections.addAll(list, &quot;推荐&quot;, &quot;分类&quot;, &quot;广播&quot;, &quot;榜单&quot;, &quot;主播&quot;);
+
+mViewPager = (ViewPager) view.findViewById(R.id.discovery_viewpager);
+DiscoveryFragmentPageAdapter adapter = new DiscoveryFragmentPageAdapter(getActivity().getSupportFragmentManager(), list);
+mViewPager.setAdapter(adapter);
+
+tabLayout.setupWithViewPager(mViewPager);
+</code></pre><p>还需要在适配器中添加方法：</p>
+<pre><code>@Override
+public CharSequence getPageTitle(int position) {
+    return mList.get(position);
+}
+</code></pre><h2 id="TabLayout重要属性"><a href="#TabLayout重要属性" class="headerlink" title="TabLayout重要属性"></a>TabLayout重要属性</h2><p>属性：</p>
+<ul>
+<li><p>滑块颜色：</p>
+<pre><code>app:tabIndicatorColor=&quot;@color/white&quot;
+</code></pre></li>
+<li><p>字体颜色：</p>
+<pre><code>app:tabSelectedTextColor=&quot;@color/gray&quot;  app:tabTextColor=&quot;@color/white&quot;
+</code></pre></li>
+<li><p>tab模式：</p>
+<pre><code>app:tabMode=&quot;fix&quot;
+</code></pre><p>  fix:表示所有tab会挤在屏幕被不能滚动</p>
+<p>  scrollable：表示Tab可以滚动</p>
+</li>
+<li><p>tabGravity：</p>
+<pre><code>app:tabGravity=&quot;center&quot;
+</code></pre><p>  center:点击接近屏幕边缘的Tab时会聚焦（当然会聚焦啦）并居中</p>
+<p>  fill:点击接近屏幕边缘的Tab时会向屏幕中心移动，直至能完全显示整个Tab标签，不会居中</p>
+</li>
+</ul>
+<h2 id="TabLayout-自定义指示器"><a href="#TabLayout-自定义指示器" class="headerlink" title="TabLayout 自定义指示器"></a>TabLayout 自定义指示器</h2><p>关键代码：</p>
+<pre><code>mTabLayout.setupWithViewPager(mViewPager);
+
+for (int i = 0; i &lt; mTabLayout.getTabCount(); i++) {
+    TabLayout.Tab tab = mTabLayout.getTabAt(i);
+    if (tab != null) {
+        tab.setCustomView(getTabView(i));
+    }
+}
+
+public View getTabView(int position) {
+    View v = LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+    TextView tv = (TextView) v.findViewById(R.id.tv_tab);
+    tv.setText(String.format(&quot;第%d个&quot;, position));
+    //        ImageView img = (ImageView) v.findViewById(R.id.imageView);
+    //img.setImageResource(imageResId[position]);
+    return v;
+}
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/四大组件/ConentProvider/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -469,6 +692,139 @@ public class UserContentProvider extends ContentProvider {
 
 }
 </code></pre><h2 id="CursorLoader-会开启子线程"><a href="#CursorLoader-会开启子线程" class="headerlink" title="CursorLoader(会开启子线程)"></a>CursorLoader(会开启子线程)</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/四大组件/ContentResolver/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/05/Android/四大组件/ContentResolver/" itemprop="url">ContentResolver</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T11:38:14+08:00">
+                2016-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ContentResolver"><a href="#ContentResolver" class="headerlink" title="ContentResolver"></a>ContentResolver</h1>
           
         
       
@@ -1421,7 +1777,7 @@ Thumbs.db
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/ndk/NDK实战/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/c++/c++学习记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1440,7 +1796,7 @@ Thumbs.db
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/03/Android/ndk/NDK实战/" itemprop="url">NDK Hello</a></h1>
+                <a class="post-title-link" href="/2016/04/03/c++/c++学习记录/" itemprop="url">c++ 学习记录</a></h1>
         
 
         <div class="post-meta">
@@ -1475,8 +1831,8 @@ Thumbs.db
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
                   </a>
                 </span>
 
@@ -1510,428 +1866,19 @@ Thumbs.db
 
       
         
-          
-            <h1 id="创建一个Jni类"><a href="#创建一个Jni类" class="headerlink" title="创建一个Jni类"></a>创建一个Jni类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class JniTest &#123;</div><div class="line">    public static native getStringFromNative();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Make（构建）Module-app生成字节码（-class）文件"><a href="#Make（构建）Module-app生成字节码（-class）文件" class="headerlink" title="Make（构建）Module app生成字节码（*.class）文件"></a>Make（构建）Module app生成字节码（*.class）文件</h1><p><code>build-&gt;make module&#39;app&#39;</code></p>
-<p>目的是生成 <code>.class</code> 文件，文件地址在：<code>NdkBuilderDemo/app/build/intermediates/classes/debug/com/adouble/ndkbuilderdemo/JniTest.class</code></p>
-<h1 id="生成头文件（-h）"><a href="#生成头文件（-h）" class="headerlink" title="生成头文件（*.h）"></a>生成头文件（*.h）</h1><ol>
-<li>首先打开工具栏的Terminal工具</li>
-<li><code>cd app/src/main</code></li>
-<li><code>javah -d jni -classpath ../../build/intermediates/classes/debug com.adouble.ndkbuilderdemo.JniTest</code></li>
-</ol>
-<ul>
-<li><code>javah</code> 执行javah命令生成头文件（*.h）</li>
-<li><code>-d jni</code> 在当前目录创建一个文件，文件名称是jni</li>
-<li><code>-classpath xxx/debug</code> 指定要生成头文件（.h）的字节码文件路径（class）</li>
+          <h1 id="C-学习记录"><a href="#C-学习记录" class="headerlink" title="C++ 学习记录"></a>C++ 学习记录</h1><h2 id="修饰符类型"><a href="#修饰符类型" class="headerlink" title="修饰符类型"></a>修饰符类型</h2><ul>
+<li>signed</li>
+<li>unsigned</li>
+<li>long</li>
+<li>short</li>
 </ul>
-<h1 id="创建JniTest-c文件"><a href="#创建JniTest-c文件" class="headerlink" title="创建JniTest.c文件"></a>创建JniTest.c文件</h1><p>方法JNICALL Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative，这相当于是java的抽象方法，它只声明但是没有任何实现，一般情况下需要创建一个c或cpp文件去实现相应的方法。</p>
-<ol>
-<li>首先创建一个文件JniTest.c</li>
-<li>编辑JniTest.c，导入头文件com_sandwich_jelly_myapplication_JniTest.h</li>
-<li>实现头文件的抽象方法</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> com_adouble_ndkbuilderdemo_JniTest.h</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative</span><span class="params">(JNIEnv *e, jobject obj)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> (**e).NewStringUTF(e,<span class="string">"Hello from JniTest Function"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Jni类的配置及引用"><a href="#Jni类的配置及引用" class="headerlink" title="Jni类的配置及引用"></a>Jni类的配置及引用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    defaultConfig &#123;</div><div class="line">...</div><div class="line">        ndk &#123;</div><div class="line">            moduleName &quot;NdkJniDemo&quot;          //生成的so名字</div><div class="line">            ldLibs &quot;log&quot;//实现__android_log_print</div><div class="line">            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot; //输出指定三种abi体系结构下的so库，目前可有可无。</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>修改原文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JniTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        System.loadLibrary(<span class="string">"NdkJniDemo"</span>);<span class="comment">//之前在build.gradle里面设置的so名字，必须一致</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> String <span class="title">getStringFromNative</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="项目中引用so"><a href="#项目中引用so" class="headerlink" title="项目中引用so"></a>项目中引用so</h1><p>以上项目编译完后，可以在app/build/intermediates/ndk/debug/lib下面找到生成的so</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/3e9f3055d7a6" target="_blank" rel="external">http://www.jianshu.com/p/3e9f3055d7a6</a></li>
-<li><a href="http://xyzlf.github.io/2016/07/17/android-jni.html" target="_blank" rel="external">http://xyzlf.github.io/2016/07/17/android-jni.html</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/NFC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/03/Android/NFC/" itemprop="url">android nfc 开发</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
-                2016-04-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Android-NFC-开发"><a href="#Android-NFC-开发" class="headerlink" title="Android NFC 开发"></a>Android NFC 开发</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Near Field Communication (NFC) 又称近距离无线通信，是一种短距离的高频无线通信技术，允许电子设备之间进行非接触式点对点数据传输，在十厘米（3.9英寸）内交换数据。</p>
-<h2 id="NFC-的三种工作模式"><a href="#NFC-的三种工作模式" class="headerlink" title="NFC 的三种工作模式"></a>NFC 的三种工作模式</h2><ul>
-<li>卡模拟模式（Card emulation mode）：将设备模拟成采用RFID技术的IC卡。进行卡模拟的设备必须自带安全组件（Security Element, SE），NFC芯片。</li>
-<li>点对点模式（P2P mode）：和红外线，蓝牙类似用于数据交换。在Android Beam之后android系统支持了点对点数据传输。</li>
-<li>读卡器模式（Reader/Writer mode）：作为非接触读卡器使用，比如从海报或者展览信息电子标签上读取相关信息。</li>
-</ul>
-<h2 id="Android-系统检测NFC流程"><a href="#Android-系统检测NFC流程" class="headerlink" title="Android 系统检测NFC流程"></a>Android 系统检测NFC流程</h2><ol>
-<li>Android设备在开启NFC功能后无论屏幕是否打开都会一直监听设备附近的 NFC tag;</li>
-<li>检测到 NFC tag 后会解析内部附带的数据：MIME/URI (不同类型的NFC tag 所携带的数据也不一样);</li>
-<li>将解析到的数据存到<code>intent</code>中并通过<code>intent</code>开启应用;</li>
-</ol>
-<h3 id="intent-类型"><a href="#intent-类型" class="headerlink" title="intent 类型"></a>intent 类型</h3><p>下面的排序按优先级从高到低。</p>
-<ol>
-<li><code>ACTION_NDEF_DISCOVERED</code>:当tag中附带NDEF数据的时候</li>
-<li><code>ACTION_TECH_DISCOVERED</code>:当tag中没有检测到NDEF数据，但是其中包含的数据是已知的类型</li>
-<li><code>ACTION_TAG_DISCOVERED</code>:如果上面两种都没有检测到，就使用这个启动应用</li>
-</ol>
-<p><img src="https://developer.android.com/images/nfc_tag_dispatch.png" alt="tag 检测流程"></p>
-<h2 id="NFC-基本使用"><a href="#NFC-基本使用" class="headerlink" title="NFC 基本使用"></a>NFC 基本使用</h2><h3 id="申请权限"><a href="#申请权限" class="headerlink" title="申请权限"></a>申请权限</h3><p><code>AndroidManifest.xml</code></p>
-<pre><code>&lt;uses-permission android:name=&quot;android.permission.NFC&quot; /&gt;
-</code></pre><h3 id="申明app具有nfc功能-非必须"><a href="#申明app具有nfc功能-非必须" class="headerlink" title="申明app具有nfc功能 (非必须)"></a>申明app具有nfc功能 (非必须)</h3><p>下面标签作用：在应用商店显示本app需要手机支持NFC功能，如果<br>NFC功能是非必须的，可以不声明，在代码中通过<code>getDefaultAdapter()</code>的返回值判断手机是否支持NFC。</p>
-<pre><code>&lt;uses-feature android:name=&quot;android.hardware.nfc&quot; android:required=&quot;true&quot; /&gt;
-</code></pre><h3 id="Filter-设置"><a href="#Filter-设置" class="headerlink" title="Filter 设置"></a>Filter 设置</h3><p>例子1：MIME：<code>text/plain</code></p>
-<pre><code>&lt;intent-filter&gt;
-    &lt;action android:name=&quot;android.nfc.action.NDEF_DISCOVERED&quot;/&gt;
-        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-    &lt;data android:mimeType=&quot;text/plain&quot; /&gt;
-&lt;/intent-filter&gt;
-</code></pre><p>例子2：URI:<code>http://developer.android.com/index.html.</code></p>
-<pre><code>&lt;intent-filter&gt;
-    &lt;action android:name=&quot;android.nfc.action.NDEF_DISCOVERED&quot;/&gt;
-        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-    &lt;data android:scheme=&quot;http&quot;
-                 android:host=&quot;developer.android.com&quot;
-             android:pathPrefix=&quot;/index.html&quot; /&gt;
-&lt;/intent-filter&gt;
-</code></pre><h4 id="ACTION-TECH-DISCOVERED"><a href="#ACTION-TECH-DISCOVERED" class="headerlink" title="ACTION_TECH_DISCOVERED"></a>ACTION_TECH_DISCOVERED</h4><p>如果定义了这个<code>action</code>，必须创建一个XML资源文件定义activity所支持的技术</p>
-<p><code>/res/xml</code>文件夹下创建资源文件：(例子)</p>
-<pre><code>&lt;resources xmlns:xliff=&quot;urn:oasis:names:tc:xliff:document:1.2&quot;&gt;
-    &lt;tech-list&gt;
-            &lt;tech&gt;android.nfc.tech.IsoDep&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.NfcA&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.NfcB&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.NfcF&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.NfcV&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.Ndef&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.NdefFormatable&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.MifareClassic&lt;/tech&gt;
-            &lt;tech&gt;android.nfc.tech.MifareUltralight&lt;/tech&gt;
-        &lt;/tech-list&gt;
-&lt;/resources&gt;
-</code></pre><p>在<code>AndroidManifest.xml</code>中创建<code>&lt;meta-data&gt;</code></p>
-<pre><code>&lt;activity&gt;
-...
-&lt;intent-filter&gt;
-    &lt;action android:name=&quot;android.nfc.action.TECH_DISCOVERED&quot;/&gt;
-&lt;/intent-filter&gt;
-
-&lt;meta-data android:name=&quot;android.nfc.action.TECH_DISCOVERED&quot;
-    android:resource=&quot;@xml/nfc_tech_filter&quot; /&gt;
-...
-&lt;/activity&gt;
-</code></pre><h4 id="ACTION-TAG-DISCOVERED"><a href="#ACTION-TAG-DISCOVERED" class="headerlink" title="ACTION_TAG_DISCOVERED"></a>ACTION_TAG_DISCOVERED</h4><pre><code>&lt;intent-filter&gt;
-    &lt;action android:name=&quot;android.nfc.action.TAG_DISCOVERED&quot;/&gt;
-&lt;/intent-filter&gt;
-</code></pre><h3 id="从Intent中获取数据"><a href="#从Intent中获取数据" class="headerlink" title="从Intent中获取数据"></a>从<code>Intent</code>中获取数据</h3><p><code>intent</code>中可能携带的数据有下面三种，具体哪个里面有数据取决于检测到的NFC tag中的数据类型</p>
-<ul>
-<li><code>EXTRA_TAG</code>:必须</li>
-<li><code>ECTRA_NDEF_MESSAGES</code>:可选</li>
-<li><code>EXTRA_ID</code>:可选</li>
-</ul>
-<p>获取数据的例子：</p>
-<pre><code>public void onResume() { 
-    super.onResume(); 
-    ... 
-    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        if (rawMsgs != null) {
-            msgs = new NdefMessage[rawMsgs.length];
-            for (int i = 0; i &lt; rawMsgs.length; i++) {
-                msgs[i] = (NdefMessage) rawMsgs[i];
-            } 
-        } 
-    } 
-    //process the msgs array 
-} 
-</code></pre><p>或者：可以从<code>Intent</code>中获取<code>Tag</code> 对象，tag对象中包含了数据和数据类型</p>
-<pre><code>Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-</code></pre><h3 id="处理-Tag-对象"><a href="#处理-Tag-对象" class="headerlink" title="处理 Tag 对象"></a>处理 Tag 对象</h3><p>获取tag对应的技术标准对象：</p>
-<p>技术标准有：</p>
-<ul>
-<li>IsoDep</li>
-<li>MifareClassic</li>
-<li>MifareUltralight</li>
-<li>Ndef</li>
-<li>NdefFormatable</li>
-<li>NfcA</li>
-<li>NfcB</li>
-<li>NfcBarcode</li>
-<li>NfcF</li>
-<li>NfcV</li>
-</ul>
-<p>例子：</p>
-<pre><code>IsoDep isoDep = IsoDep.get(tag);
-</code></pre><p>获取到该对象后进行I/O流读写，注意读写代码属于耗时操作需要在子线程中执行</p>
-<p>要从nfc卡中读取信息，需要发起一个指令才能收到相应的信息，不同的nfc卡的指令不同。</p>
-<h2 id="一个完整的Demo"><a href="#一个完整的Demo" class="headerlink" title="一个完整的Ｄｅｍｏ"></a>一个完整的Ｄｅｍｏ</h2><p><a href="https://github.com/fangmd/NFC_Demo" target="_blank" rel="external">https://github.com/fangmd/NFC_Demo</a></p>
-<p>参考:</p>
-<ul>
-<li><a href="https://zh.wikipedia.org/wiki/%E8%BF%91%E5%A0%B4%E9%80%9A%E8%A8%8A" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E8%BF%91%E5%A0%B4%E9%80%9A%E8%A8%8A</a></li>
-<li><a href="https://developer.android.com/guide/topics/connectivity/nfc/nfc.html" target="_blank" rel="external">https://developer.android.com/guide/topics/connectivity/nfc/nfc.html</a></li>
-<li><a href="http://www.jianshu.com/p/a3a3b3db6b37" target="_blank" rel="external">http://www.jianshu.com/p/a3a3b3db6b37</a></li>
-<li><a href="http://blog.csdn.net/menghnhhuan/article/details/16947361" target="_blank" rel="external">http://blog.csdn.net/menghnhhuan/article/details/16947361</a></li>
-<li><a href="http://blog.csdn.net/menghnhhuan/article/details/16947361" target="_blank" rel="external">http://blog.csdn.net/menghnhhuan/article/details/16947361</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/Android 版本/Android5.0/design包/共享元素/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/03/Android/Android 版本/Android5.0/design包/共享元素/" itemprop="url">android 5.0 共享元素</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
-                2016-04-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h1><ol>
-<li>源布局中的一个控件设置属性:<code>android:transitionName=&quot;transitionName&quot;</code></li>
-<li>目标布局中的一个控件设置属性:<code>android:transitionName=&quot;transitionName&quot;</code></li>
-</ol>
-<p>跳转方法:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">actionStart</span><span class="params">(Activity context)</span></span>&#123;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(context, LearnNewsActivity.class);</div><div class="line">    <span class="keyword">if</span> (android.os.Build.VERSION.SDK_INT &gt;= android.os.Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">        Pair&lt;View, String&gt;[] pairs = TransitionHelper.createSafeTransitionParticipants(context, <span class="keyword">true</span>);</div><div class="line">        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, pairs);</div><div class="line">        ActivityCompat.startActivity(context, intent, optionsCompat.toBundle());</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        context.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>style 21 主题中增加:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;item name="android:windowContentTransitions"&gt;true&lt;/item&gt;</div></pre></td></tr></table></figure>
-<h1 id="导航栏闪白处理"><a href="#导航栏闪白处理" class="headerlink" title="导航栏闪白处理"></a>导航栏闪白处理</h1><p><a href="https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti" target="_blank" rel="external">https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti</a><br><a href="https://codeday.me/bug/20170630/29499.html" target="_blank" rel="external">https://codeday.me/bug/20170630/29499.html</a></p>
-<p>在目标 Activity 中调用下面的代码。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setupWindowAnimations</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.setupWindowAnimations();</div><div class="line">    </div><div class="line"></div><div class="line">    Fade fade = <span class="keyword">new</span> Fade();</div><div class="line">    fade.setDuration(<span class="number">500</span>);</div><div class="line">    fade.excludeTarget(android.R.id.statusBarBackground, <span class="keyword">true</span>);</div><div class="line">    fade.excludeTarget(android.R.id.navigationBarBackground, <span class="keyword">true</span>);</div><div class="line">    getWindow().setReturnTransition(fade);</div><div class="line">    getWindow().setEnterTransition(fade);</div><div class="line"></div><div class="line">    <span class="comment">// or</span></div><div class="line">    <span class="comment">//getWindow().setEnterTransition(null);</span></div><div class="line">    <span class="comment">//getWindow().setReturnTransition(null);</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/03/c++/c++学习记录/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2013,7 +1960,7 @@ Thumbs.db
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">427</span>
+                <span class="site-state-item-count">429</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -2035,7 +1982,7 @@ Thumbs.db
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">252</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
