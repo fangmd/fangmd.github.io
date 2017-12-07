@@ -253,6 +253,322 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/00.Android内存优化--布局优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/优化/00.Android内存优化--布局优化/" itemprop="url">Android内存优化 -- 布局优化，过度绘制优化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Android内存优化-–-布局优化"><a href="#Android内存优化-–-布局优化" class="headerlink" title="Android内存优化 – 布局优化"></a>Android内存优化 – 布局优化</h1><h2 id="布局的层级不能太深"><a href="#布局的层级不能太深" class="headerlink" title="布局的层级不能太深"></a>布局的层级不能太深</h2><p>使用Hierarchy Viewer查看UI布局层级</p>
+<h2 id="include-标签把可复用的布局抽取出来"><a href="#include-标签把可复用的布局抽取出来" class="headerlink" title="include 标签把可复用的布局抽取出来"></a>include 标签把可复用的布局抽取出来</h2><h2 id="merge标签"><a href="#merge标签" class="headerlink" title="merge标签"></a>merge标签</h2><p>可以优化UI结构，删除多余的层级</p>
+<h2 id="ViewStub"><a href="#ViewStub" class="headerlink" title="ViewStub"></a>ViewStub</h2><p>一个隐藏的不占用内存空间的视图对象，可以在运行时延迟加载布局资源文件。</p>
+<h1 id="Android-过度绘制-优化"><a href="#Android-过度绘制-优化" class="headerlink" title="Android 过度绘制 优化"></a>Android 过度绘制 优化</h1><p>参考：<a href="https://jaeger.itscoder.com/android/2016/09/29/android-performance-overdraw.html" target="_blank" rel="external">https://jaeger.itscoder.com/android/2016/09/29/android-performance-overdraw.html</a></p>
+<blockquote>
+<p>Overdraw：描述的是屏幕上的某个像素在同一帧的时间内被绘制了多次。在多层次重叠的 UI 结构里面，如果不可见的 UI 也在做绘制的操作，会导致某些像素区域被绘制了多次，同时也会浪费大量的 CPU 以及 GPU 资源。</p>
+</blockquote>
+<h2 id="查看界面是否过度绘制的方法"><a href="#查看界面是否过度绘制的方法" class="headerlink" title="查看界面是否过度绘制的方法"></a>查看界面是否过度绘制的方法</h2><p>在手机 【开发者选项】 中开启【调试 GPU 过度绘制】（Debug GPU overdraw -&gt; show overdraw areas）</p>
+<p>各个区域颜色的含义：</p>
+<p><img src="http://ac-qygvx1cc.clouddn.com/46397b26da912658.png" alt="http://ac-qygvx1cc.clouddn.com/46397b26da912658.png"></p>
+<ul>
+<li>原色：没有过度绘制</li>
+<li>蓝色：1 次过度绘制</li>
+<li>绿色：2 次过度绘制</li>
+<li>粉色：3 次过度绘制</li>
+<li>红色：4 次及以上过度绘制</li>
+</ul>
+<p>优化原则：</p>
+<ul>
+<li>一些过度绘制是无法避免的，比如之前说的文字和背景导致的过度绘制，这种是无法避免的。</li>
+<li>应用界面中，应该尽可能地将过度绘制控制为 2 次（绿色）及其以下，原色和蓝色是最理想的。</li>
+<li>粉色和红色应该尽可能避免，在实际项目中避免不了时，应该尽可能减少粉色和红色区域。</li>
+<li>不允许存在面积超过屏幕 1/4 区域的 3 次（淡红色区域）及其以上过度绘制。</li>
+</ul>
+<h2 id="优化方法"><a href="#优化方法" class="headerlink" title="优化方法"></a>优化方法</h2><h3 id="移除默认的-Window-背景"><a href="#移除默认的-Window-背景" class="headerlink" title="移除默认的 Window 背景"></a>移除默认的 Window 背景</h3><p>移除背景做法：</p>
+<ol>
+<li>方法一，在 Activity 的主题中添加：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;item name=&quot;android:windowBackground&quot;&gt;@android:color/transparent&lt;/item&gt;</div><div class="line">&lt;!-- 或者 --&gt;</div><div class="line">&lt;item name=&quot;android:windowBackground&quot;&gt;@null&lt;/item&gt;</div></pre></td></tr></table></figure>
+<ol>
+<li>方法二， 在 BaseActivity 的 onCreate() 方法中添加：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">getWindow().setBackgroundDrawable(<span class="keyword">null</span>);</div><div class="line"><span class="comment">// 或者</span></div><div class="line">getWindow().setBackgroundDrawableResource(android.R.color.transparent);</div></pre></td></tr></table></figure>
+<p>移除 window 背景后，需要检查之前写的界面是否正常。</p>
+<blockquote>
+<p>移除背景后可能很多界面都需要添加 背景色。大批量修改界面会有点麻烦，所以在时间不多的情况下不建议直接在 BaseActivity 中添加一个方法 removeWindowBackgrod 方法供需要优化的 子Activity 使用。</p>
+</blockquote>
+<h3 id="移除不必要的背景"><a href="#移除不必要的背景" class="headerlink" title="移除不必要的背景"></a>移除不必要的背景</h3><ol>
+<li>子控件的颜色和父控件颜色一样的时候，不需要在父控件和子控件中都设置背景</li>
+<li>例子：recyclerview 中设置了背景色，如果 item 的颜色和 recyclerview 背景色一样就不要再设置了</li>
+<li>ViewPager 加多个 Fragment 组成的首页界面，如果你的每个 Fragment 都设置有背景色的话， 你就可以不用给 Activity 的根布局设置背景，如果你还给 ViewPager 还设置了背景，那个这个背景是没必要的，同样可以移除。</li>
+<li>imageView 的 background 和 设置的图片 会过度绘制</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/Android内存优化-Handler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/优化/Android内存优化-Handler/" itemprop="url">Android内存优化 -- Handler</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android内存优化-–-Handler"><a href="#Android内存优化-–-Handler" class="headerlink" title="Android内存优化 – Handler"></a>Android内存优化 – Handler</h1><h2 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h2><p>在Activity中创建一个Handler的时候，IDE会出现个提示：</p>
+<pre><code>This Handler class should be static or leaks might occur (com.example.androidtest.MainActivity.2)
+</code></pre><p>原因：当Activity关闭时，Handler不一定处理完毕，但是Handler对Acitivty有引用关系，导致了GC无法回收Activity对象，造成内存泄露。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/14/Android/优化/Android内存优化-Handler/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/第三方/支付宝/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -833,6 +1149,148 @@ return mRootView;
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/10/Android/视屏播放/Android视频播放/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/10/Android/视屏播放/Android视频播放/" itemprop="url">Android 视频播放</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-10T14:18:12+08:00">
+                2016-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="视频播放"><a href="#视频播放" class="headerlink" title="视频播放"></a>视频播放</h1><h2 id="VideoView-MediaController"><a href="#VideoView-MediaController" class="headerlink" title="VideoView MediaController"></a>VideoView MediaController</h2><h3 id="获取对象"><a href="#获取对象" class="headerlink" title="获取对象"></a>获取对象</h3><pre><code>mVideoView = (VideoView) findViewById(R.id.main_videoView);
+</code></pre><h3 id="设置媒体路径"><a href="#设置媒体路径" class="headerlink" title="设置媒体路径"></a>设置媒体路径</h3><p>本地</p>
+<pre><code>mVideoView.setVideoPath(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;).getAbsolutePath());
+</code></pre><p>网络</p>
+<pre><code>mVideoView.setVideoURI(Uri.parse(&quot;....&quot;));
+</code></pre><h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><pre><code>mVideoView.start();
+</code></pre><h3 id="加入控制台"><a href="#加入控制台" class="headerlink" title="加入控制台"></a>加入控制台</h3><pre><code>MediaController mediaController = new MediaController(this);
+mVideoView.setMediaController(mediaController);
+</code></pre><h2 id="MediaPlayer-SurfaceView"><a href="#MediaPlayer-SurfaceView" class="headerlink" title="MediaPlayer SurfaceView"></a>MediaPlayer SurfaceView</h2><p>见<a href="">SurfaceView</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/10/Android/Android Async implement/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -939,148 +1397,6 @@ return mRootView;
             </a>
           </div>
           <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/10/Android/视屏播放/Android视频播放/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/10/Android/视屏播放/Android视频播放/" itemprop="url">Android 视频播放</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-10T14:18:12+08:00">
-                2016-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="视频播放"><a href="#视频播放" class="headerlink" title="视频播放"></a>视频播放</h1><h2 id="VideoView-MediaController"><a href="#VideoView-MediaController" class="headerlink" title="VideoView MediaController"></a>VideoView MediaController</h2><h3 id="获取对象"><a href="#获取对象" class="headerlink" title="获取对象"></a>获取对象</h3><pre><code>mVideoView = (VideoView) findViewById(R.id.main_videoView);
-</code></pre><h3 id="设置媒体路径"><a href="#设置媒体路径" class="headerlink" title="设置媒体路径"></a>设置媒体路径</h3><p>本地</p>
-<pre><code>mVideoView.setVideoPath(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;).getAbsolutePath());
-</code></pre><p>网络</p>
-<pre><code>mVideoView.setVideoURI(Uri.parse(&quot;....&quot;));
-</code></pre><h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><pre><code>mVideoView.start();
-</code></pre><h3 id="加入控制台"><a href="#加入控制台" class="headerlink" title="加入控制台"></a>加入控制台</h3><pre><code>MediaController mediaController = new MediaController(this);
-mVideoView.setMediaController(mediaController);
-</code></pre><h2 id="MediaPlayer-SurfaceView"><a href="#MediaPlayer-SurfaceView" class="headerlink" title="MediaPlayer SurfaceView"></a>MediaPlayer SurfaceView</h2><p>见<a href="">SurfaceView</a></p>
-
-          
         
       
     </div>
@@ -1289,154 +1605,6 @@ mVideoView.setMediaController(mediaController);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/07/Android/第三方/eventbus/EventBus/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/07/Android/第三方/eventbus/EventBus/" itemprop="url">EventBus</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-07T12:18:12+08:00">
-                2016-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="EventBus"><a href="#EventBus" class="headerlink" title="EventBus"></a>EventBus</h1><h2 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h2><p><em>EventBus</em>是一个Android端优化的publish/subscribe消息总线，简化了应用程序内各组件间、组件与后台线程间的通信。简化下面两点的代码</p>
-<ul>
-<li>请求网络等网络返回时Handler或BroadCast通知UI；</li>
-<li>两个Fragment之间需要通过Listener通信；</li>
-</ul>
-<p>作为消息总线的三个主要元素：</p>
-<ol>
-<li>Event：事件</li>
-<li>Subscriber：事件订阅者，接收特定的事件</li>
-<li>Publisher：事件发布者，用于通知Subscriber有事件发生了</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/05/07/Android/第三方/eventbus/EventBus/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/07/Android/四大组件/activity/Activity总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1588,153 +1756,11 @@ mVideoView.setMediaController(mediaController);
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/07/Android/Andtoid Intent/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/07/Android/Andtoid Intent/" itemprop="url">Intent</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-07T11:38:14+08:00">
-                2016-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Andtoid-Intent"><a href="#Andtoid-Intent" class="headerlink" title="Andtoid Intent"></a>Andtoid Intent</h1><h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>Android各个组件之间交互的一种重要方式。</p>
-<h2 id="作用："><a href="#作用：" class="headerlink" title="作用："></a>作用：</h2><ol>
-<li>传递数据</li>
-<li>启动其他组件</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/05/07/Android/Andtoid Intent/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/25/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/27/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/25/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><span class="page-number current">26</span><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><a class="extend next" rel="next" href="/page/27/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1779,7 +1805,7 @@ mVideoView.setMediaController(mediaController);
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">429</span>
+                <span class="site-state-item-count">431</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1801,7 +1827,7 @@ mVideoView.setMediaController(mediaController);
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-count">253</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

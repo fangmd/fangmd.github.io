@@ -93,24 +93,24 @@
 
 
 
-<meta name="description" content="在点击事件中更新其他项时报错
-
-需要制作子项选择后更新×投票×按钮的颜色的效果。">
+<meta name="description" content="Item remove 后 点击事件中的 position 没有更新问题描述：移除一个 item 后通过 mAdapter.notifyItemRemoved(mDeletePosition); 这种方式更新 Adapter，再去点击移除项下面的 item 的时候 position 错误。
+旧代码：
+12345678910111213141516171819202122@Overridepubli">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RecyclerView 问题记录">
 <meta property="og:url" content="http://yoursite.com/2016/04/26/Android/view/RecyclerView/RecyclerView 问题记录/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="在点击事件中更新其他项时报错
-
-需要制作子项选择后更新×投票×按钮的颜色的效果。">
+<meta property="og:description" content="Item remove 后 点击事件中的 position 没有更新问题描述：移除一个 item 后通过 mAdapter.notifyItemRemoved(mDeletePosition); 这种方式更新 Adapter，再去点击移除项下面的 item 的时候 position 错误。
+旧代码：
+12345678910111213141516171819202122@Overridepubli">
 <meta property="og:image" content="http://7xr8nu.com1.z0.glb.clouddn.com/recyclerviewsinglechoice.png">
 <meta property="og:image" content="http://7xr8nu.com1.z0.glb.clouddn.com/androidstudio.png">
-<meta property="og:updated_time" content="2017-09-21T13:16:28.000Z">
+<meta property="og:updated_time" content="2017-11-13T13:18:28.286Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RecyclerView 问题记录">
-<meta name="twitter:description" content="在点击事件中更新其他项时报错
-
-需要制作子项选择后更新×投票×按钮的颜色的效果。">
+<meta name="twitter:description" content="Item remove 后 点击事件中的 position 没有更新问题描述：移除一个 item 后通过 mAdapter.notifyItemRemoved(mDeletePosition); 这种方式更新 Adapter，再去点击移除项下面的 item 的时候 position 错误。
+旧代码：
+12345678910111213141516171819202122@Overridepubli">
 <meta name="twitter:image" content="http://7xr8nu.com1.z0.glb.clouddn.com/recyclerviewsinglechoice.png">
 
 
@@ -350,7 +350,12 @@
       
 
       
-        <h1 id="在点击事件中更新其他项时报错"><a href="#在点击事件中更新其他项时报错" class="headerlink" title="在点击事件中更新其他项时报错"></a>在点击事件中更新其他项时报错</h1><p><img src="http://7xr8nu.com1.z0.glb.clouddn.com/recyclerviewsinglechoice.png" alt=""></p>
+        <h1 id="Item-remove-后-点击事件中的-position-没有更新"><a href="#Item-remove-后-点击事件中的-position-没有更新" class="headerlink" title="Item remove 后 点击事件中的 position 没有更新"></a>Item remove 后 点击事件中的 position 没有更新</h1><p>问题描述：移除一个 item 后通过 <code>mAdapter.notifyItemRemoved(mDeletePosition);</code> 这种方式更新 Adapter，再去点击移除项下面的 item 的时候 position 错误。</p>
+<p>旧代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) &#123;</div><div class="line">    //...</div><div class="line">    if (mListener != null) &#123;</div><div class="line">        holder.itemView.setOnClickListener(new View.OnClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public void onClick(View view) &#123;</div><div class="line">                mListener.onItemClick(holder, position, mDatas.get(position));</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (mLongClickListener != null) &#123;</div><div class="line">        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() &#123;</div><div class="line">            @Override</div><div class="line">            public boolean onLongClick(View v) &#123;</div><div class="line">                mLongClickListener.onItemLongClick(holder, position, mDatas.get(position));</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>新代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(<span class="keyword">final</span> RecyclerView.ViewHolder holder, <span class="keyword">final</span> <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="keyword">if</span> (mListener != <span class="keyword">null</span>) &#123;</div><div class="line">        holder.itemView.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                <span class="keyword">int</span> position = holder.getAdapterPosition();</div><div class="line">                mListener.onItemClick(holder, position, mDatas.get(position));</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (mLongClickListener != <span class="keyword">null</span>) &#123;</div><div class="line">        holder.itemView.setOnLongClickListener(<span class="keyword">new</span> View.OnLongClickListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onLongClick</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                <span class="keyword">int</span> position = holder.getAdapterPosition();</div><div class="line">                mLongClickListener.onItemLongClick(holder, position, mDatas.get(position));</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="在点击事件中更新其他项时报错"><a href="#在点击事件中更新其他项时报错" class="headerlink" title="在点击事件中更新其他项时报错"></a>在点击事件中更新其他项时报错</h1><p><img src="http://7xr8nu.com1.z0.glb.clouddn.com/recyclerviewsinglechoice.png" alt=""></p>
 <p><img src="http://7xr8nu.com1.z0.glb.clouddn.com/androidstudio.png" alt=""></p>
 <p>需要制作子项选择后更新×投票×按钮的颜色的效果。</p>
 <a id="more"></a>
@@ -412,8 +417,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/24/Android/Android 系统相机的使用/" rel="next" title="Android 系统相机和相册调用的使用">
-                <i class="fa fa-chevron-left"></i> Android 系统相机和相册调用的使用
+              <a href="/2016/04/24/Android/Android 资源文件的使用/" rel="next" title="Android 资源文件的使用">
+                <i class="fa fa-chevron-left"></i> Android 资源文件的使用
               </a>
             
           </div>
@@ -496,7 +501,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">429</span>
+                <span class="site-state-item-count">431</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -518,7 +523,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-count">253</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
@@ -553,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在点击事件中更新其他项时报错"><span class="nav-number">1.</span> <span class="nav-text">在点击事件中更新其他项时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在-RecyclerView-中使用-CardView"><span class="nav-number">2.</span> <span class="nav-text">在 RecyclerView 中使用 CardView</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Item-remove-后-点击事件中的-position-没有更新"><span class="nav-number">1.</span> <span class="nav-text">Item remove 后 点击事件中的 position 没有更新</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在点击事件中更新其他项时报错"><span class="nav-number">2.</span> <span class="nav-text">在点击事件中更新其他项时报错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在-RecyclerView-中使用-CardView"><span class="nav-number">3.</span> <span class="nav-text">在 RecyclerView 中使用 CardView</span></a></li></ol></div>
             
 
           </div>

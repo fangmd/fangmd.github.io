@@ -253,6 +253,450 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/29/Android/animate/Android 动画-搜索栏界面跳转动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/29/Android/animate/Android 动画-搜索栏界面跳转动画/" itemprop="url">Animation-搜索栏界面跳转</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-29T21:38:14+08:00">
+                2017-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原文地址：<a href="https://juejin.im/post/586a62ee61ff4b0057876094" target="_blank" rel="external">基本特效：饿了么丝滑无缝过度搜索栏的实现</a></p>
+<p>下面的代码记录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity.class.getSimpleName();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        TextView view = findViewById(R.id.tv_search_bg);</div><div class="line">        view.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, Main2Activity.class);</div><div class="line">                <span class="keyword">int</span> location[] = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">                <span class="comment">//这样位移起来就完全不需要考虑其他坐标系了。</span></div><div class="line">                view.getLocationOnScreen(location);</div><div class="line">                intent.putExtra(<span class="string">"x"</span>, location[<span class="number">0</span>]);</div><div class="line">                intent.putExtra(<span class="string">"y"</span>, location[<span class="number">1</span>]);</div><div class="line">                Log.d(TAG, <span class="string">"onClick: x:"</span>+location[<span class="number">0</span>] + <span class="string">" y:"</span> +location[<span class="number">1</span>]);</div><div class="line">                startActivity(intent);</div><div class="line">                overridePendingTransition(<span class="number">0</span>, <span class="number">0</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main2Activity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = Main2Activity.class.getSimpleName();</div><div class="line">    <span class="keyword">private</span> TextView mSearchBGTxt;</div><div class="line">    <span class="keyword">private</span> TextView mHintTxt;</div><div class="line">    <span class="keyword">private</span> TextView mSearchTxt;</div><div class="line">    <span class="keyword">private</span> FrameLayout mContentFrame;</div><div class="line">    <span class="keyword">private</span> ImageView mArrowImg;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> finishing;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main2);</div><div class="line"></div><div class="line">        mSearchBGTxt = (TextView) findViewById(R.id.tv_search_bg);</div><div class="line">        mHintTxt = (TextView) findViewById(R.id.tv_hint);</div><div class="line">        mSearchTxt = (TextView) findViewById(R.id.tv_search);</div><div class="line">        mArrowImg = (ImageView) findViewById(R.id.iv_arrow);</div><div class="line">        mContentFrame = (FrameLayout) findViewById(R.id.frame_content_bg);</div><div class="line"></div><div class="line">        mSearchBGTxt.getViewTreeObserver().addOnGlobalLayoutListener(<span class="keyword">new</span> ViewTreeObserver.OnGlobalLayoutListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onGlobalLayout</span><span class="params">()</span> </span>&#123;</div><div class="line">                mSearchBGTxt.getViewTreeObserver().removeOnGlobalLayoutListener(<span class="keyword">this</span>);</div><div class="line">                </div><div class="line">                performEnterAnimation();</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 预览效果</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">review</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> originY = getIntent().getIntExtra(<span class="string">"y"</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> location[] = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">        mSearchTxt.getLocationOnScreen(location);</div><div class="line"></div><div class="line">        <span class="keyword">float</span> translateY = originY - (<span class="keyword">float</span>) location[<span class="number">1</span>];</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">performEnterAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> originY = getIntent().getIntExtra(<span class="string">"y"</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> location[] = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">        mSearchBGTxt.getLocationOnScreen(location);</div><div class="line"></div><div class="line">        <span class="keyword">final</span> <span class="keyword">float</span> translateY = originY - (<span class="keyword">float</span>) location[<span class="number">1</span>];<span class="comment">// 由于这个界面的 控件 的初始位置和上个界面位置相同，所以 translateY=0</span></div><div class="line">        Log.d(TAG, <span class="string">"performEnterAnimation: new x:"</span> + location[<span class="number">0</span>] + <span class="string">" y:"</span> + location[<span class="number">1</span>]);</div><div class="line"></div><div class="line">        <span class="comment">//放到前一个页面的位置</span></div><div class="line">        mSearchBGTxt.setY(mSearchBGTxt.getY() + translateY);</div><div class="line">        mHintTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mHintTxt.getHeight()) / <span class="number">2</span>);</div><div class="line">        mSearchTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mSearchTxt.getHeight()) / <span class="number">2</span>);</div><div class="line"></div><div class="line"></div><div class="line">        <span class="keyword">float</span> top = getResources().getDisplayMetrics().density * <span class="number">20</span>;</div><div class="line">        <span class="keyword">final</span> ValueAnimator translateVa = ValueAnimator.ofFloat(mSearchBGTxt.getY(), top);</div><div class="line">        translateVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mSearchBGTxt.setY((Float) valueAnimator.getAnimatedValue());</div><div class="line"></div><div class="line">                mArrowImg.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mArrowImg.getHeight()) / <span class="number">2</span>);</div><div class="line">                mHintTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mHintTxt.getHeight()) / <span class="number">2</span>);</div><div class="line">                mSearchTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mSearchTxt.getHeight()) / <span class="number">2</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="comment">// 通过 缩放 动画实现 x 轴的伸缩</span></div><div class="line">        ValueAnimator scaleVa = ValueAnimator.ofFloat(<span class="number">1</span>, <span class="number">0.8f</span>);</div><div class="line">        scaleVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mSearchBGTxt.setScaleX((Float) valueAnimator.getAnimatedValue());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        ValueAnimator alphaVa = ValueAnimator.ofFloat(<span class="number">0</span>, <span class="number">1f</span>);</div><div class="line">        alphaVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mContentFrame.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line">                mSearchTxt.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line">                mArrowImg.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        alphaVa.setDuration(<span class="number">500</span>);</div><div class="line">        translateVa.setDuration(<span class="number">500</span>);</div><div class="line">        scaleVa.setDuration(<span class="number">500</span>);</div><div class="line"></div><div class="line">        alphaVa.start();</div><div class="line">        translateVa.start();</div><div class="line">        scaleVa.start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!finishing) &#123;</div><div class="line">            finishing = <span class="keyword">true</span>;</div><div class="line">            performExitAnimation();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">performExitAnimation</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> originY = getIntent().getIntExtra(<span class="string">"y"</span>, <span class="number">0</span>);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> location[] = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">        Log.d(TAG, <span class="string">"performExitAnimation: new x:"</span> + location[<span class="number">0</span>] + <span class="string">" y:"</span> + location[<span class="number">1</span>]);</div><div class="line">        mSearchBGTxt.getLocationOnScreen(location);</div><div class="line"></div><div class="line">        <span class="keyword">final</span> <span class="keyword">float</span> translateY = originY - (<span class="keyword">float</span>) location[<span class="number">1</span>];</div><div class="line"></div><div class="line">        <span class="keyword">final</span> ValueAnimator translateVa = ValueAnimator.ofFloat(mSearchBGTxt.getY(), mSearchBGTxt.getY() + translateY);</div><div class="line">        translateVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mSearchBGTxt.setY((Float) valueAnimator.getAnimatedValue());</div><div class="line">                mArrowImg.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mArrowImg.getHeight()) / <span class="number">2</span>);</div><div class="line">                mHintTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mHintTxt.getHeight()) / <span class="number">2</span>);</div><div class="line">                mSearchTxt.setY(mSearchBGTxt.getY() + (mSearchBGTxt.getHeight() - mSearchTxt.getHeight()) / <span class="number">2</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        translateVa.addListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animator)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animator)</span> </span>&#123;</div><div class="line">                finish();</div><div class="line">                overridePendingTransition(<span class="number">0</span>, <span class="number">0</span>);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animator)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animator)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        ValueAnimator scaleVa = ValueAnimator.ofFloat(<span class="number">0.8f</span>, <span class="number">1f</span>);</div><div class="line">        scaleVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mSearchBGTxt.setScaleX((Float) valueAnimator.getAnimatedValue());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        ValueAnimator alphaVa = ValueAnimator.ofFloat(<span class="number">1</span>, <span class="number">0f</span>);</div><div class="line">        alphaVa.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator valueAnimator)</span> </span>&#123;</div><div class="line">                mContentFrame.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line"></div><div class="line">                mArrowImg.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line">                mSearchTxt.setAlpha((Float) valueAnimator.getAnimatedValue());</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line"></div><div class="line">        alphaVa.setDuration(<span class="number">500</span>);</div><div class="line">        translateVa.setDuration(<span class="number">500</span>);</div><div class="line">        scaleVa.setDuration(<span class="number">500</span>);</div><div class="line"></div><div class="line">        alphaVa.start();</div><div class="line">        translateVa.start();</div><div class="line">        scaleVa.start();</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span></span></div><div class="line">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">    <span class="attr">xmlns:app</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></div><div class="line">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">tools:context</span>=<span class="string">"com.fangmingdong.searchviewjump.MainActivity"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">FrameLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"150dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"#0096FF"</span></div><div class="line">        <span class="attr">android:padding</span>=<span class="string">"10dp"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"10dp"</span></div><div class="line">            <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"广东省广州市番禺区"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"#fff"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"16sp"</span>/&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/tv_search_bg"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@drawable/ele_search_bg"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:padding</span>=<span class="string">"10dp"</span>/&gt;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"搜索商家、商品名称"</span>/&gt;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"烧烤  螺蛳粉  火锅  巴掌  麦当劳  冒菜  臭豆腐  云吞面  "</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"#fff"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">android.support.constraint.ConstraintLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Activity 2 xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">              <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">              <span class="attr">android:id</span>=<span class="string">"@+id/activity_ele_search"</span></div><div class="line">              <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">              <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">              <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">FrameLayout</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/frame_bg"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"150dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"#0096FF"</span></div><div class="line">        <span class="attr">android:padding</span>=<span class="string">"10dp"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/iv_arrow"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center|left"</span></div><div class="line">            <span class="attr">android:src</span>=<span class="string">"@drawable/arrow_right"</span>/&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/tv_search_bg"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@drawable/ele_search_bg"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:padding</span>=<span class="string">"10dp"</span>/&gt;</div><div class="line"></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/tv_hint"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"搜索商家、商品名称"</span>/&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/tv_search"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center|right"</span></div><div class="line">            <span class="attr">android:layout_marginRight</span>=<span class="string">"5dp"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"搜索"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"#fff"</span>/&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">FrameLayout</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/frame_content_bg"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"#fff"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"我是搜索页"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/26/Android/优化/03.Android启动优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/26/Android/优化/03.Android启动优化/" itemprop="url">Android启动优化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-26T21:03:14+08:00">
+                2017-10-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><img src="https://developer.android.com/topic/performance/launch-time.html" alt="关于启动优化的官方教程"></p>
+<p>优化方向：</p>
+<ol>
+<li>利用提前展示出来的Window，快速展示出来一个界面，给用户快速反馈的体验；</li>
+<li>避免在启动时做密集沉重的初始化（Heavy app initialization）；</li>
+<li>定位问题：避免I/O操作、反序列化、网络操作、布局嵌套等。</li>
+</ol>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/26/Android/优化/03.Android启动优化/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/25/Android/animate/Android 动画总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/25/Android/animate/Android 动画总结/" itemprop="url">Animation 总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-25T21:38:14+08:00">
+                2017-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>2017/10/25 添加 <a href="http://hencoder.com/ui-1-6/">http://hencoder.com/ui-1-6/</a> 内容</p>
+</blockquote>
+<h2 id="动画分类"><a href="#动画分类" class="headerlink" title="动画分类"></a>动画分类</h2><ul>
+<li>补间动画</li>
+<li>帧动画</li>
+<li>属性动画</li>
+</ul>
+<h2 id="动画属性"><a href="#动画属性" class="headerlink" title="动画属性"></a>动画属性</h2><ul>
+<li>translate:平移动画</li>
+<li>scale:缩放动画</li>
+<li>rotate:旋转动画</li>
+<li>alpha:透明度</li>
+<li>interpolator</li>
+<li>duration</li>
+</ul>
+<h2 id="创建动画的方式"><a href="#创建动画的方式" class="headerlink" title="创建动画的方式"></a>创建动画的方式</h2><ul>
+<li>xml</li>
+<li>code</li>
+</ul>
+<h2 id="帧动画"><a href="#帧动画" class="headerlink" title="帧动画"></a>帧动画</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>设计弥补安卓不能播放gif图</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/25/Android/animate/Android 动画总结/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/25/Android/view/自定义View/自定义View-方法流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1234,453 +1678,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/02/ReadNote/如何高效学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/02/ReadNote/如何高效学习笔记/" itemprop="url">如何高效学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-02T13:18:12+08:00">
-                2017-10-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>整体性学习（holistic learninng）：学习不仅仅是记忆一些事实，记忆只是学习的一小部分，我们要全面认识学习。</p>
-<h1 id="整体性学习策略"><a href="#整体性学习策略" class="headerlink" title="整体性学习策略"></a>整体性学习策略</h1><h2 id="什么是整体性学习"><a href="#什么是整体性学习" class="headerlink" title="什么是整体性学习"></a>什么是整体性学习</h2><p>整体性学习与机械记忆正好相反。</p>
-<p>机械记忆：反复记忆信息，以此来牢记信息。</p>
-<p>整体性学习：是一种学习理论，它更精确，全面描述了我们大脑是如何工作的。</p>
-<p>整体性学习意味着知识的学习并不是孤立的。</p>
-<h3 id="如何存储信息"><a href="#如何存储信息" class="headerlink" title="如何存储信息"></a>如何存储信息</h3><p>整体学习也是一种用来解释信息是如何被存储的理论，而不是描述脑袋里实际发生的生物学过程。</p>
-<p>整体学习基于三种主要观点：</p>
-<ol>
-<li>结构</li>
-<li>模型</li>
-<li>高速公路</li>
-</ol>
-<blockquote>
-<p>整体性学习的基础是将知识关联起来以达到记忆和应用知识的目的，开始学习的最佳技术是比喻、内在化、基于流程的记事和画图表法，这些方法构成了整体性学习的基础。</p>
-</blockquote>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>建立良好的知识结构就是绘制一份优秀的地图，就是建造一座设计良好的城市。</p>
-<p>建立知识结构时，目标就是在各种知识之间建立尽可能多的联系。</p>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>模型是简化的结构，它是结构的快照，更为简单和更易存储。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">本书的模型就是目录。</div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/02/ReadNote/如何高效学习笔记/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/28/Android/gradle/gradle依赖查看/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/28/Android/gradle/gradle依赖查看/" itemprop="url">Gradle依赖查看</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-28T13:18:12+08:00">
-                2017-09-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h1><p>通过引入第三方插件来实现</p>
-<ul>
-<li>首先在应用app的下的build.gradle 文件上加上apply plugin: ‘project-report’</li>
-<li>然后在项目的根目录下执行gradle命令./gradlew htmlDependencyReport 之后会在Build目录下面生成report文件夹，里面生成的有html，里面会有compile的标签，打开即可看到相关的依赖包情况。</li>
-</ul>
-<p>此命令有助于查看依赖的版本，因为有的用的低版本，有的高版本，以及查看重复依赖的情况等等，里面还有其他很多的信息可以参考。</p>
-<p>参考：</p>
-<ol>
-<li><a href="http://www.wxtlife.com/2017/04/16/check-gradle-dependency/" target="_blank" rel="external">http://www.wxtlife.com/2017/04/16/check-gradle-dependency/</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/27/看源码/一个视频播放器源码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/27/看源码/一个视频播放器源码分析/" itemprop="url">节操视频播放器源码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-27T09:38:14+08:00">
-                2017-09-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><a href="https://github.com/lipangit/JiaoZiVideoPlayer">github</a></p>
-<h1 id="JZVideoPlayer"><a href="#JZVideoPlayer" class="headerlink" title="JZVideoPlayer"></a>JZVideoPlayer</h1><p>抽象类 JZVideoPlayer 类继承 FrameLayout</p>
-<p>只有一个抽象方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLayoutId</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
-<p>主要用于自定义视频播放 UI。</p>
-<p>内部带了一个默认的 UI 实现类：JZVideoPlayerStandard。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/27/看源码/一个视频播放器源码分析/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/44/">44</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1725,7 +1727,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">429</span>
+                <span class="site-state-item-count">431</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1747,7 +1749,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">252</span>
+                <span class="site-state-item-count">253</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
