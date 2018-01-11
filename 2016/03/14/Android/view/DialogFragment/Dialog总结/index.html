@@ -93,19 +93,28 @@
 
 
 
-<meta name="description" content="Dialog官方文档总结
-file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/guide/topics/ui/dialogs.html">
+<meta name="description" content="DialogFragment 不会触发 Activity 的 onPause 方法
+onPause: Called when the system is about to start resuming another activity. 
+onPause() is called when the device goes to sleep or when a dialog appears. 
+
+普通">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dialog官方文档总结">
 <meta property="og:url" content="http://yoursite.com/2016/03/14/Android/view/DialogFragment/Dialog总结/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="Dialog官方文档总结
-file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/guide/topics/ui/dialogs.html">
-<meta property="og:updated_time" content="2017-09-29T13:03:27.045Z">
+<meta property="og:description" content="DialogFragment 不会触发 Activity 的 onPause 方法
+onPause: Called when the system is about to start resuming another activity. 
+onPause() is called when the device goes to sleep or when a dialog appears. 
+
+普通">
+<meta property="og:updated_time" content="2018-01-11T13:32:39.516Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dialog官方文档总结">
-<meta name="twitter:description" content="Dialog官方文档总结
-file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/guide/topics/ui/dialogs.html">
+<meta name="twitter:description" content="DialogFragment 不会触发 Activity 的 onPause 方法
+onPause: Called when the system is about to start resuming another activity. 
+onPause() is called when the device goes to sleep or when a dialog appears. 
+
+普通">
 
 
 
@@ -344,7 +353,13 @@ file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/
       
 
       
-        <h1 id="Dialog官方文档总结"><a href="#Dialog官方文档总结" class="headerlink" title="Dialog官方文档总结"></a>Dialog官方文档总结</h1><blockquote>
+        <h1 id="DialogFragment-不会触发-Activity-的-onPause-方法"><a href="#DialogFragment-不会触发-Activity-的-onPause-方法" class="headerlink" title="DialogFragment 不会触发 Activity 的 onPause 方法"></a>DialogFragment 不会触发 Activity 的 onPause 方法</h1><ol>
+<li>onPause: Called when the system is about to start resuming another activity. </li>
+<li>onPause() is called when the device goes to sleep or when a dialog appears. </li>
+</ol>
+<p>普通的 Dialog 创建的时候是基于 透明Activity 的所以会触发 onPause 方法</p>
+<p>但是 DialogFragment 不会创建 透明Activity 所以不会触发 onPause 方法</p>
+<h1 id="Dialog官方文档总结"><a href="#Dialog官方文档总结" class="headerlink" title="Dialog官方文档总结"></a>Dialog官方文档总结</h1><blockquote>
 <p>file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/guide/topics/ui/dialogs.html</p>
 </blockquote>
 <a id="more"></a>
@@ -756,7 +771,10 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
          e.printStackTrace();  
      }  
  }  
-</code></pre><h2 id="DialogFragment-设置背景透明"><a href="#DialogFragment-设置背景透明" class="headerlink" title="DialogFragment 设置背景透明"></a>DialogFragment 设置背景透明</h2><p>在 onStart 中设置 window 背景透明</p>
+</code></pre><p>如果报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java.lang.NoSuchFieldException: No field mShowing in class Landroid/support/v7/app/AppCompatDialog; (declaration of &apos;android.support.v7.app.AppCompatDialog&apos; appears in /data/app/com.rencarehealth.mirhythm-1/split_lib_dependencies_apk.apk:classes19.dex)</div></pre></td></tr></table></figure>
+<p>从错误描述可知，mShowing名字的field并不存在AppCompatDialog的class中，所以需要将你代码中引入的Dialog类修改为非support_v7中的Dialog。</p>
+<h2 id="DialogFragment-设置背景透明"><a href="#DialogFragment-设置背景透明" class="headerlink" title="DialogFragment 设置背景透明"></a>DialogFragment 设置背景透明</h2><p>在 onStart 中设置 window 背景透明</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onStart() &#123;</div><div class="line">    super.onStart();</div><div class="line">    Window window = getDialog().getWindow();</div><div class="line">    WindowManager.LayoutParams windowParams = window.getAttributes();</div><div class="line">    windowParams.dimAmount = 0.0f;</div><div class="line">    window.setAttributes(windowParams);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>下面代码设置 dialog 背景透明</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));</div></pre></td></tr></table></figure>
@@ -812,8 +830,8 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/03/15/program/vim/vim 问题记录/" rel="prev" title="vim -- 问题记录">
-                vim -- 问题记录 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/03/15/program/INSTALL_FAILED_NO_MATCHING_ABIS/" rel="prev" title="INSTALL_FAILED_NO_MATCHING_ABIS">
+                INSTALL_FAILED_NO_MATCHING_ABIS <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -886,7 +904,7 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">431</span>
+                <span class="site-state-item-count">442</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -897,7 +915,7 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">Kategorien</span>
               
             </div>
@@ -908,7 +926,7 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">253</span>
+                <span class="site-state-item-count">255</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
@@ -943,7 +961,7 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Dialog官方文档总结"><span class="nav-number">1.</span> <span class="nav-text">Dialog官方文档总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-DialogFragment-来管理Dialog"><span class="nav-number">1.1.</span> <span class="nav-text">使用 DialogFragment 来管理Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Dialog的方法"><span class="nav-number">1.2.</span> <span class="nav-text">创建Dialog的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlertDialog-Builder"><span class="nav-number">1.2.1.</span> <span class="nav-text">AlertDialog.Builder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自定义布局"><span class="nav-number">1.2.2.</span> <span class="nav-text">创建自定义布局</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Passing-Events-Back-to-the-Dialog’s-Host，-Fragment的接口回调"><span class="nav-number">1.3.</span> <span class="nav-text">Passing Events Back to the Dialog’s Host， Fragment的接口回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-显示Dialog"><span class="nav-number">1.4.</span> <span class="nav-text">Showing a Dialog 显示Dialog</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FragmentManager-getFragmentManager"><span class="nav-number">1.4.1.</span> <span class="nav-text">FragmentManager:getFragmentManager()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tag-string-类型"><span class="nav-number">1.4.2.</span> <span class="nav-text">Tag:string 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-Fullscreen-or-as-an-Embedded-Fragment-全屏显示Dialog，内嵌Dialog"><span class="nav-number">1.5.</span> <span class="nav-text">Showing a Dialog Fullscreen or as an Embedded Fragment 全屏显示Dialog，内嵌Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-an-activity-as-a-dialog-on-large-screens"><span class="nav-number">1.6.</span> <span class="nav-text">Showing an activity as a dialog on large screens</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dismissing-a-Dialog-Dialog消失"><span class="nav-number">1.7.</span> <span class="nav-text">Dismissing a Dialog Dialog消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment和Activity交互"><span class="nav-number">1.8.</span> <span class="nav-text">Fragment和Activity交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用DialogFragment实现二次弹窗"><span class="nav-number">1.9.</span> <span class="nav-text">用DialogFragment实现二次弹窗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置出现动画"><span class="nav-number">1.10.</span> <span class="nav-text">设置出现动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义DialogFragment出现位置和宽高"><span class="nav-number">1.11.</span> <span class="nav-text">自定义DialogFragment出现位置和宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dialog-宽度占满屏幕实例，设置-dialog-宽高"><span class="nav-number">1.12.</span> <span class="nav-text">dialog 宽度占满屏幕实例，设置 dialog 宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment里面EditText调出键盘"><span class="nav-number">1.13.</span> <span class="nav-text">DialogFragment里面EditText调出键盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置圆角Dialog"><span class="nav-number">1.14.</span> <span class="nav-text">设置圆角Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击外面不取消Dialog"><span class="nav-number">1.15.</span> <span class="nav-text">点击外面不取消Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击-Dialog-确定或者取消按钮的时候Dialog不消失"><span class="nav-number">1.16.</span> <span class="nav-text">点击 Dialog 确定或者取消按钮的时候Dialog不消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment-设置背景透明"><span class="nav-number">1.17.</span> <span class="nav-text">DialogFragment 设置背景透明</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DialogFragment-不会触发-Activity-的-onPause-方法"><span class="nav-number">1.</span> <span class="nav-text">DialogFragment 不会触发 Activity 的 onPause 方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dialog官方文档总结"><span class="nav-number">2.</span> <span class="nav-text">Dialog官方文档总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-DialogFragment-来管理Dialog"><span class="nav-number">2.1.</span> <span class="nav-text">使用 DialogFragment 来管理Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Dialog的方法"><span class="nav-number">2.2.</span> <span class="nav-text">创建Dialog的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlertDialog-Builder"><span class="nav-number">2.2.1.</span> <span class="nav-text">AlertDialog.Builder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自定义布局"><span class="nav-number">2.2.2.</span> <span class="nav-text">创建自定义布局</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Passing-Events-Back-to-the-Dialog’s-Host，-Fragment的接口回调"><span class="nav-number">2.3.</span> <span class="nav-text">Passing Events Back to the Dialog’s Host， Fragment的接口回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-显示Dialog"><span class="nav-number">2.4.</span> <span class="nav-text">Showing a Dialog 显示Dialog</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FragmentManager-getFragmentManager"><span class="nav-number">2.4.1.</span> <span class="nav-text">FragmentManager:getFragmentManager()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tag-string-类型"><span class="nav-number">2.4.2.</span> <span class="nav-text">Tag:string 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-Fullscreen-or-as-an-Embedded-Fragment-全屏显示Dialog，内嵌Dialog"><span class="nav-number">2.5.</span> <span class="nav-text">Showing a Dialog Fullscreen or as an Embedded Fragment 全屏显示Dialog，内嵌Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-an-activity-as-a-dialog-on-large-screens"><span class="nav-number">2.6.</span> <span class="nav-text">Showing an activity as a dialog on large screens</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dismissing-a-Dialog-Dialog消失"><span class="nav-number">2.7.</span> <span class="nav-text">Dismissing a Dialog Dialog消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment和Activity交互"><span class="nav-number">2.8.</span> <span class="nav-text">Fragment和Activity交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用DialogFragment实现二次弹窗"><span class="nav-number">2.9.</span> <span class="nav-text">用DialogFragment实现二次弹窗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置出现动画"><span class="nav-number">2.10.</span> <span class="nav-text">设置出现动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义DialogFragment出现位置和宽高"><span class="nav-number">2.11.</span> <span class="nav-text">自定义DialogFragment出现位置和宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dialog-宽度占满屏幕实例，设置-dialog-宽高"><span class="nav-number">2.12.</span> <span class="nav-text">dialog 宽度占满屏幕实例，设置 dialog 宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment里面EditText调出键盘"><span class="nav-number">2.13.</span> <span class="nav-text">DialogFragment里面EditText调出键盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置圆角Dialog"><span class="nav-number">2.14.</span> <span class="nav-text">设置圆角Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击外面不取消Dialog"><span class="nav-number">2.15.</span> <span class="nav-text">点击外面不取消Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击-Dialog-确定或者取消按钮的时候Dialog不消失"><span class="nav-number">2.16.</span> <span class="nav-text">点击 Dialog 确定或者取消按钮的时候Dialog不消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment-设置背景透明"><span class="nav-number">2.17.</span> <span class="nav-text">DialogFragment 设置背景透明</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -966,7 +984,7 @@ private void canCloseDialog(DialogInterface dialogInterface, boolean close) {
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
