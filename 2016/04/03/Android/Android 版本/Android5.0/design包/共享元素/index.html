@@ -109,7 +109,7 @@
 
 跳转方法:
 12345678910public static void actionStart(Activity context)&amp;#">
-<meta property="og:updated_time" content="2017-08-12T11:14:23.000Z">
+<meta property="og:updated_time" content="2018-03-06T10:45:38.669Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android 5.0 共享元素">
 <meta name="twitter:description" content="步骤
@@ -362,11 +362,18 @@
 </ol>
 <p>跳转方法:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">actionStart</span><span class="params">(Activity context)</span></span>&#123;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(context, LearnNewsActivity.class);</div><div class="line">    <span class="keyword">if</span> (android.os.Build.VERSION.SDK_INT &gt;= android.os.Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">        Pair&lt;View, String&gt;[] pairs = TransitionHelper.createSafeTransitionParticipants(context, <span class="keyword">true</span>);</div><div class="line">        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, pairs);</div><div class="line">        ActivityCompat.startActivity(context, intent, optionsCompat.toBundle());</div><div class="line">    &#125;<span class="keyword">else</span> &#123;</div><div class="line">        context.startActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>style 21 主题中增加:</p>
+<p>style 21 主题中增加: 开启内容变换</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;item name="android:windowContentTransitions"&gt;true&lt;/item&gt;</div></pre></td></tr></table></figure>
 <h1 id="导航栏闪白处理"><a href="#导航栏闪白处理" class="headerlink" title="导航栏闪白处理"></a>导航栏闪白处理</h1><p><a href="https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti" target="_blank" rel="external">https://stackoverflow.com/questions/26600263/how-do-i-prevent-the-status-bar-and-navigation-bar-from-animating-during-an-acti</a><br><a href="https://codeday.me/bug/20170630/29499.html" target="_blank" rel="external">https://codeday.me/bug/20170630/29499.html</a></p>
 <p>在目标 Activity 中调用下面的代码。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setupWindowAnimations</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.setupWindowAnimations();</div><div class="line">    </div><div class="line"></div><div class="line">    Fade fade = <span class="keyword">new</span> Fade();</div><div class="line">    fade.setDuration(<span class="number">500</span>);</div><div class="line">    fade.excludeTarget(android.R.id.statusBarBackground, <span class="keyword">true</span>);</div><div class="line">    fade.excludeTarget(android.R.id.navigationBarBackground, <span class="keyword">true</span>);</div><div class="line">    getWindow().setReturnTransition(fade);</div><div class="line">    getWindow().setEnterTransition(fade);</div><div class="line"></div><div class="line">    <span class="comment">// or</span></div><div class="line">    <span class="comment">//getWindow().setEnterTransition(null);</span></div><div class="line">    <span class="comment">//getWindow().setReturnTransition(null);</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="延迟共享元素"><a href="#延迟共享元素" class="headerlink" title="延迟共享元素"></a>延迟共享元素</h1><p>参考：<a href="https://www.jianshu.com/p/50f62d9e60e1" target="_blank" rel="external">https://www.jianshu.com/p/50f62d9e60e1</a></p>
+<p>界面二中需要被共享的元素出现的比较慢的时候，可以使用 延迟共享元素</p>
+<p>AActivity-》BActivity</p>
+<p>BActivity：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line"><span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">setContentView(R.layout.activity_main);</div><div class="line"></div><div class="line"><span class="comment">// 延迟共享动画的执行</span></div><div class="line">postponeEnterTransition();</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后在共享元素的最终布局确定后，你可以执行startPostponedEnterTransition来启动共享元素动画，我们一般可以通过下面的工具方法来启动延迟动画</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scheduleStartPostponedTransition</span><span class="params">(<span class="keyword">final</span> View sharedElement)</span> </span>&#123;</div><div class="line">sharedElement.getViewTreeObserver().addOnPreDrawListener(</div><div class="line">    <span class="keyword">new</span> ViewTreeObserver.OnPreDrawListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onPreDraw</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="comment">//启动动画       </span></div><div class="line">           sharedElement.getViewTreeObserver().removeOnPreDrawListener(<span class="keyword">this</span>);</div><div class="line">            startPostponedEnterTransition();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -410,8 +417,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/03/Android/view/自定义View/Path/" rel="next" title="Path">
-                <i class="fa fa-chevron-left"></i> Path
+              <a href="/2016/04/03/Android/第三方/eventbus/EventBus学习记录/" rel="next" title="EventBus 学习记录">
+                <i class="fa fa-chevron-left"></i> EventBus 学习记录
               </a>
             
           </div>
@@ -420,8 +427,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/04/03/Android/数据存储/数据存储/" rel="prev" title="数据存储">
-                数据存储 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/04/03/program/AndroidStudio/AndroidStudio--内存泄露检测与解决/" rel="prev" title="Android Studio 内存泄露检测与解决">
+                Android Studio 内存泄露检测与解决 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -494,7 +501,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">448</span>
+                <span class="site-state-item-count">458</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -516,7 +523,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">256</span>
+                <span class="site-state-item-count">258</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
@@ -551,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#步骤"><span class="nav-number">1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导航栏闪白处理"><span class="nav-number">2.</span> <span class="nav-text">导航栏闪白处理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#步骤"><span class="nav-number">1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导航栏闪白处理"><span class="nav-number">2.</span> <span class="nav-text">导航栏闪白处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#延迟共享元素"><span class="nav-number">3.</span> <span class="nav-text">延迟共享元素</span></a></li></ol></div>
             
 
           </div>

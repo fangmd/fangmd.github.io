@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/触摸事件/ViewDragHelper/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/01/Android/gradle/gradle密钥配置方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/16/Android/触摸事件/ViewDragHelper/" itemprop="url">ViewDragHelper</a></h1>
+                <a class="post-title-link" href="/2016/12/01/Android/gradle/gradle密钥配置方式/" itemprop="url">Gradle 密钥配置方式</a></h1>
         
 
         <div class="post-meta">
@@ -284,825 +284,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T13:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>用于分析手势处理的类,一般用在一个自定义ViewGroup的内部</p>
-<p>ViewDragHelper.Callback 是连接 ViewDragHelper 与 view 之间的桥梁（这个 view 一般是指拥子 view 的容器即 parentView）；</p>
-<p>   ViewDragHelper的实例是创建的；</p>
-<p>   ViewDragHelper 并不是直接作用于要被拖动的View，而是使其控制的视图容器中的子 View 可以被拖动，如果要指定某个子 view 的行为，需要在 Callback 中想办法；</p>
-<p>   ViewDragHelper 的本质其实是分析 onInterceptTouchEvent 和onTouchEvent 的 MotionEvent 参数，然后根据分析的结果去改变一个容器中被拖动子 View 的位置（ 通过 offsetTopAndBottom(int offset)和offsetLeftAndRight(int offset)方法 ），他能在触摸的时候判断当前拖动的是哪个子 View；</p>
-<h1 id="ViewDragHelper-类"><a href="#ViewDragHelper-类" class="headerlink" title="ViewDragHelper 类"></a>ViewDragHelper 类</h1><p>创建 ViewDragHelper 对象的方法：（通过静态工厂方法）</p>
-<pre><code>public static ViewDragHelper create(ViewGroup forParent, Callback cb)
-
-public static ViewDragHelper create(ViewGroup forParent, float sensitivity, Callback cb)
-</code></pre><p>参数：</p>
-<ol>
-<li>ViewGroup：ViewDragHelper 作用于的控件组</li>
-<li>sensitivity：灵敏度，最大越灵敏 1.0f为正常值</li>
-<li>Callback: 事件回调的接口</li>
-</ol>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="创建-ViewDragHelper"><a href="#创建-ViewDragHelper" class="headerlink" title="创建 ViewDragHelper"></a>创建 ViewDragHelper</h2><h2 id="让-ViewDragHelper-接管-ViewGroup-的触摸事件"><a href="#让-ViewDragHelper-接管-ViewGroup-的触摸事件" class="headerlink" title="让 ViewDragHelper 接管 ViewGroup 的触摸事件"></a>让 ViewDragHelper 接管 ViewGroup 的触摸事件</h2><pre><code>@Override
-public boolean onInterceptTouchEvent(MotionEvent ev) {
-  final int action = MotionEventCompat.getActionMasked(ev);
-  if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
-      mDragHelper.cancel();
-      return false;
-  }
-  return mDragHelper.shouldInterceptTouchEvent(ev);
-}
-@Override
-public boolean onTouchEvent(MotionEvent ev) {
-  mDragHelper.processTouchEvent(ev);
-  return true;
-}
-</code></pre><p>然后就可以在回调中处理事件了</p>
-<h2 id="触摸事件处理"><a href="#触摸事件处理" class="headerlink" title="触摸事件处理"></a>触摸事件处理</h2><h3 id="拖动行为的处理"><a href="#拖动行为的处理" class="headerlink" title="拖动行为的处理"></a>拖动行为的处理</h3><h4 id="处理横向的拖动"><a href="#处理横向的拖动" class="headerlink" title="处理横向的拖动"></a>处理横向的拖动</h4><p>在 Callback 中实现下面的方法：</p>
-<pre><code>@Override
-public int clampViewPositionHorizontal(View child, int left, int dx) {
-  Log.d(&quot;DragLayout&quot;, &quot;clampViewPositionHorizontal &quot; + left + &quot;,&quot; + dx);
-  final int leftBound = getPaddingLeft();
-  final int rightBound = getWidth() - mDragView.getWidth();
-  // 为了让被拖动的view遇到边界之后就不在拖动，对返回的值做了更多的考虑。
-  final int newLeft = Math.min(Math.max(left, leftBound), rightBound);
-  return newLeft;
-  // return left; //就能实现移动
-}
-</code></pre><p>参数：</p>
-<ol>
-<li>View：表示当前触摸作用于的子 View</li>
-<li>left：当前子 View 的 x 坐标</li>
-<li>dx: 触摸点在 x 轴上做出的移动距离</li>
-</ol>
-<p>返回值：表示子 View 新的 x 坐标</p>
-<h4 id="处理纵向的拖动"><a href="#处理纵向的拖动" class="headerlink" title="处理纵向的拖动"></a>处理纵向的拖动</h4><pre><code>@Override
-public int clampViewPositionVertical(View child, int top, int dy) {
-  final int topBound = getPaddingTop();
-  final int bottomBound = getHeight() - mDragView.getHeight();
-  final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-  return newTop;
-}
-</code></pre><h2 id="滑动边缘"><a href="#滑动边缘" class="headerlink" title="滑动边缘"></a>滑动边缘</h2><p>滑动边缘： EDGE_LEFT ,EDGE_TOP, EDGE_RIGHT, EDGE_BOTTOM</p>
-<p>设置边缘：</p>
-<pre><code>mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
-</code></pre><p>实现方法 Callback：</p>
-<pre><code>@Override
-public void onEdgeTouched(int edgeFlags, int pointerId) {
-    super.onEdgeTouched(edgeFlags, pointerId);
-    Toast.makeText(getContext(), &quot;edgeTouched&quot;, Toast.LENGTH_SHORT).show();
-}
-</code></pre><p>如果你想在边缘滑动的时候根据滑动距离移动一个子view，可以通过实现onEdgeDragStarted方法，并在onEdgeDragStarted方法中手动指定要移动的子View:</p>
-<pre><code>@Override
-public void onEdgeDragStarted(int edgeFlags, int pointerId) {
-    mDragHelper.captureChildView(mDragView2, pointerId);
-}
-</code></pre><p>参数：</p>
-<ol>
-<li>edgeFlags：滑动的边缘</li>
-<li>pointerId：本次触摸事件的ID</li>
-</ol>
-<h2 id="加速度检测"><a href="#加速度检测" class="headerlink" title="加速度检测"></a>加速度检测</h2><h2 id="回调Drag-Release"><a href="#回调Drag-Release" class="headerlink" title="回调Drag Release"></a>回调Drag Release</h2><p>Callback: 手指抬起回调</p>
-<pre><code>@Override
-public void onViewReleased(View releasedChild, float xvel, float yvel) {
-    //...
-}
-</code></pre><h3 id="实现-View-返回动画"><a href="#实现-View-返回动画" class="headerlink" title="实现 View 返回动画"></a>实现 View 返回动画</h3><p>Callback：</p>
-<pre><code>@Override
-public void onViewReleased(View releasedChild, float xvel, float yvel) {
-
-    //mAutoBackView手指释放时可以自动回去
-    if (releasedChild == mAutoBackView) {
-        mViewDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
-        invalidate();
-    }
-}
-</code></pre><p>CustomView：</p>
-<pre><code>@Override
-public void computeScroll()
-{
-    if(mViewDragHelper.continueSettling(true))
-    {
-        invalidate();
-    }
-}
-</code></pre><p>View 滑动返回动画内部使用的是： mScroller.startScroll。</p>
-<h2 id="移动到某个指定的位置"><a href="#移动到某个指定的位置" class="headerlink" title="移动到某个指定的位置"></a>移动到某个指定的位置</h2><pre><code>mViewDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
-</code></pre><h2 id="设置触摸处理的开关"><a href="#设置触摸处理的开关" class="headerlink" title="设置触摸处理的开关"></a>设置触摸处理的开关</h2><blockquote>
-<p>这种方法也可以用于滑动冲突的解决</p>
-</blockquote>
-<p>在自定义 View 中自定义一个方法：</p>
-<pre><code>public void setDragAble(boolean b) {
-    mDragAble = b;
-//        if (b) {
-//
-//        } else {
-//            mViewDragHelper.abort();
-//        }
-}
-</code></pre><p>在 Callback 中：</p>
-<pre><code>@Override
-public boolean tryCaptureView(View child, int pointerId) {
-    //.....
-    return mDragAble;
-}
-</code></pre><p>参考：</p>
-<ul>
-<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html" target="_blank" rel="external">http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html</a></li>
-<li><a href="http://blog.csdn.net/lmj623565791/article/details/46858663" target="_blank" rel="external">http://blog.csdn.net/lmj623565791/article/details/46858663</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/触摸事件/触摸事件冲突处理方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/16/Android/触摸事件/触摸事件冲突处理方法/" itemprop="url">触摸事件冲突处理方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T13:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="情景一：-父控件拦截了子控件的触摸"><a href="#情景一：-父控件拦截了子控件的触摸" class="headerlink" title="情景一： 父控件拦截了子控件的触摸"></a>情景一： 父控件拦截了子控件的触摸</h1><p>希望父控件不要拦截子控件的触摸事件，即让子控件处理触摸事件</p>
-<p>方式一：</p>
-<pre><code>// 表示父控件不拦截 子View 的触摸事件
-viewGroup.requestDisallowInterceptTouchEvent(true);
-</code></pre><p>方式二：自定义 ViewGroup，继承指定的 ViewGroup，重写下面的方法</p>
-<pre><code>public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-    boolean ret = false;
-
-    //....逻辑处理，如果返回 true 表示拦截子View的触摸事件，false 表示不拦截子View的触摸事件
-    return ret;
-}
-</code></pre><h1 id="情景二：子控件处理的触摸事件"><a href="#情景二：子控件处理的触摸事件" class="headerlink" title="情景二：子控件处理的触摸事件"></a>情景二：子控件处理的触摸事件</h1><p>需要：子控件处理部分的触摸事件</p>
-<p>自定义 ViewGroup，继承指定的 ViewGroup，重写下面的方法，让父控件在合适的时候拦截触摸事件</p>
-<pre><code>public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-    boolean ret = false;
-
-    //....逻辑处理，如果返回 true 表示拦截子View的触摸事件，false 表示不拦截子View的触摸事件
-    return ret;
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/16/Android/网络/retrofit/retrofit-下载进度/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/16/Android/网络/retrofit/retrofit-下载进度/" itemprop="url">retrofit - 下载进度实现</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T12:18:12+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="定义一个-Interceptor"><a href="#定义一个-Interceptor" class="headerlink" title="定义一个 Interceptor"></a>定义一个 Interceptor</h1><p>public class DownloadProgressInterceptor implements Interceptor {<br>    private DownloadProgressListener progressListener;</p>
-<pre><code>public DownloadProgressInterceptor(DownloadProgressListener progressListener) {
-    this.progressListener = progressListener;
-}
-
-@Override
-public Response intercept(Chain chain) throws IOException {
-    Response originalResponse = chain.proceed(chain.request());
-    return originalResponse.newBuilder()
-            .body(new DownloadProgressResponseBody(originalResponse.body(), progressListener))
-            .build();
-}
-
-private static class DownloadProgressResponseBody extends ResponseBody {
-
-    private final ResponseBody responseBody;
-    private final DownloadProgressListener progressListener;
-    private BufferedSource bufferedSource;
-
-    public DownloadProgressResponseBody(ResponseBody responseBody,
-                                        DownloadProgressListener progressListener) {
-        this.responseBody = responseBody;
-        this.progressListener = progressListener;
-    }
-
-    @Override
-    public MediaType contentType() {
-        return responseBody.contentType();
-    }
-
-    @Override
-    public long contentLength() {
-        return responseBody.contentLength();
-    }
-
-    @Override
-    public BufferedSource source() {
-        if (bufferedSource == null) {
-            bufferedSource = Okio.buffer(source(responseBody.source()));
-        }
-        return bufferedSource;
-    }
-
-    private Source source(Source source) {
-        return new ForwardingSource(source) {
-            long totalBytesRead = 0L;
-
-            @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
-                long bytesRead = super.read(sink, byteCount);
-                // read() returns the number of bytes read, or -1 if this source is exhausted.
-                totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-
-                if (null != progressListener) {
-                    progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
-                }
-                return bytesRead;
-            }
-        };
-    }
-}
-
-public interface DownloadProgressListener {
-    void update(long bytesRead, long contentLength, boolean done);
-}
-</code></pre><p>}</p>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><pre><code>OkHttpClient client = new OkHttpClient.Builder()
-        .addInterceptor(new DownloadProgressInterceptor(new DownloadProgressInterceptor.DownloadProgressListener() {
-
-            @Override
-            public void update(long bytesRead, long contentLength, boolean done) {
-
-            }
-        })).build();
-
-
-mDownService = new Retrofit.Builder()
-        .client(client)
-        .baseUrl(Api.getInstance().getServiceAddress())
-        .build()
-        .create(DownService.class);
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/15/Android/图片处理/Glide使用动态图作为占位图/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/15/Android/图片处理/Glide使用动态图作为占位图/" itemprop="url">Glide 使用动态图作为占位图</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-15T21:38:14+08:00">
-                2016-11-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="完整的例子"><a href="#完整的例子" class="headerlink" title="完整的例子"></a>完整的例子</h1><h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>ImageView</p>
-<pre><code>&lt;ImageView
-    android:id=&quot;@+id/iv_main&quot;
-    android:layout_width=&quot;100dp&quot;
-    android:layout_height=&quot;100dp&quot;
-    android:layout_alignParentBottom=&quot;true&quot;
-    android:scaleType=&quot;fitXY&quot;
-    /&gt;
-</code></pre><h2 id="创建一个-drawable"><a href="#创建一个-drawable" class="headerlink" title="创建一个 drawable"></a>创建一个 drawable</h2><p><code>R.drawable.rotate_pro</code></p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;rotate
-    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
-    android:drawable=&quot;@drawable/group_1&quot;
-    android:fromDegrees=&quot;0&quot;
-    android:pivotX=&quot;50%&quot;
-    android:pivotY=&quot;50%&quot;
-    android:toDegrees=&quot;360&quot;/&gt;
-</code></pre><h2 id="Activity-中代码"><a href="#Activity-中代码" class="headerlink" title="Activity 中代码"></a>Activity 中代码</h2><pre><code>ImageView img = (ImageView) findViewById(R.id.iv_main);
-
-final ObjectAnimator anim = ObjectAnimator.ofInt(img, &quot;ImageLevel&quot;, 0, MAX_LEVEL);
-anim.setDuration(800);
-anim.setRepeatCount(ObjectAnimator.INFINITE);
-anim.start();
-
-Glide.with(this)
-        .load(path)
-        .placeholder(R.drawable.rotate_pro)
-        .crossFade()
-        .listener(new RequestListener&lt;String, GlideDrawable&gt;() {
-            @Override
-            public boolean onException(Exception e, String model, Target&lt;GlideDrawable&gt; target, boolean isFirstResource) {
-                anim.cancel();
-                Log.d(TAG, &quot;onException: &quot;);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target&lt;GlideDrawable&gt; target, boolean isFromMemoryCache, boolean isFirstResource) {
-                anim.cancel();
-                Log.d(TAG, &quot;onResourceReady: &quot;);
-                return false;
-            }
-        })
-        .into(img);
-</code></pre><h2 id="最终效果："><a href="#最终效果：" class="headerlink" title="最终效果："></a>最终效果：</h2><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/glide_place_holder.gif" alt="占位图"></p>
-<h2 id="水平loading动画"><a href="#水平loading动画" class="headerlink" title="水平loading动画"></a>水平loading动画</h2><p>替换上面使用的 drawable 即可</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
-    &lt;item&gt;
-        &lt;clip
-            android:clipOrientation=&quot;horizontal&quot;
-            android:drawable=&quot;@drawable/rectangle&quot;
-            &gt;
-
-        &lt;/clip&gt;
-    &lt;/item&gt;
-
-&lt;/layer-list&gt;
-</code></pre><p>效果：</p>
-<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/glde_place_holder_clip.gif" alt="占位图"></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/15/Android/screanadapter/屏幕适配--9 patch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/15/Android/screanadapter/屏幕适配--9 patch/" itemprop="url">屏幕适配--9 patch</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-15T09:13:12+08:00">
-                2016-11-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T09:13:12+08:00">
+                2016-12-01
               </time>
             
 
@@ -1159,576 +342,310 @@ Glide.with(this)
 
       
         
-          <p>NinePatch图片以*.9.png结尾，和普通图片的区别是四周多了一个边框</p>
-<p>制作 9patch 图的时候需要在图片的四周画黑线：</p>
+          
+            <p><code>app/gradle</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Properties props = new Properties()</div><div class="line">props.load(new FileInputStream(file(&quot;signing.properties&quot;)))</div><div class="line">android &#123;</div><div class="line">    signingConfigs &#123;</div><div class="line">        release&#123;</div><div class="line">            keyAlias props[&apos;KEY_ALIAS&apos;]</div><div class="line">            keyPassword props[&apos;KEY_PASSWORD&apos;]</div><div class="line">            storeFile file(props[&apos;KEYSTORE_FILE&apos;])</div><div class="line">            storePassword props[&apos;KEYSTORE_PASSWORD&apos;]</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>app/siging.properties</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">KEYSTORE_FILE = C:\\Users\\Mr.Jude\\Documents\\Android\\HelloWorld.jks</div><div class="line">KEYSTORE_PASSWORD = xxxxxx</div><div class="line">KEY_ALIAS = xxxxxx</div><div class="line">KEY_PASSWORD = xxxxxx</div></pre></td></tr></table></figure>
+<p>将signing.properties添加进忽略目录。<br>其他人pull下来代码后。自己新建signing.properties填入相应信息后即可编译成功。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/" itemprop="url">看了一些 RxJava 的文章我依然不知道的事</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T13:18:12+08:00">
+                2016-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>以下代码基于 RxJava2</p>
+</blockquote>
+<h1 id="内存泄露处理"><a href="#内存泄露处理" class="headerlink" title="内存泄露处理"></a>内存泄露处理</h1><p>基本代码：</p>
+<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
+
+public void doSomeWork2() {
+    // 1. 创建一个普通的 observable
+    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
+        @Override
+        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
+            if (e.isDisposed()) return;
+            SystemClock.sleep(2000);
+            e.onNext(&quot;next&quot;);
+            e.onComplete();
+        }
+    });
+
+    // 2. 创建一个可被 CompositeDisposable 管理的 observer
+    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
+        @Override
+        public void onNext(String value) {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
+
+    // 3. 订阅事件
+    observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+
+    // 4. 将需要被 CompositeDisposable 管理的 observer 加入到管理集合中
+    disposables.add(observer);
+}
+</code></pre><p>在 Activity／Fragment 销毁生命周期中取消异步操作防止内存泄露：</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    // 将所有的 observer 取消订阅
+    disposables.clear();
+}
+</code></pre><h1 id="在-mvp-的项目中处理内存泄露"><a href="#在-mvp-的项目中处理内存泄露" class="headerlink" title="在 mvp 的项目中处理内存泄露"></a>在 mvp 的项目中处理内存泄露</h1><p>基于 <a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a> 搭建项目 mvp 框架：</p>
+<p>BasePresenter :</p>
+<pre><code>public abstract class BasePresenter {
+
+    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    public void unSubscribe() {
+        mCompositeDisposable.clear();
+    }
+
+
+    public void register(Disposable disposable) {
+        mCompositeDisposable.add(disposable);
+    }
+
+
+}
+</code></pre><p>一个例子 SimplePresenter extends BasePresenter :</p>
+<pre><code>public class SimplePresenter extends BasePresenter {
+    private static final String TAG = SimplePresenter.class.getSimpleName();
+
+
+    //.....
+
+    public void startWork() {
+
+        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
+            @Override
+            public void onNext(Long value) {
+                Log.d(TAG, &quot;onNext: &quot;);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        Observable.interval(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        register(observer);
+
+    }
+
+}
+</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
+<p>Activity/Fragment:</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mSimplePresenter.unSubscribe();
+}
+</code></pre><h1 id="慎用-functions"><a href="#慎用-functions" class="headerlink" title="慎用 functions"></a>慎用 functions</h1><p>functions：Action，Consumer，Function 等</p>
+<p>原因：这些方法只会对 <code>onNext</code> 事件进行处理，如果 observable 中出现异常产生了 <code>onError</code> 事件就会导致 app 奔溃。</p>
+<p>解决方案：</p>
 <ol>
-<li>左边那条黑色线代表图片垂直拉伸的区域</li>
-<li>上边的那条黑色线代表水平拉伸区域</li>
-<li>右边的黑色线代表内容绘制的垂直区域</li>
-<li>下边的黑色线代表内容绘制的水平区域</li>
+<li>不用简化方法</li>
+<li>自己封装一个：</li>
 </ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/15/Android/screanadapter/屏幕适配--9 patch/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
+<p>封装一个类似下面的基类：</p>
+<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
 
-    <div>
-      
-    </div>
+    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
 
-    <div>
-      
-    </div>
+    @Override
+    public void onError(Throwable e) {
+        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
+    }
 
-    <div>
-      
-    </div>
+    @Override
+    public void onComplete() {
 
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/10. django-rest-framework -- Serializer relations/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/10. django-rest-framework -- Serializer relations/" itemprop="url">10. django-rest-framework -- Serializer relations</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Serializer-relations"><a href="#Serializer-relations" class="headerlink" title="Serializer relations"></a>Serializer relations</h1><p>关系字段用来表示 models 之间的关系。</p>
-<h2 id="Inspecting-relationships-查看关系"><a href="#Inspecting-relationships-查看关系" class="headerlink" title="Inspecting relationships. 查看关系"></a>Inspecting relationships. 查看关系</h2><pre><code>&gt;&gt;&gt; from myapp.serializers import AccountSerializer
-&gt;&gt;&gt; serializer = AccountSerializer()
-&gt;&gt;&gt; print repr(serializer)  # Or `print(repr(serializer))` in Python 3.x.
-AccountSerializer():
-    id = IntegerField(label=&apos;ID&apos;, read_only=True)
-    name = CharField(allow_blank=True, max_length=100, required=False)
-    owner = PrimaryKeyRelatedField(queryset=User.objects.all())
-</code></pre><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><p>例子：2个 models</p>
-<pre><code>class Album(models.Model):
-    album_name = models.CharField(max_length=100)
-    artist = models.CharField(max_length=100)
-
-class Track(models.Model):
-    album = models.ForeignKey(Album, related_name=&apos;tracks&apos;, on_delete=models.CASCADE)
-    order = models.IntegerField()
-    title = models.CharField(max_length=100)
-    duration = models.IntegerField()
-
-    class Meta:
-        unique_together = (&apos;album&apos;, &apos;order&apos;)
-        ordering = [&apos;order&apos;]
-
-    def __unicode__(self):
-        return &apos;%d: %s&apos; % (self.order, self.title)
-</code></pre><h2 id="StringRelatedField"><a href="#StringRelatedField" class="headerlink" title="StringRelatedField"></a>StringRelatedField</h2><p>StringRelatedField may be used to represent the target of the relationship using its <strong>unicode</strong> method.</p>
-<pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result：</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Things We Lost In The Fire&apos;,
-    &apos;artist&apos;: &apos;Low&apos;,
-    &apos;tracks&apos;: [
-        &apos;1: Sunflower&apos;,
-        &apos;2: Whitetail&apos;,
-        &apos;3: Dinosaur Act&apos;,
-        ...
-    ]
+    }
 }
-</code></pre><p>参数:</p>
-<ul>
-<li>many:</li>
-</ul>
-<h2 id="PrimaryKeyRelatedField"><a href="#PrimaryKeyRelatedField" class="headerlink" title="PrimaryKeyRelatedField"></a>PrimaryKeyRelatedField</h2><pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result:</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Undun&apos;,
-    &apos;artist&apos;: &apos;The Roots&apos;,
-    &apos;tracks&apos;: [
-        89,
-        90,
-        91,
-        ...
-    ]
-}
-</code></pre><p>Arguments:</p>
-<ul>
-<li>queryset - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set read_only=True.</li>
-<li>many - If applied to a to-many relationship, you should set this argument to True.</li>
-<li>allow_null - If set to True, the field will accept values of None or the empty string for nullable relationships. Defaults to False.</li>
-<li>pk_field - Set to a field to control serialization/deserialization of the primary key’s value. For example, pk_field=UUIDField(format=’hex’) would serialize a UUID primary key into its compact hex representation.</li>
-</ul>
-<h2 id="HyperlinkedRelatedField"><a href="#HyperlinkedRelatedField" class="headerlink" title="HyperlinkedRelatedField"></a>HyperlinkedRelatedField</h2><pre><code>class AlbumSerializer(serializers.ModelSerializer):
-    tracks = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name=&apos;track-detail&apos;
-    )
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;tracks&apos;)
-</code></pre><p>result:</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;Graceland&apos;,
-    &apos;artist&apos;: &apos;Paul Simon&apos;,
-    &apos;tracks&apos;: [
-        &apos;http://www.example.com/api/tracks/45/&apos;,
-        &apos;http://www.example.com/api/tracks/46/&apos;,
-        &apos;http://www.example.com/api/tracks/47/&apos;,
-        ...
-    ]
-}
-</code></pre><p>Arguments:</p>
-<ul>
-<li>view_name - The view name that should be used as the target of the relationship. If you’re using the standard router classes this will be a string with the format <modelname>-detail. required.</modelname></li>
-<li>queryset - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set read_only=True.</li>
-<li>many - If applied to a to-many relationship, you should set this argument to True.</li>
-<li>allow_null - If set to True, the field will accept values of None or the empty string for nullable relationships. Defaults to False.<br>lookup_field - The field on the target that should be used for the lookup. Should correspond to a URL keyword argument on the referenced view. Default is ‘pk’.</li>
-<li>lookup_url_kwarg - The name of the keyword argument defined in the URL conf that corresponds to the lookup field. Defaults to using the same value as lookup_field.</li>
-<li>format - If using format suffixes, hyperlinked fields will use the same format suffix for the target unless overridden by using the format argument.</li>
-</ul>
-<h2 id="SlugRelatedField"><a href="#SlugRelatedField" class="headerlink" title="SlugRelatedField"></a>SlugRelatedField</h2><h2 id="HyperlinkedIdentityField"><a href="#HyperlinkedIdentityField" class="headerlink" title="HyperlinkedIdentityField"></a>HyperlinkedIdentityField</h2><pre><code>class AlbumSerializer(serializers.HyperlinkedModelSerializer):
-    track_listing = serializers.HyperlinkedIdentityField(view_name=&apos;track-list&apos;)
-
-    class Meta:
-        model = Album
-        fields = (&apos;album_name&apos;, &apos;artist&apos;, &apos;track_listing&apos;)
-</code></pre><p>result：</p>
-<pre><code>{
-    &apos;album_name&apos;: &apos;The Eraser&apos;,
-    &apos;artist&apos;: &apos;Thom Yorke&apos;,
-    &apos;track_listing&apos;: &apos;http://www.example.com/api/track_list/12/&apos;,
-}
-</code></pre><p>。。。。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/11. django-rest-framework -- Validators/" itemprop="url">11. django-rest-framework -- Validators</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Validators"><a href="#Validators" class="headerlink" title="Validators"></a>Validators</h1><h2 id="Validation-in-REST-framework"><a href="#Validation-in-REST-framework" class="headerlink" title="Validation in REST framework"></a>Validation in REST framework</h2><p>rest-framework 中数据的验证逻辑写在 serializar 类中，这样处理的好处：</p>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>simple model：</p>
-<pre><code>class CustomerReportRecord(models.Model):
-    time_raised = models.DateTimeField(default=timezone.now, editable=False)
-    reference = models.CharField(unique=True, max_length=20)
-    description = models.TextField()
-</code></pre><p>serializar：</p>
-<pre><code>class CustomerReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerReportRecord
-</code></pre><p>查看 serializar:</p>
-<pre><code>&gt;&gt;&gt; from project.example.serializers import CustomerReportSerializer
-&gt;&gt;&gt; serializer = CustomerReportSerializer()
-&gt;&gt;&gt; print(repr(serializer))
-CustomerReportSerializer():
-    id = IntegerField(label=&apos;ID&apos;, read_only=True)
-    time_raised = DateTimeField(read_only=True)
-    reference = CharField(max_length=20, validators=[&lt;UniqueValidator(queryset=CustomerReportRecord.objects.all())&gt;])
-    description = CharField(style={&apos;type&apos;: &apos;textarea&apos;})
-</code></pre><p>可以看到 序列化器 已经对 reference 字段进行了唯一性的验证</p>
-<h2 id="UniqueValidator"><a href="#UniqueValidator" class="headerlink" title="UniqueValidator"></a>UniqueValidator</h2><h2 id="UniqueTogetherValidator"><a href="#UniqueTogetherValidator" class="headerlink" title="UniqueTogetherValidator"></a>UniqueTogetherValidator</h2><h2 id="UniqueForDateValidator"><a href="#UniqueForDateValidator" class="headerlink" title="UniqueForDateValidator"></a>UniqueForDateValidator</h2><h2 id="UniqueForMonthValidator"><a href="#UniqueForMonthValidator" class="headerlink" title="UniqueForMonthValidator"></a>UniqueForMonthValidator</h2><h2 id="UniqueForYearValidator"><a href="#UniqueForYearValidator" class="headerlink" title="UniqueForYearValidator"></a>UniqueForYearValidator</h2><p>## </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/" itemprop="url">django-rest-framework -- Generic views</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Generic-views"><a href="#Generic-views" class="headerlink" title="Generic views"></a>Generic views</h1><blockquote>
-<p>One of the key benefits of class-based views is the way they allow you to compose bits of reusable behavior. REST framework takes advantage of this by providing a number of pre-built views that provide for commonly used patterns.</p>
+</code></pre><p>使用的时候和 functions 是一样的：（这样下面的代码就不会导致app奔溃了）</p>
+<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
+    @Override
+    public void onNext(Long value) {
+        Log.d(TAG, &quot;onNext: &quot;);
+    }
+};
+
+Observable.interval(2000, TimeUnit.MILLISECONDS)
+        .filter(new Predicate&lt;Long&gt;() {
+            @Override
+            public boolean test(Long aLong) throws Exception {
+                Log.d(TAG, &quot;test: along:&quot; + aLong);
+
+                if (aLong &gt; 2) {
+                    throw new Exception(&quot;sdf&quot;);
+                }
+
+                return true;
+            }
+        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(baseDisposableObserver);
+</code></pre><blockquote>
+<p>RxJava 看的还不多，如有错误还请指出</p>
 </blockquote>
-<h2 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h2><pre><code>class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
+<p>参考</p>
+<ul>
+<li><a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a></li>
+</ul>
 
-    def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all(), serializer_class=UserSerializer), name=&apos;user-list&apos;)
-</code></pre>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/13/Python/django/django-rest-framework/3.django-rest-framework -- Generic views/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
         
       
     </div>
@@ -1770,7 +687,7 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1789,7 +706,7 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/" itemprop="url">django-rest-framework -- ViewSets</a></h1>
+                <a class="post-title-link" href="/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/" itemprop="url">RecyclerView悬浮条</a></h1>
         
 
         <div class="post-meta">
@@ -1801,8 +718,8 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:38:14+08:00">
+                2016-11-27
               </time>
             
 
@@ -1824,8 +741,8 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
                   </a>
                 </span>
 
@@ -1860,79 +777,238 @@ url(r&apos;^/users/&apos;, ListCreateAPIView.as_view(queryset=User.objects.all()
       
         
           
-            <h1 id="ViewSets"><a href="#ViewSets" class="headerlink" title="ViewSets"></a>ViewSets</h1><h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><pre><code>from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
-from myapps.serializers import UserSerializer
-from rest_framework import viewsets
-from rest_framework.response import Response
+            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><pre><code>&lt;FrameLayout
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
 
-class UserViewSet(viewsets.ViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for listing or retrieving users.
-    &quot;&quot;&quot;
-    def list(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
-        queryset = User.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-</code></pre><p>ViewSet 可分离：</p>
-<pre><code>user_list = UserViewSet.as_view({&apos;get&apos;: &apos;list&apos;})
-user_detail = UserViewSet.as_view({&apos;get&apos;: &apos;retrieve&apos;})
-</code></pre><p>通常 url 设置：通过 router</p>
-<pre><code>from myapp.views import UserViewSet
-from rest_framework.routers import DefaultRouter
+    &lt;android.support.v7.widget.RecyclerView
+        android:id=&quot;@+id/rv_float&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        app:layoutManager=&quot;LinearLayoutManager&quot;/&gt;
 
-router = DefaultRouter()
-router.register(r&apos;users&apos;, UserViewSet)
-urlpatterns = router.urls
-</code></pre><p>通常使用时可以继承 ModelViewSet ：</p>
-<pre><code>class UserViewSet(viewsets.ModelViewSet):
-    &quot;&quot;&quot;
-    A viewset for viewing and editing user instances.
-    &quot;&quot;&quot;
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-</code></pre><h2 id="Marking-extra-actions-for-routing"><a href="#Marking-extra-actions-for-routing" class="headerlink" title="Marking extra actions for routing"></a>Marking extra actions for routing</h2><h1 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h1><h2 id="ViewSet"><a href="#ViewSet" class="headerlink" title="ViewSet"></a>ViewSet</h2><p>继承 APIView，</p>
-<blockquote>
-<p>The ViewSet class does not provide any implementations of actions. In order to use a ViewSet class you’ll override the class and define the action implementations explicitly.</p>
-</blockquote>
-<p>属于抽象类，如果使用这个类作为父类，需要自己实现方法</p>
-<h2 id="GenericViewSet"><a href="#GenericViewSet" class="headerlink" title="GenericViewSet"></a>GenericViewSet</h2><p>继承 GenericAPIView</p>
-<p>同样属于抽象类</p>
-<h2 id="ModelViewSet"><a href="#ModelViewSet" class="headerlink" title="ModelViewSet"></a>ModelViewSet</h2><p>继承 GenericAPIView</p>
-<p>提供的方法：.list(), .retrieve(), .create(), .update(), .partial_update(), and .destroy()</p>
-<h3 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h3><p>使用 ModelViewSet ， 需要最少提供：queryset，serializer_class 属性</p>
-<pre><code>class AccountViewSet(viewsets.ModelViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for viewing and editing accounts.
-    &quot;&quot;&quot;
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [IsAccountAdminOrReadOnly]
-</code></pre><h2 id="ReadOnlyModelViewSet"><a href="#ReadOnlyModelViewSet" class="headerlink" title="ReadOnlyModelViewSet"></a>ReadOnlyModelViewSet</h2><p>继承 GenericAPIView</p>
-<p>only provides the ‘read-only’ actions：.list() and .retrieve()</p>
-<h3 id="Example-2"><a href="#Example-2" class="headerlink" title="Example"></a>Example</h3><pre><code>class AccountViewSet(viewsets.ReadOnlyModelViewSet):
-    &quot;&quot;&quot;
-    A simple ViewSet for viewing accounts.
-    &quot;&quot;&quot;
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-</code></pre><h1 id="Custom-ViewSet-base-classes"><a href="#Custom-ViewSet-base-classes" class="headerlink" title="Custom ViewSet base classes"></a>Custom ViewSet base classes</h1><pre><code>class CreateListRetrieveViewSet(mixins.CreateModelMixin,
-                                mixins.ListModelMixin,
-                                mixins.RetrieveModelMixin,
-                                viewsets.GenericViewSet):
-    &quot;&quot;&quot;
-    A viewset that provides `retrieve`, `create`, and `list` actions.
 
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
-    &quot;&quot;&quot;
-    pass
+    &lt;TextView
+        android:id=&quot;@+id/tv_float&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;60dp&quot;
+        android:background=&quot;#fff&quot;
+        android:gravity=&quot;center&quot;
+        android:text=&quot;head&quot;
+        android:textSize=&quot;20sp&quot;/&gt;
+
+
+&lt;/FrameLayout&gt;
+</code></pre><h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><pre><code>mRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+
+    }
+
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        super.onScrolled(recyclerView, dx, dy);
+
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        View view = layoutManager.findViewByPosition(mFloatItemCurrentPos + 1);
+
+        if (view != null &amp;&amp; view.getTop() &lt;= mFloatItemHeight) {
+            mTV.setY(-(mFloatItemHeight - view.getTop()));
+        }else {
+            mTV.setY(0);
+        }
+
+        if (mFloatItemCurrentPos != layoutManager.findFirstVisibleItemPosition()) {
+            mFloatItemCurrentPos = layoutManager.findFirstVisibleItemPosition();
+            mTV.setY(0);
+
+            updateFloatItem();
+        }
+    }
+});
+
+private void updateFloatItem() {
+     String s = mStrings.get(mFloatItemCurrentPos);
+     mTV.setText(s);
+ }
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab" target="_blank" rel="external">http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab</a>)</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/features/clear_data/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/27/Android/features/clear_data/" itemprop="url">Android clean data in Application</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:23:14+08:00">
+                2016-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="http://stackoverflow.com/questions/6134103/clear-applications-data-programmatically" alt="http://stackoverflow.com/questions/6134103/clear-applications-data-programmatically"></p>
+<p>Utils:</p>
+<pre><code>public static void clearApplicationData() {
+    File cacheDirectory = BaseApplication.getInstance().getCacheDir();
+    File applicationDirectory = new File(cacheDirectory.getParent());
+    if (applicationDirectory.exists()) {
+        String[] fileNames = applicationDirectory.list();
+        for (String fileName : fileNames) {
+            if (!fileName.equals(&quot;lib&quot;)) {
+                deleteFile(new File(applicationDirectory, fileName));
+            }
+        }
+    }
+}
+
+public static boolean deleteFile(File file) {
+    boolean deletedAll = true;
+    if (file != null) {
+        if (file.isDirectory()) {
+            String[] children = file.list();
+            for (int i = 0; i &lt; children.length; i++) {
+                deletedAll = deleteFile(new File(file, children[i])) &amp;&amp; deletedAll;
+            }
+        } else {
+            deletedAll = file.delete();
+        }
+    }
+
+    return deletedAll;
+}
+</code></pre><h1 id="Clean-SharePreferences"><a href="#Clean-SharePreferences" class="headerlink" title="Clean SharePreferences"></a>Clean SharePreferences</h1><pre><code>prefs.edit().clear().commit();
+</code></pre><h1 id="Api-19"><a href="#Api-19" class="headerlink" title="Api 19"></a>Api 19</h1><pre><code>import android.os.Build.*;
+if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
+    ((ActivityManager)context.getSystemService(ACTIVITY_SERVICE))
+            .clearApplicationUserData(); // note: it has a return value!
+} else {
+    // use old hacky way, which can be removed
+    // once minSdkVersion goes above 19 in a few years.
+}
 </code></pre>
           
         
@@ -1976,7 +1052,7 @@ urlpatterns = router.urls
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1995,7 +1071,7 @@ urlpatterns = router.urls
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/13/Python/django/django-rest-framework/12. django-rest-framework -- Authentication date- 2016-11-13 13-18-12/" itemprop="url">12. django-rest-framework -- Authentication</a></h1>
+                <a class="post-title-link" href="/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/" itemprop="url">Rxjava2 代码例子</a></h1>
         
 
         <div class="post-meta">
@@ -2007,8 +1083,898 @@ urlpatterns = router.urls
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
-                2016-11-13
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-24T13:18:12+08:00">
+                2016-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Backpressure-背压"><a href="#Backpressure-背压" class="headerlink" title="Backpressure 背压"></a>Backpressure 背压</h1><p>背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。</p>
+<p>简单的说：发射数据太快，观察者来不及处理。</p>
+<p>强调两点：</p>
+<ol>
+<li>背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。</li>
+<li>背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件流速的策略。</li>
+</ol>
+<p>使用 Flowable 处理背压</p>
+<h1 id="使用的基本流"><a href="#使用的基本流" class="headerlink" title="使用的基本流"></a>使用的基本流</h1><ol>
+<li>创建 Observable：被观察者</li>
+<li>创建 Observer：观察者</li>
+<li>订阅事件 subscribe：Observable 和 Observer 通过 subscribe() 方法实现订阅关系</li>
+</ol>
+<h1 id="SimpleExample"><a href="#SimpleExample" class="headerlink" title="SimpleExample"></a>SimpleExample</h1><pre><code>Observable.just(&quot;observable&quot;)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer&lt;String&gt;() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // Disposable 对象用于取消订阅
+            }
+
+            @Override
+            public void onNext(String value) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+</code></pre><p>使用 <code>Disposable</code> 对象取消订阅：</p>
+<pre><code>if (!d.isDisposed()) {
+    d.dispose();
+}
+</code></pre><blockquote>
+<p>注意: 调用dispose()并不会导致上游不再继续发送事件, 上游会继续发送剩余的事件.</p>
+</blockquote>
+<h1 id="Map-操作符"><a href="#Map-操作符" class="headerlink" title="Map 操作符"></a>Map 操作符</h1><p>将被观察者发射的数据转化后发射给观察者。</p>
+<pre><code>Observable&lt;List&lt;ApiUser&gt;&gt; observable = Observable.create(new ObservableOnSubscribe&lt;List&lt;ApiUser&gt;&gt;() {
+    @Override
+    public void subscribe(ObservableEmitter&lt;List&lt;ApiUser&gt;&gt; e) throws Exception {
+        // 代码判断是否订阅被取消了
+        if (!e.isDisposed()) {
+            e.onNext(Utils.getApiUserList());
+            e.onComplete();
+        }
+    }
+});
+
+Observer&lt;List&lt;User&gt;&gt; observer = new Observer&lt;List&lt;User&gt;&gt;() {
+    @Override
+    public void onSubscribe(Disposable d) {
+
+    }
+
+    @Override
+    public void onNext(List&lt;User&gt; value) {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+};
+
+Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt; mapper = new Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt;() {
+    @Override
+    public List&lt;User&gt; apply(List&lt;ApiUser&gt; apiUsers) throws Exception {
+        return Utils.convertApiUserListToUserList(apiUsers);
+    }
+};
+
+observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .map(mapper)
+        .subscribe(observer);
+</code></pre><h2 id="ObservableEmitter-发射器"><a href="#ObservableEmitter-发射器" class="headerlink" title="ObservableEmitter 发射器"></a>ObservableEmitter 发射器</h2><p>RxJava2 中使用发射器向观察者发送数据。</p>
+<p>继承自 <code>Emitter</code></p>
+<pre><code>public interface ObservableEmitter&lt;T&gt; extends Emitter&lt;T&gt; {
+
+    void setDisposable(Disposable d);
+    void setCancellable(Cancellable c);
+    boolean isDisposed();
+    ObservableEmitter&lt;T&gt; serialize();
+
+}
+</code></pre><p>发射方法在 <code>Emitter</code>:</p>
+<pre><code>void onNext(T value);
+void onError(Throwable error);
+void onComplete();
+</code></pre><p>一些发射规则：</p>
+<ol>
+<li>可以发送无限个 onNext, Observer 也可以接收无限个 onNext.</li>
+<li>当发送了一个onComplete后继续发送 onNext, 而 Observable 收到 onComplete 事件之后将不再继续接收事件.</li>
+<li>当发送了一个onError后继续发送 onNext, 而 Observable 收到 onError 事件之后将不再继续接收事件.</li>
+<li>可以不发送onComplete或onError.</li>
+<li>最为关键的是onComplete和onError必须唯一并且互斥, 即不能发多个onComplete, 也不能发多个onError, 也不能先发一个onComplete, 然后再发一个onError, 反之亦然</li>
+</ol>
+<h1 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h1><blockquote>
+<p>flatMap并不保证事件的顺序</p>
+</blockquote>
+<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><p>解决嵌套请求</p>
+<pre><code>api.register(new RegisterRequest())            //发起注册请求
+    .subscribeOn(Schedulers.io())               //在IO线程进行网络请求
+    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求注册结果
+    .doOnNext(new Consumer&lt;RegisterResponse&gt;() {
+        @Override
+        public void accept(RegisterResponse registerResponse) throws Exception {
+            //先根据注册的响应结果去做一些操作
+        }
+    })
+    .observeOn(Schedulers.io())                 //回到IO线程去发起登录请求
+    .flatMap(new Function&lt;RegisterResponse, ObservableSource&lt;LoginResponse&gt;&gt;() {
+        @Override
+        public ObservableSource&lt;LoginResponse&gt; apply(RegisterResponse registerResponse) throws Exception {
+            return api.login(new LoginRequest());
+        }
+    })
+    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求登录的结果
+    .subscribe(new Consumer&lt;LoginResponse&gt;() {
+        @Override
+        public void accept(LoginResponse loginResponse) throws Exception {
+            Toast.makeText(MainActivity.this, &quot;登录成功&quot;, Toast.LENGTH_SHORT).show();
+        }
+    }, new Consumer&lt;Throwable&gt;() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Toast.makeText(MainActivity.this, &quot;登录失败&quot;, Toast.LENGTH_SHORT).show();
+        }
+    });
+</code></pre><h1 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h1><p>和 flatMap 一样，不过可以保证事件的顺序</p>
+<h1 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h1><p>合并两个 Observerable</p>
+<h2 id="实例，将连个请求的数据合并"><a href="#实例，将连个请求的数据合并" class="headerlink" title="实例，将连个请求的数据合并"></a>实例，将连个请求的数据合并</h2><pre><code>Observable&lt;UserBaseInfoResponse&gt; observable1 =                                            
+        api.getUserBaseInfo(new UserBaseInfoRequest()).subscribeOn(Schedulers.io());      
+
+Observable&lt;UserExtraInfoResponse&gt; observable2 =                                           
+        api.getUserExtraInfo(new UserExtraInfoRequest()).subscribeOn(Schedulers.io());    
+
+Observable.zip(observable1, observable2,                                                  
+        new BiFunction&lt;UserBaseInfoResponse, UserExtraInfoResponse, UserInfo&gt;() {         
+            @Override                                                                     
+            public UserInfo apply(UserBaseInfoResponse baseInfo,                          
+                                  UserExtraInfoResponse extraInfo) throws Exception {     
+                return new UserInfo(baseInfo, extraInfo);                                 
+            }                                                                             
+        }).observeOn(AndroidSchedulers.mainThread())                                      
+        .subscribe(new Consumer&lt;UserInfo&gt;() {                                             
+            @Override                                                                     
+            public void accept(UserInfo userInfo) throws Exception {                      
+                //do something;                                                           
+            }                                                                             
+        });
+</code></pre><h1 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h1><h1 id="Disposable-防止内存泄露"><a href="#Disposable-防止内存泄露" class="headerlink" title="Disposable 防止内存泄露"></a>Disposable 防止内存泄露</h1><p>需要用到的对象： <code>CompositeDisposable</code></p>
+<p>使用：</p>
+<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
+
+public void mine() {
+    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
+        @Override
+        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
+            if (e.isDisposed()) return;
+            SystemClock.sleep(2000);
+            e.onNext(&quot;next&quot;);
+            e.onComplete();
+        }
+    });
+
+    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
+        @Override
+        public void onNext(String value) {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
+
+    observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(observer);  //  从源码看  subscribeWith 和 subscribe 没有区别，除了返回值：subscribeWith 会返回 observer 本身，这里也可以使用 subscribe
+
+    disposables.add(observer);
+
+
+}
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    disposables.clear(); // do not send event after activity has been destroyed
+}
+</code></pre><h2 id="可以利用这个封装一个防止泄露的框架"><a href="#可以利用这个封装一个防止泄露的框架" class="headerlink" title="可以利用这个封装一个防止泄露的框架"></a>可以利用这个封装一个防止泄露的框架</h2><p>BasePresenter:</p>
+<pre><code>public abstract class BasePresenter {
+
+    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    public void unSubscribe() {
+        mCompositeDisposable.clear();
+    }
+
+
+    public void register(Disposable disposable) {
+        mCompositeDisposable.add(disposable);
+    }
+
+
+}
+</code></pre><p>SimplePresenter extends BasePresenter:</p>
+<pre><code>public class SimplePresenter extends BasePresenter {
+    private static final String TAG = SimplePresenter.class.getSimpleName();
+
+
+    //.....
+
+    public void startWork() {
+
+        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
+            @Override
+            public void onNext(Long value) {
+                Log.d(TAG, &quot;onNext: &quot;);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        Observable.interval(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        register(observer);
+
+    }
+
+}
+</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
+<p>Activity/Fragment:</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mSimplePresenter.unSubscribe();
+}
+</code></pre><p>尽量在使用 functions 包下的简化接口时要谨慎，因为他们不具备异常处理方法，可以使用类似下面的封装简化代码：</p>
+<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
+
+    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
+
+    @Override
+    public void onError(Throwable e) {
+        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+}
+</code></pre><p>使用：</p>
+<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
+    @Override
+    public void onNext(Long value) {
+        Log.d(TAG, &quot;onNext: &quot;);
+    }
+};
+
+//.... 对于不需要处理的异常让其父类捕获，需要就重写 onError 方法即可
+.subscribe(baseDisposableObserver);
+</code></pre><h1 id="take"><a href="#take" class="headerlink" title="take"></a>take</h1><p>设置 Observable 能够发射（ onNext ）的最大消息数，超过的不会被接收到</p>
+<pre><code>observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .take(3)
+        .subscribe(observer);
+</code></pre><h1 id="timer-延时操作"><a href="#timer-延时操作" class="headerlink" title="timer 延时操作"></a>timer 延时操作</h1><pre><code>Observable&lt;Long&gt; observable = Observable.timer(2, TimeUnit.SECONDS);
+</code></pre><h1 id="interval-循环执行"><a href="#interval-循环执行" class="headerlink" title="interval 循环执行"></a>interval 循环执行</h1><pre><code>Observable.interval(0, 2, TimeUnit.SECONDS)
+</code></pre><h1 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h1><p>将所有的发送数据进行处理，返回一个统一的数据。</p>
+<pre><code>Observable.just(1, 2, 3, 4).reduce(new BiFunction&lt;Integer, Integer, Integer&gt;() {
+    @Override
+    public Integer apply(Integer t1, Integer t2) {
+        return t1 + t2;
+    }
+}).subscribe(getObserver());
+
+//结果：10
+</code></pre><h1 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h1><pre><code>Observable&lt;List&lt;String&gt;&gt; buffered = Observable.just(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;).buffer(3, 1);
+
+// 3 means,  it takes max of three from its start index and create list
+// 1 means, it jumps one step every time
+// so the it gives the following list
+// 1 - one, two, three
+// 2 - two, three, four
+// 3 - three, four, five
+// 4 - four, five
+// 5 - five
+
+buffered.subscribe(getObserver());
+</code></pre><h1 id="filter-过滤"><a href="#filter-过滤" class="headerlink" title="filter 过滤"></a>filter 过滤</h1><pre><code>Observable.just(1, 2, 3, 4, 5, 6)
+        .filter(new Predicate&lt;Integer&gt;() {
+            @Override
+            public boolean test(Integer integer) throws Exception {
+                return integer % 2 == 0;
+            }
+        })
+        .subscribe(getObserver());
+</code></pre><h1 id="skip-跳过"><a href="#skip-跳过" class="headerlink" title="skip 跳过"></a>skip 跳过</h1><p>设置跳过发射的数据的个数</p>
+<pre><code>getObservable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .skip(2)
+        .subscribe(getObserver());
+</code></pre><h1 id="replay-重复发射"><a href="#replay-重复发射" class="headerlink" title="replay 重复发射"></a>replay 重复发射</h1><h1 id="repeat-重复"><a href="#repeat-重复" class="headerlink" title="repeat 重复"></a>repeat 重复</h1><p>在接收到 onComplete 事件后触发</p>
+<h2 id="repeatWhen"><a href="#repeatWhen" class="headerlink" title="repeatWhen"></a>repeatWhen</h2><h1 id="retry-重复"><a href="#retry-重复" class="headerlink" title="retry 重复"></a>retry 重复</h1><p>参数 times：表示重试次数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Observable&lt;T&gt; <span class="title">retry</span><span class="params">(<span class="keyword">long</span> times)</span> </span>&#123;</div></pre></td></tr></table></figure></p>
+<p>接收到.onError()事件后触发重订阅</p>
+<h2 id="retryWhen"><a href="#retryWhen" class="headerlink" title="retryWhen"></a>retryWhen</h2><h3 id="retryWhen-操作符实现错误重试机制"><a href="#retryWhen-操作符实现错误重试机制" class="headerlink" title="retryWhen 操作符实现错误重试机制"></a>retryWhen 操作符实现错误重试机制</h3><p>RetryWithDelay:</p>
+<pre><code>public class RetryWithDelay implements Function&lt;Flowable&lt;Throwable&gt;, Publisher&lt;?&gt;&gt; {
+
+    private final int maxRetries;
+    private final int retryDelayMillis;
+    private int retryCount;
+
+    public RetryWithDelay(int maxRetries, int retryDelayMillis) {
+        this.maxRetries = maxRetries;
+        this.retryDelayMillis = retryDelayMillis;
+    }
+
+
+    @Override
+    public Publisher&lt;?&gt; apply(Flowable&lt;Throwable&gt; throwableFlowable) throws Exception {
+        Flowable&lt;Throwable&gt; delay = throwableFlowable.delay(retryDelayMillis, TimeUnit.MILLISECONDS);
+        return delay;
+    }
+}
+</code></pre><p>usage:</p>
+<pre><code>mDisposable = Flowable.create(new LongConnectFlowableOnSubscribe(), BackpressureStrategy.BUFFER)
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .retryWhen(new RetryWithDelay(3, 3000))
+          .repeat()
+          .subscribe(new Consumer&lt;String&gt;() {
+              @Override
+              public void accept(String s) throws Exception {
+                  dealMsg(s);
+              }
+          }, throwable -&gt; {
+              LoggerUtils.e(throwable.getMessage());
+          });
+</code></pre><h1 id="concat-将多个被观察者顺序执行"><a href="#concat-将多个被观察者顺序执行" class="headerlink" title="concat 将多个被观察者顺序执行"></a>concat 将多个被观察者顺序执行</h1><pre><code>Observable.concat(aObservable, bObservable)
+                .subscribe(getObserver());
+
+// aObservable 发射完数据后，bObservable发射数据
+</code></pre><h1 id="merge-结合多个被观察者"><a href="#merge-结合多个被观察者" class="headerlink" title="merge 结合多个被观察者"></a>merge 结合多个被观察者</h1><p>和concat比无序，接收到的数据可能是穿插的</p>
+<pre><code>Observable.merge(aObservable, bObservable)
+        .subscribe(getObserver());
+</code></pre><h1 id="defer-延迟"><a href="#defer-延迟" class="headerlink" title="defer 延迟"></a>defer 延迟</h1><pre><code>Observable.defer(new Callable&lt;ObservableSource&lt;? extends String&gt;&gt;() {
+            @Override
+            public ObservableSource&lt;? extends String&gt; call() throws Exception {
+                return Observable.just(brand);
+            }
+        });
+
+// 通过上面创建的 Observable
+
+//....修改 brand 有效
+
+brandDeferObservable
+            .subscribe(getObserver()); // 获取到的数据是修改后的 brand
+</code></pre><h1 id="distinct-保证发射的数据不重复"><a href="#distinct-保证发射的数据不重复" class="headerlink" title="distinct 保证发射的数据不重复"></a>distinct 保证发射的数据不重复</h1><pre><code>getObservable().distinct() .subscribe(getObserver());
+</code></pre><h1 id="last-最后的数据"><a href="#last-最后的数据" class="headerlink" title="last 最后的数据"></a>last 最后的数据</h1><p>观察者只会收到被观察者最后发射的数据，可以设置默认值</p>
+<pre><code>getObservable().last(&quot;A1&quot;) // the default item (&quot;A1&quot;) to emit if the source ObservableSource is empty
+         .subscribe(getObserver());
+</code></pre><h1 id="sample"><a href="#sample" class="headerlink" title="sample"></a>sample</h1><p>每隔 [时间] 发送里时间点最近那个事件，</p>
+<h2 id="Obserable-基本类型"><a href="#Obserable-基本类型" class="headerlink" title="Obserable 基本类型"></a>Obserable 基本类型</h2><h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><h2 id="Maybe"><a href="#Maybe" class="headerlink" title="Maybe"></a>Maybe</h2><h2 id="Single-发送一个消息"><a href="#Single-发送一个消息" class="headerlink" title="Single 发送一个消息"></a>Single 发送一个消息</h2><pre><code>Single.just(&quot;Amit&quot;)...
+</code></pre><h2 id="CompletableObserver"><a href="#CompletableObserver" class="headerlink" title="CompletableObserver"></a>CompletableObserver</h2><pre><code>Completable completable = Completable.create(new CompletableOnSubscribe() {
+    @Override
+    public void subscribe(CompletableEmitter e) throws Exception {
+        //
+    }
+});
+</code></pre><p><code>CompletableEmitter</code> 只能发射结束事件和异常事件 <code>onComplete</code>,<code>onError</code></p>
+<p>用于执行单任务</p>
+<h2 id="Flowable"><a href="#Flowable" class="headerlink" title="Flowable"></a>Flowable</h2><p>在RxJava1.x中背压控制是由Observable完成的，而在RxJava2.x中将其独立了出来，取名为Flowable。</p>
+<p>通过Flowable我们可以自定义背压处理策略</p>
+<pre><code>Flowable.create(new FlowableOnSubscribe&lt;Integer&gt;() {
+
+          @Override
+          public void subscribe(FlowableEmitter&lt;Integer&gt; e) throws Exception {
+
+              for(int i=0;i&lt;10000;i++){
+                  e.onNext(i);
+              }
+              e.onComplete();
+          }
+      }, FlowableEmitter.BackpressureMode.ERROR) //指定背压处理策略，抛出异常
+              .subscribeOn(Schedulers.computation())
+              .observeOn(Schedulers.newThread())
+              .subscribe(new Consumer&lt;Integer&gt;() {
+                  @Override
+                  public void accept(Integer integer) throws Exception {
+                      Log.d(&quot;JG&quot;, integer.toString());
+                      Thread.sleep(1000);
+                  }
+              }, new Consumer&lt;Throwable&gt;() {
+                  @Override
+                  public void accept(Throwable throwable) throws Exception {
+                      Log.d(&quot;JG&quot;,throwable.toString());
+                  }
+              });
+</code></pre><p>或者：</p>
+<pre><code>Flowable.range(1,10000)
+               .onBackpressureDrop()
+               .subscribe(integer -&gt; Log.d(&quot;JG&quot;,integer.toString()));
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="https://github.com/amitshekhariitbhu/RxJava2-Android-Samples" target="_blank" rel="external">Rxjava2代码例子</a></li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0907/6604.html" target="_blank" rel="external">Rxjava2和Rxjava1的不同点</a></li>
+<li><a href="http://gold.xitu.io/post/582d413c8ac24700619cceed" target="_blank" rel="external">背压</a></li>
+<li><a href="https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc" target="_blank" rel="external">https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/23/html/BootstrapW3C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/23/html/BootstrapW3C/" itemprop="url">Bootstrap w3c 学习记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-23T13:18:12+08:00">
+                2016-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://www.w3cschool.cn/bootstrap/bootstrap-v2-grid-system.html" target="_blank" rel="external">w3c Bootstrap</a><br><a href="http://v3.bootcss.com/css/" target="_blank" rel="external">Bootstrap中文网</a></p>
+<h1 id="Bootstrap-css"><a href="#Bootstrap-css" class="headerlink" title="Bootstrap css"></a>Bootstrap css</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><h3 id="HTML-5-文档类型（Doctype）"><a href="#HTML-5-文档类型（Doctype）" class="headerlink" title="HTML 5 文档类型（Doctype）"></a>HTML 5 文档类型（Doctype）</h3><pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+....
+&lt;/html&gt;
+</code></pre><h3 id="移动设备优先"><a href="#移动设备优先" class="headerlink" title="移动设备优先"></a>移动设备优先</h3><p>head 中添加：</p>
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+</code></pre><ul>
+<li>width 属性控制设备的宽度，设置为 device-width 可以确保它能正确呈现在不同设备上。</li>
+<li>initial-scale=1.0 确保网页加载时，以 1:1 的比例呈现，不会有任何的缩放。</li>
+<li>移动设备浏览器上，通过为 viewport meta 标签添加 user-scalable=no 可以禁用其缩放（zooming）功能。</li>
+<li><p>maximum-scale=1.0 与 user-scalable=no 一起使用。这样禁用缩放功能后，用户只能滚动屏幕，就能让您的网站看上去更像原生应用的感觉。</p>
+<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,                                                           initial-scale=1.0,                                       
+maximum-scale=1.0,                                       
+user-scalable=no&quot;&gt;
+</code></pre></li>
+</ul>
+<h3 id="响应式图像"><a href="#响应式图像" class="headerlink" title="响应式图像"></a>响应式图像</h3><pre><code>&lt;img src=&quot;...&quot; class=&quot;img-responsive&quot; alt=&quot;响应式图像&quot;&gt;
+</code></pre><ul>
+<li>img-responsive class 可以让 Bootstrap 3 中的图像对响应式布局的支持更友好。</li>
+</ul>
+<h3 id="全局显示、排版和链接"><a href="#全局显示、排版和链接" class="headerlink" title="全局显示、排版和链接"></a>全局显示、排版和链接</h3><p><code>bootstrap.css</code> 文件中查看css</p>
+<p>基本的全局显示：</p>
+<pre><code>body {
+  font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #fff;
+}
+</code></pre><h3 id="容器（Container）"><a href="#容器（Container）" class="headerlink" title="容器（Container）"></a>容器（Container）</h3><pre><code>&lt;div class=&quot;container&quot;&gt;
+  ...
+&lt;/div&gt;
+</code></pre><p>用于包裹页面上的内容:</p>
+<pre><code>.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+</code></pre><h1 id="Bootstrap-网格系统"><a href="#Bootstrap-网格系统" class="headerlink" title="Bootstrap 网格系统"></a>Bootstrap 网格系统</h1><p>系统会自动分为最多12列。</p>
+<h2 id="Bootstrap-网格系统（Grid-System）的工作原理"><a href="#Bootstrap-网格系统（Grid-System）的工作原理" class="headerlink" title="Bootstrap 网格系统（Grid System）的工作原理:"></a>Bootstrap 网格系统（Grid System）的工作原理:</h2><p>网格系统通过一系列包含内容的行和列来创建页面布局。</p>
+<ol>
+<li>行必须放置在 .container class 内，以便获得适当的对齐（alignment）和内边距（padding）。</li>
+<li>使用行来创建列的水平组。</li>
+<li>内容应该放置在列内，且唯有列可以是行的直接子元素。</li>
+<li>预定义的网格类，比如 .row 和 .col-xs-4，可用于快速创建网格布局。LESS 混合类可用于更多语义布局。</li>
+<li>列通过内边距（padding）来创建列内容之间的间隙。该内边距是通过 .rows 上的外边距（margin）取负，表示第一列和最后一列的行偏移。</li>
+<li>网格系统是通过指定您想要横跨的十二个可用的列来创建的。例如，要创建三个相等的列，则使用三个 .col-xs-4。</li>
+</ol>
+<h2 id="基本的网格结构"><a href="#基本的网格结构" class="headerlink" title="基本的网格结构"></a>基本的网格结构</h2><pre><code>&lt;div class=&quot;container&quot;&gt;
+   &lt;div class=&quot;row&quot;&gt;
+      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;      
+   &lt;/div&gt;
+   &lt;div class=&quot;row&quot;&gt;...&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;container&quot;&gt;....
+</code></pre><h3 id="列偏移"><a href="#列偏移" class="headerlink" title="列偏移"></a>列偏移</h3><p><code>.col-md-offset-*</code> 类可以将列向右侧偏移</p>
+<h3 id="嵌套列"><a href="#嵌套列" class="headerlink" title="嵌套列"></a>嵌套列</h3><h3 id="列排序"><a href="#列排序" class="headerlink" title="列排序"></a>列排序</h3><p>使用 <code>.col-md-push-*</code> 和 <code>.col-md-pull-*</code> 类就可以很容易的改变列（column）的顺序</p>
+<h2 id="Less-mixin-和变量"><a href="#Less-mixin-和变量" class="headerlink" title="Less mixin 和变量"></a>Less mixin 和变量</h2><h1 id="排版"><a href="#排版" class="headerlink" title="排版"></a>排版</h1><h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>文字标题: <h1~h6></h1~h6></p>
+<p>副标题: <small></small></p>
+<p>段落：</p><p></p>
+<p>引导主体副本:class=”lead” (给段落添加)</p>
+<h2 id="内联文本元素"><a href="#内联文本元素" class="headerlink" title="内联文本元素"></a>内联文本元素</h2><ol>
+<li><mark>:Marked text</mark></li>
+<li><del>:被删除的文本</del></li>
+<li><s>:无用文本</s></li>
+<li><ins>:插入文本</ins></li>
+<li><u>:带下划线的文本</u></li>
+<li><small>:小号文本</small></li>
+<li><strong>:（设置文本为更粗的文本）</strong></li>
+<li><em>（设置文本为斜体）<h2 id="对齐"><a href="#对齐" class="headerlink" title="对齐"></a>对齐</h2></em></li>
+</ol>
+<p>class=”text-left”，class=”text-center”，class=”text-right”，class=”text-justify”，class=”text-nowrap”</p>
+<h2 id="改变大小写"><a href="#改变大小写" class="headerlink" title="改变大小写"></a>改变大小写</h2><p>class=”text-lowercase”，class=”text-uppercase”，class=”text-capitalize”</p>
+<h2 id="缩略语"><a href="#缩略语" class="headerlink" title="缩略语"></a>缩略语</h2><p><abbr title="World Wide Web">WWW</abbr>， class=”initialism” 缩小字体</p>
+<p>强调:</p>
+<ol>
+<li><p class="text-muted">本行内容是减弱的</p></li>
+<li><p class="text-primary">本行内容带有一个 primary class</p></li>
+<li><p class="text-success">本行内容带有一个 success class</p></li>
+<li><p class="text-info">本行内容带有一个 info class</p></li>
+<li><p class="text-warning">本行内容带有一个 warning class</p></li>
+<li><p class="text-danger">本行内容带有一个 danger class</p>
+
+
+</li>
+</ol>
+<h2 id="地址（Address）"><a href="#地址（Address）" class="headerlink" title="地址（Address）"></a>地址（Address）</h2><address>
+
+<h2 id="引用（Blockquote）"><a href="#引用（Blockquote）" class="headerlink" title="引用（Blockquote）"></a>引用（Blockquote）</h2><blockquote>
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>.lead    使段落突出显示</li>
+<li>.text-left    设定文本左对齐</li>
+<li>.text-center    设定文本居中对齐</li>
+<li>.text-right    设定文本右对齐</li>
+<li>.text-justify    设定文本对齐,段落中超出屏幕部分文字自动换行</li>
+<li>.text-nowrap    段落中超出屏幕部分不换行</li>
+<li>.text-lowercase    设定文本小写</li>
+<li>.text-uppercase    设定文本大写</li>
+<li>.text-capitalize    设定单词首字母大写</li>
+<li>.initialism    显示在 <abbr> 元素中的文本以小号字体展示</abbr></li>
+<li>.blockquote-reverse    设定引用右对齐</li>
+<li>.list-unstyled    移除默认的列表样式，列表项中左对齐 ( <ul> 和 <ol> 中)。 这个类仅适用于直接子列表项    (如果需要移除嵌套的列表项，你需要在嵌套的列表中使用该样式)</ol></ul></li>
+<li>.list-inline    将所有列表项放置同一行</li>
+<li>.dl-horizontal    该类设置了浮动和偏移，应用于 <dl> 元素和 <dt> 元素中，具体实现可以查看实例</dt></dl></li>
+<li>.pre-scrollable    使 <pre> 元素可滚动 scrollable</pre></li>
+</ul>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ol>
+<li>class .list-inline 把所有的列表项放在同一行中</li>
+</ol>
+<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>为任意 <table> 标签添加 .table 类可以为其赋予基本的样式</table></p>
+<p>example:</p>
+<pre><code>&lt;table class=&quot;table&quot;&gt;
+    &lt;caption&gt;Optional table caption.&lt;/caption&gt;
+    &lt;thead&gt;
+    &lt;tr&gt;
+        &lt;th&gt;#&lt;/th&gt;
+        &lt;th&gt;First Name&lt;/th&gt;
+        &lt;th&gt;Last Name&lt;/th&gt;
+        &lt;th&gt;Username&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tbody&gt;
+    &lt;tr&gt;
+        &lt;td&gt;1&lt;/td&gt;
+        &lt;td&gt;Mark&lt;/td&gt;
+        &lt;td&gt;Otto&lt;/td&gt;
+        &lt;td&gt;@mdo&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;2&lt;/td&gt;
+        &lt;td&gt;Jacob&lt;/td&gt;
+        &lt;td&gt;Thornton&lt;/td&gt;
+        &lt;td&gt;@fat&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;3&lt;/td&gt;
+        &lt;td&gt;Larry&lt;/td&gt;
+        &lt;td&gt;the Bird&lt;/td&gt;
+        &lt;td&gt;@twitter&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;/tbody&gt;
+
+&lt;/table&gt;
+</code></pre><h2 id="条纹状表格"><a href="#条纹状表格" class="headerlink" title="条纹状表格"></a>条纹状表格</h2><p>通过 .table-striped 类可以给 <tbody> 之内的每一行增加斑马条纹样式。</tbody></p>
+<pre><code>&lt;table class=&quot;table table-striped&quot;&gt;
+  ...
+&lt;/table&gt;
+</code></pre><h2 id="带边框的表格"><a href="#带边框的表格" class="headerlink" title="带边框的表格"></a>带边框的表格</h2><h1 id="表单"><a href="#表单" class="headerlink" title="表单"></a>表单</h1><h2 id="基本实例"><a href="#基本实例" class="headerlink" title="基本实例"></a>基本实例</h2><pre><code>&lt;form role=&quot;form&quot;&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;exampleInputEmail1&quot;&gt;Email address&lt;/label&gt;
+    &lt;input type=&quot;email&quot; class=&quot;form-control&quot; id=&quot;exampleInputEmail1&quot; placeholder=&quot;Enter email&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;exampleInputPassword1&quot;&gt;Password&lt;/label&gt;
+    &lt;input type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;exampleInputPassword1&quot; placeholder=&quot;Password&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;exampleInputFile&quot;&gt;File input&lt;/label&gt;
+    &lt;input type=&quot;file&quot; id=&quot;exampleInputFile&quot;&gt;
+    &lt;p class=&quot;help-block&quot;&gt;Example block-level help text here.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;checkbox&quot;&gt;
+    &lt;label&gt;
+      &lt;input type=&quot;checkbox&quot;&gt; Check me out
+    &lt;/label&gt;
+  &lt;/div&gt;
+  &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</code></pre><h2 id="内连表单"><a href="#内连表单" class="headerlink" title="内连表单"></a>内连表单</h2><p>表单添加下面的 class 属性</p>
+<ul>
+<li>.form-inline</li>
+</ul>
+<p>注意：label 一定要添加，否则屏幕阅读器无法正确识别</p>
+<h2 id="水平排列的表单"><a href="#水平排列的表单" class="headerlink" title="水平排列的表单"></a>水平排列的表单</h2><p>label 和 input 在一行上</p>
+<ul>
+<li>.form-horizontal 配合 栅格类</li>
+</ul>
+</blockquote></address>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/Python/django/Common Web application tools - Static files management/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/21/Python/django/Common Web application tools - Static files management/" itemprop="url">Common Web application tools - Static files management</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-21T13:18:12+08:00">
+                2016-11-21
               </time>
             
 
@@ -2066,7 +2032,495 @@ urlpatterns = router.urls
       
         
           
-            <h1 id="Authtication"><a href="#Authtication" class="headerlink" title="Authtication"></a>Authtication</h1>
+            <p><code>django.contrib.staticfiles</code> 收集所有的 app 的静态文件到一个地方，方便程序调用</p>
+<h1 id="Settings"><a href="#Settings" class="headerlink" title="Settings"></a>Settings</h1><p><code>settings.py</code></p>
+<ul>
+<li>STATIC_ROOT:设置 collectstatic 将会收集静态文件地址的绝对路径地址</li>
+<li><p>STATIC_URL:定义静态文件的 url</p>
+<p>  Example: “/static/“ or “<a href="http://static.example.com/" target="_blank" rel="external">http://static.example.com/</a>“</p>
+</li>
+<li><p>STATICFILES_DIRS：</p>
+</li>
+</ul>
+<pre><code>exa：
+
+        STATICFILES_DIRS = [
+        &quot;/home/special.polls.com/polls/static&quot;,
+        &quot;/home/polls.com/polls/static&quot;,
+        &quot;/opt/webfiles/common&quot;,
+    ]
+</code></pre><ul>
+<li>STATICFILES_STORAGE</li>
+<li>STATICFILES_FINDERS</li>
+</ul>
+<p>。。。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/Python/django/Django 报错记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/21/Python/django/Django 报错记录/" itemprop="url">Django 报错记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-21T13:18:12+08:00">
+                2016-11-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="NoReverseMatch"><a href="#NoReverseMatch" class="headerlink" title="NoReverseMatch"></a>NoReverseMatch</h1><pre><code>Reverse for &apos;index&apos; with arguments &apos;()&apos; and keyword arguments &apos;{}&apos; not found. 0 pattern(s) tried: []
+</code></pre><p>原因：URLconf 设置错误</p>
+<p>错误例子：</p>
+<pre><code>主urls.py中的
+url(r&apos;^$&apos;, include(&apos;blog.urls&apos;)),
+修改成
+url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
+</code></pre><p>$判断字符串结束，所以后面的子url她没法解析了</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/18/program/SVN 使用记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/18/program/SVN 使用记录/" itemprop="url">SVN 使用记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-18T13:18:12+08:00">
+                2016-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SVN-生命周期"><a href="#SVN-生命周期" class="headerlink" title="SVN  生命周期"></a>SVN  生命周期</h1><h2 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h2><p>版本库相当于一个集中的空间</p>
+<h2 id="检出"><a href="#检出" class="headerlink" title="检出"></a>检出</h2><p>Checkout：操作从版本库创建一个工作副本。工作副本是正常开发的地方，修改后提交到版本库中。</p>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>update：操作从版本库中下载代码，将工作副本与版本库进行同步</p>
+<h2 id="执行变更"><a href="#执行变更" class="headerlink" title="执行变更"></a>执行变更</h2><p>commit：提交，将工作副本中的代码提交到版本库中。</p>
+<p>rename：操作，更改文件／目录的名字</p>
+<h2 id="复查变化"><a href="#复查变化" class="headerlink" title="复查变化"></a>复查变化</h2><p>update，checkout，操作后工作副本就和版本库中的数据相同了。</p>
+<p>status：操作，列出工作副本中所进行的变动，变动列表</p>
+<p>diff：操作显示变动详细信息</p>
+<h2 id="修复错误"><a href="#修复错误" class="headerlink" title="修复错误"></a>修复错误</h2><p>当工作副本中做了许多修改，但是不想要这个修改的时候，</p>
+<p>revert：操作重置对工作副本的修改。可以重置部分修改</p>
+<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><p>合并的时候会发生冲突</p>
+<p>merge：操作可以处理部分冲突，不能处理的冲突需要用户自己处理</p>
+<p>resolver：操作可以找出需要用户解决的冲突</p>
+<h2 id="提交更改"><a href="#提交更改" class="headerlink" title="提交更改"></a>提交更改</h2><p>commit：操作将工作副本的内容发送到版本库中</p>
+<h1 id="SVN-启动模式"><a href="#SVN-启动模式" class="headerlink" title="SVN 启动模式"></a>SVN 启动模式</h1><p>默认端口：<code>3690</code></p>
+<p>方式一：-r直接指定到版本库(称之为单库svnserve方式):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnserve -d -r /opt/svn/runoob</div></pre></td></tr></table></figure></p>
+<p>方式二：指定到版本库的上级目录(称之为多库svnserve方式):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnserve -d -r /opt/svn</div></pre></td></tr></table></figure></p>
+<p>多库启动 svn 的时候，当 svn 目录下有两个版本库：<code>runoob</code>,<code>runoob01</code></p>
+<p>runoob01 svn 地址：<code>svn://192.168.0.1/runoob01</code></p>
+<h1 id="Mac-下安装和使用"><a href="#Mac-下安装和使用" class="headerlink" title="Mac 下安装和使用"></a>Mac 下安装和使用</h1><h2 id="install-svn-server-服务器端"><a href="#install-svn-server-服务器端" class="headerlink" title="install svn server 服务器端"></a>install svn server 服务器端</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ brew options subversion</div><div class="line">$ brew install (OPTIONS) subversion</div></pre></td></tr></table></figure>
+<h2 id="创建版本库-1"><a href="#创建版本库-1" class="headerlink" title="创建版本库"></a>创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnadmin create /opt/svn/runoob01</div></pre></td></tr></table></figure>
+<p>版本库配置文件位置:<code>/opt/svn/runoob01/conf</code>:</p>
+<ol>
+<li><p>svnserve.conf: svn 服务配置文件</p>
+<p> 去掉下面的注释</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># anon-access = read</div><div class="line"># auth-access = write</div><div class="line"></div><div class="line"># password-db = passwd</div><div class="line"></div><div class="line"># authz-db = authz</div></pre></td></tr></table></figure>
+<p> anon-access = read代表匿名访问的时候是只读的，若改为anon-access = none代表禁止匿名访问，需要帐号密码才能访问</p>
+</li>
+<li><p>passwd: 用户名口令</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#&lt;用户名&gt; = &lt;口令&gt;</div><div class="line"></div><div class="line">[users]</div><div class="line">fang = 123456</div><div class="line">fang02 = 123456</div></pre></td></tr></table></figure>
+</li>
+<li><p>authz: 权限配置文件 </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 定义组</div><div class="line">[groups]</div><div class="line">@g_admin = fang,fang02</div><div class="line"></div><div class="line"># [&lt;版本库名&gt;:&lt;路径&gt;]</div><div class="line">[runoob01:/]</div><div class="line">@g_admin=rw</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="mac-下-svn-的一些基本操作"><a href="#mac-下-svn-的一些基本操作" class="headerlink" title="mac 下 svn 的一些基本操作"></a>mac 下 svn 的一些基本操作</h2><h3 id="从本地导入代码到服务器-第一次初始化导入"><a href="#从本地导入代码到服务器-第一次初始化导入" class="headerlink" title="从本地导入代码到服务器(第一次初始化导入)"></a>从本地导入代码到服务器(第一次初始化导入)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn import /Users/apple/webSite svn://localhost/mycode/webSite --username=mj --password=123 -m &quot;初始化导入&quot;</div></pre></td></tr></table></figure>
+<p>这种方法将本地文件上传到 svn 版本库中，本地文件不会和 svn 关联（之后不能使用 commit）</p>
+<h3 id="从服务器端下载代码到客户端本地"><a href="#从服务器端下载代码到客户端本地" class="headerlink" title="从服务器端下载代码到客户端本地"></a>从服务器端下载代码到客户端本地</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn checkout svn://localhost/mycode --username=mj --password=123 /Users/apple/svnwebSite</div></pre></td></tr></table></figure>
+<p>这种方法会将本地代码和版本库代码关联（之后修改后可以直接 commit）</p>
+<h3 id="提交更改过的代码到服务器"><a href="#提交更改过的代码到服务器" class="headerlink" title="提交更改过的代码到服务器"></a>提交更改过的代码到服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn commit -m &quot;修改了webSite文件&quot;</div></pre></td></tr></table></figure>
+<h3 id="更新服务器端的代码到客户端"><a href="#更新服务器端的代码到客户端" class="headerlink" title="更新服务器端的代码到客户端"></a>更新服务器端的代码到客户端</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn update</div></pre></td></tr></table></figure>
+<h1 id="svn-add"><a href="#svn-add" class="headerlink" title="svn add ."></a>svn add .</h1><p><a href="http://tiankonguse.com/record/record.php?id=690" target="_blank" rel="external">http://tiankonguse.com/record/record.php?id=690</a></p>
+<pre><code>svn: warning: W150002: &apos;目录路径&apos; is already under version control
+svn: E200009: Could not add all targets because some targets are already versioned
+svn: E200009: Illegal target for the requested operation
+</code></pre><p>解决方案：</p>
+<pre><code>svn add 目录名 --force
+</code></pre><h1 id="svn-commit-m’…-’"><a href="#svn-commit-m’…-’" class="headerlink" title="svn commit -m’…..’"></a>svn commit -m’…..’</h1><h1 id="删除文件夹后点commit提交，但是报错，报错内容如下："><a href="#删除文件夹后点commit提交，但是报错，报错内容如下：" class="headerlink" title="删除文件夹后点commit提交，但是报错，报错内容如下："></a>删除文件夹后点commit提交，但是报错，报错内容如下：</h1><p>提示 “svn: Commit failed (details follow): svn: <code>&#39;/***/xxx.c&#39; is scheduled for addition, but is missing &quot;</code></p>
+<p>原因：之前用SVN提交过的文件，被标记为”add”状态，等待被加入到仓库。若此时你把这个文件删除了，SVN提交的时候还是会尝试提交这个文件，虽然它的状态已经是 “missing”了。</p>
+<p>解决：</p>
+<pre><code>svn revert xxx.c --depth infinity
+</code></pre><p>参考：</p>
+<p><a href="https://cnbin.github.io/blog/2015/06/13/mac-da-jian-svn-fu-wu-qi-huan-jing/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/06/13/mac-da-jian-svn-fu-wu-qi-huan-jing/</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/17/Android/debug/Debug -- Databases And Shared Preferences/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/17/Android/debug/Debug -- Databases And Shared Preferences/" itemprop="url">Debug -- Databases And Shared Preferences</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-17T13:18:12+08:00">
+                2016-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>添加下面的依赖：（版本可能需要更新了）</p>
+<pre><code>debugCompile &apos;com.amitshekhar.android:debug-db:0.1.0&apos;
+</code></pre><p>运行 App 后在log中会看到：</p>
+<pre><code>D/DebugDB: Open http://XXX.XXX.X.XXX:8080 in your browser
+</code></pre><p>在游览器中打开这个地址就可以了。</p>
+<p>原文链接：<a href="https://medium.com/@amitshekhar/debugging-android-databases-and-shared-preferences-in-the-easiest-way-e5f705dfc06b#.bgorqpgg5" target="_blank" rel="external">Android debug Databalses And Shared Preferences</a></p>
+
           
         
       
@@ -2104,7 +2558,7 @@ urlpatterns = router.urls
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/17/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="extend next" rel="next" href="/page/19/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2149,7 +2603,7 @@ urlpatterns = router.urls
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">448</span>
+                <span class="site-state-item-count">458</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -2171,7 +2625,7 @@ urlpatterns = router.urls
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">256</span>
+                <span class="site-state-item-count">258</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

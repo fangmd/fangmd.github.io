@@ -99,7 +99,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/12/21/Android/优化/Android内存优化-内存管理/index.html">
 <meta property="og:site_name" content="Double">
 <meta property="og:description" content="原文地址: https://mp.weixin.qq.com/s?__biz=MzIxNjc0ODExMA==&amp;amp;mid=2247484311&amp;amp;idx=1&amp;amp;sn=1fe0416bed4137dd45c6e9c153bb14f4&amp;amp;chksm=97851ab6a0f293a0cde28ff6d1091b2232e1758e9845a05549d01c62f412def74">
-<meta property="og:updated_time" content="2017-12-21T13:02:53.051Z">
+<meta property="og:updated_time" content="2018-03-06T10:45:38.673Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android内存优化 -- 内存管理 onTrimMemory">
 <meta name="twitter:description" content="原文地址: https://mp.weixin.qq.com/s?__biz=MzIxNjc0ODExMA==&amp;amp;mid=2247484311&amp;amp;idx=1&amp;amp;sn=1fe0416bed4137dd45c6e9c153bb14f4&amp;amp;chksm=97851ab6a0f293a0cde28ff6d1091b2232e1758e9845a05549d01c62f412def74">
@@ -347,6 +347,7 @@
 <h1 id="onTrimMemory"><a href="#onTrimMemory" class="headerlink" title="onTrimMemory"></a>onTrimMemory</h1><h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><p>通过 onTrimMemory 实现对 App 内存的简单管理。</p>
 <p>onTrimMemory：Android 4.0 之后提供的 API，作用是提醒开发者系统内存不足了。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTrimMemory</span><span class="params">(<span class="keyword">int</span> level)</span></span></div></pre></td></tr></table></figure>
+<a id="more"></a>
 <h2 id="onTrimmemory-参数的意义"><a href="#onTrimmemory-参数的意义" class="headerlink" title="onTrimmemory 参数的意义"></a>onTrimmemory 参数的意义</h2><ul>
 <li>TRIM_MEMORY_UI_HIDDEN：App 的所有 UI 界面被隐藏，最常见的就是 App 被 home 键或者 back 键，置换到后台了。</li>
 <li>TRIM_MEMORY_RUNNING_MODERATE：表示 App 正常运行，并且不会被杀掉，但是目前手机内存已经有点低了，系统可能会根据 LRU List 来开始杀进程。</li>
@@ -370,8 +371,9 @@
 <li>ContentProvider</li>
 </ul>
 <p>通常会在 Application 中监听</p>
-<h2 id="自定义-noTrimMemory-监听"><a href="#自定义-noTrimMemory-监听" class="headerlink" title="自定义 noTrimMemory 监听"></a>自定义 noTrimMemory 监听</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerComponentCallbacks</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback)&#123;</div><div class="line">        <span class="keyword">this</span>.registerComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterComponentCallbacks</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback)&#123;</div><div class="line">        <span class="keyword">this</span>.unregisterComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> ComponentCallbacks2 mTrimMemoryCallback = ComponentCallbacks2() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTrimMemory</span><span class="params">(<span class="keyword">int</span> level</span></span></div><div class="line">  </div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onConfigurationChanged(Configuration newConfig</div><div class="line">  </div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onLowMemory(</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="自定义-noTrimMemory-监听"><a href="#自定义-noTrimMemory-监听" class="headerlink" title="自定义 noTrimMemory 监听"></a>自定义 noTrimMemory 监听</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerComponentCallbacks</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback) &#123;</div><div class="line">        <span class="keyword">this</span>.registerComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterComponentCallbacks</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback) &#123;</div><div class="line">        <span class="keyword">this</span>.unregisterComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> ComponentCallbacks2 mTrimMemoryCallback = <span class="keyword">new</span> ComponentCallbacks2()&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConfigurationChanged</span><span class="params">(Configuration newConfig)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLowMemory</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTrimMemory</span><span class="params">(<span class="keyword">int</span> level)</span> </span>&#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <h1 id="onTrimMemory-的一些思考"><a href="#onTrimMemory-的一些思考" class="headerlink" title="onTrimMemory 的一些思考"></a>onTrimMemory 的一些思考</h1><p>通常需要释放的资源：图片，文件</p>
+<p>通过这个实现 应用退到后台 的事件捕获</p>
 
       
     </div>
@@ -424,8 +426,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/12/21/Android/四大组件/Context/" rel="prev" title="Context">
-                Context <i class="fa fa-chevron-right"></i>
+              <a href="/2017/12/21/Android/animate/ConstraintLayout实现动画/" rel="prev" title="ConstraintLayout 实现动画">
+                ConstraintLayout 实现动画 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -498,7 +500,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">448</span>
+                <span class="site-state-item-count">458</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -520,7 +522,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">256</span>
+                <span class="site-state-item-count">258</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>

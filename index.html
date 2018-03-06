@@ -253,6 +253,1178 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/07/Android/优化/Android通过后台数据预获取技术改善性能/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/07/Android/优化/Android通过后台数据预获取技术改善性能/" itemprop="url">Android 通过后台数据预获取技术改善性能</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-07T21:03:14+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对于这篇文章的思考和整理：<a href="https://juejin.im/post/5a71a9c3f265da3e2f01459b" target="_blank" rel="external">通过后台数据预获取技术实现性能提升</a></p>
+<blockquote>
+<p>只是一些思考没有完整处理方案</p>
+</blockquote>
+<h1 id="希望处理的问题"><a href="#希望处理的问题" class="headerlink" title="希望处理的问题"></a>希望处理的问题</h1><h2 id="网络问题处理"><a href="#网络问题处理" class="headerlink" title="网络问题处理"></a>网络问题处理</h2><ol>
+<li>无网络／网络连接失败的时候</li>
+</ol>
+<p>需要显示缓存的数据（用户之前游览过的数据）</p>
+<p>需要在手机空闲并且连接 wifi 的情况下缓存一部分新的数据，在用户查看数据的时候加快速度，相当于数据预加载功能，</p>
+<ol>
+<li>网络慢的时候</li>
+</ol>
+<h2 id="应用任务种类及其处理时机问题"><a href="#应用任务种类及其处理时机问题" class="headerlink" title="应用任务种类及其处理时机问题"></a>应用任务种类及其处理时机问题</h2><ol>
+<li>一些重要而且具有一定重量级的任务的执行时机</li>
+</ol>
+<p>当用户打开应用的时候再去执行花费会造成一定的用户等待时间，即使是在后台运行也可能会使应用变得卡。</p>
+<ol>
+<li>一些不重要但是需要被执行的任务。</li>
+</ol>
+<p>这类任务也不建议在用户使用 app 的时候执行，可以在手机空闲的时候执行，或者在 UI 退到后台的时候执行。</p>
+<ol>
+<li>一些马上可能使用到的功能</li>
+</ol>
+<p>在用户使用 App 的时候提前预测用户下一步动作，提前做一些预处理工作。这里的预处理工作可以是从网络中加载数据，也可以是从本地数据库中读取数据。</p>
+<h1 id="需要处理的具体问题和处理方案"><a href="#需要处理的具体问题和处理方案" class="headerlink" title="需要处理的具体问题和处理方案"></a>需要处理的具体问题和处理方案</h1><h2 id="网络问题"><a href="#网络问题" class="headerlink" title="网络问题"></a>网络问题</h2><p>需要做到下面几项</p>
+<ol>
+<li>缓存历史请求的数据。在无网的时候可以直接使用</li>
+<li>后台预加载数据。实现在无网／弱网状态下也能很快加载数据，在 网络正常 情况下也可以先显示预加载的数据，然后请求新数据</li>
+<li>缓存的管理。设置 缓存可占用物理内存 最大值功能</li>
+</ol>
+<p>方案：</p>
+<ul>
+<li>数据库存储之前加载过的数据</li>
+<li>利用 retrofit 和 http 的特性实现加载离线数据</li>
+</ul>
+<blockquote>
+<p>用户体验思考：增加上次阅读到哪里的标记（类似 今日头条 实现的上次阅读到这里的标记）</p>
+</blockquote>
+<h2 id="应用任务处理时机问题"><a href="#应用任务处理时机问题" class="headerlink" title="应用任务处理时机问题"></a>应用任务处理时机问题</h2><p>任务处理：</p>
+<ul>
+<li>Android 5.0 之后使用 JobSchedule 实现后台处理任务</li>
+<li>使用监听 App的Backgorund和Foreground 实现应用切换到后他的时候开启一些任务，当 app 回到前台的时候停止任务的处理减少性能消耗，保证应用流程运行</li>
+<li>监测手机的状态，如果手机内存充足，cpu 空闲，那么可以运行重量级任务</li>
+<li>利用人工智能学习用户的习惯</li>
+</ul>
+<p>利用人工智能确定用户什么时候会打开应用，什么时候用户会连接 wifi，什么时候手机处于弱网状态，什么时候手机处于空闲 wifi 状态。</p>
+<p>利用人工智能确定 后台任务 的执行时机。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/07/Android/features/Androud应用Background和Foreground捕获/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/07/Android/features/Androud应用Background和Foreground捕获/" itemprop="url">Android 应用 Background 和 Foreground 捕获</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-07T09:23:14+08:00">
+                2018-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>实现应用前后台切换的监听</p>
+<p>面向接口编程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BackgroundForegroundDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onBackground</span><span class="params">()</span></span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onForeground</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/07/Android/features/Androud应用Background和Foreground捕获/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/Android/Android 版本/Android5.0/StateListAnimator 的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/01/Android/Android 版本/Android5.0/StateListAnimator 的使用/" itemprop="url">StateListAnimator 的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-01T22:38:14+08:00">
+                2018-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><a href="https://developer.android.com/training/material/animations.html#ViewState">官方文档</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/01/Android/Android 版本/Android5.0/StateListAnimator 的使用/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/01/Android/animate/Activity跳转动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/01/Android/animate/Activity跳转动画/" itemprop="url">Activity 跳转动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-01T09:38:14+08:00">
+                2018-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Content-Transition-内容变换"><a href="#Content-Transition-内容变换" class="headerlink" title="Content Transition 内容变换"></a>Content Transition 内容变换</h1><h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><ul>
+<li>在 Activity style 中添加</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;item name="android:windowActivityTransitions"&gt;true&lt;/item&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>设置相应的A离开/B进入/B离开/A重新进入动画。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//A 不设置默认为null</span></div><div class="line">getWindow().setExitTransition(transition);</div><div class="line"><span class="comment">//B 不设置默认为Fade</span></div><div class="line">getWindow().setEnterTransition(transition);</div><div class="line"><span class="comment">//B 不设置默认为EnterTransition</span></div><div class="line">getWindow().setReturnTransition(transition);</div><div class="line"><span class="comment">//A 不设置默认为ExitTransition</span></div><div class="line">getWindow().setReenterTransition(transition);</div></pre></td></tr></table></figure>
+<p>也可以在主题中设置</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;item name="android:windowEnterTransition"&gt;@transition/slide_and_fade&lt;/item&gt;</div><div class="line">&lt;item name="android:windowReturnTransition"&gt;@transition/return_slide&lt;/item&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li>跳转界面</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Bundle bundle=ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle;</div><div class="line">startActivity(intent,bundle)</div></pre></td></tr></table></figure>
+<h1 id="Shared-Element-Transition"><a href="#Shared-Element-Transition" class="headerlink" title="Shared Element Transition"></a>Shared Element Transition</h1><blockquote>
+<p>Shared Element Transition 通常和 Content Transition 一起使用</p>
+</blockquote>
+<h2 id="使用步骤-1"><a href="#使用步骤-1" class="headerlink" title="使用步骤"></a>使用步骤</h2><ul>
+<li>设置需要被共享的元素</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">xml 中设置，或者在代码中设置</div><div class="line"></div><div class="line">transitionName</div></pre></td></tr></table></figure>
+<ul>
+<li>跳转界面</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Bundle bundle=ActivityOptionsCompat.makeSceneTransitionAnimation(activity).toBundle;</div><div class="line">startActivity(intent,bundle)</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/Android/优化/07-Android优化-DiskLruCache管理缓存文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/29/Android/优化/07-Android优化-DiskLruCache管理缓存文件/" itemprop="url">Android内存优化 -- DiskLruCache</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-29T21:03:14+08:00">
+                2018-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>DiskLruCache 是一个第三方库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">implementation &apos;com.jakewharton:disklrucache:2.0.2&apos;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/Android/优化/06-Android内存优化-LruCache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/29/Android/优化/06-Android内存优化-LruCache/" itemprop="url">Android内存优化 -- LruCache</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-29T21:03:14+08:00">
+                2018-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Lru-算法"><a href="#Lru-算法" class="headerlink" title="Lru 算法"></a>Lru 算法</h1><p>Least Recently Used 最近最少使用算法</p>
+<p>数据结构：链表</p>
+<p>访问数据的时候，如果缓存中有数据 就将改数据移动到链表顶端；没有该数据就在链表顶端加入该数据，如果链表满了就移除底端的数据。</p>
+<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>在 Java 中使用 LinkedHashMap 实现 LRU 算法。</p>
+<p>LinkedHashMap 是以访问顺序排序的, 排序方式满足了 LRU 算法，同时属于 Map， get 数据的时候复杂度为 1。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span></span>&#123;</div><div class="line">  <span class="keyword">private</span> LinkedHashMap&lt;Integer, Integer&gt; map;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> CAPACITY;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> capacity)</span></span>&#123;</div><div class="line">    CAPACITY = capacity;</div><div class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;Integer, Integer&gt;(capacity, <span class="number">0.75f</span>, <span class="keyword">true</span>)&#123;</div><div class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry eldest)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> size()&gt;CAPACITY;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> map.getOrDefault(key, -<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span></span>&#123;</div><div class="line">    map.put(key, value);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>图片缓存</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> maxMemory = (<span class="keyword">int</span>) (Runtime.getRuntime().totalMemory()/<span class="number">1024</span>);</div><div class="line"><span class="keyword">int</span> cacheSize = maxMemory/<span class="number">8</span>;</div><div class="line"></div><div class="line">        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String,Bitmap&gt;(cacheSize)&#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">sizeOf</span><span class="params">(String key, Bitmap value)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> value.getRowBytes()*value.getHeight()/<span class="number">1024</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/25/Android/view/撸个侧滑控件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/25/Android/view/撸个侧滑控件/" itemprop="url">撸个侧滑控件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-25T11:38:14+08:00">
+                2018-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/customViews/slide_view.gif" alt="效果"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/25/Android/view/撸个侧滑控件/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/22/java/单例VS静态方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/22/java/单例VS静态方法/" itemprop="url">单例 VS 静态方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-22T21:18:12+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="在-jvm-中存储区别"><a href="#在-jvm-中存储区别" class="headerlink" title="在 jvm 中存储区别"></a>在 jvm 中存储区别</h1><blockquote>
+<p>Singleton objects are stored in Heap, but static objects are stored in stack.</p>
+</blockquote>
+<p>单例：属于对象，存储在 堆 中</p>
+<p>静态类，静态方法：存储在 栈 中</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/22/java/单例VS静态方法/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/21/Android/view/自定义View/自定义View-Canvas/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -512,1269 +1684,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/Android/view/自定义View/自定义View-onDraw/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/19/Android/view/自定义View/自定义View-onDraw/" itemprop="url">自定义View -- onDraw</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T09:23:14+08:00">
-                2018-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>自定义 View 中的绘制方法</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/19/Android/view/自定义View/自定义View-onDraw/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/Android/view/自定义View/自定义View-onMeasure/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/19/Android/view/自定义View/自定义View-onMeasure/" itemprop="url">自定义View -- onMeasure</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T09:23:14+08:00">
-                2018-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ul>
-<li>重写onMeasure()方法是为了自定义View尺寸的规则</li>
-<li>如果你的自定义View的尺寸是根据父控件行为一致，就不需要重写onMeasure()方法</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li><code>widthMeasureSpec</code>, <code>heightMeasureSpec</code>: 里面封装了 size 和 mode</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/19/Android/view/自定义View/自定义View-onMeasure/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/18/Android/优化/05.代码优化之Lint/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/18/Android/优化/05.代码优化之Lint/" itemprop="url">代码优化之 Lint</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-18T21:03:14+08:00">
-                2018-01-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/Android/UI/子控件超出父控件显示/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/11/Android/UI/子控件超出父控件显示/" itemprop="url">子控件超出父控件显示</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T12:18:12+08:00">
-                2018-01-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;LinearLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/ll_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:clipChildren=&quot;false&quot;</div><div class="line">    android:clipToPadding=&quot;false&quot;</div><div class="line">    android:fitsSystemWindows=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.weixinxiaochengxu.WeiXinActivity&quot;&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/tv_head&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;80dp&quot;</div><div class="line">        android:clipChildren=&quot;false&quot;</div><div class="line">        android:clipToPadding=&quot;false&quot;</div><div class="line">        android:layout_marginTop=&quot;-80dp&quot;</div><div class="line">        android:gravity=&quot;center&quot;</div><div class="line">        android:text=&quot;Head: &quot;/&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/body&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;0dp&quot;</div><div class="line">        android:layout_weight=&quot;1&quot;</div><div class="line">        android:background=&quot;@color/colorPrimaryDark&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
-<p>LinearLayout 执行 scrollBy(x, y); 方法就可以控制 TextView 是否显示</p>
-<p>或者：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;LinearLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/ll_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:clipChildren=&quot;false&quot;</div><div class="line">    android:layout_marginTop=&quot;-80dp&quot;</div><div class="line">    android:clipToPadding=&quot;false&quot;</div><div class="line">    android:fitsSystemWindows=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.weixinxiaochengxu.WeiXinActivity&quot;&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/tv_head&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;80dp&quot;</div><div class="line">        android:clipChildren=&quot;false&quot;</div><div class="line">        android:clipToPadding=&quot;false&quot;        </div><div class="line">        android:gravity=&quot;center&quot;</div><div class="line">        android:text=&quot;Head: &quot;/&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/body&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;0dp&quot;</div><div class="line">        android:layout_weight=&quot;1&quot;</div><div class="line">        android:background=&quot;@color/colorPrimaryDark&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/27/Android/tips/Android多线程总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/27/Android/tips/Android多线程总结/" itemprop="url">Android 多线程小结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-27T12:18:12+08:00">
-                2017-12-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="实现异步的方式"><a href="#实现异步的方式" class="headerlink" title="实现异步的方式"></a>实现异步的方式</h1><h2 id="Java-Thread"><a href="#Java-Thread" class="headerlink" title="Java Thread"></a>Java Thread</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 1. 实现Runnable接口</span></div><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// code</span></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;).start();</div><div class="line"></div><div class="line"><span class="comment">// 2. 直接继承Thread</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.run();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>缺点是无法获取执行结果</p>
-</blockquote>
-<h2 id="Future-ExecutorService"><a href="#Future-ExecutorService" class="headerlink" title="Future + ExecutorService"></a>Future + ExecutorService</h2><blockquote>
-<p>在 Android 中使用的时候要注意在子线程中执行，因为在主线程中直接调用结果获取的方法会阻塞线程。</p>
-</blockquote>
-<p>Future(FutureTask) 作用：</p>
-<ol>
-<li>判断任务是否完成；</li>
-<li>能够中断任务；</li>
-<li>能够获取任务执行结果。</li>
-</ol>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">mExecutorService = Executors.newCachedThread</div><div class="line">mStringFutureTask = new FutureTask&lt;String&gt;(new CString&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    public String call() throws Exception &#123;</div><div class="line">        Thread.sleep(8000);</div><div class="line">        return "result";</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">mExecutorService.execute(mStringFutureTask);</div><div class="line">try &#123;</div><div class="line">    String s = mStringFutureTask.get();</div><div class="line">    Log.d(TAG, "onCreate: </div><div class="line">    // close executorService</div><div class="line">    mExecutorService.shutdown();</div><div class="line">&#125; catch (InterruptedException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125; catch (ExecutionException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>优点：</p>
-<ol>
-<li>能够获取任务结果</li>
-<li>在多任务的情况下方便管理</li>
-</ol>
-<h2 id="AsyncTask"><a href="#AsyncTask" class="headerlink" title="AsyncTask"></a>AsyncTask</h2><blockquote>
-<p>但凡和线程池/线程/同步/锁等有关的实践问题，尽量不要用 Android 的解决方案，如 AsyncTask，而要用 Java 中已经历经考验的实践方案</p>
-</blockquote>
-<p>是适合当个任务，在多个异步任务并行的情况下不方便管理</p>
-<h2 id="IntentService"><a href="#IntentService" class="headerlink" title="IntentService"></a>IntentService</h2><h1 id="ExecutorService-管理异步任务"><a href="#ExecutorService-管理异步任务" class="headerlink" title="ExecutorService 管理异步任务"></a>ExecutorService 管理异步任务</h1><h1 id="一个例子-使用多线程计算-1-2…-100"><a href="#一个例子-使用多线程计算-1-2…-100" class="headerlink" title="一个例子 使用多线程计算 1+2…+100"></a>一个例子 使用多线程计算 1+2…+100</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startCalculate</span><span class="params">()</span> </span>&#123;</div><div class="line">    sum += <span class="number">100</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> finalI = = <span class="number">0</span>；</div><div class="line">        Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    Thread.sleep(<span class="number">1000</span>);</div><div class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">              </div><div class="line">                <span class="keyword">synchronized</span> (MainActivity.<span class="keyword">this</span>) &#123;</div><div class="line">                    <span class="keyword">int</span> from = (<span class="number">100</span> / <span class="number">10</span>) * finalI;</div><div class="line">                    <span class="keyword">int</span> to = (<span class="number">100</span> / <span class="number">10</span>) * (finalI + <span class="number">1</span>);</div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> j = from; j &lt; to; j++) &#123;</div><div class="line">                        sum += j;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                result(Thread.currentThread().getNamesum);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="string">"Thread"</span> + i);</div><div class="line">        thread.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">volatile</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">result</span><span class="params">(String name, <span class="keyword">long</span> sum)</span> </span>&#123;</div><div class="line">    Log.d(TAG, name + <span class="string">"result: "</span> + sum);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>result 方法作为结果回调，可以在 result 中记录已经结束的线程，同时判断是不是所有线程都执行结束了</li>
-<li>error 可以增加一个 error 方法回调，记录哪个线程执行的任务失败了</li>
-</ul>
-<p>参考：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/2b634a7c49ec" target="_blank" rel="external">https://www.jianshu.com/p/2b634a7c49ec</a></li>
-<li><a href="http://www.cnblogs.com/dolphin0520/p/3949310.html" target="_blank" rel="external">http://www.cnblogs.com/dolphin0520/p/3949310.html</a></li>
-<li><a href="https://www.jianshu.com/p/253cff3d895a" target="_blank" rel="external">https://www.jianshu.com/p/253cff3d895a</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/21/Android/animate/ConstraintLayout实现动画/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/21/Android/animate/ConstraintLayout实现动画/" itemprop="url">ConstraintLayout 实现动画</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:38:14+08:00">
-                2017-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="方式二-设置属性"><a href="#方式二-设置属性" class="headerlink" title="方式二 设置属性"></a>方式二 设置属性</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">mConstraintSet1 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet1.clone(mRoot);</div><div class="line">mConstraintSet2 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet2.clone(<span class="keyword">this</span>, R.layout.activity_constaint_layout_animate_small);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change2</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    TransitionManager.beginDelayedTransition(mRoot);</div><div class="line">    <span class="keyword">if</span> (mChanged) &#123;</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.START, <span class="number">0</span>);</div><div class="line">        mConstraintSet1.constrainWidth(R.id.view, mWidthMax);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.TOP, <span class="number">0</span>);</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">int</span> margin = (mWidthMax - mWidthMin) / <span class="number">2</span>;</div><div class="line">        Log.d(TAG, <span class="string">"change: "</span> + margin);</div><div class="line">        mConstraintSet1.constrainWidth(R.id.view, mWidthMin);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.LEFT, margin);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.TOP, <span class="number">200</span>);</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125;</div><div class="line">    mChanged = !mChanged;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="方式一-创建两个布局"><a href="#方式一-创建两个布局" class="headerlink" title="方式一 创建两个布局"></a>方式一 创建两个布局</h1><blockquote>
-<p>两个布局的控件 id 要一样， constraint 的约束属性要齐全</p>
-</blockquote>
-<p><code>activity_constaint_layout_animate.xml</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;android.support.constraint.ConstraintLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/c_animate_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:background=&quot;#a1a1a1&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.constainslayoutAnimate.ConstraintLayoutAnimateActivity&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/view&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;300dp&quot;</div><div class="line">        android:background=&quot;#a0ffaa&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:layout_width=&quot;0dp&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:onClick=&quot;change&quot;</div><div class="line">        android:text=&quot;Change&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</div></pre></td></tr></table></figure>
-<p><code>activity_constaint_layout_animate_small.xml</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;android.support.constraint.ConstraintLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/c_animate_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:background=&quot;#a1a1a1&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.constainslayoutAnimate.ConstraintLayoutAnimateActivity&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/view&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;200dp&quot;</div><div class="line">        android:layout_marginLeft=&quot;20dp&quot;</div><div class="line">        android:layout_marginRight=&quot;20dp&quot;</div><div class="line">        android:layout_marginTop=&quot;20dp&quot;</div><div class="line">        android:background=&quot;#a0ffaa&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:layout_width=&quot;0dp&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:onClick=&quot;change&quot;</div><div class="line">        android:text=&quot;Change&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</div></pre></td></tr></table></figure>
-<p>使用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mConstraintSet1 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet1.clone(mRoot);</div><div class="line">mConstraintSet2 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet2.clone(<span class="keyword">this</span>, R.layout.activity_constaint_layout_animate_small);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    TransitionManager.beginDelayedTransition(mRoot);</div><div class="line">    <span class="keyword">if</span> (mChanged) &#123;</div><div class="line">        mConstraintSet2.applyTo(mRoot);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125;</div><div class="line">    mChanged = !mChanged;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/21/Android/四大组件/Context/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/21/Android/四大组件/Context/" itemprop="url">Context</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:38:14+08:00">
-                2017-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <table>
-<thead>
-<tr>
-<th>name</th>
-<th>age</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>LearnShare</td>
-<td>12</td>
-</tr>
-<tr>
-<td>Mike</td>
-<td>32</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>Application</th>
-<th>Activity</th>
-<th>Service</th>
-<th>ContentProvider</th>
-<th>BroadcastReceiver</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Show a Dialog</td>
-<td>NO</td>
-<td>YES</td>
-<td>NO</td>
-<td>NO</td>
-<td>NO</td>
-</tr>
-<tr>
-<td>Start an Activity</td>
-<td>NO1</td>
-<td>YES</td>
-<td>NO1</td>
-<td>NO1</td>
-<td>NO1</td>
-</tr>
-<tr>
-<td>Layout Inflation</td>
-<td>NO2</td>
-<td>YES</td>
-<td>NO2</td>
-<td>NO2</td>
-<td>NO2</td>
-</tr>
-<tr>
-<td>Start a Service</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-</tr>
-<tr>
-<td>Bind to a Service</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>NO</td>
-</tr>
-<tr>
-<td>Send a Broadcast</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-</tr>
-<tr>
-<td>Register BroadcastReceiver</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>NO3</td>
-</tr>
-<tr>
-<td>Load Resource Values</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-<td>YES</td>
-</tr>
-</tbody>
-</table>
-<p>参考：<a href="https://possiblemobile.com/2013/06/context/" target="_blank" rel="external">https://possiblemobile.com/2013/06/context/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/21/Android/优化/Android内存优化-内存管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/21/Android/优化/Android内存优化-内存管理/" itemprop="url">Android内存优化 -- 内存管理 onTrimMemory</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:03:14+08:00">
-                2017-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文地址: <a href="https://mp.weixin.qq.com/s?__biz=MzIxNjc0ODExMA==&amp;mid=2247484311&amp;idx=1&amp;sn=1fe0416bed4137dd45c6e9c153bb14f4&amp;chksm=97851ab6a0f293a0cde28ff6d1091b2232e1758e9845a05549d01c62f412def742985d642630&amp;scene=21#wechat_redirect" target="_blank" rel="external">https://mp.weixin.qq.com/s?__biz=MzIxNjc0ODExMA==&amp;mid=2247484311&amp;idx=1&amp;sn=1fe0416bed4137dd45c6e9c153bb14f4&amp;chksm=97851ab6a0f293a0cde28ff6d1091b2232e1758e9845a05549d01c62f412def742985d642630&amp;scene=21#wechat_redirect</a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>LowMemoryKiller 策略：App 退出到后台之后不占用 cpu 资源但是任然会占用内存空间。当系统内存不足的时候，会按照优先级清理进程。</p>
-<p>App 将内存使用降低可以提高优先级，实现不被系统回收的功能。</p>
-<h1 id="onTrimMemory"><a href="#onTrimMemory" class="headerlink" title="onTrimMemory"></a>onTrimMemory</h1><h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><p>通过 onTrimMemory 实现对 App 内存的简单管理。</p>
-<p>onTrimMemory：Android 4.0 之后提供的 API，作用是提醒开发者系统内存不足了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTrimMemory</span><span class="params">(<span class="keyword">int</span> level)</span></span></div></pre></td></tr></table></figure>
-<h2 id="onTrimmemory-参数的意义"><a href="#onTrimmemory-参数的意义" class="headerlink" title="onTrimmemory 参数的意义"></a>onTrimmemory 参数的意义</h2><ul>
-<li>TRIM_MEMORY_UI_HIDDEN：App 的所有 UI 界面被隐藏，最常见的就是 App 被 home 键或者 back 键，置换到后台了。</li>
-<li>TRIM_MEMORY_RUNNING_MODERATE：表示 App 正常运行，并且不会被杀掉，但是目前手机内存已经有点低了，系统可能会根据 LRU List 来开始杀进程。</li>
-<li>TRIM_MEMORY_RUNNING_LOW：表示 App正常运行，并且不会被杀掉。但是目前手机内存已经非常低了。</li>
-<li>TRIM_MEMORY_RUNNING_CRITICAL：表示 App 正在正常运行，但是系统已经开始根据 LRU List 的缓存规则杀掉了一部分缓存的进程。这个时候应该尽可能的释放掉不需要的内存资源，否者系统可能会继续杀掉其他缓存中的进程。</li>
-<li>TRIM_MEMORY_BACKGROUND：表示 App 退出到后台，并且已经处于 LRU List 比较靠后的位置，暂时前面还有一些其他的 App 进程，暂时不用担心被杀掉</li>
-<li>TRIM_MENORY_MODERATE：表示 App 退出到后台，并且已经处于 LRU List 中间的位置，如果手机内存仍然不够的话，还是有被杀掉的风险的。</li>
-<li>TRIM_MEMORY_COMPLETE：表示 App 退出到后台，并且已经处于 LRU List 比较考靠前的位置，并且手机内存已经极低，随时都有可能被系统杀掉。</li>
-</ul>
-<p>level 分三类：</p>
-<ol>
-<li>UI 在后台</li>
-<li>App 在前台运行</li>
-<li>App 在后台，在 Cached 状态下</li>
-</ol>
-<h2 id="哪些组件可以监听-onTrimMemory"><a href="#哪些组件可以监听-onTrimMemory" class="headerlink" title="哪些组件可以监听 onTrimMemory"></a>哪些组件可以监听 onTrimMemory</h2><ul>
-<li>Application</li>
-<li>Activity</li>
-<li>Fragment</li>
-<li>Service</li>
-<li>ContentProvider</li>
-</ul>
-<p>通常会在 Application 中监听</p>
-<h2 id="自定义-noTrimMemory-监听"><a href="#自定义-noTrimMemory-监听" class="headerlink" title="自定义 noTrimMemory 监听"></a>自定义 noTrimMemory 监听</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerComponentCallbacks</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback)&#123;</div><div class="line">        <span class="keyword">this</span>.registerComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregisterComponentCallbacks</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mTrimMemoryCallback)&#123;</div><div class="line">        <span class="keyword">this</span>.unregisterComponentCallbacks(mTrimMemoryCallback);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> ComponentCallbacks2 mTrimMemoryCallback = ComponentCallbacks2() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTrimMemory</span><span class="params">(<span class="keyword">int</span> level</span></span></div><div class="line">  </div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onConfigurationChanged(Configuration newConfig</div><div class="line">  </div><div class="line">    @Override</div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> onLowMemory(</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h1 id="onTrimMemory-的一些思考"><a href="#onTrimMemory-的一些思考" class="headerlink" title="onTrimMemory 的一些思考"></a>onTrimMemory 的一些思考</h1><p>通常需要释放的资源：图片，文件</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1819,7 +1733,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">448</span>
+                <span class="site-state-item-count">458</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -1841,7 +1755,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">256</span>
+                <span class="site-state-item-count">258</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
