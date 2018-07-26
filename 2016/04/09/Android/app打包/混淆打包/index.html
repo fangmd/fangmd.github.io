@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://i.imgur.com/lyTsDID.png">
 <meta property="og:image" content="http://i.imgur.com/FqvcGRJ.png">
 <meta property="og:image" content="http://i.imgur.com/i4zq9Dt.png">
-<meta property="og:updated_time" content="2017-02-06T14:46:44.000Z">
+<meta property="og:updated_time" content="2018-05-07T06:26:07.641Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="android 代码混淆">
 <meta name="twitter:description" content="开启混淆在app目录下 按 f4，将relese下的Minify Enabled改成true
@@ -353,7 +353,7 @@
       
         <h1 id="开启混淆"><a href="#开启混淆" class="headerlink" title="开启混淆"></a>开启混淆</h1><p>在app目录下 按 f4，将relese下的<code>Minify Enabled</code>改成true</p>
 <p><img src="http://i.imgur.com/lyTsDID.png" alt=""></p>
-<p>将窗口右侧的<code>gradle</code>打开，双击<code>build</code></p>
+<p>将窗口右侧的<code>gradle</code><br>打开，双击<code>build</code></p>
 <p><img src="http://i.imgur.com/FqvcGRJ.png" alt=""></p>
 <a id="more"></a>
 <p>如果使用了第三方的包，在打包的时候可能需要设置配置：(查看第三发的文档说明)</p>
@@ -375,32 +375,33 @@
 </ol>
 <h1 id="整体"><a href="#整体" class="headerlink" title="整体"></a>整体</h1><p>通常需要混淆的代码：</p>
 <pre><code>#-------------------------------------------定制化区域----------------------------------------------
-#---------------------------------1.实体类---------------------------------
+#---------------------------------1.项目自定义---------------------------------
     # 自定义控件不参与混淆
     # 自定义实体类不参与混淆
+    # js 相关类
+
+
+    # 反射相关类
 
 
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
-
-
-
-#-------------------------------------------------------------------------
-
-#---------------------------------3.与js互相调用的类------------------------
-
-
-
-#-------------------------------------------------------------------------
-
-#---------------------------------4.反射相关的类和方法-----------------------
-
-
-
-#----------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------
-
+</code></pre><p>-dontnote android.net.http.<em><br>-dontnote org.apache.commons.codec.<strong><br>-dontnote org.apache.http.</strong><br>-keepattributes </em>Annotation<em><br>-keepattributes </em>JavascriptInterface*</p>
+<h5 id="okhttp3"><a href="#okhttp3" class="headerlink" title="okhttp3"></a>okhttp3</h5><p>-dontwarn okhttp3.<strong><br>-dontwarn okio.</strong></p>
+<p>################retrofit 2.0###############<br>-dontnote retrofit2.Platform<br>-dontwarn retrofit2.Platform$Java8<br>-keepattributes Signature<br>-keepattributes Exceptions<br>-dontwarn okio.**</p>
+<p>################butterknife###############<br>-keep class butterknife.<strong> { *; }<br>-dontwarn butterknife.internal.</strong><br>-keep class <em>*$$ViewBinder { </em>; }<br>-keepclasseswithmembernames class <em> {<br>   @butterknife.</em> <fields>;<br>}<br>-keepclasseswithmembernames class <em> {<br> @butterknife.</em> <methods>;<br>}</methods></fields></p>
+<p>################gson###############<br>-keepattributes Signature<br>-keepattributes <em>Annotation</em><br>-keep class sun.misc.Unsafe { <em>; }<br>-keep class com.google.gson.stream.** { </em>; }<br>-keep class com.sunloto.shandong.bean.<em>* { </em>; }</p>
+<p>################glide###############<br>-keep public class <em> implements com.bumptech.glide.module.GlideModule<br>-keep class com.bumptech.glide.** { </em>; }<br>-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$<strong> {
+    </strong>[] $VALUES;<br>    public *;<br>}</p>
+<p>################RxPermissions#################<br>-dontwarn com.tbruyelle.rxpermissions.*</p>
+<p>#信鸽推送<br>-keep public class <em> extends android.app.Service<br>-keep public class </em> extends android.content.BroadcastReceiver<br>-keep class com.tencent.android.tpush.<strong> {* ;}<br>-keep class com.tencent.mid.</strong> {<em> ;}<br>-keep public class </em> extends com.qq.taf.jce.JceStruct{<em>;}<br>-keep class com.qq.taf.jce.** {</em>;}</p>
+<h1 id="umeng-analysis"><a href="#umeng-analysis" class="headerlink" title="umeng analysis"></a>umeng analysis</h1><p>-keep class com.umeng.<em>* {</em>;}</p>
+<h1 id="umeng-share"><a href="#umeng-share" class="headerlink" title="umeng share"></a>umeng share</h1><p>-dontshrink<br>-dontoptimize<br>-dontwarn com.google.android.maps.<strong><br>-dontwarn android.webkit.WebView<br>-dontwarn com.umeng.</strong><br>-dontwarn com.tencent.weibo.sdk.<strong><br>-dontwarn com.facebook.</strong></p>
+<p>-keep public class javax.<strong><br>-dontwarn javax.</strong><br>-keep public class javax.<strong><br>-keep class javax.</strong></p>
+<p>-keep public class android.webkit.<strong><br>-dontwarn android.support.v4.</strong><br>-keep enum com.facebook.<strong><br>-keepattributes Exceptions,InnerClasses,Signature<br>-keepattributes <em>Annotation</em><br>-keepattributes SourceFile,LineNumberTable<br>-keep public interface com.facebook.</strong><br>-keep public interface com.tencent.<strong><br>-keep public interface com.umeng.socialize.</strong><br>-keep public interface com.umeng.socialize.sensor.<strong><br>-keep public interface com.umeng.scrshot.</strong><br>-keep public class com.umeng.socialize.<em> {</em>;}<br>-keep class com.facebook.<strong><br>-keep class com.facebook.</strong> { <em>; }<br>-keep class com.umeng.scrshot.<strong><br>-keep public class com.tencent.</strong> {</em>;}<br>-keep class com.umeng.socialize.sensor.<strong><br>-keep class com.umeng.socialize.handler.</strong><br>-keep class com.umeng.socialize.handler.<em><br>-keep class com.umeng.weixin.handler.**<br>-keep class com.umeng.weixin.handler.</em><br>-keep class com.umeng.qq.handler.<strong><br>-keep class com.umeng.qq.handler.<em><br>-keep class UMMoreHandler{</em>;}<br>-keep class com.tencent.mm.sdk.modelmsg.WXMediaMessage {*;}<br>-keep class com.tencent.mm.sdk.modelmsg.</strong> implements com.tencent.mm.sdk.modelmsg.WXMediaMessage$IMediaObject {<em>;}<br>-keep class im.yixin.sdk.api.YXMessage {</em>;}<br>-keep class im.yixin.sdk.api.<strong> implements im.yixin.sdk.api.YXMessage$YXMessageData{*;}<br>-keep class com.tencent.mm.sdk.</strong> {<br>   <em>;<br>}<br>-keep class com.tencent.mm.opensdk.** {
+   </em>;<br>}<br>-keep class com.tencent.wxop.<strong> {<br>   *;<br>}<br>-keep class com.tencent.mm.sdk.</strong> {<br>   <em>;<br>}<br>-dontwarn twitter4j.<strong><br>-keep class twitter4j.</strong> { </em>; }<br>-keep class com.tencent.<strong> {*;}<br>-dontwarn com.tencent.</strong><br>-keep class com.kakao.<strong> {*;}<br>-dontwarn com.kakao.</strong><br>-keep public class com.umeng.com.umeng.soexample.R$<em>{<br>    public static final int </em>;<br>}<br>-keep public class com.linkedin.android.mobilesdk.R$<em>{<br>    public static final int </em>;<br>}<br>-keepclassmembers enum <em> {<br>    public static <strong>[] values();<br>    public static </strong> valueOf(java.lang.String);<br>}<br>-keep class com.tencent.open.TDialog$</em><br>-keep class com.tencent.open.TDialog$<em> {</em>;}<br>-keep class com.tencent.open.PKDialog<br>-keep class com.tencent.open.PKDialog {<em>;}<br>-keep class com.tencent.open.PKDialog$</em><br>-keep class com.tencent.open.PKDialog$<em> {</em>;}<br>-keep class com.umeng.socialize.impl.ImageImpl {<em>;}<br>-keep class com.sina.** {</em>;}<br>-dontwarn com.sina.<strong><br>-keep class  com.alipay.share.sdk.</strong> {<br>   <em>;<br>}<br>-keepnames class </em> implements android.os.Parcelable {<br>    public static final <strong> CREATOR;<br>}<br>-keep class com.linkedin.</strong> { <em>; }<br>-keep class com.android.dingtalk.share.ddsharemodule.** { </em>; }<br>-keepattributes Signature</p>
+<pre><code>#----------------------------------------------------------------------------
 #-------------------------------------------基本不用动区域--------------------------------------------
 #---------------------------------基本指令区----------------------------------
 -optimizationpasses 5
@@ -614,7 +615,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">458</span>
+                <span class="site-state-item-count">471</span>
                 <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
@@ -625,7 +626,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">Kategorien</span>
               
             </div>
@@ -636,7 +637,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">258</span>
+                <span class="site-state-item-count">260</span>
                 <span class="site-state-item-name">Tags</span>
               </a>
             </div>
@@ -671,7 +672,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开启混淆"><span class="nav-number">1.</span> <span class="nav-text">开启混淆</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体"><span class="nav-number">3.</span> <span class="nav-text">整体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#报错例子"><span class="nav-number">4.</span> <span class="nav-text">报错例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Warning-okio-Okio-can’t-find-referenced-class-java-nio-file-Path"><span class="nav-number">4.1.</span> <span class="nav-text">Warning:okio.Okio: can’t find referenced class java.nio.file.Path</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开启混淆"><span class="nav-number">1.</span> <span class="nav-text">开启混淆</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法"><span class="nav-number">2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#整体"><span class="nav-number">3.</span> <span class="nav-text">整体</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#okhttp3"><span class="nav-number">3.0.0.0.1.</span> <span class="nav-text">okhttp3</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#umeng-analysis"><span class="nav-number">4.</span> <span class="nav-text">umeng analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#umeng-share"><span class="nav-number">5.</span> <span class="nav-text">umeng share</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#报错例子"><span class="nav-number">6.</span> <span class="nav-text">报错例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Warning-okio-Okio-can’t-find-referenced-class-java-nio-file-Path"><span class="nav-number">6.1.</span> <span class="nav-text">Warning:okio.Okio: can’t find referenced class java.nio.file.Path</span></a></li></ol></li></ol></div>
             
 
           </div>
