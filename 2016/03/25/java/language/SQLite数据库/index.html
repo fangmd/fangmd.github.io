@@ -1,0 +1,921 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java基础," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="sqlite数据库database:存储数据的仓库
+存储内存中的数据的方式：
+
+序列化
+数据库：
+安全
+可以存储大数据
+目前市面上通用的解决方案
+
+
+xml
+
+常用的数据库：服务端的数据库：
+
+oracle：oracle
+ibm：db2
+oracle：mtsql
+microsoft：sqlserver">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlite数据库">
+<meta property="og:url" content="http://yoursite.com/2016/03/25/java/language/SQLite数据库/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="sqlite数据库database:存储数据的仓库
+存储内存中的数据的方式：
+
+序列化
+数据库：
+安全
+可以存储大数据
+目前市面上通用的解决方案
+
+
+xml
+
+常用的数据库：服务端的数据库：
+
+oracle：oracle
+ibm：db2
+oracle：mtsql
+microsoft：sqlserver">
+<meta property="og:updated_time" content="2016-03-26T01:01:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sqlite数据库">
+<meta name="twitter:description" content="sqlite数据库database:存储数据的仓库
+存储内存中的数据的方式：
+
+序列化
+数据库：
+安全
+可以存储大数据
+目前市面上通用的解决方案
+
+
+xml
+
+常用的数据库：服务端的数据库：
+
+oracle：oracle
+ibm：db2
+oracle：mtsql
+microsoft：sqlserver">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/25/java/language/SQLite数据库/"/>
+
+
+
+
+
+  <title>sqlite数据库 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/25/java/language/SQLite数据库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sqlite数据库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-25T21:18:12+08:00">
+                2016-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="sqlite数据库"><a href="#sqlite数据库" class="headerlink" title="sqlite数据库"></a>sqlite数据库</h2><p>database:存储数据的仓库</p>
+<p>存储内存中的数据的方式：</p>
+<ol>
+<li>序列化</li>
+<li>数据库：<ol>
+<li>安全</li>
+<li>可以存储大数据</li>
+<li>目前市面上通用的解决方案</li>
+</ol>
+</li>
+<li>xml</li>
+</ol>
+<p>常用的数据库：<br>服务端的数据库：</p>
+<ol>
+<li>oracle：oracle</li>
+<li>ibm：db2</li>
+<li>oracle：mtsql</li>
+<li>microsoft：sqlserver</li>
+</ol>
+<a id="more"></a>
+<p>移动客户端的数据库：</p>
+<ol>
+<li>一个开源组织开发的：sqlite</li>
+</ol>
+<p>sqlite定义：轻量级无服务器支持的事务性的数据库</p>
+<p>sqlite操作的数据：数据库文件</p>
+<p>sqlite特点：</p>
+<ol>
+<li>不需要服务器（不需要有专门的服务器）-&gt;即是客户端也是服务器</li>
+<li>可以嵌入到应用程序中，如：firefox，android，adobe,apple mac os x,McAfee,</li>
+<li>支持标准的sql查询语言</li>
+<li>弱类型的数据库：语法不严谨</li>
+</ol>
+<p>SQl：结构化查询语言，用于操作数据库的专用语言</p>
+<p>sqlite数据库常用的指令：</p>
+<ol>
+<li>.open ?FILENAME?    <strong>打开一个数据库（没有就创建）</strong></li>
+<li>.databases         </li>
+<li>.echo ON|OFF   回显开关</li>
+<li>.exit</li>
+<li>.help</li>
+<li>.load FILE ?ENTRY?</li>
+<li>.quit</li>
+<li>read FILENAME  加载执行sql脚本（sql脚本：包含了多条sql语句的文件）</li>
+<li>.show </li>
+<li>.log ?FILENAME? </li>
+<li>.schema ?FILENAME表名? 查看表结构</li>
+</ol>
+<p>sql数据库常用操作：</p>
+<ol>
+<li><p>创建表</p>
+<pre><code>create table 表名（
+    字段名1    类型2    约束信息或者默认值    ，
+    字段名2    类型2    约束信息或者默认值，
+。。。。。
+）；
+</code></pre><p> 表：数据库中的数据存储在表中，每一条记录代表一条数据</p>
+<p> 表名：要求见名知意，以“tb_”开头</p>
+<p> 字段名：与java合法标识符一样</p>
+<p> 类型：</p>
+<ol>
+<li>integer</li>
+<li>char：定长的字符串</li>
+<li>varchar：变长的字符串</li>
+<li>text：字符串数据量大</li>
+<li><p>numeric：小数</p>
+<p>primary key :主键 （一个表中某条数据的唯一标识）不能重复，否则报错</p>
+<p>autoincrement:自增长（从1开始往后计数）</p>
+</li>
+</ol>
+</li>
+<li><p>删除表</p>
+<pre><code>drop table 表名;
+</code></pre></li>
+<li><p>插入表记录</p>
+<pre><code>insert into 表名(字段名1，字段名2，。，，字段名n)  
+        values(值1，值2.。。。。值n);
+</code></pre></li>
+<li><p>查看表记录</p>
+<pre><code>select * from tb_name [where 语句];
+select 字段r1，字段2 from tb_name [where 语句];
+</code></pre></li>
+<li><p>删除记录</p>
+<pre><code>delete  from tb_name;
+delete from tb_name [where 语句]；语句的类型是boolean,只将满足条件的记录删除。
+</code></pre></li>
+<li><p>修改表记录</p>
+<pre><code>update ta_name set 字段名1=字段值1，字段名2=字段值2.。。。[where 语句]；
+</code></pre></li>
+<li><p>where语句的常用语法：</p>
+<pre><code>=：等于   &gt; ; &lt; ; &lt;= ; &gt;= ; 
+&lt;&gt;:不等于
+!=:不等于
+like:模糊匹配， + ‘%xxx’：前面任意后面固定； + ‘xxx%’：前面固定后面任意； （+ ‘%xxx%’：中间字符）不行，google
+布尔表达式 and 布尔表达式 ：并关系
+布尔表达式 or 布尔表达式 ： 或关系
+between xxx and xxx ：并
+in (常量值1，常量值2，。。)：字段是否在指定的值中存在
+</code></pre></li>
+</ol>
+<p>扩展：</p>
+<p>crud：</p>
+<ol>
+<li><p>约束：为了防止表中出现冗余数据，通过添加限定，来对插入表中的记录进行筛选</p>
+<p> 常用约束：</p>
+<ol>
+<li>主键约束：primary key</li>
+<li>唯一约束：unique</li>
+<li>检查约束：chack (条件)</li>
+<li>外键约束(foreign key)： foreign key(字段名2) references 主表 (主键)</li>
+<li>not null:</li>
+</ol>
+</li>
+</ol>
+<ol>
+<li><p>修改表结构</p>
+<pre><code>alter table tb_name add 字段名 类型;
+alter table tb_student add score numeric(4,2) default 80.23;
+</code></pre></li>
+<li><p>打开sqlite数据库中的外键约束的设置</p>
+<pre><code>pragma foreign_keys=on;
+</code></pre></li>
+<li><p>使用eclipse连接sqlite数据库，可视化的客户端</p>
+<p> 说明：eclipse内部有内嵌的sqlite数据库</p>
+</li>
+<li><p>连接查询(严格匹配的记录才能显示出来)</p>
+<pre><code>select name 名字,score 分数 from tb_student stu,tb_score s where stu.id=s.id 
+1. 连接查询：select name 名字,score 分数 from tb_student stu,
+                            join tb_score s 
+                            on stu.id=s.id
+2. 左连接查询：select name 名字,score 分数 from tb_student stu,
+                            left join tb_score s 
+                            on stu.id=s.id
+3. 右连接查询：select name 名字,score 分数 from tb_student stu,
+                            right join tb_score s 
+                            on stu.id=s.id
+</code></pre></li>
+<li><p>常用的聚合函数</p>
+<pre><code>count：记录条数
+max(score)：求最大值
+min():
+sum():
+avg(): 
+</code></pre></li>
+<li><p>排序</p>
+<pre><code>升序：asc，降序：desc
+</code></pre></li>
+<li><p>分组查询语法</p>
+<pre><code>select 字段列表 from tb_name group by 字段
+</code></pre></li>
+<li><p>子查询语句(嵌套查询)</p>
+<pre><code>select 字段列表    from (select * from tb_name);
+</code></pre></li>
+<li><p>数据库结构设计：</p>
+<ol>
+<li>1vn时在n方维护关系</li>
+<li>1v1时需要实际判断</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java基础/" rel="tag"># java基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/25/ReadNote/Java First总结/" rel="next" title="Java head first">
+                <i class="fa fa-chevron-left"></i> Java head first
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/25/java/language/多线程/" rel="prev" title="多线程">
+                多线程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/head1.jpg"
+               alt="Double" />
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sqlite数据库"><span class="nav-number">1.</span> <span class="nav-text">sqlite数据库</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
