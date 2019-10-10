@@ -1,0 +1,750 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Flutter," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Architectural overview: platform channelsFlutter 与 IOS， Android 交互类似  服务器和客户端架构
+
+Flutter 作为 Client 端。
+Android，IOS 作为 Server 端。
+
+Client 端：使用 MethodChannel 提供的方法发送消息
+Server 端：使用 MethodChannel, FlutterMe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Writing custom platform-specific code with platform channels">
+<meta property="og:url" content="http://yoursite.com/2018/09/10/flutter/官方文档/03.Writing custom platform-specific code with platform channels/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Architectural overview: platform channelsFlutter 与 IOS， Android 交互类似  服务器和客户端架构
+
+Flutter 作为 Client 端。
+Android，IOS 作为 Server 端。
+
+Client 端：使用 MethodChannel 提供的方法发送消息
+Server 端：使用 MethodChannel, FlutterMe">
+<meta property="og:updated_time" content="2018-09-10T06:26:13.366Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Writing custom platform-specific code with platform channels">
+<meta name="twitter:description" content="Architectural overview: platform channelsFlutter 与 IOS， Android 交互类似  服务器和客户端架构
+
+Flutter 作为 Client 端。
+Android，IOS 作为 Server 端。
+
+Client 端：使用 MethodChannel 提供的方法发送消息
+Server 端：使用 MethodChannel, FlutterMe">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/10/flutter/官方文档/03.Writing custom platform-specific code with platform channels/"/>
+
+
+
+
+
+  <title>Writing custom platform-specific code with platform channels | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/10/flutter/官方文档/03.Writing custom platform-specific code with platform channels/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Writing custom platform-specific code with platform channels</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-10T13:18:12+08:00">
+                2018-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Architectural-overview-platform-channels"><a href="#Architectural-overview-platform-channels" class="headerlink" title="Architectural overview: platform channels"></a>Architectural overview: platform channels</h1><p>Flutter 与 IOS， Android 交互类似  服务器和客户端架构</p>
+<ul>
+<li>Flutter 作为 Client 端。</li>
+<li>Android，IOS 作为 Server 端。</li>
+</ul>
+<p>Client 端：使用 <code>MethodChannel</code> 提供的方法发送消息</p>
+<p>Server 端：使用 <code>MethodChannel, FlutterMethodChannel</code> 接收消息。</p>
+<h2 id="Platform-channel-data-types-support-and-codecs"><a href="#Platform-channel-data-types-support-and-codecs" class="headerlink" title="Platform channel data types support and codecs"></a>Platform channel data types support and codecs</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">Dart  Android iOS</div><div class="line">null  null  nil (NSNull when nested)</div><div class="line">bool  java.lang.Boolean NSNumber numberWithBool:</div><div class="line">int java.lang.Integer NSNumber numberWithInt:</div><div class="line">int, if 32 bits not enough  java.lang.Long  NSNumber numberWithLong:</div><div class="line">double  java.lang.Double  NSNumber numberWithDouble:</div><div class="line">String  java.lang.String  NSString</div><div class="line">Uint8List byte[]  FlutterStandardTypedData typedDataWithBytes:</div><div class="line">Int32List int[] FlutterStandardTypedData typedDataWithInt32:</div><div class="line">Int64List long[]  FlutterStandardTypedData typedDataWithInt64:</div><div class="line">Float64List double[]  FlutterStandardTypedData typedDataWithFloat64:</div><div class="line">List  java.util.ArrayList NSArray</div><div class="line">Map java.util.HashMap NSDictionary</div></pre></td></tr></table></figure>
+<h1 id="Example-Calling-platform-specific-iOS-and-Android-code-using-platform-channels"><a href="#Example-Calling-platform-specific-iOS-and-Android-code-using-platform-channels" class="headerlink" title="Example: Calling platform-specific iOS and Android code using platform channels"></a>Example: Calling platform-specific iOS and Android code using platform channels</h1><ol>
+<li><p>创建工程</p>
+</li>
+<li><p>创建一个 State 接收 Native 端返回的数据</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">static const platform = const MethodChannel(&apos;samples.flutter.io/battery&apos;);</div><div class="line"></div><div class="line">// get battery level</div><div class="line">String _batteryLevel = &apos;Unknown battery level.&apos;;</div><div class="line"></div><div class="line">Future&lt;NULL&gt; _getBatteryLevel() async&#123;</div><div class="line">  String batteryLevel;</div><div class="line">  try&#123;</div><div class="line">    final int result = await platform.invokeMethod(&apos;getBatteryLevel&apos;);</div><div class="line">    batteryLevel = &apos;Battery level at $result % .&apos;;</div><div class="line">  &#125; on PlatformException catch (e) &#123;</div><div class="line">    batteryLevel = &quot;Failed to get battery level: &apos;$&#123;e.message&#125;.&quot;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  setState( () &#123;</div><div class="line">      _batteryLevel = batteryLevel;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>platform 端代码</li>
+</ol>
+<p>Android Java:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">// 在 MainActivity 中</div><div class="line">private static final String CHANNEL = &quot;samples.flutter.io/battery&quot;;</div><div class="line"></div><div class="line">new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(</div><div class="line">        new MethodCallHandler() &#123;</div><div class="line">            @Override</div><div class="line">            public void onMethodCall(MethodCall call, Result result) &#123;</div><div class="line">              if (call.method.equals(&quot;getBatteryLevel&quot;)) &#123;</div><div class="line">                  int batteryLevel = getBatteryLevel();</div><div class="line">          </div><div class="line">                  if (batteryLevel != -1) &#123;</div><div class="line">                      result.success(batteryLevel);</div><div class="line">                  &#125; else &#123;</div><div class="line">                      result.error(&quot;UNAVAILABLE&quot;, &quot;Battery level not available.&quot;, null);</div><div class="line">                  &#125;</div><div class="line">              &#125; else &#123;</div><div class="line">                  result.notImplemented();</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
+<p>IOS Swift:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">@UIApplicationMain</div><div class="line">@objc class AppDelegate: FlutterAppDelegate &#123;</div><div class="line">  override func application(</div><div class="line">    _ application: UIApplication,</div><div class="line">    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -&gt; Bool &#123;</div><div class="line"></div><div class="line">    let controller : FlutterViewController = window?.rootViewController as! FlutterViewController;</div><div class="line">    let batteryChannel = FlutterMethodChannel.init(name: &quot;samples.flutter.io/battery&quot;,</div><div class="line">                                                   binaryMessenger: controller);</div><div class="line">    batteryChannel.setMethodCallHandler(&#123;</div><div class="line">      (call: FlutterMethodCall, result: FlutterResult) -&gt; Void in</div><div class="line">      // Handle battery messages.</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    return super.application(application, didFinishLaunchingWithOptions: launchOptions);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Separate-platform-specific-code-from-UI-code"><a href="#Separate-platform-specific-code-from-UI-code" class="headerlink" title="Separate platform-specific code from UI code"></a>Separate platform-specific code from UI code</h1><h1 id="Publish-platform-specific-code-as-a-package"><a href="#Publish-platform-specific-code-as-a-package" class="headerlink" title="Publish platform-specific code as a package"></a>Publish platform-specific code as a package</h1><h1 id="Custom-channels-and-codecs"><a href="#Custom-channels-and-codecs" class="headerlink" title="Custom channels and codecs"></a>Custom channels and codecs</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Flutter/" rel="tag"># Flutter</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/10/flutter/项目模块拆分/key-value数据存储/" rel="next" title="Flutter 项目 Key-Value 数据本地存储">
+                <i class="fa fa-chevron-left"></i> Flutter 项目 Key-Value 数据本地存储
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/11/flutter/项目模块拆分/JSON与Bean/" rel="prev" title="JSON 与 Bean">
+                JSON 与 Bean <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/head1.jpg"
+               alt="Double" />
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Architectural-overview-platform-channels"><span class="nav-number">1.</span> <span class="nav-text">Architectural overview: platform channels</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Platform-channel-data-types-support-and-codecs"><span class="nav-number">1.1.</span> <span class="nav-text">Platform channel data types support and codecs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Example-Calling-platform-specific-iOS-and-Android-code-using-platform-channels"><span class="nav-number">2.</span> <span class="nav-text">Example: Calling platform-specific iOS and Android code using platform channels</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Separate-platform-specific-code-from-UI-code"><span class="nav-number">3.</span> <span class="nav-text">Separate platform-specific code from UI code</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Publish-platform-specific-code-as-a-package"><span class="nav-number">4.</span> <span class="nav-text">Publish platform-specific code as a package</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Custom-channels-and-codecs"><span class="nav-number">5.</span> <span class="nav-text">Custom channels and codecs</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

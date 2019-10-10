@@ -94,18 +94,21 @@
 
 
 <meta name="description" content="为 POJO 字段提供备选属性名12@SerializedName(value = &amp;quot;emailAddress&amp;quot;, alternate = &amp;#123;&amp;quot;email&amp;quot;, &amp;quot;email_address&amp;quot;&amp;#125;)public String emailAddress;
-同时匹配多个字段">
+同时匹配多个字段
+一个字段自定义解析由于后台返回数据格式变化：json">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Gson Tips">
 <meta property="og:url" content="http://yoursite.com/2016/06/24/Android/数据解析/Gson-Tips/index.html">
 <meta property="og:site_name" content="Double">
 <meta property="og:description" content="为 POJO 字段提供备选属性名12@SerializedName(value = &amp;quot;emailAddress&amp;quot;, alternate = &amp;#123;&amp;quot;email&amp;quot;, &amp;quot;email_address&amp;quot;&amp;#125;)public String emailAddress;
-同时匹配多个字段">
-<meta property="og:updated_time" content="2017-06-24T09:55:33.000Z">
+同时匹配多个字段
+一个字段自定义解析由于后台返回数据格式变化：json">
+<meta property="og:updated_time" content="2019-01-18T05:37:56.074Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Gson Tips">
 <meta name="twitter:description" content="为 POJO 字段提供备选属性名12@SerializedName(value = &amp;quot;emailAddress&amp;quot;, alternate = &amp;#123;&amp;quot;email&amp;quot;, &amp;quot;email_address&amp;quot;&amp;#125;)public String emailAddress;
-同时匹配多个字段">
+同时匹配多个字段
+一个字段自定义解析由于后台返回数据格式变化：json">
 
 
 
@@ -346,7 +349,9 @@
       
         <h1 id="为-POJO-字段提供备选属性名"><a href="#为-POJO-字段提供备选属性名" class="headerlink" title="为 POJO 字段提供备选属性名"></a>为 POJO 字段提供备选属性名</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@SerializedName(value = &quot;emailAddress&quot;, alternate = &#123;&quot;email&quot;, &quot;email_address&quot;&#125;)</div><div class="line">public String emailAddress;</div></pre></td></tr></table></figure>
 <p>同时匹配多个字段</p>
-
+<h1 id="一个字段自定义解析"><a href="#一个字段自定义解析" class="headerlink" title="一个字段自定义解析"></a>一个字段自定义解析</h1><p>由于后台返回数据格式变化：json <code>hot_left</code> 没有数据的时候属于数组，有数据的时候是对象。</p>
+<p>下面可以解决这个问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OAJsonDe</span> <span class="keyword">implements</span> <span class="title">JsonDeserializer</span>&lt;<span class="title">ImgEntity</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ImgEntity <span class="title">deserialize</span><span class="params">(JsonElement json, Type typeOfT, JsonDeserializationContext context)</span> <span class="keyword">throws</span> JsonParseException </span>&#123;</div><div class="line">        <span class="keyword">if</span> (json.isJsonArray()) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        Gson newGson = <span class="keyword">new</span> Gson();</div><div class="line">        <span class="keyword">return</span> newGson.fromJson(json, typeOfT);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="meta">@JsonAdapter</span>(value = OAJsonDe.class)</div><div class="line"><span class="meta">@SerializedName</span>(value = <span class="string">"hot_left"</span>)</div><div class="line"><span class="keyword">public</span> ImgEntity hotLeft;</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -400,8 +405,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/06/25/Android/features/计时/" rel="prev" title="android 计时">
-                android 计时 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/07/02/Android/adb/" rel="prev" title="Android Debug Bridge">
+                Android Debug Bridge <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -474,7 +479,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -485,7 +490,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -496,7 +501,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -531,7 +536,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为-POJO-字段提供备选属性名"><span class="nav-number">1.</span> <span class="nav-text">为 POJO 字段提供备选属性名</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为-POJO-字段提供备选属性名"><span class="nav-number">1.</span> <span class="nav-text">为 POJO 字段提供备选属性名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一个字段自定义解析"><span class="nav-number">2.</span> <span class="nav-text">一个字段自定义解析</span></a></li></ol></div>
             
 
           </div>
@@ -554,7 +559,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

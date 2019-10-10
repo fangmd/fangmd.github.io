@@ -109,7 +109,7 @@
 
 -p 后面跟 包名，表示需要测试的应用
 -v 表示显示测试事件">
-<meta property="og:updated_time" content="2018-03-06T10:45:38.676Z">
+<meta property="og:updated_time" content="2018-11-20T06:20:08.731Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android测试 - Monkey压力测试">
 <meta name="twitter:description" content="基本语法
@@ -364,10 +364,16 @@
 <li><code>-v</code> 表示显示测试事件</li>
 <li><code>2000</code> 表示测试事件的数量 （越大，测试过程越久，测试程度越高）</li>
 </ul>
-<h1 id="如何出现问题后如何复现"><a href="#如何出现问题后如何复现" class="headerlink" title="如何出现问题后如何复现"></a>如何出现问题后如何复现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">-s &lt;seed&gt;: Seed value for pseudo-random number generator. If you re-run the Monkey with the same seed value, it will generate the same sequence of events.</div><div class="line">```	</div><div class="line"></div><div class="line">使用 `-s` 命令给本次测试命名，相同的 seed 名称对应相同的测试过程。</div><div class="line"></div><div class="line">&gt;注意 seed 名称必须是数字</div></pre></td></tr></table></figure>
-<p>adb shell monkey -s 1 -p com.nerc.communityedupro 100<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">在没有设置 seed 的情况下，在测试过程用应用 creash 后，monkey 会返回一个 seed。**(所以在测试的时候通常不需要测试这个值)**</div><div class="line"></div><div class="line">复现问题的时候需要将应用的初始状态设置到一样，最好是直接后台关闭。</div><div class="line"></div><div class="line"></div><div class="line"># 减慢测试事件的速度</div></pre></td></tr></table></figure></p>
-<p>–throttle <milliseconds>: Inserts a fixed delay between events. You can use this option to slow down the Monkey. If not specified, there is no delay and the events are generated as rapidly as possible.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure></milliseconds></p>
-<p>adb shell monkey –throttle 300 -p com.nerc.communityedupro 100<br>```</p>
+<h1 id="如何出现问题后如何复现"><a href="#如何出现问题后如何复现" class="headerlink" title="如何出现问题后如何复现"></a>如何出现问题后如何复现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-s &lt;seed&gt;: Seed value for pseudo-random number generator. If you re-run the Monkey with the same seed value, it will generate the same sequence of events.</div></pre></td></tr></table></figure>
+<p>使用 <code>-s</code> 命令给本次测试命名，相同的 seed 名称对应相同的测试过程。</p>
+<blockquote>
+<p>注意 seed 名称必须是数字</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell monkey -s 1 -p com.nerc.communityedupro 100</div></pre></td></tr></table></figure>
+<p>在没有设置 seed 的情况下，在测试过程用应用 creash 后，monkey 会返回一个 seed。<strong>(所以在测试的时候通常不需要测试这个值)</strong></p>
+<p>复现问题的时候需要将应用的初始状态设置到一样，最好是直接后台关闭。</p>
+<h1 id="减慢测试事件的速度"><a href="#减慢测试事件的速度" class="headerlink" title="减慢测试事件的速度"></a>减慢测试事件的速度</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">--throttle &lt;milliseconds&gt;: Inserts a fixed delay between events. You can use this option to slow down the Monkey. If not specified, there is no delay and the events are generated as rapidly as possible.</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell monkey --throttle 300 -p com.nerc.communityedupro 100</div></pre></td></tr></table></figure>
 <h1 id="使用脚本测试固定事件"><a href="#使用脚本测试固定事件" class="headerlink" title="使用脚本测试固定事件"></a>使用脚本测试固定事件</h1><h2 id="monkeyrunner-UI-测试脚本"><a href="#monkeyrunner-UI-测试脚本" class="headerlink" title="monkeyrunner UI 测试脚本"></a>monkeyrunner UI 测试脚本</h2><p><a href="https://developer.android.com/studio/test/monkeyrunner/index.html" target="_blank" rel="external">官方文档</a></p>
 <p>参考：</p>
 <ul>
@@ -420,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/26/Android/源码学习/framework/mac下载和编译源码/" rel="next" title="Mac 下载和编译Android源码">
-                <i class="fa fa-chevron-left"></i> Mac 下载和编译Android源码
+              <a href="/2017/03/15/Android/测试/单元测试-Android/" rel="next" title="单元测试-Android">
+                <i class="fa fa-chevron-left"></i> 单元测试-Android
               </a>
             
           </div>
@@ -430,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/15/Android/测试/单元测试-Android/" rel="prev" title="单元测试-Android">
-                单元测试-Android <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/23/Android/view/ViewPager/垂直ViewPager/" rel="prev" title="VerticalViewPager">
+                VerticalViewPager <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -504,7 +510,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -515,7 +521,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -526,7 +532,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -561,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始一个随机测试"><span class="nav-number">1.</span> <span class="nav-text">开始一个随机测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何出现问题后如何复现"><span class="nav-number">2.</span> <span class="nav-text">如何出现问题后如何复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用脚本测试固定事件"><span class="nav-number">3.</span> <span class="nav-text">使用脚本测试固定事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#monkeyrunner-UI-测试脚本"><span class="nav-number">3.1.</span> <span class="nav-text">monkeyrunner UI 测试脚本</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始一个随机测试"><span class="nav-number">1.</span> <span class="nav-text">开始一个随机测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何出现问题后如何复现"><span class="nav-number">2.</span> <span class="nav-text">如何出现问题后如何复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#减慢测试事件的速度"><span class="nav-number">3.</span> <span class="nav-text">减慢测试事件的速度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用脚本测试固定事件"><span class="nav-number">4.</span> <span class="nav-text">使用脚本测试固定事件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#monkeyrunner-UI-测试脚本"><span class="nav-number">4.1.</span> <span class="nav-text">monkeyrunner UI 测试脚本</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -584,7 +590,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

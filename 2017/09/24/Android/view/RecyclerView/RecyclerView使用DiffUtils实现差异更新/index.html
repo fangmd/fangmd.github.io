@@ -103,7 +103,7 @@ DiffUtil作用：对比两个数">
 <meta property="og:description" content="RecyclerView 的 Adapter 提供的局部更新方法1234adapter.notifyItemChange()adapter.notifyItemInserted()adapter.notifyItemRemoved()adapter.notifyItemMoved();
 需要实现局部更新，只需要计算出更新的 item 的 position 就可以了
 DiffUtil作用：对比两个数">
-<meta property="og:updated_time" content="2017-09-24T14:52:32.000Z">
+<meta property="og:updated_time" content="2019-08-22T05:54:54.534Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RecyclerView 使用 DiffUtil 实现差异更新">
 <meta name="twitter:description" content="RecyclerView 的 Adapter 提供的局部更新方法1234adapter.notifyItemChange()adapter.notifyItemInserted()adapter.notifyItemRemoved()adapter.notifyItemMoved();
@@ -361,6 +361,11 @@ DiffUtil作用：对比两个数">
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AdapterDiffCallback</span> <span class="keyword">extends</span> <span class="title">DiffUtil</span>.<span class="title">Callback</span> </span>&#123;</div><div class="line"></div><div class="line">    List&lt;String&gt; mOldData;</div><div class="line">    List&lt;String&gt; mNewData;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AdapterDiffCallback</span><span class="params">(List&lt;String&gt; oldData, List&lt;String&gt; newData)</span> </span>&#123;</div><div class="line">        mOldData = oldData;</div><div class="line">        mNewData = newData;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getOldListSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mOldData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getNewListSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mNewData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areItemsTheSame</span><span class="params">(<span class="keyword">int</span> oldItemPosition, <span class="keyword">int</span> newItemPosition)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mOldData.get(oldItemPosition).getClass().equals(mNewData.get(newItemPosition).getClass());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areContentsTheSame</span><span class="params">(<span class="keyword">int</span> oldItemPosition, <span class="keyword">int</span> newItemPosition)</span> </span>&#123;</div><div class="line">        String s = mOldData.get(oldItemPosition);</div><div class="line">        String s1 = mNewData.get(newItemPosition);</div><div class="line">        <span class="keyword">return</span> s.equals(s1);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>使用这个：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(<span class="keyword">new</span> AdapterDiffCallback(mNewData, mOldData));</div><div class="line">diffResult.dispatchUpdatesTo(mAdapter);</div></pre></td></tr></table></figure>
+<p>封装:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(List&lt;T&gt; newData)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mDatas != <span class="keyword">null</span>) &#123;</div><div class="line">        ObjDiffCallback objDiffCallback = <span class="keyword">new</span> ObjDiffCallback(mDatas, newData);</div><div class="line">        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(objDiffCallback);</div><div class="line"></div><div class="line">        mDatas.clear();</div><div class="line">        mDatas.addAll(newData);</div><div class="line">        diffResult.dispatchUpdatesTo(<span class="keyword">this</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// first initialization</span></div><div class="line">        mDatas = newData;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> List&lt;T&gt; <span class="title">getDatas</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mDatas;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如何实现在插入项是第一个的时候，自动滑动到第一个：</p>
+<p><a href="https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added" target="_blank" rel="external">https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 解决方案一: 保留用户滑动到的位置 index</span></div><div class="line"><span class="keyword">import</span> android.os.Parcelable;</div><div class="line"></div><div class="line">Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();</div><div class="line"><span class="comment">// apply diff result here (dispatch updates to the adapter)</span></div><div class="line">recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);              </div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 方案二：滚动到top</span></div><div class="line">adapter.registerAdapterDataObserver(<span class="keyword">new</span> RecyclerView.AdapterDataObserver() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeInserted</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onItemRangeInserted(positionStart, itemCount);</div><div class="line">        recycleView.smoothScrollToPosition(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -403,8 +408,8 @@ DiffUtil作用：对比两个数">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/21/Android/Android 版本/Android8.0/Android8.0 新特性/" rel="next" title="Android7.0 新特性">
-                <i class="fa fa-chevron-left"></i> Android7.0 新特性
+              <a href="/2017/09/21/Android/Android 版本/Android8.0-O/Android8.0 新特性/" rel="next" title="Android8.0 新特性">
+                <i class="fa fa-chevron-left"></i> Android8.0 新特性
               </a>
             
           </div>
@@ -487,7 +492,7 @@ DiffUtil作用：对比两个数">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -498,7 +503,7 @@ DiffUtil作用：对比两个数">
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -509,7 +514,7 @@ DiffUtil作用：对比两个数">
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -567,7 +572,7 @@ DiffUtil作用：对比两个数">
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

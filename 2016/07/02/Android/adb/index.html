@@ -93,28 +93,22 @@
 
 
 
-<meta name="description" content="Android Debug Bridge (adb)官网地址:https://developer.android.com/studio/command-line/adb.html#forwardports
-adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Android设备交互.
-是一个客户端-服务器类型的程序,包括:
-
-客户端:用来发送命令,它运行在电脑中,我们可以通过shell调用客户端">
+<meta name="description" content="ADB shell 记录官方文档：https://developer.android.com/studio/command-line/adb#am
+查看设备信息adb devices -l
+12List of devices attachedZX1G425DJL             device usb:336723968X product:nitrogen_shamu model:Nexus">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Debug Bridge">
 <meta property="og:url" content="http://yoursite.com/2016/07/02/Android/adb/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="Android Debug Bridge (adb)官网地址:https://developer.android.com/studio/command-line/adb.html#forwardports
-adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Android设备交互.
-是一个客户端-服务器类型的程序,包括:
-
-客户端:用来发送命令,它运行在电脑中,我们可以通过shell调用客户端">
-<meta property="og:updated_time" content="2016-11-21T06:09:21.000Z">
+<meta property="og:description" content="ADB shell 记录官方文档：https://developer.android.com/studio/command-line/adb#am
+查看设备信息adb devices -l
+12List of devices attachedZX1G425DJL             device usb:336723968X product:nitrogen_shamu model:Nexus">
+<meta property="og:updated_time" content="2018-12-17T08:30:15.971Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Debug Bridge">
-<meta name="twitter:description" content="Android Debug Bridge (adb)官网地址:https://developer.android.com/studio/command-line/adb.html#forwardports
-adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Android设备交互.
-是一个客户端-服务器类型的程序,包括:
-
-客户端:用来发送命令,它运行在电脑中,我们可以通过shell调用客户端">
+<meta name="twitter:description" content="ADB shell 记录官方文档：https://developer.android.com/studio/command-line/adb#am
+查看设备信息adb devices -l
+12List of devices attachedZX1G425DJL             device usb:336723968X product:nitrogen_shamu model:Nexus">
 
 
 
@@ -353,7 +347,20 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
       
 
       
-        <h1 id="Android-Debug-Bridge-adb"><a href="#Android-Debug-Bridge-adb" class="headerlink" title="Android Debug Bridge (adb)"></a>Android Debug Bridge (adb)</h1><p>官网地址:<a href="https://developer.android.com/studio/command-line/adb.html#forwardports" target="_blank" rel="external">https://developer.android.com/studio/command-line/adb.html#forwardports</a></p>
+        <h1 id="ADB-shell-记录"><a href="#ADB-shell-记录" class="headerlink" title="ADB shell 记录"></a>ADB shell 记录</h1><p>官方文档：<a href="https://developer.android.com/studio/command-line/adb#am" target="_blank" rel="external">https://developer.android.com/studio/command-line/adb#am</a></p>
+<h2 id="查看设备信息"><a href="#查看设备信息" class="headerlink" title="查看设备信息"></a>查看设备信息</h2><p><code>adb devices -l</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">List of devices attached</div><div class="line">ZX1G425DJL             device usb:336723968X product:nitrogen_shamu model:Nexus_6 device:shamu transport_id:15</div></pre></td></tr></table></figure>
+<p>获取设备系统版本号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">adb shell getprop ro.build.version.sdk</div><div class="line"></div><div class="line">27</div></pre></td></tr></table></figure>
+<h2 id="查看包信息"><a href="#查看包信息" class="headerlink" title="查看包信息"></a>查看包信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">adb shell dumpsys package</div><div class="line"></div><div class="line"># check version name</div><div class="line">adb shell dumpsys package com.yitoudai.wcg | grep versionName</div><div class="line"># check version code</div><div class="line">adb shell dumpsys package com.yitoudai.wcg | grep versionCode</div><div class="line"># checkout version</div><div class="line">adb shell dumpsys package com.yitoudai.wcg | grep version</div></pre></td></tr></table></figure>
+<h2 id="dumpsys-power"><a href="#dumpsys-power" class="headerlink" title="dumpsys power"></a>dumpsys power</h2><p>查看当前电源使用，<br>Wake Locks: size=0：查看当前持有 wake locak的应用</p>
+<h2 id="system-framework-中的文件修改权限"><a href="#system-framework-中的文件修改权限" class="headerlink" title="/system/framework/ 中的文件修改权限"></a>/system/framework/ 中的文件修改权限</h2><p>设置为读写</p>
+<pre><code># mount -o rw,remount /system
+</code></pre><p>设置为读（默认）</p>
+<pre><code># mount -o ro,remount /system
+</code></pre><h2 id="查看当前-Activity"><a href="#查看当前-Activity" class="headerlink" title="查看当前 Activity"></a>查看当前 Activity</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">adb shell dumpsys window windows | grep -E &apos;mCurrentFocus|mFocusedApp&apos;</div></pre></td></tr></table></figure>
+<h2 id="通过-adb-测试-Schema"><a href="#通过-adb-测试-Schema" class="headerlink" title="通过 adb 测试 Schema"></a>通过 adb 测试 Schema</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">adb shell am start -a [action] -d [uri] [packagename]</div><div class="line"></div><div class="line">adb shell am start -a android.intent.action.VIEW -d &quot;custom-scheme://custom-host?itemId=17331&quot; com.juanbingteam.heheda</div></pre></td></tr></table></figure>
+<h1 id="Android-Debug-Bridge-adb"><a href="#Android-Debug-Bridge-adb" class="headerlink" title="Android Debug Bridge (adb)"></a>Android Debug Bridge (adb)</h1><p>官网地址:<a href="https://developer.android.com/studio/command-line/adb.html#forwardports" target="_blank" rel="external">https://developer.android.com/studio/command-line/adb.html#forwardports</a></p>
 <p><em>adb</em>是一个功能丰富的命令行工具,它让你能够和虚拟机或者Android设备交互.</p>
 <p>是一个客户端-服务器类型的程序,包括:</p>
 <ol>
@@ -457,8 +464,8 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/06/25/Android/features/计时/" rel="next" title="android 计时">
-                <i class="fa fa-chevron-left"></i> android 计时
+              <a href="/2016/06/24/Android/数据解析/Gson-Tips/" rel="next" title="Gson Tips">
+                <i class="fa fa-chevron-left"></i> Gson Tips
               </a>
             
           </div>
@@ -541,7 +548,7 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -552,7 +559,7 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -563,7 +570,7 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -598,7 +605,7 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Debug-Bridge-adb"><span class="nav-number">1.</span> <span class="nav-text">Android Debug Bridge (adb)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#adb如何工作"><span class="nav-number">1.1.</span> <span class="nav-text">adb如何工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用adb"><span class="nav-number">1.2.</span> <span class="nav-text">启用adb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adb命令-格式"><span class="nav-number">1.3.</span> <span class="nav-text">adb命令 格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查询当前连接的设备"><span class="nav-number">1.3.1.</span> <span class="nav-text">查询当前连接的设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行命令的时候指定端口"><span class="nav-number">1.3.2.</span> <span class="nav-text">执行命令的时候指定端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装应用到设备"><span class="nav-number">1.3.3.</span> <span class="nav-text">安装应用到设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和设备文件交互"><span class="nav-number">1.3.4.</span> <span class="nav-text">和设备文件交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#停止adb-Server"><span class="nav-number">1.3.5.</span> <span class="nav-text">停止adb Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无线连接设备"><span class="nav-number">1.3.6.</span> <span class="nav-text">无线连接设备</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用方法"><span class="nav-number">2.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前手机的应用"><span class="nav-number">2.1.</span> <span class="nav-text">查看当前手机的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载应用"><span class="nav-number">2.2.</span> <span class="nav-text">卸载应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清理-app-数据"><span class="nav-number">2.3.</span> <span class="nav-text">清理 app 数据</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ADB-shell-记录"><span class="nav-number">1.</span> <span class="nav-text">ADB shell 记录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看设备信息"><span class="nav-number">1.1.</span> <span class="nav-text">查看设备信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看包信息"><span class="nav-number">1.2.</span> <span class="nav-text">查看包信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dumpsys-power"><span class="nav-number">1.3.</span> <span class="nav-text">dumpsys power</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#system-framework-中的文件修改权限"><span class="nav-number">1.4.</span> <span class="nav-text">/system/framework/ 中的文件修改权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前-Activity"><span class="nav-number">1.5.</span> <span class="nav-text">查看当前 Activity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过-adb-测试-Schema"><span class="nav-number">1.6.</span> <span class="nav-text">通过 adb 测试 Schema</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Debug-Bridge-adb"><span class="nav-number">2.</span> <span class="nav-text">Android Debug Bridge (adb)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#adb如何工作"><span class="nav-number">2.1.</span> <span class="nav-text">adb如何工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用adb"><span class="nav-number">2.2.</span> <span class="nav-text">启用adb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adb命令-格式"><span class="nav-number">2.3.</span> <span class="nav-text">adb命令 格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查询当前连接的设备"><span class="nav-number">2.3.1.</span> <span class="nav-text">查询当前连接的设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行命令的时候指定端口"><span class="nav-number">2.3.2.</span> <span class="nav-text">执行命令的时候指定端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装应用到设备"><span class="nav-number">2.3.3.</span> <span class="nav-text">安装应用到设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和设备文件交互"><span class="nav-number">2.3.4.</span> <span class="nav-text">和设备文件交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#停止adb-Server"><span class="nav-number">2.3.5.</span> <span class="nav-text">停止adb Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无线连接设备"><span class="nav-number">2.3.6.</span> <span class="nav-text">无线连接设备</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用方法"><span class="nav-number">3.</span> <span class="nav-text">使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前手机的应用"><span class="nav-number">3.1.</span> <span class="nav-text">查看当前手机的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卸载应用"><span class="nav-number">3.2.</span> <span class="nav-text">卸载应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清理-app-数据"><span class="nav-number">3.3.</span> <span class="nav-text">清理 app 数据</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -621,7 +628,7 @@ adb是一个功能丰富的命令行工具,它让你能够和虚拟机或者Andr
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

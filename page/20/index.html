@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/04/Android/第三方/dagger2/Dagger2/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/12/ios/UITableView相关/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/12/04/Android/第三方/dagger2/Dagger2/" itemprop="url">Dagger</a></h1>
+                <a class="post-title-link" href="/2017/07/12/ios/UITableView相关/" itemprop="url">UITableView 相关</a></h1>
         
 
         <div class="post-meta">
@@ -284,8 +284,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-04T12:18:12+08:00">
-                2016-12-04
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-12T13:18:12+08:00">
+                2017-07-12
               </time>
             
 
@@ -307,8 +307,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -343,114 +343,151 @@
       
         
           
-            <h1 id="集成"><a href="#集成" class="headerlink" title="集成"></a>集成</h1><p><a href="https://github.com/google/dagger" target="_blank" rel="external">Github 地址</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// Add Dagger dependencies</div><div class="line">dependencies &#123;</div><div class="line">  compile &apos;com.google.dagger:dagger:2.x&apos;</div><div class="line">  annotationProcessor &apos;com.google.dagger:dagger-compiler:2.x&apos;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果在使用 gradle 2.2 以下的 gradle，还需要集成 <a href="https://bitbucket.org/hvisser/android-apt" target="_blank" rel="external">https://bitbucket.org/hvisser/android-apt.</a></p>
-<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><ul>
-<li>@Module: 把这个类表识为 dagger 的 module，是提供依赖注入时所需对象实例的类</li>
-<li>@Inject: 用来标注目标类的依赖和依赖的构造函数</li>
-<li>@Component: Components 从根本上来说就是一个注入器，也可以说是 @Inject 和 @Module 的桥梁，它的主要作用就是连接这两个部分。 Components 可以提供所有定义了的类型的实例，比如：我们必须用 @Component 注解一个接口然后列出所有的@Modules组成该组件，如 果缺失了任何一块都会在编译的时候报错。所有的组件都可以通过它的 modules 知道依赖的范围。</li>
-<li>@Provides：标识函数作为注入提供者，函数名并不重要，它只依赖于所提供的类类型</li>
-<li>@Singleton：如果标识为Singleton，那这个函数会一直返回相同的对象实例，这比常规的单例好很多。否则，每次注入类型都会得到一个新的实例。在这个例子中，由于我们没有创建新实例，而是返回已经存在的实例，因此即使不把函数标识为 Singleton ，每次调用还是会返回相同的实例的，但这样能够更好地说明提供者到底做了什么。 Application 实例是唯一的。</li>
-<li>@Scope: Scopes可是非常的有用，Dagger2 可以通过自定义注解限定注解作用域。后面会演示一个例子，这是一个非常强大的特点，因为就如前面说的一样，没 必要让每个对象都去了解如何管理他们的实例。在scope的例子中，我们用自定义的 @PerActivity注解一个类，所以这个对象存活时间就和 activity的一样。简单来说就是我们可以定义所有范围的粒度(@PerFragment, @PerUser, 等等)。</li>
-<li>Qualifier: 当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的context，所以我们就可以定义 qualifier注解“@ForApplication”和“@ForActivity”，这样当注入一个context的时候，我们就可以告诉 Dagger我们想要哪种类型的context。</li>
-</ul>
-<h2 id="Component"><a href="#Component" class="headerlink" title="@Component"></a>@Component</h2><p>修饰接口类，内部方法：</p>
-<ul>
-<li>如果是 void 方法就必须有注入环境</li>
-<li>入股参数为 空，就必须有返回类。 返回类必须有 @Inject 提供构造方法类，或者引用的 @Module 有 @Provide提供的。</li>
-</ul>
-<h1 id="dagger2-最简单的使用例子"><a href="#dagger2-最简单的使用例子" class="headerlink" title="dagger2 最简单的使用例子"></a>dagger2 最简单的使用例子</h1><h2 id="一个需要被注入到-activity-的对象"><a href="#一个需要被注入到-activity-的对象" class="headerlink" title="一个需要被注入到 activity 的对象"></a>一个需要被注入到 activity 的对象</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Poetry</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> String mPoetry;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Poetry</span><span class="params">()</span> </span>&#123;</div><div class="line">        mPoetry = <span class="string">"live is short"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="activity-component"><a href="#activity-component" class="headerlink" title="activity component"></a>activity component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 需要用到这个连接器的对象，就是这个对象里面有需要注入的属性（被标记为<span class="doctag">@Inject</span>的属性）</div><div class="line">     * 这里inject表示注入的意思，这个方法名可以随意更改</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(BaseUseActivity baseUseActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>创建完 Component 后需要编译一遍工程，dagger2 会自动生成一个 DaggerBaseUseComponent 类。</p>
-<p>Component 中每个方法的参数对象，表示这些对象里面需要注入一些其他对象。</p>
-<h2 id="activity"><a href="#activity" class="headerlink" title="activity"></a>activity</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseUseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//添加@Inject注解，表示这个mPoetry是需要注入的</span></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    Poetry mPoetry;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> TextView mTV;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_base_use);</div><div class="line"></div><div class="line">        <span class="comment">// 使用 Dagger2 生成的类 生成组件进行构造，并注入</span></div><div class="line">        BaseUseComponent baseUseComponent = DaggerBaseUseComponent.builder()</div><div class="line">                .build();</div><div class="line">        baseUseComponent.inject(<span class="keyword">this</span>);</div><div class="line"></div><div class="line">        initView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</div><div class="line">        mTV = (TextView) findViewById(R.id.tv_base_use);</div><div class="line">        mTV.setText(mPoetry.mPoetry);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这种不通过 <code>@Module</code> 的注解方式有很多的局限性：</p>
+            <h1 id="head-view-设置大小"><a href="#head-view-设置大小" class="headerlink" title="head view 设置大小"></a>head view 设置大小</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">just set head view frame</div></pre></td></tr></table></figure>
+<h1 id="cell-中创建圆形图片"><a href="#cell-中创建圆形图片" class="headerlink" title="cell 中创建圆形图片"></a>cell 中创建圆形图片</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">extension UIImageView&#123;</div><div class="line"></div><div class="line">    func asCircle(size: CGFloat = -1)&#123;</div><div class="line">        if size == -1&#123;</div><div class="line">            layer.cornerRadius = (bounds.size.width/2)</div><div class="line">        &#125;else&#123;</div><div class="line">            layer.cornerRadius = size</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    func loadCircleImage(url: String)&#123;</div><div class="line">        self.layer.masksToBounds = true</div><div class="line">        self.layer.cornerRadius = self.frame.size.width / 2.0;</div><div class="line">        self.clipsToBounds = true</div><div class="line">        let urlResult = URL(string: url)</div><div class="line">        self.kf.setImage(with: urlResult, options: [.transition(.none)])</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var mModel: ForumItemModel?&#123;</div><div class="line">    didSet&#123;            </div><div class="line">        let imgUrl = mModel?.creatorPhotoUrl ?? &quot;&quot;</div><div class="line">        mIvAvatar.loadCircleImage(url: imgUrl)</div><div class="line">        mIvAvatar.asCircle(size: 7)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/ios/常用第三方库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/03/ios/常用第三方库/" itemprop="url">ios 常用第三方控件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-03T13:18:12+08:00">
+                2017-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="键盘管理"><a href="#键盘管理" class="headerlink" title="键盘管理"></a>键盘管理</h1><p>IQKeyboardManager</p>
+<p><img src="https://github.com/hackiftekhar/IQKeyboardManager" alt="https://github.com/hackiftekhar/IQKeyboardManager"></p>
+<p>作用：</p>
 <ol>
-<li><code>@Inject</code> 只能注解一个构造方法，对于有多个构造方法的对象不适用</li>
-<li>对于第三方库中的对象，没法添加 <code>@Inject</code></li>
+<li>键盘弹出的时候管理布局的变化（不遮盖布局）</li>
+<li>多个输入框快速切换</li>
 </ol>
-<h2 id="使用-Module-注入一个-Gson-对象"><a href="#使用-Module-注入一个-Gson-对象" class="headerlink" title="使用 Module 注入一个 Gson 对象"></a>使用 Module 注入一个 Gson 对象</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseUseModule</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Gson <span class="title">provideGson</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Gson();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Module 类，提供被注解的对象</p>
-<p>将 Module 和 Component 关联</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(modules = BaseUseModule.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 需要用到这个连接器的对象，就是这个对象里面有需要注入的属性（被标记为<span class="doctag">@Inject</span>的属性）</div><div class="line">     * 这里inject表示注入的意思，这个方法名可以随意更改</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(BaseUseActivity baseUseActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Compoent-依赖多个-Module-对象"><a href="#Compoent-依赖多个-Module-对象" class="headerlink" title="Compoent 依赖多个 Module 对象"></a>Compoent 依赖多个 Module 对象</h2><p>如果 Poetry 类有多个构造方法的话，就需要创建额外的 Module：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PoetryModule</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Poetry <span class="title">providePoetry</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Poetry();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="function">Poetry <span class="title">providePoetry</span><span class="params">(String poetry)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Poetry(poetry);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Scope"><a href="#Scope" class="headerlink" title="@Scope"></a>@Scope</h2><p>标记当前生成对象的使用范围，标识一个类型的注射器只实例化一次，在同一个作用域内，只会生成一个实例，然后在此作用域内共用一个实例。这样看起来很像单例模式，我们可以查看 @Singleton 其实就是@ Scope 的一个默认实现而已。当然，你得是同一个 Component 对象来生成，这点我们应该可以理解的吧。<br>我们可以通过自定义 Scope 来组织 Component 的作用域，使得每个 Component 的作用域清晰明了，各施其职。</p>
-<h2 id="组织-Component"><a href="#组织-Component" class="headerlink" title="组织 Component"></a>组织 Component</h2><p>如果其他 Component 需要 ApplicationComponent 中的全局属性的时候，就需要建立两者之间的 依赖方式。</p>
-<ol>
-<li>要有一个全局的Component(可以叫ApplicationComponent),负责管理整个app的全局类实例</li>
-<li>每个页面对应一个 Component，比如一个 Activity 页面定义一个 Component，一个 Fragment 定义一个 Component。当然这不是必须的，有些页面之间的依赖的类是一样的，可以公用一个 Component。</li>
-</ol>
-<h3 id="依赖方式"><a href="#依赖方式" class="headerlink" title="依赖方式"></a>依赖方式</h3><p>一个Component可以依赖一个或多个Component，并拿到被依赖Component暴露出来的实例，Component的dependencies属性就是确定依赖关系的实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span>(dependencies = ApplicationComponent.class, modules = &#123;BaseUseModule.class, PoetryModule.class&#125;)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseUseComponent</span> </span>&#123;</div><div class="line">    <span class="comment">//...</span></div></pre></td></tr></table></figure>
-<h3 id="包含方式"><a href="#包含方式" class="headerlink" title="包含方式"></a>包含方式</h3><p>SubComponent</p>
-<h3 id="继承方式"><a href="#继承方式" class="headerlink" title="继承方式"></a>继承方式</h3><h2 id="Qualifier"><a href="#Qualifier" class="headerlink" title="Qualifier"></a>Qualifier</h2><p>（限定符）就是解决依赖注入迷失问题</p>
-<h1 id="Application-dagger2-化"><a href="#Application-dagger2-化" class="headerlink" title="Application dagger2 化"></a>Application dagger2 化</h1><h2 id="创建-Application-的鉴别注解"><a href="#创建-Application-的鉴别注解" class="headerlink" title="创建 Application 的鉴别注解"></a>创建 Application 的鉴别注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Qualifier</span> <span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ForApplication &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建-Module"><a href="#创建-Module" class="headerlink" title="创建 Module"></a>创建 Module</h2><p>创建一个 BaseApplication 的依赖注入：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Module</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppModule</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> App mApplication;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AppModule</span><span class="params">(App application)</span> </span>&#123;</div><div class="line">        mApplication = application;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Provides</span></div><div class="line">    <span class="meta">@Singleton</span></div><div class="line">    <span class="meta">@ForApplication</span></div><div class="line">    <span class="function">Context <span class="title">providerApplication</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> mApplication;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建-Component"><a href="#创建-Component" class="headerlink" title="创建 Component"></a>创建 Component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Singleton</span></div><div class="line"><span class="meta">@Component</span>(modules = ApplicationModule.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(App app)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这个时候编译一遍工程  mac 下快捷键：<code>command+f9</code></p>
-<p>dagger2 会自动生成一个类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DaggerApplicationComponent</span> <span class="keyword">implements</span> <span class="title">ApplicationComponent</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> Provider&lt;LocationManager&gt; provideLocationManagerProvider;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> MembersInjector&lt;App&gt; appMembersInjector;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> MembersInjector&lt;MainActivity&gt; mainActivityMembersInjector;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="title">DaggerApplicationComponent</span><span class="params">(Builder builder)</span> </span>&#123;</div><div class="line">    <span class="keyword">assert</span> builder != <span class="keyword">null</span>;</div><div class="line">    initialize(builder);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Builder <span class="title">builder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Builder();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</div><div class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(<span class="keyword">final</span> Builder builder)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.provideLocationManagerProvider =</div><div class="line">        DoubleCheck.provider(</div><div class="line">            ApplicationModule_ProvideLocationManagerFactory.create(builder.applicationModule));</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.appMembersInjector = App_MembersInjector.create(provideLocationManagerProvider);</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.mainActivityMembersInjector =</div><div class="line">        MainActivity_MembersInjector.create(provideLocationManagerProvider);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(App app)</span> </span>&#123;</div><div class="line">    appMembersInjector.injectMembers(app);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity mainActivity)</span> </span>&#123;</div><div class="line">    mainActivityMembersInjector.injectMembers(mainActivity);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> ApplicationModule applicationModule;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ApplicationComponent <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line">      <span class="keyword">if</span> (applicationModule == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</div><div class="line">            ApplicationModule.class.getCanonicalName() + <span class="string">" must be set"</span>);</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">new</span> DaggerApplicationComponent(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Builder <span class="title">applicationModule</span><span class="params">(ApplicationModule applicationModule)</span> </span>&#123;</div><div class="line">      <span class="keyword">this</span>.applicationModule = Preconditions.checkNotNull(applicationModule);</div><div class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="将-Application-注册到-Component"><a href="#将-Application-注册到-Component" class="headerlink" title="将 Application 注册到 Component"></a>将 Application 注册到 Component</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate();</div><div class="line"></div><div class="line">    mApplicationComponent = DaggerApplicationComponent.builder()</div><div class="line">            .applicationModule(<span class="keyword">new</span> ApplicationModule(<span class="keyword">this</span>))</div><div class="line">            .build();</div><div class="line"></div><div class="line">    mApplicationComponent.inject(<span class="keyword">this</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="google-todo-mvp-Dagger"><a href="#google-todo-mvp-Dagger" class="headerlink" title="google todo mvp Dagger"></a>google todo mvp Dagger</h1><p>DemoPresenter:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">StatisticsPresenter</span> <span class="keyword">implements</span> <span class="title">StatisticsContract</span>.<span class="title">Presenter</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TasksRepository mTasksRepository;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> StatisticsContract.View mStatisticsView;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    StatisticsPresenter(TasksRepository tasksRepository,</div><div class="line">                               StatisticsContract.View statisticsView) &#123;</div><div class="line">        mTasksRepository = tasksRepository;</div><div class="line">        mStatisticsView = statisticsView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Inject</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setupListeners</span><span class="params">()</span> </span>&#123;</div><div class="line">        mStatisticsView.setPresenter(<span class="keyword">this</span>); <span class="comment">// 将 presenter 对象传给 view， 通过 module 获取 view 对象，通过 view 对象的  </span></div><div class="line">                                            <span class="comment">//setPresenter 方法将 presenter 对象传给 view</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        loadStatistics();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>DemoPresenterModule:</p>
-<pre><code>@Module
-public class StatisticsPresenterModule {
-
-    private final StatisticsContract.View mView;
-
-    public StatisticsPresenterModule(StatisticsContract.View view) {
-        mView = view;
-    }
-
-    @Provides
-    StatisticsContract.View provideStatisticsContractView() {
-        return mView;
-    }
-}
-</code></pre><p>DemoComponent:</p>
-<pre><code>@FragmentScoped
-@Component(dependencies = TasksRepositoryComponent.class, modules = StatisticsPresenterModule.class)
-public interface StatisticsComponent {
-    void inject(StatisticsActivity statisticsActivity);
-}
-</code></pre><p>DemoActivity:</p>
-<pre><code>// 属性：
-@Inject StatisticsPresenter mStatiticsPresenter;
-
-// 注入代码
-DaggerStatisticsComponent.builder()
-    .statisticsPresenterModule(new StatisticsPresenterModule(statisticsFragment)) // 给 presenter 注入 view
-    .tasksRepositoryComponent(((ToDoApplication) getApplication()) // model
-    .getTasksRepositoryComponent())
-    .build()
-    .inject(this);
-</code></pre><h1 id="使用scope时规则"><a href="#使用scope时规则" class="headerlink" title="使用scope时规则"></a>使用scope时规则</h1><ol>
-<li>component的dependencies与component自身的scope不能相同，即组件之间的scope不同</li>
-<li>Singleton的组件不能依赖其他scope的组件，只能其他scope的组件依赖Singleton的组件。</li>
-<li><p>没有scope的不能依赖有scope的组件</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:(21, 1) 错误: com.android.example.devsummit.archdemo.di.component.MyTestComponent (unscoped) cannot depend on scoped components:</div><div class="line">@com.android.example.devsummit.archdemo.di.scope.ActivityScope com.android.example.devsummit.archdemo.di.component.MyTestComponentX</div></pre></td></tr></table></figure>
-</li>
-<li><p>一个component不能同时有多个scope(Subcomponent除外)</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:Execution failed for task ‘:app:compileDebugJavaWithJavac’.</div><div class="line">java.lang.IllegalArgumentException: com.android.example.devsummit.archdemo.di.component.MyTestComponent was annotated with more than one @Scope annotation</div></pre></td></tr></table></figure>
-</li>
-<li><p>component关联的Model中的任何一个被构造的对象有scope，则该整个component要加上这个scope。在暴露或者注入时（不暴露且不注入时，既不使用它构造对象时，不报错），会有如下错误</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Error:(21, 1) 错误: com.android.example.devsummit.archdemo.di.component.MyTestComponent (unscoped) may not reference scoped bindings:</div><div class="line">@Provides @com.android.example.devsummit.archdemo.di.scope.ActivityScope com.android.example.devsummit.archdemo.vo.User com.android.example.devsummit.archdemo.di.module.TestModule.user()</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h1 id="MVP-Dagger2"><a href="#MVP-Dagger2" class="headerlink" title="MVP Dagger2"></a>MVP Dagger2</h1><p>参考：</p>
-<ul>
-<li><a href="https://github.com/googlesamples/android-architecture" target="_blank" rel="external">google_mvp_dagger</a></li>
-<li><a href="https://asce1885.gitbooks.io/android-rd-senior-advanced/content/androidzhong_de_yi_lai_zhu_ru_ff1a_dagger_han_shu_ku_de_shi_yong_ff08_er_ff09.html" target="_blank" rel="external">https://asce1885.gitbooks.io/android-rd-senior-advanced/content/androidzhong_de_yi_lai_zhu_ru_ff1a_dagger_han_shu_ku_de_shi_yong_ff08_er_ff09.html</a></li>
-<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0519/2892.html" target="_blank" rel="external">http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0519/2892.html</a></li>
-<li><a href="http://www.jianshu.com/p/94d47da32656" target="_blank" rel="external">http://www.jianshu.com/p/94d47da32656</a></li>
-<li><a href="http://www.jianshu.com/p/65737ac39c44" target="_blank" rel="external">http://www.jianshu.com/p/65737ac39c44</a></li>
-<li><a href="http://limuzhi.com/2016/03/06/Android%E6%B3%A8%E5%85%A5%E6%A1%86%E6%9E%B6Dagger2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="external">http://limuzhi.com/2016/03/06/Android%E6%B3%A8%E5%85%A5%E6%A1%86%E6%9E%B6Dagger2%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></li>
-</ul>
-
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>在 AppDelegate 中开启：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import IQKeyboardManagerSwift</div><div class="line"></div><div class="line">IQKeyboardManager.sharedManager().enable = true</div></pre></td></tr></table></figure>
+<h2 id="定制"><a href="#定制" class="headerlink" title="定制"></a>定制</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">IQKeyboardManager.sharedManager().enable = true</div><div class="line">IQKeyboardManager.sharedManager().disabledDistanceHandlingClaAddTagListViewController.self]</div><div class="line">IQKeyboardManager.sharedManager().enableAutoToolbar = false</div><div class="line">IQKeyboardManager.sharedManager().shouldResignOnTouchOutside = false</div><div class="line">IQKeyboardManager.sharedManager().keyboardDistanceFromTextField = 20</div><div class="line">IQKeyboardManager.sharedManager().shouldShowTextFieldPlaceholder = false</div></pre></td></tr></table></figure>
           
         
       
@@ -493,7 +530,7 @@ DaggerStatisticsComponent.builder()
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/01/Android/gradle/gradle密钥配置方式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -512,7 +549,7 @@ DaggerStatisticsComponent.builder()
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/12/01/Android/gradle/gradle密钥配置方式/" itemprop="url">Gradle 密钥配置方式</a></h1>
+                <a class="post-title-link" href="/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/" itemprop="url">UITableView 使用 AutoLayout 实现 Cell 点击展开效果</a></h1>
         
 
         <div class="post-meta">
@@ -524,8 +561,8 @@ DaggerStatisticsComponent.builder()
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-01T09:13:12+08:00">
-                2016-12-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-02T13:18:12+08:00">
+                2017-07-02
               </time>
             
 
@@ -547,8 +584,8 @@ DaggerStatisticsComponent.builder()
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -582,14 +619,19 @@ DaggerStatisticsComponent.builder()
 
       
         
-          
-            <p><code>app/gradle</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Properties props = new Properties()</div><div class="line">props.load(new FileInputStream(file(&quot;signing.properties&quot;)))</div><div class="line">android &#123;</div><div class="line">    signingConfigs &#123;</div><div class="line">        release&#123;</div><div class="line">            keyAlias props[&apos;KEY_ALIAS&apos;]</div><div class="line">            keyPassword props[&apos;KEY_PASSWORD&apos;]</div><div class="line">            storeFile file(props[&apos;KEYSTORE_FILE&apos;])</div><div class="line">            storePassword props[&apos;KEYSTORE_PASSWORD&apos;]</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">        debug &#123;</div><div class="line">            signingConfig signingConfigs.release</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>app/siging.properties</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">KEYSTORE_FILE = C:\\Users\\Mr.Jude\\Documents\\Android\\HelloWorld.jks</div><div class="line">KEYSTORE_PASSWORD = xxxxxx</div><div class="line">KEY_ALIAS = xxxxxx</div><div class="line">KEY_PASSWORD = xxxxxx</div></pre></td></tr></table></figure>
-<p>将signing.properties添加进忽略目录。<br>其他人pull下来代码后。自己新建signing.properties填入相应信息后即可编译成功。</p>
-
-          
+          <p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ios/UITableViewCellExpand.gif" alt="效果图"></p>
+<p>接上篇文章 <a href="http://www.jianshu.com/p/a93d23a50771">UITableView Cell 高度自动匹配</a> </p>
+<h1 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h1><p>使用改变 Label 的 numberOfLines 来实现点击扩展效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mLabelContent.numberOfLines = 0  // 不限制行数，扩展</div><div class="line">mLabelContent.numberOfLines = 2  // 限制函数为 2 行</div></pre></td></tr></table></figure>
+<p>更新 UITableView 的一个 Cell:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mTableView.rx.itemSelected.subscribe(onNext:&#123; indexPath in</div><div class="line">    </div><div class="line">    let cell = self.mTableView.cellForRow(at: indexPath) as! Cell</div><div class="line"></div><div class="line">    self.mTableView.beginUpdates()</div><div class="line">    cell.mModel?.isExpand = !(cell.mModel?.isExpand ?? false) // 通过更新数据源的形式改变 cell</div><div class="line">    self.mTableView.reloadRows(at: [indexPath]UITableViewRowAnimation.automatic)            </div><div class="line">    self.mTableView.endUpdates()</div><div class="line">    </div><div class="line">&#125;).disposed(by: mDisposeBag)</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/02/ios/UITableView使用AutoLayout实现点击展开效果/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -631,7 +673,7 @@ DaggerStatisticsComponent.builder()
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/01/ios/UITableView使用AutoLayout实现Cell高度自适应/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -650,7 +692,7 @@ DaggerStatisticsComponent.builder()
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/27/Android/第三方/RxJava/看了一些RxJava的文章依然不知道的事/" itemprop="url">看了一些 RxJava 的文章我依然不知道的事</a></h1>
+                <a class="post-title-link" href="/2017/07/01/ios/UITableView使用AutoLayout实现Cell高度自适应/" itemprop="url">UITableView 使用 AutoLayout 实现 Cell 高度自适应</a></h1>
         
 
         <div class="post-meta">
@@ -662,8 +704,8 @@ DaggerStatisticsComponent.builder()
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T13:18:12+08:00">
-                2016-11-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-01T13:18:12+08:00">
+                2017-07-01
               </time>
             
 
@@ -685,8 +727,8 @@ DaggerStatisticsComponent.builder()
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -720,172 +762,16 @@ DaggerStatisticsComponent.builder()
 
       
         
-          
-            <blockquote>
-<p>以下代码基于 RxJava2</p>
-</blockquote>
-<h1 id="内存泄露处理"><a href="#内存泄露处理" class="headerlink" title="内存泄露处理"></a>内存泄露处理</h1><p>基本代码：</p>
-<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
-
-public void doSomeWork2() {
-    // 1. 创建一个普通的 observable
-    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
-        @Override
-        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
-            if (e.isDisposed()) return;
-            SystemClock.sleep(2000);
-            e.onNext(&quot;next&quot;);
-            e.onComplete();
-        }
-    });
-
-    // 2. 创建一个可被 CompositeDisposable 管理的 observer
-    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
-        @Override
-        public void onNext(String value) {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onComplete() {
-
-        }
-    };
-
-    // 3. 订阅事件
-    observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer);
-
-    // 4. 将需要被 CompositeDisposable 管理的 observer 加入到管理集合中
-    disposables.add(observer);
-}
-</code></pre><p>在 Activity／Fragment 销毁生命周期中取消异步操作防止内存泄露：</p>
-<pre><code>@Override
-protected void onDestroy() {
-    super.onDestroy();
-    // 将所有的 observer 取消订阅
-    disposables.clear();
-}
-</code></pre><h1 id="在-mvp-的项目中处理内存泄露"><a href="#在-mvp-的项目中处理内存泄露" class="headerlink" title="在 mvp 的项目中处理内存泄露"></a>在 mvp 的项目中处理内存泄露</h1><p>基于 <a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a> 搭建项目 mvp 框架：</p>
-<p>BasePresenter :</p>
-<pre><code>public abstract class BasePresenter {
-
-    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-
-    public void unSubscribe() {
-        mCompositeDisposable.clear();
-    }
-
-
-    public void register(Disposable disposable) {
-        mCompositeDisposable.add(disposable);
-    }
-
-
-}
-</code></pre><p>一个例子 SimplePresenter extends BasePresenter :</p>
-<pre><code>public class SimplePresenter extends BasePresenter {
-    private static final String TAG = SimplePresenter.class.getSimpleName();
-
-
-    //.....
-
-    public void startWork() {
-
-        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
-            @Override
-            public void onNext(Long value) {
-                Log.d(TAG, &quot;onNext: &quot;);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-        Observable.interval(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-
-        register(observer);
-
-    }
-
-}
-</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
-<p>Activity/Fragment:</p>
-<pre><code>@Override
-protected void onDestroy() {
-    super.onDestroy();
-    mSimplePresenter.unSubscribe();
-}
-</code></pre><h1 id="慎用-functions"><a href="#慎用-functions" class="headerlink" title="慎用 functions"></a>慎用 functions</h1><p>functions：Action，Consumer，Function 等</p>
-<p>原因：这些方法只会对 <code>onNext</code> 事件进行处理，如果 observable 中出现异常产生了 <code>onError</code> 事件就会导致 app 奔溃。</p>
-<p>解决方案：</p>
-<ol>
-<li>不用简化方法</li>
-<li>自己封装一个：</li>
-</ol>
-<p>封装一个类似下面的基类：</p>
-<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
-
-    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
-
-    @Override
-    public void onError(Throwable e) {
-        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
-    }
-
-    @Override
-    public void onComplete() {
-
-    }
-}
-</code></pre><p>使用的时候和 functions 是一样的：（这样下面的代码就不会导致app奔溃了）</p>
-<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
-    @Override
-    public void onNext(Long value) {
-        Log.d(TAG, &quot;onNext: &quot;);
-    }
-};
-
-Observable.interval(2000, TimeUnit.MILLISECONDS)
-        .filter(new Predicate&lt;Long&gt;() {
-            @Override
-            public boolean test(Long aLong) throws Exception {
-                Log.d(TAG, &quot;test: along:&quot; + aLong);
-
-                if (aLong &gt; 2) {
-                    throw new Exception(&quot;sdf&quot;);
-                }
-
-                return true;
-            }
-        })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(baseDisposableObserver);
-</code></pre><blockquote>
-<p>RxJava 看的还不多，如有错误还请指出</p>
-</blockquote>
-<p>参考</p>
-<ul>
-<li><a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-rxjava/" target="_blank" rel="external">google todo-mvp-rxjava </a></li>
-</ul>
-
-          
+          <p>使用 SnapKit 实现 AutoLayout</p>
+<p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/ios/UITableViewAutoHeight.png" alt="效果图"></p>
+<h1 id="UITableView-主要代码"><a href="#UITableView-主要代码" class="headerlink" title="UITableView 主要代码"></a>UITableView 主要代码</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">lazy var mTableView: UITableView = &#123;</div><div class="line">    let tv = UITableView()</div><div class="line">    tv.separatorStyle = .none</div><div class="line">    tv.register(Cell.self, forCellReuseIdentifier: Cell.CELL_IDENTIFIER)</div><div class="line">    tv.estimatedRowHeight = 40</div><div class="line">    tv.rowHeight = UITableViewAutomaticDimension</div><div class="line">    return tv</div><div class="line">&#125;()</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/01/ios/UITableView使用AutoLayout实现Cell高度自适应/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -927,7 +813,7 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/program/AndroidStudio/AndroidStudio加速/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -946,7 +832,7 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/27/Android/view/RecyclerView/RecyclerView悬浮条/" itemprop="url">RecyclerView悬浮条</a></h1>
+                <a class="post-title-link" href="/2017/06/25/program/AndroidStudio/AndroidStudio加速/" itemprop="url">android studio 加速</a></h1>
         
 
         <div class="post-meta">
@@ -958,8 +844,8 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:38:14+08:00">
-                2016-11-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-25T11:13:12+08:00">
+                2017-06-25
               </time>
             
 
@@ -981,8 +867,8 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/program/" itemprop="url" rel="index">
+                    <span itemprop="name">program</span>
                   </a>
                 </span>
 
@@ -1016,69 +902,15 @@ Observable.interval(2000, TimeUnit.MILLISECONDS)
 
       
         
-          
-            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><pre><code>&lt;FrameLayout
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;match_parent&quot;&gt;
-
-
-    &lt;android.support.v7.widget.RecyclerView
-        android:id=&quot;@+id/rv_float&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;match_parent&quot;
-        app:layoutManager=&quot;LinearLayoutManager&quot;/&gt;
-
-
-    &lt;TextView
-        android:id=&quot;@+id/tv_float&quot;
-        android:layout_width=&quot;match_parent&quot;
-        android:layout_height=&quot;60dp&quot;
-        android:background=&quot;#fff&quot;
-        android:gravity=&quot;center&quot;
-        android:text=&quot;head&quot;
-        android:textSize=&quot;20sp&quot;/&gt;
-
-
-&lt;/FrameLayout&gt;
-</code></pre><h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><pre><code>mRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
-    @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-
-    }
-
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        View view = layoutManager.findViewByPosition(mFloatItemCurrentPos + 1);
-
-        if (view != null &amp;&amp; view.getTop() &lt;= mFloatItemHeight) {
-            mTV.setY(-(mFloatItemHeight - view.getTop()));
-        }else {
-            mTV.setY(0);
-        }
-
-        if (mFloatItemCurrentPos != layoutManager.findFirstVisibleItemPosition()) {
-            mFloatItemCurrentPos = layoutManager.findFirstVisibleItemPosition();
-            mTV.setY(0);
-
-            updateFloatItem();
-        }
-    }
-});
-
-private void updateFloatItem() {
-     String s = mStrings.get(mFloatItemCurrentPos);
-     mTV.setText(s);
- }
-</code></pre><p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab" target="_blank" rel="external">http://www.jianshu.com/p/fe69a53502ab[](http://www.jianshu.com/p/fe69a53502ab</a>)</li>
-</ul>
-
-          
+          <h1 id="使用并行编译"><a href="#使用并行编译" class="headerlink" title="使用并行编译"></a>使用并行编译</h1><p>在 <code>gradle.properties</code> 中添加下面的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">org.gradle.parallel=true</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/25/program/AndroidStudio/AndroidStudio加速/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1120,7 +952,7 @@ private void updateFloatItem() {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/27/Android/features/clear_data/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/17/ios/ios优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1139,7 +971,7 @@ private void updateFloatItem() {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/27/Android/features/clear_data/" itemprop="url">Android clean data in Application</a></h1>
+                <a class="post-title-link" href="/2017/06/17/ios/ios优化/" itemprop="url">ios 优化</a></h1>
         
 
         <div class="post-meta">
@@ -1151,8 +983,8 @@ private void updateFloatItem() {
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T09:23:14+08:00">
-                2016-11-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-17T13:18:12+08:00">
+                2017-06-17
               </time>
             
 
@@ -1174,8 +1006,8 @@ private void updateFloatItem() {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -1209,48 +1041,16 @@ private void updateFloatItem() {
 
       
         
-          
-            <p><img src="http://stackoverflow.com/questions/6134103/clear-applications-data-programmatically" alt="http://stackoverflow.com/questions/6134103/clear-applications-data-programmatically"></p>
-<p>Utils:</p>
-<pre><code>public static void clearApplicationData() {
-    File cacheDirectory = BaseApplication.getInstance().getCacheDir();
-    File applicationDirectory = new File(cacheDirectory.getParent());
-    if (applicationDirectory.exists()) {
-        String[] fileNames = applicationDirectory.list();
-        for (String fileName : fileNames) {
-            if (!fileName.equals(&quot;lib&quot;)) {
-                deleteFile(new File(applicationDirectory, fileName));
-            }
-        }
-    }
-}
-
-public static boolean deleteFile(File file) {
-    boolean deletedAll = true;
-    if (file != null) {
-        if (file.isDirectory()) {
-            String[] children = file.list();
-            for (int i = 0; i &lt; children.length; i++) {
-                deletedAll = deleteFile(new File(file, children[i])) &amp;&amp; deletedAll;
-            }
-        } else {
-            deletedAll = file.delete();
-        }
-    }
-
-    return deletedAll;
-}
-</code></pre><h1 id="Clean-SharePreferences"><a href="#Clean-SharePreferences" class="headerlink" title="Clean SharePreferences"></a>Clean SharePreferences</h1><pre><code>prefs.edit().clear().commit();
-</code></pre><h1 id="Api-19"><a href="#Api-19" class="headerlink" title="Api 19"></a>Api 19</h1><pre><code>import android.os.Build.*;
-if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
-    ((ActivityManager)context.getSystemService(ACTIVITY_SERVICE))
-            .clearApplicationUserData(); // note: it has a return value!
-} else {
-    // use old hacky way, which can be removed
-    // once minSdkVersion goes above 19 in a few years.
-}
-</code></pre>
-          
+          <h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>让对象在使用的时候在加载到内存中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lazy var 变量: 类型 = &#123; 创建变量代码 &#125;()</div></pre></td></tr></table></figure>
+<h1 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h1>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/17/ios/ios优化/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1292,7 +1092,7 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/14/ios/自定义View/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1311,7 +1111,7 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/" itemprop="url">Rxjava2 代码例子</a></h1>
+                <a class="post-title-link" href="/2017/06/14/ios/自定义View/" itemprop="url">自定义 View</a></h1>
         
 
         <div class="post-meta">
@@ -1323,8 +1123,8 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-24T13:18:12+08:00">
-                2016-11-24
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T13:18:12+08:00">
+                2017-06-14
               </time>
             
 
@@ -1346,8 +1146,8 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -1381,453 +1181,20 @@ if (VERSION_CODES.KITKAT &lt;= VERSION.SDK_INT) {
 
       
         
-          
-            <h1 id="Backpressure-背压"><a href="#Backpressure-背压" class="headerlink" title="Backpressure 背压"></a>Backpressure 背压</h1><p>背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。</p>
-<p>简单的说：发射数据太快，观察者来不及处理。</p>
-<p>强调两点：</p>
-<ol>
-<li>背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。</li>
-<li>背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件流速的策略。</li>
+          <p>2017/6/14</p>
+<p><a href="http://www.jianshu.com/p/7e47da62899c">http://www.jianshu.com/p/7e47da62899c</a></p>
+<h1 id="使用纯代码的方式"><a href="#使用纯代码的方式" class="headerlink" title="使用纯代码的方式"></a>使用纯代码的方式</h1><ol>
+<li>继承自UIView</li>
+<li>initWithFrame 方法中 addSubview</li>
+<li>layoutSubviews 中设置约束</li>
 </ol>
-<p>使用 Flowable 处理背压</p>
-<h1 id="使用的基本流"><a href="#使用的基本流" class="headerlink" title="使用的基本流"></a>使用的基本流</h1><ol>
-<li>创建 Observable：被观察者</li>
-<li>创建 Observer：观察者</li>
-<li>订阅事件 subscribe：Observable 和 Observer 通过 subscribe() 方法实现订阅关系</li>
-</ol>
-<h1 id="SimpleExample"><a href="#SimpleExample" class="headerlink" title="SimpleExample"></a>SimpleExample</h1><pre><code>Observable.just(&quot;observable&quot;)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer&lt;String&gt;() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                // Disposable 对象用于取消订阅
-            }
-
-            @Override
-            public void onNext(String value) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-</code></pre><p>使用 <code>Disposable</code> 对象取消订阅：</p>
-<pre><code>if (!d.isDisposed()) {
-    d.dispose();
-}
-</code></pre><blockquote>
-<p>注意: 调用dispose()并不会导致上游不再继续发送事件, 上游会继续发送剩余的事件.</p>
-</blockquote>
-<h1 id="Map-操作符"><a href="#Map-操作符" class="headerlink" title="Map 操作符"></a>Map 操作符</h1><p>将被观察者发射的数据转化后发射给观察者。</p>
-<pre><code>Observable&lt;List&lt;ApiUser&gt;&gt; observable = Observable.create(new ObservableOnSubscribe&lt;List&lt;ApiUser&gt;&gt;() {
-    @Override
-    public void subscribe(ObservableEmitter&lt;List&lt;ApiUser&gt;&gt; e) throws Exception {
-        // 代码判断是否订阅被取消了
-        if (!e.isDisposed()) {
-            e.onNext(Utils.getApiUserList());
-            e.onComplete();
-        }
-    }
-});
-
-Observer&lt;List&lt;User&gt;&gt; observer = new Observer&lt;List&lt;User&gt;&gt;() {
-    @Override
-    public void onSubscribe(Disposable d) {
-
-    }
-
-    @Override
-    public void onNext(List&lt;User&gt; value) {
-
-    }
-
-    @Override
-    public void onError(Throwable e) {
-
-    }
-
-    @Override
-    public void onComplete() {
-
-    }
-};
-
-Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt; mapper = new Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt;() {
-    @Override
-    public List&lt;User&gt; apply(List&lt;ApiUser&gt; apiUsers) throws Exception {
-        return Utils.convertApiUserListToUserList(apiUsers);
-    }
-};
-
-observable.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .map(mapper)
-        .subscribe(observer);
-</code></pre><h2 id="ObservableEmitter-发射器"><a href="#ObservableEmitter-发射器" class="headerlink" title="ObservableEmitter 发射器"></a>ObservableEmitter 发射器</h2><p>RxJava2 中使用发射器向观察者发送数据。</p>
-<p>继承自 <code>Emitter</code></p>
-<pre><code>public interface ObservableEmitter&lt;T&gt; extends Emitter&lt;T&gt; {
-
-    void setDisposable(Disposable d);
-    void setCancellable(Cancellable c);
-    boolean isDisposed();
-    ObservableEmitter&lt;T&gt; serialize();
-
-}
-</code></pre><p>发射方法在 <code>Emitter</code>:</p>
-<pre><code>void onNext(T value);
-void onError(Throwable error);
-void onComplete();
-</code></pre><p>一些发射规则：</p>
-<ol>
-<li>可以发送无限个 onNext, Observer 也可以接收无限个 onNext.</li>
-<li>当发送了一个onComplete后继续发送 onNext, 而 Observable 收到 onComplete 事件之后将不再继续接收事件.</li>
-<li>当发送了一个onError后继续发送 onNext, 而 Observable 收到 onError 事件之后将不再继续接收事件.</li>
-<li>可以不发送onComplete或onError.</li>
-<li>最为关键的是onComplete和onError必须唯一并且互斥, 即不能发多个onComplete, 也不能发多个onError, 也不能先发一个onComplete, 然后再发一个onError, 反之亦然</li>
-</ol>
-<h1 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h1><blockquote>
-<p>flatMap并不保证事件的顺序</p>
-</blockquote>
-<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><p>解决嵌套请求</p>
-<pre><code>api.register(new RegisterRequest())            //发起注册请求
-    .subscribeOn(Schedulers.io())               //在IO线程进行网络请求
-    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求注册结果
-    .doOnNext(new Consumer&lt;RegisterResponse&gt;() {
-        @Override
-        public void accept(RegisterResponse registerResponse) throws Exception {
-            //先根据注册的响应结果去做一些操作
-        }
-    })
-    .observeOn(Schedulers.io())                 //回到IO线程去发起登录请求
-    .flatMap(new Function&lt;RegisterResponse, ObservableSource&lt;LoginResponse&gt;&gt;() {
-        @Override
-        public ObservableSource&lt;LoginResponse&gt; apply(RegisterResponse registerResponse) throws Exception {
-            return api.login(new LoginRequest());
-        }
-    })
-    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求登录的结果
-    .subscribe(new Consumer&lt;LoginResponse&gt;() {
-        @Override
-        public void accept(LoginResponse loginResponse) throws Exception {
-            Toast.makeText(MainActivity.this, &quot;登录成功&quot;, Toast.LENGTH_SHORT).show();
-        }
-    }, new Consumer&lt;Throwable&gt;() {
-        @Override
-        public void accept(Throwable throwable) throws Exception {
-            Toast.makeText(MainActivity.this, &quot;登录失败&quot;, Toast.LENGTH_SHORT).show();
-        }
-    });
-</code></pre><h1 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h1><p>和 flatMap 一样，不过可以保证事件的顺序</p>
-<h1 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h1><p>合并两个 Observerable</p>
-<h2 id="实例，将连个请求的数据合并"><a href="#实例，将连个请求的数据合并" class="headerlink" title="实例，将连个请求的数据合并"></a>实例，将连个请求的数据合并</h2><pre><code>Observable&lt;UserBaseInfoResponse&gt; observable1 =                                            
-        api.getUserBaseInfo(new UserBaseInfoRequest()).subscribeOn(Schedulers.io());      
-
-Observable&lt;UserExtraInfoResponse&gt; observable2 =                                           
-        api.getUserExtraInfo(new UserExtraInfoRequest()).subscribeOn(Schedulers.io());    
-
-Observable.zip(observable1, observable2,                                                  
-        new BiFunction&lt;UserBaseInfoResponse, UserExtraInfoResponse, UserInfo&gt;() {         
-            @Override                                                                     
-            public UserInfo apply(UserBaseInfoResponse baseInfo,                          
-                                  UserExtraInfoResponse extraInfo) throws Exception {     
-                return new UserInfo(baseInfo, extraInfo);                                 
-            }                                                                             
-        }).observeOn(AndroidSchedulers.mainThread())                                      
-        .subscribe(new Consumer&lt;UserInfo&gt;() {                                             
-            @Override                                                                     
-            public void accept(UserInfo userInfo) throws Exception {                      
-                //do something;                                                           
-            }                                                                             
-        });
-</code></pre><h1 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h1><h1 id="Disposable-防止内存泄露"><a href="#Disposable-防止内存泄露" class="headerlink" title="Disposable 防止内存泄露"></a>Disposable 防止内存泄露</h1><p>需要用到的对象： <code>CompositeDisposable</code></p>
-<p>使用：</p>
-<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
-
-public void mine() {
-    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
-        @Override
-        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
-            if (e.isDisposed()) return;
-            SystemClock.sleep(2000);
-            e.onNext(&quot;next&quot;);
-            e.onComplete();
-        }
-    });
-
-    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
-        @Override
-        public void onNext(String value) {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onComplete() {
-
-        }
-    };
-
-    observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(observer);  //  从源码看  subscribeWith 和 subscribe 没有区别，除了返回值：subscribeWith 会返回 observer 本身，这里也可以使用 subscribe
-
-    disposables.add(observer);
-
-
-}
-
-@Override
-protected void onDestroy() {
-    super.onDestroy();
-    disposables.clear(); // do not send event after activity has been destroyed
-}
-</code></pre><h2 id="可以利用这个封装一个防止泄露的框架"><a href="#可以利用这个封装一个防止泄露的框架" class="headerlink" title="可以利用这个封装一个防止泄露的框架"></a>可以利用这个封装一个防止泄露的框架</h2><p>BasePresenter:</p>
-<pre><code>public abstract class BasePresenter {
-
-    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-
-    public void unSubscribe() {
-        mCompositeDisposable.clear();
-    }
-
-
-    public void register(Disposable disposable) {
-        mCompositeDisposable.add(disposable);
-    }
-
-
-}
-</code></pre><p>SimplePresenter extends BasePresenter:</p>
-<pre><code>public class SimplePresenter extends BasePresenter {
-    private static final String TAG = SimplePresenter.class.getSimpleName();
-
-
-    //.....
-
-    public void startWork() {
-
-        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
-            @Override
-            public void onNext(Long value) {
-                Log.d(TAG, &quot;onNext: &quot;);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-        Observable.interval(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-
-        register(observer);
-
-    }
-
-}
-</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
-<p>Activity/Fragment:</p>
-<pre><code>@Override
-protected void onDestroy() {
-    super.onDestroy();
-    mSimplePresenter.unSubscribe();
-}
-</code></pre><p>尽量在使用 functions 包下的简化接口时要谨慎，因为他们不具备异常处理方法，可以使用类似下面的封装简化代码：</p>
-<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
-
-    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
-
-    @Override
-    public void onError(Throwable e) {
-        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
-    }
-
-    @Override
-    public void onComplete() {
-
-    }
-}
-</code></pre><p>使用：</p>
-<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
-    @Override
-    public void onNext(Long value) {
-        Log.d(TAG, &quot;onNext: &quot;);
-    }
-};
-
-//.... 对于不需要处理的异常让其父类捕获，需要就重写 onError 方法即可
-.subscribe(baseDisposableObserver);
-</code></pre><h1 id="take"><a href="#take" class="headerlink" title="take"></a>take</h1><p>设置 Observable 能够发射（ onNext ）的最大消息数，超过的不会被接收到</p>
-<pre><code>observable.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .take(3)
-        .subscribe(observer);
-</code></pre><h1 id="timer-延时操作"><a href="#timer-延时操作" class="headerlink" title="timer 延时操作"></a>timer 延时操作</h1><pre><code>Observable&lt;Long&gt; observable = Observable.timer(2, TimeUnit.SECONDS);
-</code></pre><h1 id="interval-循环执行"><a href="#interval-循环执行" class="headerlink" title="interval 循环执行"></a>interval 循环执行</h1><pre><code>Observable.interval(0, 2, TimeUnit.SECONDS)
-</code></pre><h1 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h1><p>将所有的发送数据进行处理，返回一个统一的数据。</p>
-<pre><code>Observable.just(1, 2, 3, 4).reduce(new BiFunction&lt;Integer, Integer, Integer&gt;() {
-    @Override
-    public Integer apply(Integer t1, Integer t2) {
-        return t1 + t2;
-    }
-}).subscribe(getObserver());
-
-//结果：10
-</code></pre><h1 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h1><pre><code>Observable&lt;List&lt;String&gt;&gt; buffered = Observable.just(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;).buffer(3, 1);
-
-// 3 means,  it takes max of three from its start index and create list
-// 1 means, it jumps one step every time
-// so the it gives the following list
-// 1 - one, two, three
-// 2 - two, three, four
-// 3 - three, four, five
-// 4 - four, five
-// 5 - five
-
-buffered.subscribe(getObserver());
-</code></pre><h1 id="filter-过滤"><a href="#filter-过滤" class="headerlink" title="filter 过滤"></a>filter 过滤</h1><pre><code>Observable.just(1, 2, 3, 4, 5, 6)
-        .filter(new Predicate&lt;Integer&gt;() {
-            @Override
-            public boolean test(Integer integer) throws Exception {
-                return integer % 2 == 0;
-            }
-        })
-        .subscribe(getObserver());
-</code></pre><h1 id="skip-跳过"><a href="#skip-跳过" class="headerlink" title="skip 跳过"></a>skip 跳过</h1><p>设置跳过发射的数据的个数</p>
-<pre><code>getObservable()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .skip(2)
-        .subscribe(getObserver());
-</code></pre><h1 id="replay-重复发射"><a href="#replay-重复发射" class="headerlink" title="replay 重复发射"></a>replay 重复发射</h1><h1 id="repeat-重复"><a href="#repeat-重复" class="headerlink" title="repeat 重复"></a>repeat 重复</h1><p>在接收到 onComplete 事件后触发</p>
-<h2 id="repeatWhen"><a href="#repeatWhen" class="headerlink" title="repeatWhen"></a>repeatWhen</h2><h1 id="retry-重复"><a href="#retry-重复" class="headerlink" title="retry 重复"></a>retry 重复</h1><p>参数 times：表示重试次数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Observable&lt;T&gt; <span class="title">retry</span><span class="params">(<span class="keyword">long</span> times)</span> </span>&#123;</div></pre></td></tr></table></figure></p>
-<p>接收到.onError()事件后触发重订阅</p>
-<h2 id="retryWhen"><a href="#retryWhen" class="headerlink" title="retryWhen"></a>retryWhen</h2><h3 id="retryWhen-操作符实现错误重试机制"><a href="#retryWhen-操作符实现错误重试机制" class="headerlink" title="retryWhen 操作符实现错误重试机制"></a>retryWhen 操作符实现错误重试机制</h3><p>RetryWithDelay:</p>
-<pre><code>public class RetryWithDelay implements Function&lt;Flowable&lt;Throwable&gt;, Publisher&lt;?&gt;&gt; {
-
-    private final int maxRetries;
-    private final int retryDelayMillis;
-    private int retryCount;
-
-    public RetryWithDelay(int maxRetries, int retryDelayMillis) {
-        this.maxRetries = maxRetries;
-        this.retryDelayMillis = retryDelayMillis;
-    }
-
-
-    @Override
-    public Publisher&lt;?&gt; apply(Flowable&lt;Throwable&gt; throwableFlowable) throws Exception {
-        Flowable&lt;Throwable&gt; delay = throwableFlowable.delay(retryDelayMillis, TimeUnit.MILLISECONDS);
-        return delay;
-    }
-}
-</code></pre><p>usage:</p>
-<pre><code>mDisposable = Flowable.create(new LongConnectFlowableOnSubscribe(), BackpressureStrategy.BUFFER)
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .retryWhen(new RetryWithDelay(3, 3000))
-          .repeat()
-          .subscribe(new Consumer&lt;String&gt;() {
-              @Override
-              public void accept(String s) throws Exception {
-                  dealMsg(s);
-              }
-          }, throwable -&gt; {
-              LoggerUtils.e(throwable.getMessage());
-          });
-</code></pre><h1 id="concat-将多个被观察者顺序执行"><a href="#concat-将多个被观察者顺序执行" class="headerlink" title="concat 将多个被观察者顺序执行"></a>concat 将多个被观察者顺序执行</h1><pre><code>Observable.concat(aObservable, bObservable)
-                .subscribe(getObserver());
-
-// aObservable 发射完数据后，bObservable发射数据
-</code></pre><h1 id="merge-结合多个被观察者"><a href="#merge-结合多个被观察者" class="headerlink" title="merge 结合多个被观察者"></a>merge 结合多个被观察者</h1><p>和concat比无序，接收到的数据可能是穿插的</p>
-<pre><code>Observable.merge(aObservable, bObservable)
-        .subscribe(getObserver());
-</code></pre><h1 id="defer-延迟"><a href="#defer-延迟" class="headerlink" title="defer 延迟"></a>defer 延迟</h1><pre><code>Observable.defer(new Callable&lt;ObservableSource&lt;? extends String&gt;&gt;() {
-            @Override
-            public ObservableSource&lt;? extends String&gt; call() throws Exception {
-                return Observable.just(brand);
-            }
-        });
-
-// 通过上面创建的 Observable
-
-//....修改 brand 有效
-
-brandDeferObservable
-            .subscribe(getObserver()); // 获取到的数据是修改后的 brand
-</code></pre><h1 id="distinct-保证发射的数据不重复"><a href="#distinct-保证发射的数据不重复" class="headerlink" title="distinct 保证发射的数据不重复"></a>distinct 保证发射的数据不重复</h1><pre><code>getObservable().distinct() .subscribe(getObserver());
-</code></pre><h1 id="last-最后的数据"><a href="#last-最后的数据" class="headerlink" title="last 最后的数据"></a>last 最后的数据</h1><p>观察者只会收到被观察者最后发射的数据，可以设置默认值</p>
-<pre><code>getObservable().last(&quot;A1&quot;) // the default item (&quot;A1&quot;) to emit if the source ObservableSource is empty
-         .subscribe(getObserver());
-</code></pre><h1 id="sample"><a href="#sample" class="headerlink" title="sample"></a>sample</h1><p>每隔 [时间] 发送里时间点最近那个事件，</p>
-<h2 id="Obserable-基本类型"><a href="#Obserable-基本类型" class="headerlink" title="Obserable 基本类型"></a>Obserable 基本类型</h2><h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><h2 id="Maybe"><a href="#Maybe" class="headerlink" title="Maybe"></a>Maybe</h2><h2 id="Single-发送一个消息"><a href="#Single-发送一个消息" class="headerlink" title="Single 发送一个消息"></a>Single 发送一个消息</h2><pre><code>Single.just(&quot;Amit&quot;)...
-</code></pre><h2 id="CompletableObserver"><a href="#CompletableObserver" class="headerlink" title="CompletableObserver"></a>CompletableObserver</h2><pre><code>Completable completable = Completable.create(new CompletableOnSubscribe() {
-    @Override
-    public void subscribe(CompletableEmitter e) throws Exception {
-        //
-    }
-});
-</code></pre><p><code>CompletableEmitter</code> 只能发射结束事件和异常事件 <code>onComplete</code>,<code>onError</code></p>
-<p>用于执行单任务</p>
-<h2 id="Flowable"><a href="#Flowable" class="headerlink" title="Flowable"></a>Flowable</h2><p>在RxJava1.x中背压控制是由Observable完成的，而在RxJava2.x中将其独立了出来，取名为Flowable。</p>
-<p>通过Flowable我们可以自定义背压处理策略</p>
-<pre><code>Flowable.create(new FlowableOnSubscribe&lt;Integer&gt;() {
-
-          @Override
-          public void subscribe(FlowableEmitter&lt;Integer&gt; e) throws Exception {
-
-              for(int i=0;i&lt;10000;i++){
-                  e.onNext(i);
-              }
-              e.onComplete();
-          }
-      }, FlowableEmitter.BackpressureMode.ERROR) //指定背压处理策略，抛出异常
-              .subscribeOn(Schedulers.computation())
-              .observeOn(Schedulers.newThread())
-              .subscribe(new Consumer&lt;Integer&gt;() {
-                  @Override
-                  public void accept(Integer integer) throws Exception {
-                      Log.d(&quot;JG&quot;, integer.toString());
-                      Thread.sleep(1000);
-                  }
-              }, new Consumer&lt;Throwable&gt;() {
-                  @Override
-                  public void accept(Throwable throwable) throws Exception {
-                      Log.d(&quot;JG&quot;,throwable.toString());
-                  }
-              });
-</code></pre><p>或者：</p>
-<pre><code>Flowable.range(1,10000)
-               .onBackpressureDrop()
-               .subscribe(integer -&gt; Log.d(&quot;JG&quot;,integer.toString()));
-</code></pre><p>参考：</p>
-<ul>
-<li><a href="https://github.com/amitshekhariitbhu/RxJava2-Android-Samples" target="_blank" rel="external">Rxjava2代码例子</a></li>
-<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0907/6604.html" target="_blank" rel="external">Rxjava2和Rxjava1的不同点</a></li>
-<li><a href="http://gold.xitu.io/post/582d413c8ac24700619cceed" target="_blank" rel="external">背压</a></li>
-<li><a href="https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc" target="_blank" rel="external">https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc</a></li>
-</ul>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/14/ios/自定义View/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1869,7 +1236,7 @@ brandDeferObservable
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/23/前端/html/BootstrapW3C/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/13/ios/ios弹窗/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1888,7 +1255,7 @@ brandDeferObservable
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/23/前端/html/BootstrapW3C/" itemprop="url">Bootstrap w3c 学习记录</a></h1>
+                <a class="post-title-link" href="/2017/06/13/ios/ios弹窗/" itemprop="url">弹窗</a></h1>
         
 
         <div class="post-meta">
@@ -1900,8 +1267,8 @@ brandDeferObservable
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-23T13:18:12+08:00">
-                2016-11-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-13T13:18:12+08:00">
+                2017-06-13
               </time>
             
 
@@ -1923,8 +1290,8 @@ brandDeferObservable
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -1958,189 +1325,15 @@ brandDeferObservable
 
       
         
-          
-            <p><a href="http://www.w3cschool.cn/bootstrap/bootstrap-v2-grid-system.html" target="_blank" rel="external">w3c Bootstrap</a><br><a href="http://v3.bootcss.com/css/" target="_blank" rel="external">Bootstrap中文网</a></p>
-<h1 id="Bootstrap-css"><a href="#Bootstrap-css" class="headerlink" title="Bootstrap css"></a>Bootstrap css</h1><h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><h3 id="HTML-5-文档类型（Doctype）"><a href="#HTML-5-文档类型（Doctype）" class="headerlink" title="HTML 5 文档类型（Doctype）"></a>HTML 5 文档类型（Doctype）</h3><pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-....
-&lt;/html&gt;
-</code></pre><h3 id="移动设备优先"><a href="#移动设备优先" class="headerlink" title="移动设备优先"></a>移动设备优先</h3><p>head 中添加：</p>
-<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-</code></pre><ul>
-<li>width 属性控制设备的宽度，设置为 device-width 可以确保它能正确呈现在不同设备上。</li>
-<li>initial-scale=1.0 确保网页加载时，以 1:1 的比例呈现，不会有任何的缩放。</li>
-<li>移动设备浏览器上，通过为 viewport meta 标签添加 user-scalable=no 可以禁用其缩放（zooming）功能。</li>
-<li><p>maximum-scale=1.0 与 user-scalable=no 一起使用。这样禁用缩放功能后，用户只能滚动屏幕，就能让您的网站看上去更像原生应用的感觉。</p>
-<pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,                                                           initial-scale=1.0,                                       
-maximum-scale=1.0,                                       
-user-scalable=no&quot;&gt;
-</code></pre></li>
-</ul>
-<h3 id="响应式图像"><a href="#响应式图像" class="headerlink" title="响应式图像"></a>响应式图像</h3><pre><code>&lt;img src=&quot;...&quot; class=&quot;img-responsive&quot; alt=&quot;响应式图像&quot;&gt;
-</code></pre><ul>
-<li>img-responsive class 可以让 Bootstrap 3 中的图像对响应式布局的支持更友好。</li>
-</ul>
-<h3 id="全局显示、排版和链接"><a href="#全局显示、排版和链接" class="headerlink" title="全局显示、排版和链接"></a>全局显示、排版和链接</h3><p><code>bootstrap.css</code> 文件中查看css</p>
-<p>基本的全局显示：</p>
-<pre><code>body {
-  font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.42857143;
-  color: #333;
-  background-color: #fff;
-}
-</code></pre><h3 id="容器（Container）"><a href="#容器（Container）" class="headerlink" title="容器（Container）"></a>容器（Container）</h3><pre><code>&lt;div class=&quot;container&quot;&gt;
-  ...
-&lt;/div&gt;
-</code></pre><p>用于包裹页面上的内容:</p>
-<pre><code>.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-</code></pre><h1 id="Bootstrap-网格系统"><a href="#Bootstrap-网格系统" class="headerlink" title="Bootstrap 网格系统"></a>Bootstrap 网格系统</h1><p>系统会自动分为最多12列。</p>
-<h2 id="Bootstrap-网格系统（Grid-System）的工作原理"><a href="#Bootstrap-网格系统（Grid-System）的工作原理" class="headerlink" title="Bootstrap 网格系统（Grid System）的工作原理:"></a>Bootstrap 网格系统（Grid System）的工作原理:</h2><p>网格系统通过一系列包含内容的行和列来创建页面布局。</p>
-<ol>
-<li>行必须放置在 .container class 内，以便获得适当的对齐（alignment）和内边距（padding）。</li>
-<li>使用行来创建列的水平组。</li>
-<li>内容应该放置在列内，且唯有列可以是行的直接子元素。</li>
-<li>预定义的网格类，比如 .row 和 .col-xs-4，可用于快速创建网格布局。LESS 混合类可用于更多语义布局。</li>
-<li>列通过内边距（padding）来创建列内容之间的间隙。该内边距是通过 .rows 上的外边距（margin）取负，表示第一列和最后一列的行偏移。</li>
-<li>网格系统是通过指定您想要横跨的十二个可用的列来创建的。例如，要创建三个相等的列，则使用三个 .col-xs-4。</li>
-</ol>
-<h2 id="基本的网格结构"><a href="#基本的网格结构" class="headerlink" title="基本的网格结构"></a>基本的网格结构</h2><pre><code>&lt;div class=&quot;container&quot;&gt;
-   &lt;div class=&quot;row&quot;&gt;
-      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;
-      &lt;div class=&quot;col-*-*&quot;&gt;&lt;/div&gt;      
-   &lt;/div&gt;
-   &lt;div class=&quot;row&quot;&gt;...&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;container&quot;&gt;....
-</code></pre><h3 id="列偏移"><a href="#列偏移" class="headerlink" title="列偏移"></a>列偏移</h3><p><code>.col-md-offset-*</code> 类可以将列向右侧偏移</p>
-<h3 id="嵌套列"><a href="#嵌套列" class="headerlink" title="嵌套列"></a>嵌套列</h3><h3 id="列排序"><a href="#列排序" class="headerlink" title="列排序"></a>列排序</h3><p>使用 <code>.col-md-push-*</code> 和 <code>.col-md-pull-*</code> 类就可以很容易的改变列（column）的顺序</p>
-<h2 id="Less-mixin-和变量"><a href="#Less-mixin-和变量" class="headerlink" title="Less mixin 和变量"></a>Less mixin 和变量</h2><h1 id="排版"><a href="#排版" class="headerlink" title="排版"></a>排版</h1><h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p>文字标题: <h1~h6></h1~h6></p>
-<p>副标题: <small></small></p>
-<p>段落：</p><p></p>
-<p>引导主体副本:class=”lead” (给段落添加)</p>
-<h2 id="内联文本元素"><a href="#内联文本元素" class="headerlink" title="内联文本元素"></a>内联文本元素</h2><ol>
-<li><mark>:Marked text</mark></li>
-<li><del>:被删除的文本</del></li>
-<li><s>:无用文本</s></li>
-<li><ins>:插入文本</ins></li>
-<li><u>:带下划线的文本</u></li>
-<li><small>:小号文本</small></li>
-<li><strong>:（设置文本为更粗的文本）</strong></li>
-<li><em>（设置文本为斜体）<h2 id="对齐"><a href="#对齐" class="headerlink" title="对齐"></a>对齐</h2></em></li>
-</ol>
-<p>class=”text-left”，class=”text-center”，class=”text-right”，class=”text-justify”，class=”text-nowrap”</p>
-<h2 id="改变大小写"><a href="#改变大小写" class="headerlink" title="改变大小写"></a>改变大小写</h2><p>class=”text-lowercase”，class=”text-uppercase”，class=”text-capitalize”</p>
-<h2 id="缩略语"><a href="#缩略语" class="headerlink" title="缩略语"></a>缩略语</h2><p><abbr title="World Wide Web">WWW</abbr>， class=”initialism” 缩小字体</p>
-<p>强调:</p>
-<ol>
-<li><p class="text-muted">本行内容是减弱的</p></li>
-<li><p class="text-primary">本行内容带有一个 primary class</p></li>
-<li><p class="text-success">本行内容带有一个 success class</p></li>
-<li><p class="text-info">本行内容带有一个 info class</p></li>
-<li><p class="text-warning">本行内容带有一个 warning class</p></li>
-<li><p class="text-danger">本行内容带有一个 danger class</p>
-
-
-</li>
-</ol>
-<h2 id="地址（Address）"><a href="#地址（Address）" class="headerlink" title="地址（Address）"></a>地址（Address）</h2><address>
-
-<h2 id="引用（Blockquote）"><a href="#引用（Blockquote）" class="headerlink" title="引用（Blockquote）"></a>引用（Blockquote）</h2><blockquote>
-
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li>.lead    使段落突出显示</li>
-<li>.text-left    设定文本左对齐</li>
-<li>.text-center    设定文本居中对齐</li>
-<li>.text-right    设定文本右对齐</li>
-<li>.text-justify    设定文本对齐,段落中超出屏幕部分文字自动换行</li>
-<li>.text-nowrap    段落中超出屏幕部分不换行</li>
-<li>.text-lowercase    设定文本小写</li>
-<li>.text-uppercase    设定文本大写</li>
-<li>.text-capitalize    设定单词首字母大写</li>
-<li>.initialism    显示在 <abbr> 元素中的文本以小号字体展示</abbr></li>
-<li>.blockquote-reverse    设定引用右对齐</li>
-<li>.list-unstyled    移除默认的列表样式，列表项中左对齐 ( <ul> 和 <ol> 中)。 这个类仅适用于直接子列表项    (如果需要移除嵌套的列表项，你需要在嵌套的列表中使用该样式)</ol></ul></li>
-<li>.list-inline    将所有列表项放置同一行</li>
-<li>.dl-horizontal    该类设置了浮动和偏移，应用于 <dl> 元素和 <dt> 元素中，具体实现可以查看实例</dt></dl></li>
-<li>.pre-scrollable    使 <pre> 元素可滚动 scrollable</pre></li>
-</ul>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ol>
-<li>class .list-inline 把所有的列表项放在同一行中</li>
-</ol>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><p>为任意 <table> 标签添加 .table 类可以为其赋予基本的样式</table></p>
-<p>example:</p>
-<pre><code>&lt;table class=&quot;table&quot;&gt;
-    &lt;caption&gt;Optional table caption.&lt;/caption&gt;
-    &lt;thead&gt;
-    &lt;tr&gt;
-        &lt;th&gt;#&lt;/th&gt;
-        &lt;th&gt;First Name&lt;/th&gt;
-        &lt;th&gt;Last Name&lt;/th&gt;
-        &lt;th&gt;Username&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tbody&gt;
-    &lt;tr&gt;
-        &lt;td&gt;1&lt;/td&gt;
-        &lt;td&gt;Mark&lt;/td&gt;
-        &lt;td&gt;Otto&lt;/td&gt;
-        &lt;td&gt;@mdo&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-        &lt;td&gt;2&lt;/td&gt;
-        &lt;td&gt;Jacob&lt;/td&gt;
-        &lt;td&gt;Thornton&lt;/td&gt;
-        &lt;td&gt;@fat&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-        &lt;td&gt;3&lt;/td&gt;
-        &lt;td&gt;Larry&lt;/td&gt;
-        &lt;td&gt;the Bird&lt;/td&gt;
-        &lt;td&gt;@twitter&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;/tbody&gt;
-
-&lt;/table&gt;
-</code></pre><h2 id="条纹状表格"><a href="#条纹状表格" class="headerlink" title="条纹状表格"></a>条纹状表格</h2><p>通过 .table-striped 类可以给 <tbody> 之内的每一行增加斑马条纹样式。</tbody></p>
-<pre><code>&lt;table class=&quot;table table-striped&quot;&gt;
-  ...
-&lt;/table&gt;
-</code></pre><h2 id="带边框的表格"><a href="#带边框的表格" class="headerlink" title="带边框的表格"></a>带边框的表格</h2><h1 id="表单"><a href="#表单" class="headerlink" title="表单"></a>表单</h1><h2 id="基本实例"><a href="#基本实例" class="headerlink" title="基本实例"></a>基本实例</h2><pre><code>&lt;form role=&quot;form&quot;&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputEmail1&quot;&gt;Email address&lt;/label&gt;
-    &lt;input type=&quot;email&quot; class=&quot;form-control&quot; id=&quot;exampleInputEmail1&quot; placeholder=&quot;Enter email&quot;&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputPassword1&quot;&gt;Password&lt;/label&gt;
-    &lt;input type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;exampleInputPassword1&quot; placeholder=&quot;Password&quot;&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;exampleInputFile&quot;&gt;File input&lt;/label&gt;
-    &lt;input type=&quot;file&quot; id=&quot;exampleInputFile&quot;&gt;
-    &lt;p class=&quot;help-block&quot;&gt;Example block-level help text here.&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;checkbox&quot;&gt;
-    &lt;label&gt;
-      &lt;input type=&quot;checkbox&quot;&gt; Check me out
-    &lt;/label&gt;
-  &lt;/div&gt;
-  &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt;
-&lt;/form&gt;
-</code></pre><h2 id="内连表单"><a href="#内连表单" class="headerlink" title="内连表单"></a>内连表单</h2><p>表单添加下面的 class 属性</p>
-<ul>
-<li>.form-inline</li>
-</ul>
-<p>注意：label 一定要添加，否则屏幕阅读器无法正确识别</p>
-<h2 id="水平排列的表单"><a href="#水平排列的表单" class="headerlink" title="水平排列的表单"></a>水平排列的表单</h2><p>label 和 input 在一行上</p>
-<ul>
-<li>.form-horizontal 配合 栅格类</li>
-</ul>
-</blockquote></address>
-          
+          <p>2017/6/13</p>
+<p>参考：<a href="http://www.jianshu.com/p/63eb8fad9329">http://www.jianshu.com/p/63eb8fad9329</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/13/ios/ios弹窗/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2182,7 +1375,7 @@ user-scalable=no&quot;&gt;
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/Python/django/Django 报错记录/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/10/ios/ijkplayer-继承/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -2201,7 +1394,7 @@ user-scalable=no&quot;&gt;
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/21/Python/django/Django 报错记录/" itemprop="url">Django 报错记录</a></h1>
+                <a class="post-title-link" href="/2017/06/10/ios/ijkplayer-继承/" itemprop="url">IJKPlayer 使用</a></h1>
         
 
         <div class="post-meta">
@@ -2213,8 +1406,8 @@ user-scalable=no&quot;&gt;
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-21T13:18:12+08:00">
-                2016-11-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-10T13:18:12+08:00">
+                2017-06-10
               </time>
             
 
@@ -2236,8 +1429,8 @@ user-scalable=no&quot;&gt;
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -2271,17 +1464,15 @@ user-scalable=no&quot;&gt;
 
       
         
-          
-            <h1 id="NoReverseMatch"><a href="#NoReverseMatch" class="headerlink" title="NoReverseMatch"></a>NoReverseMatch</h1><pre><code>Reverse for &apos;index&apos; with arguments &apos;()&apos; and keyword arguments &apos;{}&apos; not found. 0 pattern(s) tried: []
-</code></pre><p>原因：URLconf 设置错误</p>
-<p>错误例子：</p>
-<pre><code>主urls.py中的
-url(r&apos;^$&apos;, include(&apos;blog.urls&apos;)),
-修改成
-url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
-</code></pre><p>$判断字符串结束，所以后面的子url她没法解析了</p>
-
-          
+          <p>2017/6/10</p>
+<p><a href="http://www.jianshu.com/p/e4e4f7f3767d">http://www.jianshu.com/p/e4e4f7f3767d</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/10/ios/ijkplayer-继承/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2323,7 +1514,7 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/21/Python/django/Common Web application tools - Static files management/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/06/ios/RxDatasource/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -2342,7 +1533,7 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/11/21/Python/django/Common Web application tools - Static files management/" itemprop="url">Common Web application tools - Static files management</a></h1>
+                <a class="post-title-link" href="/2017/06/06/ios/RxDatasource/" itemprop="url">Rxdatasource</a></h1>
         
 
         <div class="post-meta">
@@ -2354,8 +1545,8 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-21T13:18:12+08:00">
-                2016-11-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-06T13:18:12+08:00">
+                2017-06-06
               </time>
             
 
@@ -2377,8 +1568,8 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
                   </a>
                 </span>
 
@@ -2412,217 +1603,15 @@ url(r&apos;^&apos;, include(&apos;blog.urls&apos;)),就可以了。
 
       
         
-          
-            <p><code>django.contrib.staticfiles</code> 收集所有的 app 的静态文件到一个地方，方便程序调用</p>
-<h1 id="Settings"><a href="#Settings" class="headerlink" title="Settings"></a>Settings</h1><p><code>settings.py</code></p>
-<ul>
-<li>STATIC_ROOT:设置 collectstatic 将会收集静态文件地址的绝对路径地址</li>
-<li><p>STATIC_URL:定义静态文件的 url</p>
-<p>  Example: “/static/“ or “<a href="http://static.example.com/" target="_blank" rel="external">http://static.example.com/</a>“</p>
-</li>
-<li><p>STATICFILES_DIRS：</p>
-</li>
-</ul>
-<pre><code>exa：
-
-        STATICFILES_DIRS = [
-        &quot;/home/special.polls.com/polls/static&quot;,
-        &quot;/home/polls.com/polls/static&quot;,
-        &quot;/opt/webfiles/common&quot;,
-    ]
-</code></pre><ul>
-<li>STATICFILES_STORAGE</li>
-<li>STATICFILES_FINDERS</li>
-</ul>
-<p>。。。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/18/program/SVN 使用记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/18/program/SVN 使用记录/" itemprop="url">SVN 使用记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-18T13:18:12+08:00">
-                2016-11-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SVN-生命周期"><a href="#SVN-生命周期" class="headerlink" title="SVN  生命周期"></a>SVN  生命周期</h1><h2 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h2><p>版本库相当于一个集中的空间</p>
-<h2 id="检出"><a href="#检出" class="headerlink" title="检出"></a>检出</h2><p>Checkout：操作从版本库创建一个工作副本。工作副本是正常开发的地方，修改后提交到版本库中。</p>
-<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>update：操作从版本库中下载代码，将工作副本与版本库进行同步</p>
-<h2 id="执行变更"><a href="#执行变更" class="headerlink" title="执行变更"></a>执行变更</h2><p>commit：提交，将工作副本中的代码提交到版本库中。</p>
-<p>rename：操作，更改文件／目录的名字</p>
-<h2 id="复查变化"><a href="#复查变化" class="headerlink" title="复查变化"></a>复查变化</h2><p>update，checkout，操作后工作副本就和版本库中的数据相同了。</p>
-<p>status：操作，列出工作副本中所进行的变动，变动列表</p>
-<p>diff：操作显示变动详细信息</p>
-<h2 id="修复错误"><a href="#修复错误" class="headerlink" title="修复错误"></a>修复错误</h2><p>当工作副本中做了许多修改，但是不想要这个修改的时候，</p>
-<p>revert：操作重置对工作副本的修改。可以重置部分修改</p>
-<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><p>合并的时候会发生冲突</p>
-<p>merge：操作可以处理部分冲突，不能处理的冲突需要用户自己处理</p>
-<p>resolver：操作可以找出需要用户解决的冲突</p>
-<h2 id="提交更改"><a href="#提交更改" class="headerlink" title="提交更改"></a>提交更改</h2><p>commit：操作将工作副本的内容发送到版本库中</p>
-<h1 id="SVN-启动模式"><a href="#SVN-启动模式" class="headerlink" title="SVN 启动模式"></a>SVN 启动模式</h1><p>默认端口：<code>3690</code></p>
-<p>方式一：-r直接指定到版本库(称之为单库svnserve方式):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnserve -d -r /opt/svn/runoob</div></pre></td></tr></table></figure></p>
-<p>方式二：指定到版本库的上级目录(称之为多库svnserve方式):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnserve -d -r /opt/svn</div></pre></td></tr></table></figure></p>
-<p>多库启动 svn 的时候，当 svn 目录下有两个版本库：<code>runoob</code>,<code>runoob01</code></p>
-<p>runoob01 svn 地址：<code>svn://192.168.0.1/runoob01</code></p>
-<h1 id="Mac-下安装和使用"><a href="#Mac-下安装和使用" class="headerlink" title="Mac 下安装和使用"></a>Mac 下安装和使用</h1><h2 id="install-svn-server-服务器端"><a href="#install-svn-server-服务器端" class="headerlink" title="install svn server 服务器端"></a>install svn server 服务器端</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ brew options subversion</div><div class="line">$ brew install (OPTIONS) subversion</div></pre></td></tr></table></figure>
-<h2 id="创建版本库-1"><a href="#创建版本库-1" class="headerlink" title="创建版本库"></a>创建版本库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svnadmin create /opt/svn/runoob01</div></pre></td></tr></table></figure>
-<p>版本库配置文件位置:<code>/opt/svn/runoob01/conf</code>:</p>
-<ol>
-<li><p>svnserve.conf: svn 服务配置文件</p>
-<p> 去掉下面的注释</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># anon-access = read</div><div class="line"># auth-access = write</div><div class="line"></div><div class="line"># password-db = passwd</div><div class="line"></div><div class="line"># authz-db = authz</div></pre></td></tr></table></figure>
-<p> anon-access = read代表匿名访问的时候是只读的，若改为anon-access = none代表禁止匿名访问，需要帐号密码才能访问</p>
-</li>
-<li><p>passwd: 用户名口令</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#&lt;用户名&gt; = &lt;口令&gt;</div><div class="line"></div><div class="line">[users]</div><div class="line">fang = 123456</div><div class="line">fang02 = 123456</div></pre></td></tr></table></figure>
-</li>
-<li><p>authz: 权限配置文件 </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 定义组</div><div class="line">[groups]</div><div class="line">@g_admin = fang,fang02</div><div class="line"></div><div class="line"># [&lt;版本库名&gt;:&lt;路径&gt;]</div><div class="line">[runoob01:/]</div><div class="line">@g_admin=rw</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="mac-下-svn-的一些基本操作"><a href="#mac-下-svn-的一些基本操作" class="headerlink" title="mac 下 svn 的一些基本操作"></a>mac 下 svn 的一些基本操作</h2><h3 id="从本地导入代码到服务器-第一次初始化导入"><a href="#从本地导入代码到服务器-第一次初始化导入" class="headerlink" title="从本地导入代码到服务器(第一次初始化导入)"></a>从本地导入代码到服务器(第一次初始化导入)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn import /Users/apple/webSite svn://localhost/mycode/webSite --username=mj --password=123 -m &quot;初始化导入&quot;</div></pre></td></tr></table></figure>
-<p>这种方法将本地文件上传到 svn 版本库中，本地文件不会和 svn 关联（之后不能使用 commit）</p>
-<h3 id="从服务器端下载代码到客户端本地"><a href="#从服务器端下载代码到客户端本地" class="headerlink" title="从服务器端下载代码到客户端本地"></a>从服务器端下载代码到客户端本地</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn checkout svn://localhost/mycode --username=mj --password=123 /Users/apple/svnwebSite</div></pre></td></tr></table></figure>
-<p>这种方法会将本地代码和版本库代码关联（之后修改后可以直接 commit）</p>
-<h3 id="提交更改过的代码到服务器"><a href="#提交更改过的代码到服务器" class="headerlink" title="提交更改过的代码到服务器"></a>提交更改过的代码到服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn commit -m &quot;修改了webSite文件&quot;</div></pre></td></tr></table></figure>
-<h3 id="更新服务器端的代码到客户端"><a href="#更新服务器端的代码到客户端" class="headerlink" title="更新服务器端的代码到客户端"></a>更新服务器端的代码到客户端</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn update</div></pre></td></tr></table></figure>
-<h1 id="svn-add"><a href="#svn-add" class="headerlink" title="svn add ."></a>svn add .</h1><p><a href="http://tiankonguse.com/record/record.php?id=690" target="_blank" rel="external">http://tiankonguse.com/record/record.php?id=690</a></p>
-<pre><code>svn: warning: W150002: &apos;目录路径&apos; is already under version control
-svn: E200009: Could not add all targets because some targets are already versioned
-svn: E200009: Illegal target for the requested operation
-</code></pre><p>解决方案：</p>
-<pre><code>svn add 目录名 --force
-</code></pre><h1 id="svn-commit-m’…-’"><a href="#svn-commit-m’…-’" class="headerlink" title="svn commit -m’…..’"></a>svn commit -m’…..’</h1><h1 id="删除文件夹后点commit提交，但是报错，报错内容如下："><a href="#删除文件夹后点commit提交，但是报错，报错内容如下：" class="headerlink" title="删除文件夹后点commit提交，但是报错，报错内容如下："></a>删除文件夹后点commit提交，但是报错，报错内容如下：</h1><p>提示 “svn: Commit failed (details follow): svn: <code>&#39;/***/xxx.c&#39; is scheduled for addition, but is missing &quot;</code></p>
-<p>原因：之前用SVN提交过的文件，被标记为”add”状态，等待被加入到仓库。若此时你把这个文件删除了，SVN提交的时候还是会尝试提交这个文件，虽然它的状态已经是 “missing”了。</p>
-<p>解决：</p>
-<pre><code>svn revert xxx.c --depth infinity
-</code></pre><p>参考：</p>
-<p><a href="https://cnbin.github.io/blog/2015/06/13/mac-da-jian-svn-fu-wu-qi-huan-jing/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/06/13/mac-da-jian-svn-fu-wu-qi-huan-jing/</a></p>
-
-          
+          <p># </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dataSource.configureCell = &#123; (ds: RxTableViewSectionedReloadDataSource&lt;SectionOfCustomData&gt;, tv: UITableView, ip: IndexPath, item: Item) in</div><div class="line">  let cell = tv.dequeueReusableCell(withIdentifier: &quot;Cell&quot;, for: ip)</div><div class="line">  cell.textLabel?.text = &quot;Item \(item.anInt): \(item.aString) - \(item.aCGPoint.x):\(item.aCGPoint.y)&quot;</div><div class="line">  return cell</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/06/ios/RxDatasource/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -2659,7 +1648,7 @@ svn: E200009: Illegal target for the requested operation
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/19/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/21/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2704,7 +1693,7 @@ svn: E200009: Illegal target for the requested operation
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -2715,7 +1704,7 @@ svn: E200009: Illegal target for the requested operation
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -2726,7 +1715,7 @@ svn: E200009: Illegal target for the requested operation
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -2768,7 +1757,7 @@ svn: E200009: Illegal target for the requested operation
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

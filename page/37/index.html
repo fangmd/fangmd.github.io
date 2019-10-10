@@ -253,7 +253,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/view/TabLayout/TabLayout结合ViewPager的使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/15/Android/view/WebView/webView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -272,7 +272,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/05/Android/view/TabLayout/TabLayout结合ViewPager的使用/" itemprop="url">TabLayout</a></h1>
+                <a class="post-title-link" href="/2016/05/15/Android/view/WebView/webView/" itemprop="url">WebView</a></h1>
         
 
         <div class="post-meta">
@@ -284,8 +284,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T20:38:14+08:00">
-                2016-04-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-15T11:38:14+08:00">
+                2016-05-15
               </time>
             
 
@@ -342,99 +342,42 @@
 
       
         
-          
-            <h1 id="TabLayout结合ViewPager"><a href="#TabLayout结合ViewPager" class="headerlink" title="TabLayout结合ViewPager"></a>TabLayout结合ViewPager</h1><h2 id="导入支持包"><a href="#导入支持包" class="headerlink" title="导入支持包"></a>导入支持包</h2><p>在app/目录下按f4或者按<img src="http://i.imgur.com/Ek2HnGa.png" alt=""></p>
-<hr>
-<p>选择Dependencies页面，点击右边的“+”号，选择library dependency<br><img src="http://i.imgur.com/Gtrbzkl.png" alt=""></p>
-<hr>
-<p>搜索design，选择下面出现的一个包，点击ok<br><img src="http://i.imgur.com/le4E1vu.png" alt=""></p>
-<hr>
-<p>这个时候Android studio 会自动重新编译代码，如果没有就需要手动同步代码</p>
-<p><img src="http://i.imgur.com/AYAOn7E.png" alt=""></p>
-<h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h3 id="在xml布局文件中加入tablayout控件"><a href="#在xml布局文件中加入tablayout控件" class="headerlink" title="在xml布局文件中加入tablayout控件"></a>在xml布局文件中加入tablayout控件</h3><pre><code>&lt;!--tablayout 在Design包下android5.0中新的东西--&gt;
-&lt;android.support.design.widget.TabLayout
-    android:id=&quot;@+id/discovery_tab_bar&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;wrap_content&quot;/&gt;
-</code></pre><p>加入viewpager：</p>
-<pre><code>&lt;android.support.v4.view.ViewPager
-    android:id=&quot;@+id/discovery_viewpager&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;wrap_content&quot;&gt;
-</code></pre><h3 id="关联TabLayout和ViewPager"><a href="#关联TabLayout和ViewPager" class="headerlink" title="关联TabLayout和ViewPager"></a>关联TabLayout和ViewPager</h3><p>方法一：</p>
-<pre><code>TabLayout tabLayout = (TabLayout) view.findViewById(R.id.discovery_tab_bar);
-tabLayout.setOnTabSelectedListener(this);
-
-List&lt;String&gt; list = new ArrayList&lt;&gt;();
-Collections.addAll(list, &quot;推荐&quot;, &quot;分类&quot;, &quot;广播&quot;, &quot;榜单&quot;, &quot;主播&quot;);
-TabLayout.Tab tab = null;
-for (String s : list) {
-    tab = tabLayout.newTab();
-    tab.setText(s);
-    tabLayout.addTab(tab);
-}
-
-mViewPager = (ViewPager) view.findViewById(R.id.discovery_viewpager);
-DiscoveryFragmentPageAdapter adapter = new DiscoveryFragmentPageAdapter(getActivity().getSupportFragmentManager(), list);
-mViewPager.setAdapter(adapter);
-
-mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-</code></pre><hr>
-<p>方法二：推荐使用</p>
-<pre><code>TabLayout tabLayout = (TabLayout) view.findViewById(R.id.discovery_tab_bar);
-
-List&lt;String&gt; list = new ArrayList&lt;&gt;();
-Collections.addAll(list, &quot;推荐&quot;, &quot;分类&quot;, &quot;广播&quot;, &quot;榜单&quot;, &quot;主播&quot;);
-
-mViewPager = (ViewPager) view.findViewById(R.id.discovery_viewpager);
-DiscoveryFragmentPageAdapter adapter = new DiscoveryFragmentPageAdapter(getActivity().getSupportFragmentManager(), list);
-mViewPager.setAdapter(adapter);
-
-tabLayout.setupWithViewPager(mViewPager);
-</code></pre><p>还需要在适配器中添加方法：</p>
-<pre><code>@Override
-public CharSequence getPageTitle(int position) {
-    return mList.get(position);
-}
-</code></pre><h2 id="TabLayout重要属性"><a href="#TabLayout重要属性" class="headerlink" title="TabLayout重要属性"></a>TabLayout重要属性</h2><p>属性：</p>
+          <h1 id="Modern-WebView-Best-Practices"><a href="#Modern-WebView-Best-Practices" class="headerlink" title="Modern WebView Best Practices"></a>Modern WebView Best Practices</h1><blockquote>
+<p>Android Dev Summit 2018 关于 WebView 部分</p>
+</blockquote>
+<h2 id="A-breif-WebView-history"><a href="#A-breif-WebView-history" class="headerlink" title="A breif WebView history"></a>A breif WebView history</h2><ol>
+<li>WebView 在 API 1 就加入了</li>
+<li>在 Andreoid Lollipop 版本的时候，重新实现了 Api: 修复 bug 和一些安全问题</li>
+<li>添加了 40+ 个新的 APIs</li>
+</ol>
+<p>WebView 的 API 在 Lollipop 版本后有了比较大的更新，但是很多应用并没有去使用新的特性，包括 Stachoverflow 上的一些回答都是过时的，接口文档也是过时的。</p>
+<h2 id="关于版本兼容问题"><a href="#关于版本兼容问题" class="headerlink" title="关于版本兼容问题"></a>关于版本兼容问题</h2><p>WebView 在 Lollipop 上实现的新 Api 无法在低版本设备中运行。</p>
+<p><strong>AndroidX</strong></p>
 <ul>
-<li><p>滑块颜色：</p>
-<pre><code>app:tabIndicatorColor=&quot;@color/white&quot;
-</code></pre></li>
-<li><p>字体颜色：</p>
-<pre><code>app:tabSelectedTextColor=&quot;@color/gray&quot;  app:tabTextColor=&quot;@color/white&quot;
-</code></pre></li>
-<li><p>tab模式：</p>
-<pre><code>app:tabMode=&quot;fix&quot;
-</code></pre><p>  fix:表示所有tab会挤在屏幕被不能滚动</p>
-<p>  scrollable：表示Tab可以滚动</p>
+<li>AndroidX brings new Apis to old devices<ul>
+<li>Leverages WebView`s update cycle on L+</li>
+</ul>
 </li>
-<li><p>tabGravity：</p>
-<pre><code>app:tabGravity=&quot;center&quot;
-</code></pre><p>  center:点击接近屏幕边缘的Tab时会聚焦（当然会聚焦啦）并居中</p>
-<p>  fill:点击接近屏幕边缘的Tab时会向屏幕中心移动，直至能完全显示整个Tab标签，不会居中</p>
+<li>AndroidX APIs are simple to use<ul>
+<li>easy to swap out Framework APIs</li>
+</ul>
 </li>
 </ul>
-<h2 id="TabLayout-自定义指示器"><a href="#TabLayout-自定义指示器" class="headerlink" title="TabLayout 自定义指示器"></a>TabLayout 自定义指示器</h2><p>关键代码：</p>
-<pre><code>mTabLayout.setupWithViewPager(mViewPager);
-
-for (int i = 0; i &lt; mTabLayout.getTabCount(); i++) {
-    TabLayout.Tab tab = mTabLayout.getTabAt(i);
-    if (tab != null) {
-        tab.setCustomView(getTabView(i));
-    }
-}
-
-public View getTabView(int position) {
-    View v = LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-    TextView tv = (TextView) v.findViewById(R.id.tv_tab);
-    tv.setText(String.format(&quot;第%d个&quot;, position));
-    //        ImageView img = (ImageView) v.findViewById(R.id.imageView);
-    //img.setImageResource(imageResId[position]);
-    return v;
-}
-</code></pre>
-          
+<h2 id="如何使用-AndroidX"><a href="#如何使用-AndroidX" class="headerlink" title="如何使用 AndroidX"></a>如何使用 AndroidX</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">mWebView.setWebViewClient(new WebViewClientCompat()&#123;</div><div class="line"></div><div class="line">    // 支持 Lollipop+ 设备（低版本设备中也能运行）</div><div class="line">    @Override</div><div class="line">    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) &#123;</div><div class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">            if (!request.hasGesture()) &#123;</div><div class="line">                return false;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return super.shouldOverrideUrlLoading(view, request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // @Deprecated 支持 Lollipop 之前的设备</div><div class="line">    @Override</div><div class="line">    public boolean shouldOverrideUrlLoading(WebView view, String url) &#123;</div><div class="line"></div><div class="line">        return super.shouldOverrideUrlLoading(view, url);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="Loading-in-app-content"><a href="#Loading-in-app-content" class="headerlink" title="Loading in-app content"></a>Loading in-app content</h2><p>app 加载离线的 html。</p>
+<p>通常我们会使用 <code>WebView#loadData()</code> 但是这会导致一些问题。</p>
+<p>避免编码问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">loadData(encodedHtml, mimeType, &quot;base64&quot;)</div><div class="line"></div><div class="line">encodedHtml = Base64.encodeToString(unencodedHtml.getBytes(), Base64.No_PADDING);</div></pre></td></tr></table></figure>
+<p>避免 same-origin restrictions 使用 <code>loadDataWithBaseURL</code></p>
+<p><a href="https://www.youtube.com/watch?v=HGZYtDZhOEQ&amp;list=PLWz5rJ2EKKc8WFYCR9esqGGY0vOZm2l6e&amp;index=29">Modern WebView Best Practices (Android Dev Summit ‘18)</a></p>
+<h1 id="WebView-属性的设置"><a href="#WebView-属性的设置" class="headerlink" title="WebView 属性的设置"></a>WebView 属性的设置</h1><h2 id="通过-WebSettings-设置"><a href="#通过-WebSettings-设置" class="headerlink" title="通过 WebSettings 设置"></a>通过 <code>WebSettings</code> 设置</h2>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/15/Android/view/WebView/webView/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -476,7 +419,7 @@ public View getTabView(int position) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/四大组件/ConentProvider/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/00.Android内存优化--布局优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -495,7 +438,7 @@ public View getTabView(int position) {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/05/Android/四大组件/ConentProvider/" itemprop="url">ContentProvider</a></h1>
+                <a class="post-title-link" href="/2016/05/14/Android/优化/00.Android内存优化--布局优化/" itemprop="url">Android内存优化 -- 布局优化，过度绘制优化</a></h1>
         
 
         <div class="post-meta">
@@ -507,8 +450,8 @@ public View getTabView(int position) {
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T11:38:14+08:00">
-                2016-04-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
               </time>
             
 
@@ -566,1151 +509,49 @@ public View getTabView(int position) {
       
         
           
-            <h1 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h1><p>通过数据库，提供本app生成的数据给其他的应用调用；</p>
-<p>通过SQLiteOpenHelper的实现类，创建数据库</p>
-<h2 id="创建一个ContentProvider的步骤"><a href="#创建一个ContentProvider的步骤" class="headerlink" title="创建一个ContentProvider的步骤"></a>创建一个ContentProvider的步骤</h2><h3 id="1-创建一个ContentProvider的实现类，并完成一下步骤"><a href="#1-创建一个ContentProvider的实现类，并完成一下步骤" class="headerlink" title="1 创建一个ContentProvider的实现类，并完成一下步骤"></a>1 创建一个ContentProvider的实现类，并完成一下步骤</h3><ol>
-<li>定义该ContentProvider组件的唯一标识,通常用 包名+数据库名（必须是小写）</li>
-<li>为该组件中可以被其它应用访问的表定义CODE标识</li>
-<li>定义UriMatcher对象,用于生成uri</li>
-<li>在onCreate中，初始化SQLiteOpenHelper 的子类</li>
-<li>增删改查方法实现</li>
-</ol>
-<h3 id="2-创建该组件的访问权限和使用权限"><a href="#2-创建该组件的访问权限和使用权限" class="headerlink" title="2 创建该组件的访问权限和使用权限"></a>2 创建该组件的访问权限和使用权限</h3><blockquote>
-<p>Manifest</p>
+            <h1 id="Android内存优化-–-布局优化"><a href="#Android内存优化-–-布局优化" class="headerlink" title="Android内存优化 – 布局优化"></a>Android内存优化 – 布局优化</h1><h2 id="布局的层级不能太深"><a href="#布局的层级不能太深" class="headerlink" title="布局的层级不能太深"></a>布局的层级不能太深</h2><p>使用Hierarchy Viewer查看UI布局层级</p>
+<h2 id="include-标签把可复用的布局抽取出来"><a href="#include-标签把可复用的布局抽取出来" class="headerlink" title="include 标签把可复用的布局抽取出来"></a>include 标签把可复用的布局抽取出来</h2><h2 id="merge标签"><a href="#merge标签" class="headerlink" title="merge标签"></a>merge标签</h2><p>可以优化UI结构，删除多余的层级</p>
+<h2 id="ViewStub"><a href="#ViewStub" class="headerlink" title="ViewStub"></a>ViewStub</h2><p>一个隐藏的不占用内存空间的视图对象，可以在运行时延迟加载布局资源文件。</p>
+<h1 id="Android-过度绘制-优化"><a href="#Android-过度绘制-优化" class="headerlink" title="Android 过度绘制 优化"></a>Android 过度绘制 优化</h1><p>参考：<a href="https://jaeger.itscoder.com/android/2016/09/29/android-performance-overdraw.html" target="_blank" rel="external">https://jaeger.itscoder.com/android/2016/09/29/android-performance-overdraw.html</a></p>
+<blockquote>
+<p>Overdraw：描述的是屏幕上的某个像素在同一帧的时间内被绘制了多次。在多层次重叠的 UI 结构里面，如果不可见的 UI 也在做绘制的操作，会导致某些像素区域被绘制了多次，同时也会浪费大量的 CPU 以及 GPU 资源。</p>
 </blockquote>
-<pre><code>&lt;!--  访问该组件的权限  --&gt;
-&lt;permission android:name=&quot;com.example.contentprovider.READ_WRITE&quot;/&gt;
-&lt;!--  使用该组件的权限  --&gt;
-&lt;uses-permission android:name=&quot;com.example.contentprovider.READ_WRITE&quot;/&gt;
-</code></pre><h3 id="3-注册ContentProvider组件"><a href="#3-注册ContentProvider组件" class="headerlink" title="3 注册ContentProvider组件"></a>3 注册ContentProvider组件</h3><blockquote>
-<p>Manifest</p>
-</blockquote>
-<pre><code>&lt;!--
- 注册ContentProvider组件 
-    android:name:ContenetProvider组件的包名类名
-    android:authorities：ContenetProvider组件的唯一标识
-    android:permission:访问ContenetProvider组件的权限
-    android:exported:让其他应用可以访问该组件
-
---&gt;
-&lt;provider android:name=&quot;com.example.gp11_day15_contentprovider.provider.UserContentProvider&quot;
-    android:authorities=&quot;com.example.contentprovider.user&quot; 
-    android:permission=&quot;com.example.contentprovider.READ_WRITE&quot; 
-    android:exported=&quot;true&quot;/&gt;
-</code></pre><h2 id="简单的ContentProvider实现类"><a href="#简单的ContentProvider实现类" class="headerlink" title="简单的ContentProvider实现类"></a>简单的ContentProvider实现类</h2><pre><code>/**
- * 定义ContentProvider组件，把当前应用下的私有数据库提供给外界
- */
-public class UserContentProvider extends ContentProvider {
-
-    // 1. 定义该ContentProvider组件的唯一标识,通常用 包名+数据库名（必须是小写）
-    public static final String AUTHORITY =&quot;com.example.contentprovider.user&quot;; 
-
-    // 2. 为该组件中可以被其它应用访问的表定义CODE标识
-    public static final int CODE_USER = 1;
-    public static final int CODE_ORDER = 2;
-
-    // 3. 定义UriMatcher对象,用于生成uri
-    public static UriMatcher uriMatcher;
-
-    static{
-        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        //为t_user表生成uri,同时和Code标识相对应
-        //content://com.example.contentprovider.user/user
-        uriMatcher.addURI(AUTHORITY, &quot;user&quot;, CODE_USER);
-        //为t_order表生成uri
-        //content://com.example.contentprovider.user/order
-        uriMatcher.addURI(AUTHORITY, &quot;order&quot;, CODE_ORDER);
-    }
-
-    private DbHelper dbHelper;
-
-    @Override
-    public boolean onCreate() {
-        // 4. 在onCreate中，初始化SQLiteOpenHelper 的子类
-        dbHelper = new DbHelper(getContext());
-        return false;
-    }
-    //对表的增删改查都是由ContentProvider组件实现的， ContentResolver只是在调用ContentProvider提供的
-    //增删改查的功能
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor =null;
-        int code = uriMatcher.match(uri);//根据uri返回code标识
-        switch(code)
-        {
-           case CODE_USER:
-                 cursor = db.query(&quot;t_user&quot;, projection, selection, selectionArgs, null, null, sortOrder);
-                 break;
-           case CODE_ORDER:
-        }
-        return cursor;
-    }
-
-    @Override
-    public String getType(Uri uri) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        if(uriMatcher.match(uri)==this.CODE_USER)
-        {
-            long id = db.insert(&quot;t_user&quot;, null, values);
-
-            //把新记录的id封装成uri
-            return ContentUris.withAppendedId(uri, id);
-        }
-        return null;
-    }
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int num = 0;
-        if(uriMatcher.match(uri)==this.CODE_USER)
-        {
-            num = db.delete(&quot;t_user&quot;, selection, selectionArgs);
-        }
-        return num;
-    }
-
-    @Override
-    public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int num = 0;
-        if(uriMatcher.match(uri)==this.CODE_USER)
-        {
-            num = db.update(&quot;t_user&quot;, values, selection, selectionArgs);
-        }
-        return num;
-    }
-
-}
-</code></pre><h2 id="CursorLoader-会开启子线程"><a href="#CursorLoader-会开启子线程" class="headerlink" title="CursorLoader(会开启子线程)"></a>CursorLoader(会开启子线程)</h2>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/Android/四大组件/ContentResolver/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/05/Android/四大组件/ContentResolver/" itemprop="url">ContentResolver</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T11:38:14+08:00">
-                2016-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ContentResolver"><a href="#ContentResolver" class="headerlink" title="ContentResolver"></a>ContentResolver</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/program/AndroidStudio/Androidstudio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/05/program/AndroidStudio/Androidstudio/" itemprop="url">android studio</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T11:13:12+08:00">
-                2016-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="android-studio"><a href="#android-studio" class="headerlink" title="android studio"></a>android studio</h1><h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><h3 id="SelectorChapek"><a href="#SelectorChapek" class="headerlink" title="SelectorChapek"></a>SelectorChapek</h3><h2 id="记报错"><a href="#记报错" class="headerlink" title="记报错"></a>记报错</h2><h3 id="0"><a href="#0" class="headerlink" title="0"></a>0</h3><pre><code>retrofit 使用的使用，报错：ArrayIndexOutOfBoundsException
-</code></pre><p>解决办法:android studio 打开设置–&gt;build,Execution,Deployment–&gt;instant run–&gt;去掉所有的勾</p>
-<p><img src="http://7xr8nu.com1.z0.glb.clouddn.com/androidstudioinstantrun.png" alt=""></p>
-<h3 id="1-注-某些输入文件使用或覆盖了已过时的-API。"><a href="#1-注-某些输入文件使用或覆盖了已过时的-API。" class="headerlink" title="1 注: 某些输入文件使用或覆盖了已过时的 API。"></a>1 注: 某些输入文件使用或覆盖了已过时的 API。</h3><pre><code>allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs &lt;&lt; &quot;-Xlint:unchecked&quot; &lt;&lt; &quot;-Xlint:deprecation&quot;
-        }
-    }
-}
-</code></pre><p>gradle中加入上面的设置，可以查看详细内容。</p>
-<h3 id="2-android-studio-引入-org-apache-http包"><a href="#2-android-studio-引入-org-apache-http包" class="headerlink" title="2 android studio 引入 org.apache.http包"></a>2 android studio 引入 org.apache.http包</h3><pre><code>android {
-    useLibrary &apos;org.apache.http.legacy&apos;
-}
-</code></pre><h2 id="自定义快捷键"><a href="#自定义快捷键" class="headerlink" title="自定义快捷键"></a>自定义快捷键</h2><h2 id="post-fix"><a href="#post-fix" class="headerlink" title="post fix"></a>post fix</h2><p><img src="http://i.imgur.com/W23MP5s.png" alt=""></p>
-<h2 id="定义类的注释"><a href="#定义类的注释" class="headerlink" title="定义类的注释"></a>定义类的注释</h2><p><img src="http://i.imgur.com/8hWMTxQ.png" alt=""></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/05/program/gitignore/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/05/program/gitignore/" itemprop="url">.gitignore</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-05T11:13:12+08:00">
-                2016-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="gitignore设置"><a href="#gitignore设置" class="headerlink" title=".gitignore设置"></a>.gitignore设置</h1><pre><code># IntelliJ IDEA project files
-.idea/
-*.iml
-*.ipr
-*.iws
-out/
-
-# Eclipse Project files
-.classpath
-.project
-.settings/
-
-# Android build
-bin/
-local.properties
-build/
-.gradle
-
-# OS auto gen
-# win
-Thumbs.db
-# os X
-.DS_Store
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/04/Android/view/view滑动实现方式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/04/Android/view/view滑动实现方式/" itemprop="url">view滑动实现方式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-04T22:18:12+08:00">
-                2016-04-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="view-滑动的实现方式"><a href="#view-滑动的实现方式" class="headerlink" title="view 滑动的实现方式"></a>view 滑动的实现方式</h1><h2 id="view-位置"><a href="#view-位置" class="headerlink" title="view 位置"></a>view 位置</h2><p>view在屏幕上的位置由一下参数决定：</p>
+<h2 id="查看界面是否过度绘制的方法"><a href="#查看界面是否过度绘制的方法" class="headerlink" title="查看界面是否过度绘制的方法"></a>查看界面是否过度绘制的方法</h2><p>在手机 【开发者选项】 中开启【调试 GPU 过度绘制】（Debug GPU overdraw -&gt; show overdraw areas）</p>
+<p>各个区域颜色的含义：</p>
+<p><img src="http://ac-qygvx1cc.clouddn.com/46397b26da912658.png" alt="http://ac-qygvx1cc.clouddn.com/46397b26da912658.png"></p>
 <ul>
-<li>top：View的左上角的纵坐标y，<code>getTop()</code>,mTop</li>
-<li>left:View的左上角的横坐标x，<code>getLeft()</code>,mLeft</li>
-<li>bottom：View的右下角的纵坐标y，<code>getBottom()</code>,mBottom</li>
-<li>right:View的右下角的横坐标x，<code>getRight()</code>,mRight</li>
+<li>原色：没有过度绘制</li>
+<li>蓝色：1 次过度绘制</li>
+<li>绿色：2 次过度绘制</li>
+<li>粉色：3 次过度绘制</li>
+<li>红色：4 次及以上过度绘制</li>
 </ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/04/Android/view/view滑动实现方式/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/04/Android/features/双击back退出应用程序/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/04/Android/features/双击back退出应用程序/" itemprop="url">双击back退出应用程序</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-04T09:23:14+08:00">
-                2016-04-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="双击back退出应用程序"><a href="#双击back退出应用程序" class="headerlink" title="双击back退出应用程序"></a>双击back退出应用程序</h1><p>参考：<a href="http://blog.csdn.net/yelangjueqi/article/details/9472705">http://blog.csdn.net/yelangjueqi/article/details/9472705</a></p>
-<h2 id="最优方法"><a href="#最优方法" class="headerlink" title="最优方法"></a>最优方法</h2>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/04/Android/features/双击back退出应用程序/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/program/Sublime使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/03/program/Sublime使用/" itemprop="url">Sublime</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T15:18:12+08:00">
-                2016-04-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/program/" itemprop="url" rel="index">
-                    <span itemprop="name">program</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Sublime-设置"><a href="#Sublime-设置" class="headerlink" title="Sublime 设置"></a>Sublime 设置</h1>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/03/program/Sublime使用/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/ndk/NDK实战/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/03/Android/ndk/NDK实战/" itemprop="url">NDK Hello</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
-                2016-04-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="创建一个Jni类"><a href="#创建一个Jni类" class="headerlink" title="创建一个Jni类"></a>创建一个Jni类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public class JniTest &#123;</div><div class="line">    public static native getStringFromNative();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Make（构建）Module-app生成字节码（-class）文件"><a href="#Make（构建）Module-app生成字节码（-class）文件" class="headerlink" title="Make（构建）Module app生成字节码（*.class）文件"></a>Make（构建）Module app生成字节码（*.class）文件</h1><p><code>build-&gt;make module&#39;app&#39;</code></p>
-<p>目的是生成 <code>.class</code> 文件，文件地址在：<code>NdkBuilderDemo/app/build/intermediates/classes/debug/com/adouble/ndkbuilderdemo/JniTest.class</code></p>
-<h1 id="生成头文件（-h）"><a href="#生成头文件（-h）" class="headerlink" title="生成头文件（*.h）"></a>生成头文件（*.h）</h1><ol>
-<li>首先打开工具栏的Terminal工具</li>
-<li><code>cd app/src/main</code></li>
-<li><code>javah -d jni -classpath ../../build/intermediates/classes/debug com.adouble.ndkbuilderdemo.JniTest</code></li>
-</ol>
+<p>优化原则：</p>
 <ul>
-<li><code>javah</code> 执行javah命令生成头文件（*.h）</li>
-<li><code>-d jni</code> 在当前目录创建一个文件，文件名称是jni</li>
-<li><code>-classpath xxx/debug</code> 指定要生成头文件（.h）的字节码文件路径（class）</li>
+<li>一些过度绘制是无法避免的，比如之前说的文字和背景导致的过度绘制，这种是无法避免的。</li>
+<li>应用界面中，应该尽可能地将过度绘制控制为 2 次（绿色）及其以下，原色和蓝色是最理想的。</li>
+<li>粉色和红色应该尽可能避免，在实际项目中避免不了时，应该尽可能减少粉色和红色区域。</li>
+<li>不允许存在面积超过屏幕 1/4 区域的 3 次（淡红色区域）及其以上过度绘制。</li>
 </ul>
-<h1 id="创建JniTest-c文件"><a href="#创建JniTest-c文件" class="headerlink" title="创建JniTest.c文件"></a>创建JniTest.c文件</h1><p>方法JNICALL Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative，这相当于是java的抽象方法，它只声明但是没有任何实现，一般情况下需要创建一个c或cpp文件去实现相应的方法。</p>
+<h2 id="优化方法"><a href="#优化方法" class="headerlink" title="优化方法"></a>优化方法</h2><h3 id="移除默认的-Window-背景"><a href="#移除默认的-Window-背景" class="headerlink" title="移除默认的 Window 背景"></a>移除默认的 Window 背景</h3><p>移除背景做法：</p>
 <ol>
-<li>首先创建一个文件JniTest.c</li>
-<li>编辑JniTest.c，导入头文件com_sandwich_jelly_myapplication_JniTest.h</li>
-<li>实现头文件的抽象方法</li>
+<li>方法一，在 Activity 的主题中添加：</li>
 </ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> com_adouble_ndkbuilderdemo_JniTest.h</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_adouble_ndkbuilderdemo_JniTest_getStringFromNative</span><span class="params">(JNIEnv *e, jobject obj)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> (**e).NewStringUTF(e,<span class="string">"Hello from JniTest Function"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Jni类的配置及引用"><a href="#Jni类的配置及引用" class="headerlink" title="Jni类的配置及引用"></a>Jni类的配置及引用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">    defaultConfig &#123;</div><div class="line">...</div><div class="line">        ndk &#123;</div><div class="line">            moduleName &quot;NdkJniDemo&quot;          //生成的so名字</div><div class="line">            ldLibs &quot;log&quot;//实现__android_log_print</div><div class="line">            abiFilters &quot;armeabi&quot;, &quot;armeabi-v7a&quot;, &quot;x86&quot; //输出指定三种abi体系结构下的so库，目前可有可无。</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p>修改原文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JniTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        System.loadLibrary(<span class="string">"NdkJniDemo"</span>);<span class="comment">//之前在build.gradle里面设置的so名字，必须一致</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> String <span class="title">getStringFromNative</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h1 id="项目中引用so"><a href="#项目中引用so" class="headerlink" title="项目中引用so"></a>项目中引用so</h1><p>以上项目编译完后，可以在app/build/intermediates/ndk/debug/lib下面找到生成的so</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/3e9f3055d7a6" target="_blank" rel="external">http://www.jianshu.com/p/3e9f3055d7a6</a></li>
-<li><a href="http://xyzlf.github.io/2016/07/17/android-jni.html" target="_blank" rel="external">http://xyzlf.github.io/2016/07/17/android-jni.html</a></li>
-</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;item name=&quot;android:windowBackground&quot;&gt;@android:color/transparent&lt;/item&gt;</div><div class="line">&lt;!-- 或者 --&gt;</div><div class="line">&lt;item name=&quot;android:windowBackground&quot;&gt;@null&lt;/item&gt;</div></pre></td></tr></table></figure>
+<ol>
+<li>方法二， 在 BaseActivity 的 onCreate() 方法中添加：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">getWindow().setBackgroundDrawable(<span class="keyword">null</span>);</div><div class="line"><span class="comment">// 或者</span></div><div class="line">getWindow().setBackgroundDrawableResource(android.R.color.transparent);</div></pre></td></tr></table></figure>
+<p>移除 window 背景后，需要检查之前写的界面是否正常。</p>
+<blockquote>
+<p>移除背景后可能很多界面都需要添加 背景色。大批量修改界面会有点麻烦，所以在时间不多的情况下不建议直接在 BaseActivity 中添加一个方法 removeWindowBackgrod 方法供需要优化的 子Activity 使用。</p>
+</blockquote>
+<h3 id="移除不必要的背景"><a href="#移除不必要的背景" class="headerlink" title="移除不必要的背景"></a>移除不必要的背景</h3><ol>
+<li>子控件的颜色和父控件颜色一样的时候，不需要在父控件和子控件中都设置背景</li>
+<li>例子：recyclerview 中设置了背景色，如果 item 的颜色和 recyclerview 背景色一样就不要再设置了</li>
+<li>ViewPager 加多个 Fragment 组成的首页界面，如果你的每个 Fragment 都设置有背景色的话， 你就可以不用给 Activity 的根布局设置背景，如果你还给 ViewPager 还设置了背景，那个这个背景是没必要的，同样可以移除。</li>
+<li>imageView 的 background 和 设置的图片 会过度绘制</li>
+</ol>
 
           
         
@@ -1754,7 +595,7 @@ Thumbs.db
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/03/Android/android 读取本地json数据/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/03.Android内存优化--代码优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1773,7 +614,7 @@ Thumbs.db
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/03/Android/android 读取本地json数据/" itemprop="url">android 读取本地json数据</a></h1>
+                <a class="post-title-link" href="/2016/05/14/Android/优化/03.Android内存优化--代码优化/" itemprop="url">Android内存优化 -- 代码优化</a></h1>
         
 
         <div class="post-meta">
@@ -1785,8 +626,148 @@ Thumbs.db
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-03T13:18:12+08:00">
-                2016-04-03
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android内存优化-–-代码优化"><a href="#Android内存优化-–-代码优化" class="headerlink" title="Android内存优化 – 代码优化"></a>Android内存优化 – 代码优化</h1><h2 id="AndroidLint分析代码"><a href="#AndroidLint分析代码" class="headerlink" title="AndroidLint分析代码"></a>AndroidLint分析代码</h2><p>推荐使用findBugs 插件</p>
+<h2 id="尽量不使用枚举及IOC框架，反射"><a href="#尽量不使用枚举及IOC框架，反射" class="headerlink" title="尽量不使用枚举及IOC框架，反射"></a>尽量不使用枚举及IOC框架，反射</h2><h2 id="常量加-static"><a href="#常量加-static" class="headerlink" title="常量加 static"></a>常量加 static</h2><h2 id="较少不必要的对象，成员变量"><a href="#较少不必要的对象，成员变量" class="headerlink" title="较少不必要的对象，成员变量"></a>较少不必要的对象，成员变量</h2><h2 id="尽量使用线程池"><a href="#尽量使用线程池" class="headerlink" title="尽量使用线程池"></a>尽量使用线程池</h2><p>尽量使用Android中实现好的线程类，比如：Timer</p>
+<h2 id="适当使用软引用和弱引用"><a href="#适当使用软引用和弱引用" class="headerlink" title="适当使用软引用和弱引用"></a>适当使用软引用和弱引用</h2><h2 id="尽量使用静态内部类，避免潜在的内存泄露"><a href="#尽量使用静态内部类，避免潜在的内存泄露" class="headerlink" title="尽量使用静态内部类，避免潜在的内存泄露"></a>尽量使用静态内部类，避免潜在的内存泄露</h2><h2 id="图片缓存，采用内存缓存LRUCache和硬盘缓存DiskLRUCache"><a href="#图片缓存，采用内存缓存LRUCache和硬盘缓存DiskLRUCache" class="headerlink" title="图片缓存，采用内存缓存LRUCache和硬盘缓存DiskLRUCache"></a>图片缓存，采用内存缓存LRUCache和硬盘缓存DiskLRUCache</h2>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/14/Android/优化/03.Android内存优化--代码优化/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/Android内存优化--内存泄露的原因/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/优化/Android内存优化--内存泄露的原因/" itemprop="url">Android内存优化 -- 内存泄露的原因</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
               </time>
             
 
@@ -1844,22 +825,882 @@ Thumbs.db
       
         
           
-            <h1 id="android-读取本地json数据"><a href="#android-读取本地json数据" class="headerlink" title="android 读取本地json数据"></a>android 读取本地json数据</h1><h2 id="0"><a href="#0" class="headerlink" title="0"></a>0</h2><p>将json数据放在<code>app/src/main/assets</code>文件加下，如果没有这个文件夹，需要手动创建</p>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>读取代码：</p>
-<pre><code>//getActivity(), &quot;d_select.json&quot;, DSelect.class
-public static Object readLocalFile(Activity activity, String title,Class c) throws IOException {
-    InputStream is = activity.getResources().getAssets().open(title);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    byte[] b = new byte[1024];
-    int length = 0;
-    while ((length = is.read(b)) != -1) {
-        baos.write(b, 0, length);
-    }
-    Object o = new Gson().fromJson(baos.toString(), c);
-    return o;
-}
-</code></pre><p>参数3是json数据实例化后的对象类</p>
+            <ul>
+<li>注册没取消造成内存泄露，如：广播</li>
+<li>静态变量持有Activity的引用</li>
+<li>把控件对象赋值给 static 引用</li>
+<li>单例模式持有Activity的引用</li>
+<li>查询数据库后没有关闭游标cursor</li>
+<li>构造 Adapter 时，没有使用 convertView 重用</li>
+<li>Bitmap 对象不在使用时调用 recycle() 释放内存</li>
+<li>对象被生命周期长的对象引用，如 activity 被静态集合引用导致 activity 不能释放</li>
+<li>使用 Handler 造成的内存泄露</li>
+</ul>
+<h1 id="如何避免内存泄漏"><a href="#如何避免内存泄漏" class="headerlink" title="如何避免内存泄漏"></a>如何避免内存泄漏</h1><ol>
+<li>在需要使用 Context 的时候，能使用 Application 的 Context 就使用 Application 的 Context</li>
+<li>尽量不要使用非静态内部类。在内部类中引用 Activity 或 View 会造成内存泄漏。处理方法是使用 static 内部类，并 WeakReference 来引用 Activity 或 View。</li>
+</ol>
 
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/Android内存优化--内存基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/优化/Android内存优化--内存基础/" itemprop="url">Android内存优化 -- 内存基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android内存优化-–-内存基础"><a href="#Android内存优化-–-内存基础" class="headerlink" title="Android内存优化 – 内存基础"></a>Android内存优化 – 内存基础</h1><h3 id="物理内存与进程内存"><a href="#物理内存与进程内存" class="headerlink" title="物理内存与进程内存"></a>物理内存与进程内存</h3><p>物理内存即移动设备上的RAM，当启动一个Android程序时，会启动一个Dalvik VM进程，系统会给它分配固定的内存空间（16M,32M不定），这块内存空间会映射到RAM上某个区域。然后这个Android程序就会运行在这块空间上。Java里会将这块空间分成Stack栈内存和Heap堆内存。stack里存放对象的引用，heap里存放实际对象数据。</p>
+<p>在程序运行中会创建对象，如果未合理管理内存，比如不及时回收无效空间就会造成内存泄露，严重的话可能导致使用内存超过系统分配内存，即内存溢出OOM，导致程序卡顿甚至直接退出。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/14/Android/优化/Android内存优化--内存基础/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/优化/Android内存优化-Handler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/优化/Android内存优化-Handler/" itemprop="url">Android内存优化 -- Handler</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T21:03:14+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android内存优化-–-Handler"><a href="#Android内存优化-–-Handler" class="headerlink" title="Android内存优化 – Handler"></a>Android内存优化 – Handler</h1><h2 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h2><p>在Activity中创建一个Handler的时候，IDE会出现个提示：</p>
+<pre><code>This Handler class should be static or leaks might occur (com.example.androidtest.MainActivity.2)
+</code></pre><p>原因：当Activity关闭时，Handler不一定处理完毕，但是Handler对Acitivty有引用关系，导致了GC无法回收Activity对象，造成内存泄露。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/14/Android/优化/Android内存优化-Handler/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/14/Android/第三方/支付宝/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/14/Android/第三方/支付宝/" itemprop="url">支付宝</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-14T12:18:12+08:00">
+                2016-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="支付宝"><a href="#支付宝" class="headerlink" title="支付宝"></a>支付宝</h1><p>官方文档：<a href="https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.CS88Fv&amp;treeId=59&amp;articleId=103658&amp;docType=1">https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.CS88Fv&amp;treeId=59&amp;articleId=103658&amp;docType=1</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/14/Android/第三方/支付宝/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/13/Android/优化/图片加载优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/13/Android/优化/图片加载优化/" itemprop="url">图片加载优化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-13T21:03:14+08:00">
+                2016-05-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="图片加载优化"><a href="#图片加载优化" class="headerlink" title="图片加载优化"></a>图片加载优化</h1><p>程序运行的时候是由一定的内存限制的，通过以下代码获取程序的最高可用内存：</p>
+<pre><code>int maxMemory = (int) (Runtime.getRuntime().maxMemory()/1024);
+Log.d(&quot;TAG&quot;,&quot;Max memory is &quot;+maxMemory + &quot;KB&quot;);
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/05/13/Android/优化/图片加载优化/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/12/Android/view/ViewPager/ViewPager与Fragment连用添坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/12/Android/view/ViewPager/ViewPager与Fragment连用添坑/" itemprop="url">ViewPager与Fragment连用 填坑</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-12T09:13:12+08:00">
+                2016-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ViewPager与Fragment连用-填坑"><a href="#ViewPager与Fragment连用-填坑" class="headerlink" title="ViewPager与Fragment连用 填坑"></a>ViewPager与Fragment连用 填坑</h1><p>问题：ViewPager滑动的时候Fragment内部加载的数据消除了，划回来又要重新加载</p>
+<h2 id="方案一：-不推荐"><a href="#方案一：-不推荐" class="headerlink" title="方案一： 不推荐"></a>方案一： 不推荐</h2><p>增加ViewPager的缓存数量。</p>
+<pre><code>mViewPager.setOffscreenPageLimit(2);
+</code></pre><h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><blockquote>
+<p>Fragment关联的view hierarchy正在被移除时，不会执行onDestroy()方法，而是会调用onDestroyView()。</p>
+<p>比如 ViewPager + Fragment，默认情况下当ViewPager滑动到第三页的时候，第一页的Fragment就会执行onDestroyView，当再次滑动到第二页的时候，第一页的Fragment的onCreateView又会重新执行绘制页面。伴随而来的问题就是成员变量要重新赋值一次，辛苦耗时加载出来的页面又要重新加载一次，这样也就给内存增加了无意思的压力，用户体验上也不大友好，尤其在有网络请求等开销时长比较长的情况下。</p>
+</blockquote>
+<p><em>重点：</em>onDestroyView的执行和Activity的onDestroy不一样，不会销毁当前的页面，所以Fragment的所有成员变量的引用都还在。</p>
+<p>解决基本思路：</p>
+<ol>
+<li><p>在<code>onCreateView()</code>中将创建的布局提升成全局变量，判断View是否为null，如果是null创建，不为null直接返回View。PS：可以将需要赋值或者处理的子控件在这里都<code>find</code>出来并提升成全局变量。</p>
+<p> @Override<br> public View onCreateView(LayoutInflater inflater, ViewGroup container,</p>
+<pre><code>                     Bundle savedInstanceState) {
+if (mRootView == null) {
+    mRootView = inflater.inflate(R.layout.discovery_category_fragment, container, false);
+}
+return mRootView;
+</code></pre><p> }</p>
+</li>
+<li><p>在<code>onDestoryView()</code>的时候将<code>mRootView</code>从他的父控件中移除</p>
+<p> @Override<br> public void onDestroyView() {</p>
+<pre><code>super.onDestroyView();
+((ViewGroup) mRootView.getParent()).removeAllViews();
+</code></pre><p> }</p>
+</li>
+</ol>
+<p>参考：<a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0729/1635.html" target="_blank" rel="external">http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0729/1635.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/10/Android/视屏播放/Android视频播放/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/05/10/Android/视屏播放/Android视频播放/" itemprop="url">Android 视频播放</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-10T14:18:12+08:00">
+                2016-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="VideoView-MediaController"><a href="#VideoView-MediaController" class="headerlink" title="VideoView MediaController"></a>VideoView MediaController</h1><h3 id="获取对象"><a href="#获取对象" class="headerlink" title="获取对象"></a>获取对象</h3><pre><code>mVideoView = (VideoView) findViewById(R.id.main_videoView);
+</code></pre><h3 id="设置媒体路径"><a href="#设置媒体路径" class="headerlink" title="设置媒体路径"></a>设置媒体路径</h3><p>本地</p>
+<pre><code>mVideoView.setVideoPath(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;).getAbsolutePath());
+</code></pre><p>网络</p>
+<pre><code>mVideoView.setVideoURI(Uri.parse(&quot;....&quot;));
+</code></pre><h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><pre><code>mVideoView.start();
+</code></pre><h3 id="加入控制台"><a href="#加入控制台" class="headerlink" title="加入控制台"></a>加入控制台</h3><pre><code>MediaController mediaController = new MediaController(this);
+mVideoView.setMediaController(mediaController);
+</code></pre><h1 id="MediaPlayer-SurfaceView"><a href="#MediaPlayer-SurfaceView" class="headerlink" title="MediaPlayer SurfaceView"></a>MediaPlayer SurfaceView</h1><p>见<a href="">SurfaceView</a></p>
+<h1 id="ijkplayer"><a href="#ijkplayer" class="headerlink" title="ijkplayer"></a>ijkplayer</h1><h1 id="exoplayer"><a href="#exoplayer" class="headerlink" title="exoplayer"></a>exoplayer</h1>
           
         
       
@@ -1897,7 +1738,7 @@ public static Object readLocalFile(Activity activity, String title,Class c) thro
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/36/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/48/">48</a><a class="extend next" rel="next" href="/page/38/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/36/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/54/">54</a><a class="extend next" rel="next" href="/page/38/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1942,7 +1783,7 @@ public static Object readLocalFile(Activity activity, String title,Class c) thro
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1953,7 +1794,7 @@ public static Object readLocalFile(Activity activity, String title,Class c) thro
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -1964,7 +1805,7 @@ public static Object readLocalFile(Activity activity, String title,Class c) thro
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -2006,7 +1847,7 @@ public static Object readLocalFile(Activity activity, String title,Class c) thro
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -93,79 +93,22 @@
 
 
 
-<meta name="description" content="2017/10/25 添加 http://hencoder.com/ui-1-6/ 内容
-
-动画分类
-补间动画
-帧动画
-属性动画
-
-动画属性
-translate:平移动画
-scale:缩放动画
-rotate:旋转动画
-alpha:透明度
-interpolator
-duration
-
-创建动画的方式
-xml
-code
-
-帧动画作用
-设计弥补安卓不能播放gif图">
+<meta name="description" content="Get Animated (Android Dev Summit ‘18)Animator属性动画
+12345ObjectAnimator -&amp;gt;isA ValueAnimator -&amp;gt;isA Animator                    AnimatorSet -&amp;gt;isA AnimatorViewPropertyAnimator -Backed by -&amp;gt; Val">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Animation 总结">
 <meta property="og:url" content="http://yoursite.com/2017/10/25/Android/animate/Android 动画总结/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="2017/10/25 添加 http://hencoder.com/ui-1-6/ 内容
-
-动画分类
-补间动画
-帧动画
-属性动画
-
-动画属性
-translate:平移动画
-scale:缩放动画
-rotate:旋转动画
-alpha:透明度
-interpolator
-duration
-
-创建动画的方式
-xml
-code
-
-帧动画作用
-设计弥补安卓不能播放gif图">
+<meta property="og:description" content="Get Animated (Android Dev Summit ‘18)Animator属性动画
+12345ObjectAnimator -&amp;gt;isA ValueAnimator -&amp;gt;isA Animator                    AnimatorSet -&amp;gt;isA AnimatorViewPropertyAnimator -Backed by -&amp;gt; Val">
 <meta property="og:image" content="http://i.imgur.com/KVJcwsN.png">
 <meta property="og:image" content="http://img.blog.csdn.net/20140720154340156">
 <meta property="og:image" content="http://i.imgur.com/fsJHN5g.png">
-<meta property="og:updated_time" content="2018-03-22T13:15:44.658Z">
+<meta property="og:updated_time" content="2018-11-12T06:55:51.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Animation 总结">
-<meta name="twitter:description" content="2017/10/25 添加 http://hencoder.com/ui-1-6/ 内容
-
-动画分类
-补间动画
-帧动画
-属性动画
-
-动画属性
-translate:平移动画
-scale:缩放动画
-rotate:旋转动画
-alpha:透明度
-interpolator
-duration
-
-创建动画的方式
-xml
-code
-
-帧动画作用
-设计弥补安卓不能播放gif图">
+<meta name="twitter:description" content="Get Animated (Android Dev Summit ‘18)Animator属性动画
+12345ObjectAnimator -&amp;gt;isA ValueAnimator -&amp;gt;isA Animator                    AnimatorSet -&amp;gt;isA AnimatorViewPropertyAnimator -Backed by -&amp;gt; Val">
 <meta name="twitter:image" content="http://i.imgur.com/KVJcwsN.png">
 
 
@@ -405,7 +348,31 @@ code
       
 
       
-        <blockquote>
+        <h1 id="Get-Animated-Android-Dev-Summit-‘18"><a href="#Get-Animated-Android-Dev-Summit-‘18" class="headerlink" title="Get Animated (Android Dev Summit ‘18)"></a>Get Animated (Android Dev Summit ‘18)</h1><h2 id="Animator"><a href="#Animator" class="headerlink" title="Animator"></a>Animator</h2><p>属性动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ObjectAnimator -&gt;isA ValueAnimator -&gt;isA Animator</div><div class="line">                    AnimatorSet -&gt;isA Animator</div><div class="line"></div><div class="line">ViewPropertyAnimator -Backed by -&gt; ValueAnimator</div><div class="line">PropertyValuesHolder -Userd by -&gt; ValueAniamtor</div></pre></td></tr></table></figure>
+<p>使用属性动画的时候不要使用字符串指定属性 <code>alpha</code> -&gt; <code>View.ALPHA</code></p>
+<h3 id="PropertyValuesHolder-使用"><a href="#PropertyValuesHolder-使用" class="headerlink" title="PropertyValuesHolder 使用"></a>PropertyValuesHolder 使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private void startProAnimation() &#123;</div><div class="line">    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0.2f, 1f);</div><div class="line"></div><div class="line">    ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(mTvTitle, scaleX, scaleY, alpha);</div><div class="line">    ObjectAnimator objectAnimator2 = ObjectAnimator.ofPropertyValuesHolder(mTvSubTitle, scaleX, scaleY, alpha);</div><div class="line"></div><div class="line">    AnimatorSet animatorSet = new AnimatorSet();</div><div class="line">    animatorSet.playTogether(objectAnimator, objectAnimator2);</div><div class="line">    animatorSet.setDuration(1000);</div><div class="line">    animatorSet.setInterpolator(new OvershootInterpolator());</div><div class="line">    animatorSet.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用-AnimatorSet-协调多个-Animator"><a href="#使用-AnimatorSet-协调多个-Animator" class="headerlink" title="使用 AnimatorSet 协调多个 Animator"></a>使用 AnimatorSet 协调多个 Animator</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">animatorSet.play(objectAnimator)</div><div class="line">            .with(objectAnimator)</div><div class="line">            .before(objectAnimator)</div><div class="line">            .after(objectAnimator2);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void startProAnimation() &#123;</div><div class="line">    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0.2f, 1f);</div><div class="line"></div><div class="line">    ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(mTvTitle, scaleX, scaleY, alpha);</div><div class="line">    ObjectAnimator objectAnimator2 = ObjectAnimator.ofPropertyValuesHolder(mTvSubTitle, scaleX, scaleY, alpha);</div><div class="line">    objectAnimator.setDuration(1000);</div><div class="line">    objectAnimator2.setDuration(1000);</div><div class="line">    objectAnimator.setInterpolator(new OvershootInterpolator());</div><div class="line">    objectAnimator.setInterpolator(new OvershootInterpolator());</div><div class="line"></div><div class="line">    AnimatorSet animatorSet = new AnimatorSet();</div><div class="line">    animatorSet.play(objectAnimator)</div><div class="line">            .after(objectAnimator2);</div><div class="line">    animatorSet.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="ViewPropertyAnimator"><a href="#ViewPropertyAnimator" class="headerlink" title="ViewPropertyAnimator"></a>ViewPropertyAnimator</h3><p>ex:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">view.animate()</div><div class="line">    .scaleX(1f).scaleY(1f).alpha(1f)</div><div class="line">    .setInterpolator(new OvershootInterpolator())</div><div class="line">    .start();</div></pre></td></tr></table></figure>
+<h3 id="ValueAnimator"><a href="#ValueAnimator" class="headerlink" title="ValueAnimator"></a>ValueAnimator</h3><blockquote>
+<p>更加自由的动画</p>
+</blockquote>
+<p>例子：TextView 显示省略号动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void startValueAnimator() &#123;</div><div class="line">    ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 4);</div><div class="line">    valueAnimator.setDuration(1000);</div><div class="line">    valueAnimator.setRepeatCount(-1);</div><div class="line">    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">        @Override</div><div class="line">        public void onAnimationUpdate(ValueAnimator animation) &#123;</div><div class="line">            int value = (int) animation.getAnimatedValue();</div><div class="line">            StringBuilder stringBuilder = new StringBuilder();</div><div class="line">            for (int i = 0; i &lt; value; i++) &#123;</div><div class="line">                stringBuilder.append(&quot;.&quot;);</div><div class="line">            &#125;</div><div class="line">            mTvSubTitle.setText(&quot;I am stupid&quot; + stringBuilder.toString());</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>最好封装到自定义 TextView 中</p>
+</blockquote>
+<h3 id="使用哪个-Animator"><a href="#使用哪个-Animator" class="headerlink" title="使用哪个 Animator"></a>使用哪个 Animator</h3><ol>
+<li>ObjectAnimator: 已有属性修改的动画</li>
+<li>ValueAnimator: 自定义动画</li>
+<li>ViewPropertyAniamtor: 多个属性动画作用于一个 View</li>
+<li>PropertyValuesHolder: 多个属性作用与一个 对象</li>
+<li>AnimatorSet: 处理多个 Animator</li>
+</ol>
+<h2 id="Pyysics-based-Animation"><a href="#Pyysics-based-Animation" class="headerlink" title="Pyysics-based Animation"></a>Pyysics-based Animation</h2><p>SpringAnimation</p>
+<h2 id="MotionLayout"><a href="#MotionLayout" class="headerlink" title="MotionLayout"></a>MotionLayout</h2><h1 id="基本内容"><a href="#基本内容" class="headerlink" title="基本内容"></a>基本内容</h1><blockquote>
 <p>2017/10/25 添加 <a href="http://hencoder.com/ui-1-6/" target="_blank" rel="external">http://hencoder.com/ui-1-6/</a> 内容</p>
 </blockquote>
 <h2 id="动画分类"><a href="#动画分类" class="headerlink" title="动画分类"></a>动画分类</h2><ul>
@@ -554,7 +521,7 @@ animationSet.addAnimation(mRotateAnimation);
 </ul>
 <h3 id="属性动画工作方式"><a href="#属性动画工作方式" class="headerlink" title="属性动画工作方式"></a>属性动画工作方式</h3><p><img src="http://img.blog.csdn.net/20140720154340156" alt="http://img.blog.csdn.net/20140720154340156"></p>
 <p><em>ValueAnimator:</em>属性动画的核心类,记录动画的一些属性(动画显示时间,开始值,结束值,计算插值因子的TimeInterpolator,定义属性计算方式的TypeEvaluator)</p>
-<h3 id="ValueAnimator"><a href="#ValueAnimator" class="headerlink" title="ValueAnimator"></a>ValueAnimator</h3><h4 id="Animator-监听器介绍"><a href="#Animator-监听器介绍" class="headerlink" title="Animator 监听器介绍"></a>Animator 监听器介绍</h4><p>AnimatorListener:</p>
+<h3 id="ValueAnimator-1"><a href="#ValueAnimator-1" class="headerlink" title="ValueAnimator"></a>ValueAnimator</h3><h4 id="Animator-监听器介绍"><a href="#Animator-监听器介绍" class="headerlink" title="Animator 监听器介绍"></a>Animator 监听器介绍</h4><p>AnimatorListener:</p>
 <ul>
 <li>onAnimationStart();</li>
 <li>onAnimationEnd();</li>
@@ -670,7 +637,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
 <li><code>.playTogether(。。)</code>相关方法，加入Animator对象:<strong>注意</strong>Animator的对象要相同</li>
 <li><code>set.start()</code></li>
 </ol>
-<h4 id="PropertyValuesHolder-使用"><a href="#PropertyValuesHolder-使用" class="headerlink" title="PropertyValuesHolder 使用"></a>PropertyValuesHolder 使用</h4><p>例子抖动动画：</p>
+<h4 id="PropertyValuesHolder-使用-1"><a href="#PropertyValuesHolder-使用-1" class="headerlink" title="PropertyValuesHolder 使用"></a>PropertyValuesHolder 使用</h4><p>例子抖动动画：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startShakeByPropertyAnim</span><span class="params">(View view, <span class="keyword">float</span> scaleSmall, <span class="keyword">float</span> scaleLarge, <span class="keyword">float</span> shakeDegrees, <span class="keyword">long</span> duration)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (view == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//TODO 验证参数的有效性</span></div><div class="line"></div><div class="line">        <span class="comment">//先变小后变大</span></div><div class="line">        PropertyValuesHolder scaleXValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_X,</div><div class="line">                Keyframe.ofFloat(<span class="number">0f</span>, <span class="number">1.0f</span>),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.25f</span>, scaleSmall),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.5f</span>, scaleLarge),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.75f</span>, scaleLarge),</div><div class="line">                Keyframe.ofFloat(<span class="number">1.0f</span>, <span class="number">1.0f</span>)</div><div class="line">        );</div><div class="line">        PropertyValuesHolder scaleYValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_Y,</div><div class="line">                Keyframe.ofFloat(<span class="number">0f</span>, <span class="number">1.0f</span>),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.25f</span>, scaleSmall),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.5f</span>, scaleLarge),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.75f</span>, scaleLarge),</div><div class="line">                Keyframe.ofFloat(<span class="number">1.0f</span>, <span class="number">1.0f</span>)</div><div class="line">        );</div><div class="line"></div><div class="line">        <span class="comment">//先往左再往右</span></div><div class="line">        PropertyValuesHolder rotateValuesHolder = PropertyValuesHolder.ofKeyframe(View.ROTATION,</div><div class="line">                Keyframe.ofFloat(<span class="number">0f</span>, <span class="number">0f</span>),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.1f</span>, -shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.2f</span>, shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.3f</span>, -shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.4f</span>, shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.5f</span>, -shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.6f</span>, shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.7f</span>, -shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.8f</span>, shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">0.9f</span>, -shakeDegrees),</div><div class="line">                Keyframe.ofFloat(<span class="number">1.0f</span>, <span class="number">0f</span>)</div><div class="line">        );</div><div class="line"></div><div class="line">        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleXValuesHolder, scaleYValuesHolder, rotateValuesHolder);</div><div class="line">        objectAnimator.setDuration(duration);</div><div class="line">        objectAnimator.start();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><h3 id="删除一个控件的操作"><a href="#删除一个控件的操作" class="headerlink" title="删除一个控件的操作"></a>删除一个控件的操作</h3><ol>
 <li><p>伪删除</p>
@@ -744,7 +711,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/26/Android/优化/03.Android启动优化/" rel="prev" title="Android启动优化">
+              <a href="/2017/10/26/Android/优化/04.Android启动优化/" rel="prev" title="Android启动优化">
                 Android启动优化 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -818,7 +785,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">478</span>
+                <span class="site-state-item-count">534</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -829,7 +796,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -840,7 +807,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">261</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -875,7 +842,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#动画分类"><span class="nav-number">1.</span> <span class="nav-text">动画分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动画属性"><span class="nav-number">2.</span> <span class="nav-text">动画属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建动画的方式"><span class="nav-number">3.</span> <span class="nav-text">创建动画的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#帧动画"><span class="nav-number">4.</span> <span class="nav-text">帧动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">4.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建动画–xml"><span class="nav-number">4.2.</span> <span class="nav-text">创建动画–xml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建xml动画属性"><span class="nav-number">4.2.1.</span> <span class="nav-text">创建xml动画属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用xml创建动画-drawable"><span class="nav-number">4.2.2.</span> <span class="nav-text">使用xml创建动画 @drawable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#纯代码创建动画"><span class="nav-number">4.3.</span> <span class="nav-text">纯代码创建动画</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补间动画"><span class="nav-number">5.</span> <span class="nav-text">补间动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">5.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用xml创建动画"><span class="nav-number">5.2.</span> <span class="nav-text">使用xml创建动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用纯code实现动画"><span class="nav-number">5.3.</span> <span class="nav-text">使用纯code实现动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnimationSet的使用"><span class="nav-number">5.4.</span> <span class="nav-text">AnimationSet的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性动画"><span class="nav-number">6.</span> <span class="nav-text">属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">6.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性动画工作方式"><span class="nav-number">6.2.</span> <span class="nav-text">属性动画工作方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ValueAnimator"><span class="nav-number">6.3.</span> <span class="nav-text">ValueAnimator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Animator-监听器介绍"><span class="nav-number">6.3.1.</span> <span class="nav-text">Animator 监听器介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义Interpolator-插值器"><span class="nav-number">6.3.2.</span> <span class="nav-text">自定义Interpolator (插值器)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义TyperEvaluator"><span class="nav-number">6.3.3.</span> <span class="nav-text">自定义TyperEvaluator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用ValueAnimator步骤"><span class="nav-number">6.3.4.</span> <span class="nav-text">使用ValueAnimator步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectAnimator"><span class="nav-number">6.4.</span> <span class="nav-text">ObjectAnimator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用步骤"><span class="nav-number">6.4.1.</span> <span class="nav-text">使用步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建属性动画"><span class="nav-number">6.5.</span> <span class="nav-text">创建属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用ValueAnimator"><span class="nav-number">6.5.1.</span> <span class="nav-text">1 使用ValueAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用ObjectAnimator"><span class="nav-number">6.5.2.</span> <span class="nav-text">2 使用ObjectAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-使用TimeAnimator"><span class="nav-number">6.5.3.</span> <span class="nav-text">3 使用TimeAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-使用ViewPropertyAnimator-最简单，最常用"><span class="nav-number">6.5.4.</span> <span class="nav-text">4 使用ViewPropertyAnimator 最简单，最常用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-使用AnimatorSet"><span class="nav-number">6.5.5.</span> <span class="nav-text">5 使用AnimatorSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PropertyValuesHolder-使用"><span class="nav-number">6.5.6.</span> <span class="nav-text">PropertyValuesHolder 使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">7.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个控件的操作"><span class="nav-number">7.1.</span> <span class="nav-text">删除一个控件的操作</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Get-Animated-Android-Dev-Summit-‘18"><span class="nav-number">1.</span> <span class="nav-text">Get Animated (Android Dev Summit ‘18)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Animator"><span class="nav-number">1.1.</span> <span class="nav-text">Animator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PropertyValuesHolder-使用"><span class="nav-number">1.1.1.</span> <span class="nav-text">PropertyValuesHolder 使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-AnimatorSet-协调多个-Animator"><span class="nav-number">1.1.2.</span> <span class="nav-text">使用 AnimatorSet 协调多个 Animator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewPropertyAnimator"><span class="nav-number">1.1.3.</span> <span class="nav-text">ViewPropertyAnimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ValueAnimator"><span class="nav-number">1.1.4.</span> <span class="nav-text">ValueAnimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用哪个-Animator"><span class="nav-number">1.1.5.</span> <span class="nav-text">使用哪个 Animator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pyysics-based-Animation"><span class="nav-number">1.2.</span> <span class="nav-text">Pyysics-based Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MotionLayout"><span class="nav-number">1.3.</span> <span class="nav-text">MotionLayout</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本内容"><span class="nav-number">2.</span> <span class="nav-text">基本内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#动画分类"><span class="nav-number">2.1.</span> <span class="nav-text">动画分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动画属性"><span class="nav-number">2.2.</span> <span class="nav-text">动画属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建动画的方式"><span class="nav-number">2.3.</span> <span class="nav-text">创建动画的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#帧动画"><span class="nav-number">2.4.</span> <span class="nav-text">帧动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">2.4.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建动画–xml"><span class="nav-number">2.4.2.</span> <span class="nav-text">创建动画–xml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建xml动画属性"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">创建xml动画属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用xml创建动画-drawable"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">使用xml创建动画 @drawable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#纯代码创建动画"><span class="nav-number">2.4.3.</span> <span class="nav-text">纯代码创建动画</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补间动画"><span class="nav-number">2.5.</span> <span class="nav-text">补间动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">2.5.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用xml创建动画"><span class="nav-number">2.5.2.</span> <span class="nav-text">使用xml创建动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用纯code实现动画"><span class="nav-number">2.5.3.</span> <span class="nav-text">使用纯code实现动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnimationSet的使用"><span class="nav-number">2.5.4.</span> <span class="nav-text">AnimationSet的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性动画"><span class="nav-number">2.6.</span> <span class="nav-text">属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点-1"><span class="nav-number">2.6.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性动画工作方式"><span class="nav-number">2.6.2.</span> <span class="nav-text">属性动画工作方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ValueAnimator-1"><span class="nav-number">2.6.3.</span> <span class="nav-text">ValueAnimator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Animator-监听器介绍"><span class="nav-number">2.6.3.1.</span> <span class="nav-text">Animator 监听器介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义Interpolator-插值器"><span class="nav-number">2.6.3.2.</span> <span class="nav-text">自定义Interpolator (插值器)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义TyperEvaluator"><span class="nav-number">2.6.3.3.</span> <span class="nav-text">自定义TyperEvaluator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用ValueAnimator步骤"><span class="nav-number">2.6.3.4.</span> <span class="nav-text">使用ValueAnimator步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectAnimator"><span class="nav-number">2.6.4.</span> <span class="nav-text">ObjectAnimator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用步骤"><span class="nav-number">2.6.4.1.</span> <span class="nav-text">使用步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建属性动画"><span class="nav-number">2.6.5.</span> <span class="nav-text">创建属性动画</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-使用ValueAnimator"><span class="nav-number">2.6.5.1.</span> <span class="nav-text">1 使用ValueAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-使用ObjectAnimator"><span class="nav-number">2.6.5.2.</span> <span class="nav-text">2 使用ObjectAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-使用TimeAnimator"><span class="nav-number">2.6.5.3.</span> <span class="nav-text">3 使用TimeAnimator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-使用ViewPropertyAnimator-最简单，最常用"><span class="nav-number">2.6.5.4.</span> <span class="nav-text">4 使用ViewPropertyAnimator 最简单，最常用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-使用AnimatorSet"><span class="nav-number">2.6.5.5.</span> <span class="nav-text">5 使用AnimatorSet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PropertyValuesHolder-使用-1"><span class="nav-number">2.6.5.6.</span> <span class="nav-text">PropertyValuesHolder 使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">2.7.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个控件的操作"><span class="nav-number">2.7.1.</span> <span class="nav-text">删除一个控件的操作</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -898,7 +865,7 @@ public Number evaluate(float fraction, Number startValue, Number endValue) {
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
