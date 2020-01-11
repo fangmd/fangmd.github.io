@@ -253,6 +253,631 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/29/server/使用redoc管理接口/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/29/server/使用redoc管理接口/" itemprop="url">redoc</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-29T13:18:12+08:00">
+                2019-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Server/" itemprop="url" rel="index">
+                    <span itemprop="name">Server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://github.com/Redocly/redoc" target="_blank" rel="external">https://github.com/Redocly/redoc</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/29/Android/原理/应用启动流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/29/Android/原理/应用启动流程/" itemprop="url">安卓应用启动流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-29T12:18:12+08:00">
+                2019-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>关键部分:</p>
+<p>Launcher，ActivityServiceManager，Binder，Zygote，ActivityThread。</p>
+<h1 id="Launcher"><a href="#Launcher" class="headerlink" title="Launcher"></a>Launcher</h1><p>桌面应用</p>
+<p>桌面应用特点: AndroidManifest.xml 中增加了两个 category 规则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;category android:name=&quot;android.intent.category.HOME&quot; /&gt;      </div><div class="line">           </div><div class="line">&lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</div></pre></td></tr></table></figure>
+<p>Launcher 启动指定 App:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">String pkg = info.activityInfo.packageName;    <span class="comment">//该应用的包名                </span></div><div class="line">String cls = info.activityInfo.name;      <span class="comment">//应用的主activity类       </span></div><div class="line">ComponentName componet = <span class="keyword">new</span> ComponentName(pkg, cls);                       </div><div class="line">Intent i = <span class="keyword">new</span> Intent();            </div><div class="line">i.setComponent(componet);            </div><div class="line">startActivity(i);  <span class="comment">//启动Activity</span></div></pre></td></tr></table></figure>
+<h1 id="ActivityManagerService-AMS"><a href="#ActivityManagerService-AMS" class="headerlink" title="ActivityManagerService  AMS"></a>ActivityManagerService  AMS</h1><p>AMS 由 SystemService 启动。</p>
+<p>AMS 管理安卓四大组件，调用应用进程。AMS 用有客户端和服务端，客户端运行在各个 APP 进程中，服务器提供的接口有:(IActivityManager, IApplicationThread, Context …).</p>
+<h1 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h1><p>安卓进程通讯机制(IPC).</p>
+<p>Bind 架构：CS 架构, 客户端-服务端架构。</p>
+<p>所有服务器都在 ServiceManager 中注册，客户端从 ServiceManager 中获取服务，然乎通过共享内存方式进行通信。</p>
+<h1 id="Zygote"><a href="#Zygote" class="headerlink" title="Zygote"></a>Zygote</h1><p>作用：创建进程。</p>
+<h1 id="ActivityThread"><a href="#ActivityThread" class="headerlink" title="ActivityThread"></a>ActivityThread</h1><p>安卓 App 都有一个独立进程，进程有一个主线程: ActivityThread.</p>
+<p>ActivityThread 中的 main 方法中做的事情：</p>
+<ol>
+<li>创建消息队列</li>
+<li>在 ActivityManagerService 中注册 APP</li>
+<li>初始化 App, 调用 Application onCreate</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1. 桌面应用（launcher）相应用户的点击事件，通过binder与ActivityManagerService通信，发出启动APP的请求（请求中包含要启动的APP的包名和主Activity名）</div><div class="line">2. ActivityManagerService检查该App进程是否已经存在，如果不存在，通过Zygote提供的socket接口与Zygote通信，请求创建新进程。</div><div class="line">3. Zygote创建新进程，创建ActivityThread实例，ActivityThread将自身注册到Service中以便进行管理。</div><div class="line">4. ActivityThread开启消息队列</div><div class="line">5. ActivityService向ActivityThread发出BIND_APPLICATION请求，ActivityThread加载APP的字节码到内存中，ActivityService发出LAUNCH_ACTIVITY请求，ActivityThread中相应请求最终调用onCreate，onResume方法，启动Activity。</div></pre></td></tr></table></figure>
+<p>参考:</p>
+<ol>
+<li><a href="https://www.jianshu.com/p/b5e742e2c530" target="_blank" rel="external">安卓Application的启动</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/29/看源码/LeakCanary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/29/看源码/LeakCanary/" itemprop="url">LeakCanary2.0 原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-29T09:38:14+08:00">
+                2019-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>LeakCanary使用ObjectWatcher来监控Android的生命周期。当Activity和Fragment被destroy以后，这些引用被传给ObjectWatcher以WeakReference的形式引用着。如果gc完5秒钟以后这些引用还没有被清除掉，那就是内存泄露了。</li>
+<li>当被泄露掉的对象达到一个阈值，LeakCanary就会把java的堆栈信息dump到.hprof文件中。</li>
+<li>LeakCanary用Shark库来解析.hprof文件，找到无法被清理的引用的引用栈，然后再根据对Android系统的知识来判定是哪个实例导致的泄露。</li>
+<li>通过泄露信息，LeakCanary会将一条完整的引用链缩减到一个小的引用链，其余的因为这个小的引用链导致的泄露链都会被聚合在一起。</li>
+</ol>
+<p>参考:</p>
+<ul>
+<li><a href="https://juejin.im/post/5db44d456fb9a0204c5c3291" target="_blank" rel="external">https://juejin.im/post/5db44d456fb9a0204c5c3291</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/23/Android/优化/09-Android优化-崩溃优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/23/Android/优化/09-Android优化-崩溃优化/" itemprop="url">Android内存优化 -- DiskLruCache</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-23T21:03:14+08:00">
+                2019-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Android 崩溃分为: Java 崩溃, Native 崩溃, ANR</p>
+<blockquote>
+<p>崩溃率只是一个数字，我们的出发点应该是让用户有更好的体验</p>
+</blockquote>
+<h1 id="如何衡量崩溃"><a href="#如何衡量崩溃" class="headerlink" title="如何衡量崩溃"></a>如何衡量崩溃</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">UV 崩溃率 = 发生崩溃的 UV / 登录的 UV</div><div class="line">UV 异常率 = 发生异常退出或崩溃的 UV / 登录 UV</div></pre></td></tr></table></figure>
+<p>其他指标:</p>
+<ol>
+<li>PV 崩溃率</li>
+<li>启动崩溃率</li>
+<li>重复崩溃率</li>
+</ol>
+<h1 id="启动崩溃处理方案"><a href="#启动崩溃处理方案" class="headerlink" title="启动崩溃处理方案"></a>启动崩溃处理方案</h1><p><strong>安全模式</strong></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzUxMzcxMzE5Ng==&amp;mid=2247488429&amp;idx=1&amp;sn=448b414a0424d06855359b3eb2ba8569&amp;source=41#wechat_redirect" target="_blank" rel="external">安全模式：天猫App启动保护实践</a></p>
+<p>出现启动崩溃的时候，无法通过热更新和app推送更新方式正常更新应用。</p>
+<p>基本实现原理:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">应用启动</div><div class="line">标记数 + 1</div><div class="line"></div><div class="line">----</div><div class="line">安全模式逻辑：</div><div class="line">判断标记数 &gt; 2 -&gt; 进入安全模式 -&gt; 启动自修复(清理应用数据...) -&gt; 检查热更新</div><div class="line">----</div><div class="line"></div><div class="line">正常启动</div><div class="line">重置标记逻辑(标记数=0，清除标记时机: 正常启动10s, 用户正常退出, 用户主动从前台切换到后台)</div></pre></td></tr></table></figure>
+<ol>
+<li>通过判断 标记数，实现判断 app 上次是否是异常退出</li>
+<li>安全模式分级: crash 2 次为一级安全模式，crash 3 次为二级安全模式</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">一级安全模式: 清空某个业务缓存数据</div><div class="line">二级安全模式: 清空所有数据，老版本执行同步阻塞热修复功能</div></pre></td></tr></table></figure>
+<p>安全模式实现要考虑易用性。灰度机制(在用户没有 crash 情况下，强制进入安全模式)</p>
+<h1 id="崩溃日志应该包含哪些信息"><a href="#崩溃日志应该包含哪些信息" class="headerlink" title="崩溃日志应该包含哪些信息"></a>崩溃日志应该包含哪些信息</h1><ol>
+<li>崩溃信息</li>
+</ol>
+<p>进程名，线程名。前台进程还是后台进程，是否是 UI 线程</p>
+<p>崩溃堆栈和类型。崩溃属于 Java 崩溃，还是 Native 崩溃，ANR.</p>
+<ol>
+<li>系统信息</li>
+</ol>
+<p>机型，系统，厂商，CPU, ABI</p>
+<p>设备状态: 是否 root, 是否是模拟器</p>
+<ol>
+<li>内存信息</li>
+</ol>
+<p>OOM, ANR, 虚拟内存是否耗尽。</p>
+<ol>
+<li><p>资源信息</p>
+</li>
+<li><p>应用信息</p>
+</li>
+</ol>
+<p>应用版本号</p>
+<h1 id="崩溃分析"><a href="#崩溃分析" class="headerlink" title="崩溃分析"></a>崩溃分析</h1><ol>
+<li>确定重点</li>
+</ol>
+<p>确认严重程度</p>
+<p>崩溃基本信息分析: Java 崩溃，Native 崩溃，ANR </p>
+<p>Logcat</p>
+<p>各个资源情况</p>
+<ol>
+<li>查找共性</li>
+</ol>
+<p>发生同类型崩溃的机型，系统版本</p>
+<ol>
+<li>尝试复现</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/29/server/nginx/nginx负载均衡/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1127,7 +1752,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/05/ReadNote/深入浅出Node/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/05/Android/Android 版本/Android9.0-P/android-9.0-news/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1146,7 +1771,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/09/05/ReadNote/深入浅出Node/" itemprop="url">Node.js 深入浅出笔记</a></h1>
+                <a class="post-title-link" href="/2019/09/05/Android/Android 版本/Android9.0-P/android-9.0-news/" itemprop="url">Android9.0 新内容</a></h1>
         
 
         <div class="post-meta">
@@ -1158,399 +1783,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-05T21:38:14+08:00">
-                2019-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="第-1-章-Node-简介"><a href="#第-1-章-Node-简介" class="headerlink" title="第 1 章 Node 简介"></a>第 1 章 Node 简介</h1><h2 id="1-1-Node-历程"><a href="#1-1-Node-历程" class="headerlink" title="1.1 Node 历程"></a>1.1 Node 历程</h2><ol>
-<li>2009 5 月发布最初版本</li>
-</ol>
-<h2 id="1-2-why-JavaScript"><a href="#1-2-why-JavaScript" class="headerlink" title="1.2 why JavaScript"></a>1.2 why JavaScript</h2><p>设计者认为, 设计高性能 web 服务器的要点: 事件驱动, 非阻塞 I/O</p>
-<p>JavaScript 本身就是事件驱动的</p>
-<h2 id="Node-给-JavaScript-带来的意义"><a href="#Node-给-JavaScript-带来的意义" class="headerlink" title="Node 给 JavaScript 带来的意义"></a>Node 给 JavaScript 带来的意义</h2><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/chrome-node.jpg" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/chrome-node.jpg"></p>
-<h2 id="1-4-Node-的特点"><a href="#1-4-Node-的特点" class="headerlink" title="1.4 Node 的特点"></a>1.4 Node 的特点</h2><ol>
-<li>异步 I/O</li>
-</ol>
-<p>异步调用：Don’t call me, I will call you.</p>
-<p>异步任务结束后，自动执行回调函数</p>
-<ol>
-<li><p>事件与回调函数</p>
-</li>
-<li><p>单线程</p>
-</li>
-</ol>
-<p>单线程执行代码，不需要在意多线程中的状态同步问题，没有死锁的存在，也没有线程上下文交换带来的性能开销。</p>
-<p>单线程弱点: 无法利用多核CPU; 错误会引起整个应用退出; 大量计算占用CPU导致无法继续调用异步I/O</p>
-<p><strong>大量计算占用CPU问题处理方案:</strong></p>
-<p>Google 采用 Web Workers 创建工作线程来执行计算任务。Node 使用类似思路 child_process 子进程处理大量计算任务。</p>
-<p>通过 Master-Worker 管理各个工作进程.</p>
-<ol>
-<li>跨平台</li>
-</ol>
-<p>Node 基于 libuv 实现跨平台。</p>
-<h2 id="1-5-Node-的应用场景"><a href="#1-5-Node-的应用场景" class="headerlink" title="1.5 Node 的应用场景"></a>1.5 Node 的应用场景</h2><ol>
-<li>I/O 密集型</li>
-<li>与老后台系统共存</li>
-<li>分布式应用</li>
-</ol>
-<h1 id="第-2-章-模块机制"><a href="#第-2-章-模块机制" class="headerlink" title="第 2 章 模块机制"></a>第 2 章 模块机制</h1><h2 id="2-1-CommonJS-规范"><a href="#2-1-CommonJS-规范" class="headerlink" title="2.1 CommonJS 规范"></a>2.1 CommonJS 规范</h2><p>涵盖内容：模块，二进制，Buffer，字符集编码，I/O 流，进程环境，文件系统，套接字，单元测试，web 服务器网关接口，包管理 等.</p>
-<h2 id="2-2-Node-模块实现"><a href="#2-2-Node-模块实现" class="headerlink" title="2.2 Node 模块实现"></a>2.2 Node 模块实现</h2><p>exports, require, module</p>
-<p>模块分为: Node 提供的 核心模块；用户编写的 文件模块.</p>
-<p>Node 引入模块需要经历的步骤:</p>
-<ol>
-<li>路径分析</li>
-<li>文件定位</li>
-<li>编译执行</li>
-</ol>
-<p><strong>优先从缓存加载:</strong> Node 会缓存编译执行后的模，便于再次使用。 优先级最高</p>
-<blockquote>
-<p>核心模块通常已经编译成二进制加入到源代码中，所以在使用的时候不需要 路径分析和文件定位 的步骤。</p>
-</blockquote>
-<p>编译过程可以识别: <code>.js</code>, <code>.node</code>, <code>.json</code> 文件。</p>
-<h2 id="2-6-包与NPM"><a href="#2-6-包与NPM" class="headerlink" title="2.6 包与NPM"></a>2.6 包与NPM</h2><p>CommonJS 对包定义了规范。</p>
-<h3 id="包结构"><a href="#包结构" class="headerlink" title="包结构"></a>包结构</h3><ol>
-<li>package.json</li>
-<li>bin: 可执行二进制文件</li>
-<li>lib: js 源码</li>
-<li>doc</li>
-<li>test</li>
-</ol>
-<h1 id="第-3-章-异步I-O"><a href="#第-3-章-异步I-O" class="headerlink" title="第 3 章 异步I/O"></a>第 3 章 异步I/O</h1><h2 id="3-1-为什么要异步"><a href="#3-1-为什么要异步" class="headerlink" title="3.1 为什么要异步"></a>3.1 为什么要异步</h2><ol>
-<li>用户体验</li>
-</ol>
-<p>可以同时读取多个文件并减少等待时间。</p>
-<p>后端可以快速响应资源，才能让前端的体验变好。</p>
-<ol>
-<li>资源分配</li>
-</ol>
-<p>在执行多个不相关任务的时候。</p>
-<p>单线程同步编程模型因阻塞I/O导致硬件资源得不到使用。多线程编程模型因为编程中的死锁，状态同步等问题提高编程难度。</p>
-<p>Node 使用 单线程，异步I/O 更好执行多个不相关任务。</p>
-<h2 id="3-2-异步-I-O-实现现状"><a href="#3-2-异步-I-O-实现现状" class="headerlink" title="3.2 异步 I/O 实现现状"></a>3.2 异步 I/O 实现现状</h2><h2 id="3-3-Node-的异步-I-O"><a href="#3-3-Node-的异步-I-O" class="headerlink" title="3.3 Node 的异步 I/O"></a>3.3 Node 的异步 I/O</h2><h3 id="3-3-1-事件循环"><a href="#3-3-1-事件循环" class="headerlink" title="3.3.1 事件循环"></a>3.3.1 事件循环</h3><p>Node 执行模型：事件循环</p>
-<p>一次循环称为: Tick</p>
-<p>一次循环: 取出事件，处理回调(没有事件就 退出)</p>
-<p>在不通的平台，事件循环实现方式不同: windows IOCP, *nix 基于多线程创建</p>
-<h3 id="3-3-2-观察者"><a href="#3-3-2-观察者" class="headerlink" title="3.3.2 观察者"></a>3.3.2 观察者</h3><p>Tick 过程中，使用 <strong>观察者</strong> 判断是否有事件需要处理</p>
-<p>定时器会插入到观察者中，观察者内部数据结构是 红黑树。</p>
-<h3 id="3-3-3-请求对象"><a href="#3-3-3-请求对象" class="headerlink" title="3.3.3 请求对象"></a>3.3.3 请求对象</h3><p>JS 将异步任务封装成一个请求对象，交给底层异步处理模块处理。</p>
-<p>Windows 底层是 I/O 线程池中的线程去处理 异步任务。</p>
-<h3 id="3-3-4-执行回调"><a href="#3-3-4-执行回调" class="headerlink" title="3.3.4 执行回调"></a>3.3.4 执行回调</h3><h2 id="3-4-非-I-O-的异步-API"><a href="#3-4-非-I-O-的异步-API" class="headerlink" title="3.4 非 I/O 的异步 API"></a>3.4 非 I/O 的异步 API</h2><p><code>setTimeout</code>, <code>setInterval()</code>, <code>setImmediate()</code>, <code>process.nextTick()</code></p>
-<h3 id="process-nextTick"><a href="#process-nextTick" class="headerlink" title="process.nextTick()"></a>process.nextTick()</h3><p>如果要立即异步执行一个任务:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">setTimeout(function()&#123;</div><div class="line">  //TODO</div><div class="line">&#125;, 0);</div></pre></td></tr></table></figure>
-<p>这种方式浪费性能。</p>
-<p><code>process.nextTick</code> 内部实现是将回调函数放入队列(数组)，下一轮 Tick 时取出执行，不经过红黑树，更高效。</p>
-<h3 id="setImmediate"><a href="#setImmediate" class="headerlink" title="setImmediate()"></a>setImmediate()</h3><p>优先级:<code>process.nextTick()</code> &gt; <code>setTimmediate()</code></p>
-<p>原因：事件循环观察者的检查有先后顺序。<code>process.nextTick()</code> 属于 idle 观察者，<code>setImmediate()</code> 属于 check 观察者。在每一轮检查中 idle 观察者 &gt; I/O 观察者 &gt; check 观察者</p>
-<p>一个 Tick 中，<code>setImmediate()</code> 只会执行一个，另一个会等待下一个 Tick 执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">// 加入两个nextTick()的回调函数 </div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行1&apos;); &#125;); </div><div class="line"></div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行2&apos;); &#125;); </div><div class="line"></div><div class="line">// 加入两个setImmediate()的回调函数 </div><div class="line">setImmediate(function () &#123; </div><div class="line">    console.log(&apos;setImmediate延迟执行1&apos;); </div><div class="line">    // 进入下次循环 process.nextTick(function () &#123;</div><div class="line">        console.log(&apos;强势插入&apos;); &#125;); &#125;); </div><div class="line"></div><div class="line">setImmediate(function () &#123;</div><div class="line">  console.log(&apos;setImmediate延迟执行2&apos;); &#125;); </div><div class="line">console.log(&apos;正常执行&apos;);</div><div class="line"></div><div class="line">其执行结果如下：</div><div class="line"></div><div class="line">正常执行 </div><div class="line">nextTick延迟执行1 </div><div class="line">nextTick延迟执行2 </div><div class="line">setImmediate延迟执行1 </div><div class="line">强势插入 </div><div class="line">setImmediate延迟执行2</div></pre></td></tr></table></figure>
-<h2 id="3-5-事件驱动与高性能服务器"><a href="#3-5-事件驱动与高性能服务器" class="headerlink" title="3.5 事件驱动与高性能服务器"></a>3.5 事件驱动与高性能服务器</h2><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/ode-web-flow.jpg" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/node-web-flow.jpg"></p>
-<h1 id="第-4-章-异步编程"><a href="#第-4-章-异步编程" class="headerlink" title="第 4 章 异步编程"></a>第 4 章 异步编程</h1><h2 id="4-1-函数式编程"><a href="#4-1-函数式编程" class="headerlink" title="4.1 函数式编程"></a>4.1 函数式编程</h2><ol>
-<li>高阶函数</li>
-</ol>
-<p>将函数作为返回值</p>
-<p>例子: Array.forEach, map, reduce…</p>
-<h2 id="4-2-异步编程的优势与难点"><a href="#4-2-异步编程的优势与难点" class="headerlink" title="4.2 异步编程的优势与难点"></a>4.2 异步编程的优势与难点</h2><p>难点:</p>
-<ol>
-<li>异常处理</li>
-<li>函数嵌套过深</li>
-<li>阻塞代码</li>
-<li>多线程编程</li>
-</ol>
-<p>单一线程执行，在游览器中指 JavaScript 执行线程与UI渲染线程是同一个线程。</p>
-<ol>
-<li>异步转同步</li>
-</ol>
-<h2 id="4-3-异步编程解决方案"><a href="#4-3-异步编程解决方案" class="headerlink" title="4.3 异步编程解决方案"></a>4.3 异步编程解决方案</h2><ol>
-<li>事件发布/订阅模式</li>
-<li>promise/Deferred 模式</li>
-<li>流程控制库</li>
-</ol>
-<h3 id="事件发布-订阅模式"><a href="#事件发布-订阅模式" class="headerlink" title="事件发布/订阅模式"></a>事件发布/订阅模式</h3><p>发布/订阅模式: 事件监听器模式是一种广泛用于异步编程的模式，是回调函数的事件化。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">emitter.on(<span class="string">'event1'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(msg);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">emitter.emit(<span class="string">'event1'</span>, <span class="string">'I am message!'</span>);</div></pre></td></tr></table></figure>
-<p>可以实现事件与多个回调函数关联，这些回调函数也称为 事件侦听器。</p>
-<p>发布/订阅模式用于也常常用于解耦业务逻辑。</p>
-<ol>
-<li><p>继承 events。EventEmitter 类 实现发布/订阅模式</p>
-</li>
-<li><p>利用事件队列解决雪崩问题</p>
-</li>
-</ol>
-<p>利用 <code>once</code> 过滤重复性事件。</p>
-<blockquote>
-<p>EventEmitter ，默认设置了监听器的数量限制，如果使用可能需要先去除限制。</p>
-</blockquote>
-<ol>
-<li>多异步之间的协作方案</li>
-</ol>
-<p>如何实现并行调用，串行执行。</p>
-<p>引入第三方函数和第三方变量处理异步协作的结果。 <strong>哨兵变量</strong></p>
-<p>结合闭包</p>
-<h3 id="4-3-2-Promise-Deferred-模式"><a href="#4-3-2-Promise-Deferred-模式" class="headerlink" title="4.3.2 Promise/Deferred 模式"></a>4.3.2 Promise/Deferred 模式</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$.get('/api`, &#123;</div><div class="line">  success: onSuccess,</div><div class="line">  error: onError,</div><div class="line">  complete: onComplete</div><div class="line">&#125;);</div><div class="line"></div><div class="line">$.get('/api')</div><div class="line">  .success(onSuccess)</div><div class="line">  .error(onError)</div><div class="line">  .complete(onComplete)</div></pre></td></tr></table></figure>
-<ol>
-<li>通过 Deferred 对象可以处理多个业务逻辑。</li>
-<li>缓解嵌套</li>
-</ol>
-<p><strong>Promises/A</strong> 模式</p>
-<h3 id="4-3-3-流程控制库"><a href="#4-3-3-流程控制库" class="headerlink" title="4.3.3 流程控制库"></a>4.3.3 流程控制库</h3><ol>
-<li>尾触发与 next</li>
-</ol>
-<p>Node Connect 模块中使用了这种模式。</p>
-<p>最简单的中间件:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = connect();</div><div class="line"><span class="comment">// middleware</span></div><div class="line">app.use(connect.staticCache());</div><div class="line">app.listen(<span class="number">3001</span>);</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// other.js</span></div><div class="line"><span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>)</span>&#123;</div><div class="line">  <span class="comment">// 中间件</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>async</li>
-</ol>
-<p>最知名的流程控制模块 async.</p>
-<p><strong>异步的串行执行:</strong> <code>async.series()</code></p>
-<p><strong>异步的并行执行:</strong> <code>async.parallel()</code> 同时拿到多个并行处理的结果</p>
-<p><strong>异步调用的依赖处理:</strong> <code>async.waterfall()</code> </p>
-<ol>
-<li>Step</li>
-</ol>
-<h2 id="4-4-异步并发控制"><a href="#4-4-异步并发控制" class="headerlink" title="4.4 异步并发控制"></a>4.4 异步并发控制</h2><p>在使用异步的时候，要防止开启过多异步，防止文件系统进行大量并发调用。</p>
-<ol>
-<li>bagpipe 解决方案</li>
-</ol>
-<p>通过队列来控制并发量<br>如果当前活跃的异步并发量小于限定值，从队列中取出执行<br>如果活跃调用达到限定值，调用暂时存放在队列中<br>每个异步调用结束时，从队列中取出新的异步调用执行</p>
-<ol>
-<li>async 解决方案</li>
-</ol>
-<p><code>async.parallelLimit()</code></p>
-<h1 id="第-5-章-内存控制"><a href="#第-5-章-内存控制" class="headerlink" title="第 5 章  内存控制"></a>第 5 章  内存控制</h1><h2 id="5-1-V8-的垃圾回收机制与内存限制"><a href="#5-1-V8-的垃圾回收机制与内存限制" class="headerlink" title="5.1 V8 的垃圾回收机制与内存限制"></a>5.1 V8 的垃圾回收机制与内存限制</h2><p>由垃圾回收机制来进行自动内存管理。</p>
-<ol>
-<li>V8 的内存限制</li>
-</ol>
-<p>V8 限制了内存的用量，Node 通过 JavaScript 使用内存只能使用一部分内存(64 位系统 1.4GB, 32 位系统0.7GB)</p>
-<ol>
-<li>V8 的对象分配</li>
-</ol>
-<p>所有 JavaScript 对象都是通过堆来进行分配的。</p>
-<p><strong>V8 限制了堆内存的大小，为什么？</strong> </p>
-<p>堆内存过大，垃圾回收耗时太长。所以直接限制了堆内存的大小。</p>
-<blockquote>
-<p>可以通过 Node 启动时传递参数，调整内存限制 node –max-old-space-size=1024 test.js MB // node –max-new-space-size=1024 test.js MB</p>
-</blockquote>
-<h3 id="V8-垃圾回收机制"><a href="#V8-垃圾回收机制" class="headerlink" title="V8 垃圾回收机制"></a>V8 垃圾回收机制</h3><p>各种垃圾回收算法:</p>
-<ol>
-<li>分代垃圾回收机制</li>
-</ol>
-<p>对于不通代的垃圾使用不通的垃圾回收算法。</p>
-<p>V8 将内存分为：新生代，老生代</p>
-<ol>
-<li>Scavenge算法&amp;Cheney算法回收老生代垃圾</li>
-</ol>
-<p>Cheney 算法采用复制方法实现垃圾回收。(内存一分为二，一边使用一边不是用，回收的时候将不回收的移动到不使用的一边…)</p>
-<ol>
-<li><p>Mark-Sweep 标记清除 &amp; Mark-Compact 标记整理 回收新生代垃圾</p>
-</li>
-<li><p>Incremental Marking</p>
-</li>
-</ol>
-<p>避免 JavaScript 应用逻辑与垃圾回收器看到的情况不一致，在垃圾回收过程中将应用逻辑停止下来。全停顿(stop-the-world).</p>
-<h2 id="5-2-高效使用内存"><a href="#5-2-高效使用内存" class="headerlink" title="5.2 高效使用内存"></a>5.2 高效使用内存</h2><ol>
-<li>作用域</li>
-</ol>
-<p>一个函数执行完成后，函数作用域内的变量也会销毁</p>
-<ol>
-<li>变量的主动释放</li>
-</ol>
-<p>全局变量需要在进程退出时才能释放。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">delete</span> global.foo <span class="comment">// 使用 delete 释放内存</span></div><div class="line"></div><div class="line">global.foo = <span class="literal">undefined</span> <span class="comment">// or null, 使用赋值方法释放内存 (推荐)</span></div></pre></td></tr></table></figure>
-<ol>
-<li>闭包</li>
-</ol>
-<p>闭包形式下，中间函数将不会释放内存。</p>
-<blockquote>
-<p>正常 JavaScript 执行中，无法立即回收内存的有：闭包 和 全局变量</p>
-</blockquote>
-<h2 id="5-3-内存指标"><a href="#5-3-内存指标" class="headerlink" title="5.3 内存指标"></a>5.3 内存指标</h2><ol>
-<li>查看内存使用情况</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">process.memoryUesage()</div></pre></td></tr></table></figure>
-<ol>
-<li>查看系统的内存占用</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">os.totalmem();</div></pre></td></tr></table></figure>
-<ol>
-<li>堆外内存</li>
-</ol>
-<p>堆内存总量 &lt; 进程内存</p>
-<h2 id="5-4-内存泄露"><a href="#5-4-内存泄露" class="headerlink" title="5.4 内存泄露"></a>5.4 内存泄露</h2><p>通常原因:</p>
-<ol>
-<li>缓存</li>
-</ol>
-<p>在使用缓存的时候应该注意: </p>
-<p>缓存限制策略：代码限制缓存大小，例子：限制数组长度；使用 LRU 算法缓存</p>
-<p>使用进程外缓存: 例子:redis</p>
-<ol>
-<li>队列消费不及时</li>
-</ol>
-<p>监控队列长度，报警</p>
-<p>异步调用添加超时机制</p>
-<ol>
-<li>作用域未释放</li>
-</ol>
-<h2 id="5-5-内存泄露排查"><a href="#5-5-内存泄露排查" class="headerlink" title="5.5 内存泄露排查"></a>5.5 内存泄露排查</h2><p>使用第三方工具排查内存泄露</p>
-<h2 id="5-6-大内存应用"><a href="#5-6-大内存应用" class="headerlink" title="5.6 大内存应用"></a>5.6 大内存应用</h2><p>stream 操作大文件读写</p>
-<h1 id="第-6-章-理解-Buffer"><a href="#第-6-章-理解-Buffer" class="headerlink" title="第 6 章 理解 Buffer"></a>第 6 章 理解 Buffer</h1><p>操作字节</p>
-<h1 id="第-7-章-网络编程"><a href="#第-7-章-网络编程" class="headerlink" title="第 7 章 网络编程"></a>第 7 章 网络编程</h1><p>网络模块: net, dgram, http, https 对应 TCP, UDP, HTTP, HTTPS</p>
-<h2 id="7-5-网络服务与安全"><a href="#7-5-网络服务与安全" class="headerlink" title="7.5 网络服务与安全"></a>7.5 网络服务与安全</h2><p>模块: crypto, tls, https</p>
-<h3 id="TLS-SSL"><a href="#TLS-SSL" class="headerlink" title="TLS/SSL"></a>TLS/SSL</h3><p>非对称加密</p>
-<p>使用公钥加密传输的数据，私钥解密。</p>
-<p>在建立安全传输之前，服务器和客户端需要互换公钥。</p>
-<p>客户端发送数据的时候，使用服务器公钥加密；服务器发送数据的时候使用客户端公钥加密。</p>
-<p><strong>为了避免中间人攻击：</strong>需要对公钥进行认证，确保公钥来自目标服务器。使用数字证书进行认证。</p>
-<p>数字证书包含: 服务器名称，主机名，服务器公钥，签名发布机构名称，来自签名颁发机构的签名。</p>
-<h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h3><p>CA: Certificate Authority 数字证书认证中心</p>
-<h1 id="第-8-章-构建-web-应用"><a href="#第-8-章-构建-web-应用" class="headerlink" title="第 8 章 构建 web 应用"></a>第 8 章 构建 web 应用</h1><h1 id="第-9-章-玩转进程"><a href="#第-9-章-玩转进程" class="headerlink" title="第 9 章 玩转进程"></a>第 9 章 玩转进程</h1><p>Node 通过 child_process 模块实现，多进程创建，在单机上搭建 Node 集群。</p>
-<h2 id="9-3-集群稳定之路"><a href="#9-3-集群稳定之路" class="headerlink" title="9.3 集群稳定之路"></a>9.3 集群稳定之路</h2><ol>
-<li>负载均衡</li>
-</ol>
-<p>采用操作系统抢占式策略达到负载均衡</p>
-<ol>
-<li>状态共享</li>
-</ol>
-<p>第三方数据存储：Redis<br>主动通知</p>
-<h2 id="9-4-Cluster-模块"><a href="#9-4-Cluster-模块" class="headerlink" title="9.4 Cluster 模块"></a>9.4 Cluster 模块</h2><p>Node v0.8 版本加入了 cluster 模块。 解决多核CPU利用率问题，比使用 child_process 更加简单</p>
-<p><strong>工作原理：</strong> 实际上是 child_process 和 net 模块的结合。</p>
-<h1 id="第-10-章-测试"><a href="#第-10-章-测试" class="headerlink" title="第 10 章 测试"></a>第 10 章 测试</h1><h1 id="第-11-章-产品化"><a href="#第-11-章-产品化" class="headerlink" title="第 11 章 产品化"></a>第 11 章 产品化</h1><h2 id="11-1-项目工程化"><a href="#11-1-项目工程化" class="headerlink" title="11.1 项目工程化"></a>11.1 项目工程化</h2><p>项目的组织能力。</p>
-<p>项目工程化最基本的几步:</p>
-<ol>
-<li>目录结构</li>
-<li>构建工具</li>
-<li>编码规范</li>
-<li>代码审查</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/05/Android/app打包/apk打包流程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/05/Android/app打包/apk打包流程/" itemprop="url">Apk 打包流程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-05T12:18:12+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-05T22:38:14+08:00">
                 2019-09-05
               </time>
             
@@ -1609,566 +1842,10 @@
       
         
           
-            <h1 id="APK-包解析"><a href="#APK-包解析" class="headerlink" title="APK 包解析"></a>APK 包解析</h1><p>APK 包解压后:</p>
-<ol>
-<li><code>META_INF</code> 签名文件夹</li>
+            <ol>
+<li>Notification</li>
+<li></li>
 </ol>
-<p>包含: <code>CERT.RSA</code>, <code>CERT.SF</code>, <code>MANIFEST.MF</code> …</p>
-<p><code>MANIFEST.MF</code>:  版本号，及每个文件的哈希值(SHA-256-Degest)<br><code>CERT.SF</code>: 版本号，对每个文件的头3行进行 SHA1<br><code>CERT.RSA</code>: 保存签名和公钥证书</p>
-<p>其他：第卅</p>
-<ol>
-<li><code>res</code> 文件夹</li>
-</ol>
-<p>所有的资源文件</p>
-<ol>
-<li><code>AndroidManifest.xml</code></li>
-</ol>
-<p>Android 清单文件</p>
-<ol>
-<li><code>classes.dex</code>: dex 文件</li>
-<li><code>resources.arsc</code></li>
-</ol>
-<p>资源索引表</p>
-<ol>
-<li><code>assets</code> 静态资源文件夹</li>
-<li><code>kotlin</code> kotlin 相关的, metadata</li>
-</ol>
-<h2 id="apk-包生成流程"><a href="#apk-包生成流程" class="headerlink" title="apk 包生成流程"></a>apk 包生成流程</h2><p><img src="https://upload-images.jianshu.io/upload_images/9984264-bbdece8b63a337fb.png?imageMogr2/auto-orient/strip|imageView2/2/w/536/format/webp" alt="apk flow"></p>
-<ol>
-<li>aapt 打包所有 res 资源文件</li>
-</ol>
-<p>生成: R.java, resources.arsc, res 文件夹</p>
-<ol>
-<li>aidl 处理 .aidl 文件</li>
-</ol>
-<p>生成对应的 Java 接口文件</p>
-<ol>
-<li>Java Compiler 阶段</li>
-</ol>
-<p>通过 Java Compiler 编译 R.java, Java 接口文件，Java 源文件;</p>
-<p>生成 .class 文件</p>
-<ol>
-<li>dex 阶段</li>
-</ol>
-<p>通过 dex 命令，将所有 .class 文件处理成 classes.dex</p>
-<ol>
-<li>apkbuilder 阶段</li>
-</ol>
-<p>将 classex.dex, resources.arsc, res, assets, AndroidManifest.xml 打包成 apk 文件。</p>
-<ol>
-<li>Jarsigner 阶段</li>
-</ol>
-<p>对 apk 进行签名</p>
-<h1 id="Gradle-打包流程"><a href="#Gradle-打包流程" class="headerlink" title="Gradle 打包流程"></a>Gradle 打包流程</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">sourceGenTask，resGenTask，assetGenTask</div><div class="line">checkManifestTask</div><div class="line">process the manifest(s) task</div><div class="line">create the res values task</div><div class="line">compile renderscript files task</div><div class="line">merge the resource folders task</div><div class="line">merge the asset folders task</div><div class="line">create the BuildConfig class task</div><div class="line">process the Android Resources and generate source files task</div><div class="line">process the java resources task</div><div class="line">process the aidl task</div><div class="line">compile task</div><div class="line">NDK tasks</div><div class="line">final packaging task，zipalign task</div><div class="line">lint tasks</div></pre></td></tr></table></figure>
-<h1 id="class-gt-dex"><a href="#class-gt-dex" class="headerlink" title=".class -&gt; dex"></a>.class -&gt; dex</h1><p>dex 文件是一种能被 DVM 识别和并加载，执行的文件格式。(二进制流文件)</p>
-<p>具体来说，关于.class文件到dex写入过程主要为：</p>
-<ol>
-<li><p>将class进行类转换处理</p>
-</li>
-<li><p>将转换后的类写入到dex中(multidex会创建多个dex)</p>
-</li>
-<li><p>将dex转换成byte[]</p>
-</li>
-<li><p>将byte[]列表依次写入到classes.dex, classes2.dex, classes3.dex…</p>
-</li>
-</ol>
-<p>参考:</p>
-<ol>
-<li><a href="http://mouxuejie.com/blog/2016-06-21/multidex-compile-and-dex-source-analysis/" target="_blank" rel="external">class to dex</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/04/Android/原理/SharedPreferences详解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/04/Android/原理/SharedPreferences详解/" itemprop="url">SharedPreferences 详解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-04T12:18:12+08:00">
-                2019-09-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>参考：<a href="https://juejin.im/post/5d669a27518825271f67d5d4" target="_blank" rel="external">https://juejin.im/post/5d669a27518825271f67d5d4</a></p>
-<h1 id="获取-SharedPreference-对象"><a href="#获取-SharedPreference-对象" class="headerlink" title="获取 SharedPreference 对象"></a>获取 SharedPreference 对象</h1><h2 id="方式一-PreferenceManager"><a href="#方式一-PreferenceManager" class="headerlink" title="方式一 PreferenceManager"></a>方式一 PreferenceManager</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);</div></pre></td></tr></table></figure>
-<h2 id="方式二-ContextImpl-getSharedPreferences"><a href="#方式二-ContextImpl-getSharedPreferences" class="headerlink" title="方式二 ContextImpl getSharedPreferences"></a>方式二 ContextImpl getSharedPreferences</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sSharedPreferences = context.getSharedPreferences(APP_SP_NAME, Context.MODE_PRIVATE);</div></pre></td></tr></table></figure>
-<h2 id="SharedPreference-模式"><a href="#SharedPreference-模式" class="headerlink" title="SharedPreference 模式"></a>SharedPreference 模式</h2><ul>
-<li>MODE_WORLD_READABLE (Android N 7.0 后不支持，会直接抛出异常)</li>
-<li>MODE_WORLD_WRITEABLE (Android N 7.0 后不支持，会直接抛出异常)</li>
-<li>MODE_MULTI_PROCESS (并不能保证线程安全)</li>
-<li>MODE_PRIVATE (常用)</li>
-</ul>
-<h2 id="SharedPreferences-对象加载过程"><a href="#SharedPreferences-对象加载过程" class="headerlink" title="SharedPreferences 对象加载过程"></a>SharedPreferences 对象加载过程</h2><ol>
-<li>判断 SharedPreferences 是否已经加载进内存</li>
-<li>判断是否存在遗留的备份文件，如果存在，重命名为 sp 文件</li>
-<li>读取 sp 文件，并存入内存</li>
-<li>更新文件信息</li>
-<li>释放锁，唤醒处于等待状态的线程</li>
-</ol>
-<p>其他:</p>
-<ol>
-<li>创建对象并马上调用 getXXX 的时候，如果 sp 文件数据量比较大，getXXX 会阻塞等待文件读取。</li>
-</ol>
-<h1 id="getXXX"><a href="#getXXX" class="headerlink" title="getXXX"></a>getXXX</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt; SharedPreferencesImpl.java</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getInt</span><span class="params">(String key, <span class="keyword">int</span> defValue)</span> </span>&#123;</div><div class="line">    <span class="keyword">synchronized</span> (mLock) &#123;</div><div class="line">        awaitLoadedLocked(); <span class="comment">// sp 文件尚未加载完成时，会阻塞在这里，见 2.1</span></div><div class="line">        Integer v = (Integer)mMap.get(key); <span class="comment">// 加载完成后直接从内存中读取</span></div><div class="line">        <span class="keyword">return</span> v != <span class="keyword">null</span> ? v : defValue;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>SP 文件加载完成后，所有的 getXXX 操作都是从内存中读取的。</p>
-<blockquote>
-<p>SP数据都加载到内存中，也就导致了 SP 不适合存储大数据量的限制</p>
-</blockquote>
-<h1 id="putXXX"><a href="#putXXX" class="headerlink" title="putXXX"></a>putXXX</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val editor = PreferenceManager.getDefaultSharedPreferences(<span class="keyword">this</span>).edit()</div><div class="line">editor.putInt(<span class="string">"key"</span>,<span class="number">1</span>)</div><div class="line">editor.commit()/editor.apply()</div></pre></td></tr></table></figure>
-<blockquote>
-<p>在封装工具类的时候，editor 可以重复使用</p>
-</blockquote>
-<h2 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h2><blockquote>
-<p>同步保存，有返回值</p>
-</blockquote>
-<ol>
-<li>首先同步 mModified 到内存中 , commitToMemory()</li>
-<li>然后同步内存数据到 sp 文件中 ，enqueueDiskWrite()</li>
-<li>等待写入操作完成，并通知监听者</li>
-</ol>
-<h2 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h2><blockquote>
-<p>异步保存，无返回值</p>
-</blockquote>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><ol>
-<li>不支持跨进程</li>
-<li>初始化可能慢</li>
-<li>SP 数据都会加载到内存中</li>
-<li>无论是 commit() 还是 apply() ，针对任何修改都是全量写入。建议针对高频修改的配置项存在子啊单独的 sp 文件。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/02/database/高并发网站中的数据库设计/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/02/database/高并发网站中的数据库设计/" itemprop="url">高并发网站中的数据库设计-视频笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-02T13:18:12+08:00">
-                2019-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database/" itemprop="url" rel="index">
-                    <span itemprop="name">Database</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="数据库的基本组成"><a href="#数据库的基本组成" class="headerlink" title="数据库的基本组成"></a>数据库的基本组成</h1><ul>
-<li>用户 API</li>
-<li>关系代数和事务引擎</li>
-<li>K-V存储</li>
-</ul>
-<h2 id="KV-存储系统"><a href="#KV-存储系统" class="headerlink" title="KV 存储系统"></a>KV 存储系统</h2><p>映射，根据 key 找到 value</p>
-<p>映射关键特性:</p>
-<ol>
-<li>是否支持范围查找</li>
-<li>是否能够处理更新</li>
-<li>读写指标</li>
-<li>是否面向磁盘结构</li>
-<li>etc…</li>
-</ol>
-<h2 id="关系代数和事务引擎"><a href="#关系代数和事务引擎" class="headerlink" title="关系代数和事务引擎"></a>关系代数和事务引擎</h2><h3 id="关系代数与映射的关系"><a href="#关系代数与映射的关系" class="headerlink" title="关系代数与映射的关系"></a>关系代数与映射的关系</h3><p>关系型数据库如何转化成映射:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">表结构：</div><div class="line">id, user_id, name</div><div class="line"></div><div class="line">id: 作为key，后面的数据作为 value 存储在磁盘中。</div><div class="line">select * from tab where id = ? 就是 key-value 查找 时间复杂度为: O(1)</div><div class="line"></div><div class="line">如果要按照 user_id 如果直接去查找 时间复杂度是 O(n);</div><div class="line">优化1: 创建二级索引(user_id 为 key, id 为 value), 先查二级索引，再查一级索引 时间复杂度O(1)</div><div class="line"></div><div class="line">select ... where user_id = ? and name = &apos;...&apos;</div><div class="line">优化: 组合索引 (user_id,name 作为 key, id 作为 value)</div></pre></td></tr></table></figure>
-<h3 id="事务引擎"><a href="#事务引擎" class="headerlink" title="事务引擎"></a>事务引擎</h3><p>加锁/去锁</p>
-<h3 id="用户-API"><a href="#用户-API" class="headerlink" title="用户 API"></a>用户 API</h3><h1 id="分布式存储"><a href="#分布式存储" class="headerlink" title="分布式存储"></a>分布式存储</h1><h2 id="Key-Value-的多机扩展"><a href="#Key-Value-的多机扩展" class="headerlink" title="Key-Value 的多机扩展"></a>Key-Value 的多机扩展</h2><p>数据库集群</p>
-<p>规则引擎判断数据存储在哪个数据库中。</p>
-<p>一致性 Hash: 解决热点问题</p>
-<h2 id="CAP-和-分布式系统的一致性"><a href="#CAP-和-分布式系统的一致性" class="headerlink" title="CAP 和 分布式系统的一致性"></a>CAP 和 分布式系统的一致性</h2><p>一致性解决方案:</p>
-<ol>
-<li>无主机</li>
-<li>有主机</li>
-</ol>
-<p>一个主机能写，其他主机只读。主机挂了需要选主机</p>
-<h1 id="阿里数据库的一些最佳实践"><a href="#阿里数据库的一些最佳实践" class="headerlink" title="阿里数据库的一些最佳实践"></a>阿里数据库的一些最佳实践</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/02/program/docker/docker-nginx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/02/program/docker/docker-nginx/" itemprop="url">Docker nginx</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-02T13:18:12+08:00">
-                2019-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Docker/" itemprop="url" rel="index">
-                    <span itemprop="name">Docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://github.com/fangmd/docker-examples" target="_blank" rel="external">https://github.com/fangmd/docker-examples</a></p>
-<p>参考:<a href="https://www.runoob.com/docker/docker-install-nginx.html" target="_blank" rel="external">https://www.runoob.com/docker/docker-install-nginx.html</a></p>
-<h1 id="Download-nginx"><a href="#Download-nginx" class="headerlink" title="Download nginx"></a>Download nginx</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker pull nginx</div></pre></td></tr></table></figure>
-<p>test:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run --name test-nginx -p 8081:80 -d nginx</div></pre></td></tr></table></figure>
-<p>运行 nginx 容器，映射电脑端口 8081 到容器的 80。打开 <code>http://127.0.0.1:8081</code> 可以看到 nginx 网页表示成功</p>
-<p>查看正在运行的 容器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker ps</div></pre></td></tr></table></figure>
-<h1 id="nginx-部署"><a href="#nginx-部署" class="headerlink" title="nginx 部署"></a>nginx 部署</h1><p>创建需要的目录: <code>/nginx/www,  /nginx/logs, /nginx/conf</code></p>
-<p>将运行中的容器中的 nginx 配置文件复制到本地:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker cp ec2accd6e8d5:/etc/nginx/nginx.conf ./nginx/conf</div><div class="line">docker cp 0ad0541e2979:/usr/share/nginx/html ./nginx/www</div></pre></td></tr></table></figure>
-<p>配置 <code>docker-compose.yml</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">version: &apos;2&apos;</div><div class="line">services:</div><div class="line">  nginx:</div><div class="line">    image: nginx:stable-alpine</div><div class="line">    restart: unless-stopped</div><div class="line">    volumes:</div><div class="line">      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf</div><div class="line">      - ./nginx/conf.d:/etc/nginx/conf.d/</div><div class="line">      - ./nginx/www:/usr/share/nginx/html</div><div class="line">      - ./nginx/logs:/var/log/nginx</div><div class="line">    ports:</div><div class="line">      - &apos;8082:80&apos;</div><div class="line">    # environment:</div><div class="line">    #   - NGINX_HOST=your.domain</div><div class="line">    #   - NGINX_PORT=80</div></pre></td></tr></table></figure>
-<p>运行：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker-compose up -d --build</div></pre></td></tr></table></figure>
-<h1 id="Dockerfile-方式"><a href="#Dockerfile-方式" class="headerlink" title="Dockerfile 方式"></a>Dockerfile 方式</h1><p>Dockerfile:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FROM nginx</div><div class="line"></div><div class="line">COPY ./nginx/www /usr/share/nginx/html</div></pre></td></tr></table></figure>
-<p>根据 Dockerfile 创建镜像:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker build - t one-nginx .</div></pre></td></tr></table></figure>
-<p>运行:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo docker run --name one-nginx -d -p 8080:80 nginx</div></pre></td></tr></table></figure>
-<p>打开: <code>http://127.0.0.1:8080</code></p>
 
           
         
@@ -2252,7 +1929,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-count">532</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -2263,7 +1940,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -2274,7 +1951,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-count">257</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -2316,7 +1993,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

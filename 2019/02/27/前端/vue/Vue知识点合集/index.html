@@ -93,19 +93,25 @@
 
 
 
-<meta name="description" content="父子组间交互方式Vuexprops/$emitsync 实现数据双向绑定12345678910// 父组间使用时&amp;lt;custome-view :show.sync=&quot;showCustomeView&quot;&amp;gt;//子组件props:&amp;#123;  show: false,&amp;#125;// 子组间修改值this.$emit(&apos;update:show&apos;, false);
-$attrs/$listene">
+<meta name="description" content="页面之间传值
+params
+
+1234567891011121314151617路由配置:&amp;#123;    path: &apos;/two/:id&apos;,    name: &apos;two&apos;,    component: () =&amp;gt; import(&apos;@/components/two.vue&apos;),    meta: &amp;#123;        title: &apos;two&apos;    &amp;#125;&amp;#125;&amp;gt;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vue-响应式原理">
 <meta property="og:url" content="http://yoursite.com/2019/02/27/前端/vue/Vue知识点合集/index.html">
 <meta property="og:site_name" content="Double">
-<meta property="og:description" content="父子组间交互方式Vuexprops/$emitsync 实现数据双向绑定12345678910// 父组间使用时&amp;lt;custome-view :show.sync=&quot;showCustomeView&quot;&amp;gt;//子组件props:&amp;#123;  show: false,&amp;#125;// 子组间修改值this.$emit(&apos;update:show&apos;, false);
-$attrs/$listene">
-<meta property="og:updated_time" content="2019-09-02T05:59:47.582Z">
+<meta property="og:description" content="页面之间传值
+params
+
+1234567891011121314151617路由配置:&amp;#123;    path: &apos;/two/:id&apos;,    name: &apos;two&apos;,    component: () =&amp;gt; import(&apos;@/components/two.vue&apos;),    meta: &amp;#123;        title: &apos;two&apos;    &amp;#125;&amp;#125;&amp;gt;">
+<meta property="og:updated_time" content="2019-10-29T08:40:10.432Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue-响应式原理">
-<meta name="twitter:description" content="父子组间交互方式Vuexprops/$emitsync 实现数据双向绑定12345678910// 父组间使用时&amp;lt;custome-view :show.sync=&quot;showCustomeView&quot;&amp;gt;//子组件props:&amp;#123;  show: false,&amp;#125;// 子组间修改值this.$emit(&apos;update:show&apos;, false);
-$attrs/$listene">
+<meta name="twitter:description" content="页面之间传值
+params
+
+1234567891011121314151617路由配置:&amp;#123;    path: &apos;/two/:id&apos;,    name: &apos;two&apos;,    component: () =&amp;gt; import(&apos;@/components/two.vue&apos;),    meta: &amp;#123;        title: &apos;two&apos;    &amp;#125;&amp;#125;&amp;gt;">
 
 
 
@@ -344,7 +350,19 @@ $attrs/$listene">
       
 
       
-        <h1 id="父子组间交互方式"><a href="#父子组间交互方式" class="headerlink" title="父子组间交互方式"></a>父子组间交互方式</h1><h2 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h2><h2 id="props-emit"><a href="#props-emit" class="headerlink" title="props/$emit"></a>props/$emit</h2><h2 id="sync-实现数据双向绑定"><a href="#sync-实现数据双向绑定" class="headerlink" title="sync 实现数据双向绑定"></a>sync 实现数据双向绑定</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 父组间使用时</span></div><div class="line">&lt;custome-view :show.sync=<span class="string">"showCustomeView"</span>&gt;</div><div class="line"></div><div class="line"><span class="comment">//子组件</span></div><div class="line">props:&#123;</div><div class="line">  <span class="attr">show</span>: <span class="literal">false</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 子组间修改值</span></div><div class="line"><span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
+        <h1 id="页面之间传值"><a href="#页面之间传值" class="headerlink" title="页面之间传值"></a>页面之间传值</h1><ol>
+<li><code>params</code></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">路由配置:</div><div class="line">&#123;</div><div class="line">    <span class="attr">path</span>: <span class="string">'/two/:id'</span>,</div><div class="line">    <span class="attr">name</span>: <span class="string">'two'</span>,</div><div class="line">    <span class="attr">component</span>: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'@/components/two.vue'</span>),</div><div class="line">    <span class="attr">meta</span>: &#123;</div><div class="line">        <span class="attr">title</span>: <span class="string">'two'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&gt; path 中也可以不定义 id，但是这样 params 在刷新后就会丢失</div><div class="line"></div><div class="line">跳转:</div><div class="line"></div><div class="line"><span class="keyword">this</span>.$router.push(&#123; <span class="attr">path</span>: <span class="string">`/two/<span class="subst">$&#123;item&#125;</span>`</span> &#125;)</div><div class="line"><span class="keyword">this</span>.$router.push(<span class="string">`/two/<span class="subst">$&#123;item&#125;</span>`</span>)</div><div class="line"><span class="keyword">this</span>.$router.push(&#123; <span class="attr">name</span>: <span class="string">'two'</span>, <span class="attr">params</span>: &#123; <span class="attr">id</span>: <span class="string">`<span class="subst">$&#123;item&#125;</span>`</span> &#125;&#125;)</div></pre></td></tr></table></figure>
+<ol>
+<li><code>query</code></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 不需要在 vue-router 配置中设置。</span></div><div class="line"></div><div class="line"><span class="keyword">this</span>.$router.push(&#123;</div><div class="line">    <span class="attr">path</span>: <span class="string">`/two`</span>,</div><div class="line">    <span class="attr">query</span>: &#123;</div><div class="line">        <span class="attr">id</span>:item</div><div class="line">    &#125;</div><div class="line">&#125;)</div><div class="line"><span class="comment">// 参数会体现在地址栏中</span></div></pre></td></tr></table></figure>
+<h1 id="this-router-amp-this-route"><a href="#this-router-amp-this-route" class="headerlink" title="this.$router &amp; this.$route"></a>this.$router &amp; this.$route</h1><ol>
+<li><code>this.$router</code> 是 VueRouter 实例，用于导航跳转</li>
+<li><code>this.$route</code> 是当前 router 跳转对象，里面包含了 <code>name, path. query. params</code></li>
+</ol>
+<h1 id="父子组间交互方式"><a href="#父子组间交互方式" class="headerlink" title="父子组间交互方式"></a>父子组间交互方式</h1><h2 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h2><h2 id="props-emit"><a href="#props-emit" class="headerlink" title="props/$emit"></a>props/$emit</h2><h2 id="sync-实现数据双向绑定"><a href="#sync-实现数据双向绑定" class="headerlink" title="sync 实现数据双向绑定"></a>sync 实现数据双向绑定</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 父组间使用时</span></div><div class="line">&lt;custome-view :show.sync=<span class="string">"showCustomeView"</span>&gt;</div><div class="line"></div><div class="line"><span class="comment">//子组件</span></div><div class="line">props:&#123;</div><div class="line">  <span class="attr">show</span>: <span class="literal">false</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 子组间修改值</span></div><div class="line"><span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
 <h2 id="attrs-listeners"><a href="#attrs-listeners" class="headerlink" title="$attrs/$listeners"></a>$attrs/$listeners</h2><h2 id="provide-inject"><a href="#provide-inject" class="headerlink" title="provide/inject"></a>provide/inject</h2><p>父组间 provide 属性获取函数</p>
 <p>子组间 inject 注入父组间提供的属性和函数</p>
 <h2 id="parent-children-root-refs"><a href="#parent-children-root-refs" class="headerlink" title="$parent/$children/$root/$refs"></a>$parent/$children/$root/$refs</h2><p>缺点：多级访问麻烦</p>
@@ -361,6 +379,64 @@ $attrs/$listene">
 <li>实现一个解析器，扫描和解析每个节点的相关指令. 初始化节点上的模版数据，创建对应的 Watcher</li>
 </ol>
 <h2 id="Vue3-0"><a href="#Vue3-0" class="headerlink" title="Vue3.0"></a>Vue3.0</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Proxy 实现代理</div></pre></td></tr></table></figure>
+<h1 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h1><p>使用 JS 对象模拟 DOM，vue 页面修改的时候先修改 vdom, 然后通过 diff 算法生成新 vdom, 最后渲染。</p>
+<p>优点：</p>
+<ol>
+<li>性能好，效率高</li>
+<li>容易实现跨平台</li>
+</ol>
+<h1 id="异步更新-DOM-以及-nextTick"><a href="#异步更新-DOM-以及-nextTick" class="headerlink" title="异步更新 DOM, 以及 nextTick"></a>异步更新 DOM, 以及 nextTick</h1><p>vue 采用异步执行 DOM 更新。</p>
+<p>一个数据修改，Watcher 生成一个事件插入队列，会在下一个事件循环中处理事件，更新界面。</p>
+<p>nextTick: 实现将函数存入 microTask 或 macroTask。</p>
+<p><strong>为什么使用异步更新DOM:</strong> 优化性能，避免短时间内某个值一直改变导致渲染频繁。</p>
+<p>在一些需要在数据变更后马上执行的代码需要使用 <code>nextTick</code>;</p>
+<h1 id="vue-router-实现原理"><a href="#vue-router-实现原理" class="headerlink" title="vue-router 实现原理"></a>vue-router 实现原理</h1><p>核心：更新视图但是不重新请求页面</p>
+<p>实现单页跳转有三种方式:</p>
+<ol>
+<li>hash 模式， 默认</li>
+</ol>
+<p><code>#</code> 页面定位方式，这种修改服务器端完全不会去处理。</p>
+<p><code>#</code> 后面的地址修改后，在游览器历史记录里面增加一个记录，根据不通的锚点值改变渲染结果</p>
+<ol>
+<li>history 模式</li>
+</ol>
+<p>基于 HTML5 History API 实现。</p>
+<p>这种方式需要后端配合。(后端对 url 做处理，如果没有对应的处理类，就返回 index.html)</p>
+<p>也可以通过 nginx 实现</p>
+<ol>
+<li>abstract 模式</li>
+</ol>
+<p>这种模式不依赖于游览器的历史记录管理页面栈。</p>
+<p>weex 环境下会强制使用这种模式。</p>
+<h1 id="跨域方案"><a href="#跨域方案" class="headerlink" title="跨域方案"></a>跨域方案</h1><h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><p>最早出现的跨域方案</p>
+<p>缺点:</p>
+<ol>
+<li>由于 jsonp 是使用 script, img, iframe 没有同源限制的标签，所以它只支持 get 请求。</li>
+<li>错误处理机制不完善</li>
+</ol>
+<p>优点:</p>
+<ol>
+<li>jsonp 可以兼容低版本游览器</li>
+</ol>
+<p>例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// test.html</div><div class="line">&lt;script&gt;</div><div class="line">  function test(data) &#123;</div><div class="line">    console.log(data);</div><div class="line">    return data;</div><div class="line">  &#125;</div><div class="line">&lt;/script&gt;</div><div class="line">&lt;script</div><div class="line">  type=&quot;text/javascript&quot;</div><div class="line">  src=&quot;http://127.0.0.1:8090/v1/system/user/getTotal?callback=test&quot;</div><div class="line">&gt;&lt;/script&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>请求结果通过 get 请求参数 callback 设置</p>
+</blockquote>
+<p>Vue 中第三方库: <code>jsonp</code></p>
+<h2 id="CORS-跨域资源共享"><a href="#CORS-跨域资源共享" class="headerlink" title="CORS 跨域资源共享"></a>CORS 跨域资源共享</h2><p>原理: 使用 XMLHttpRequest 发送请求，增加一些字段告诉服务器允许跨域，需要服务端支持。</p>
+<p>优点:</p>
+<ol>
+<li>支持多种请求</li>
+<li>处理机制完善</li>
+<li>符合 http 规范，对于复杂请求，多一次验证，安全性更好</li>
+</ol>
+<p>缺点:</p>
+<ol>
+<li>不支持 IE10 一下游览器</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">客户端:</div><div class="line"></div><div class="line">// 创建一个实例</div><div class="line">const server = axios.create(&#123;</div><div class="line">    // 将我们访问的地址设为baseURL</div><div class="line">    baseURL: &quot;http://127.0.0.1:8090&quot;,</div><div class="line">    // 设置超时时间</div><div class="line">    timeout: 5000，</div><div class="line">    headers:&#123;</div><div class="line">        &quot;Content-Type&quot;:&quot;text/plain&quot;,</div><div class="line">        &quot;Access-Control-Allow-Credentials&quot;: true</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"></div><div class="line">&quot;Access-Control-Allow-Origin&quot;:&quot;*&quot;</div></pre></td></tr></table></figure>
+<h2 id="proxy-服务器代理"><a href="#proxy-服务器代理" class="headerlink" title="proxy 服务器代理"></a>proxy 服务器代理</h2><p>代理转发，nginx, webpack devserve</p>
 
       
     </div>
@@ -487,7 +563,7 @@ $attrs/$listene">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-count">532</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -498,7 +574,7 @@ $attrs/$listene">
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -509,7 +585,7 @@ $attrs/$listene">
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-count">257</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -544,7 +620,7 @@ $attrs/$listene">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#父子组间交互方式"><span class="nav-number">1.</span> <span class="nav-text">父子组间交互方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vuex"><span class="nav-number">1.1.</span> <span class="nav-text">Vuex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#props-emit"><span class="nav-number">1.2.</span> <span class="nav-text">props/$emit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sync-实现数据双向绑定"><span class="nav-number">1.3.</span> <span class="nav-text">sync 实现数据双向绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attrs-listeners"><span class="nav-number">1.4.</span> <span class="nav-text">$attrs/$listeners</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#provide-inject"><span class="nav-number">1.5.</span> <span class="nav-text">provide/inject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parent-children-root-refs"><span class="nav-number">1.6.</span> <span class="nav-text">$parent/$children/$root/$refs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVVM-实现原理，双向绑定原理"><span class="nav-number">2.</span> <span class="nav-text">MVVM 实现原理，双向绑定原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue2-0"><span class="nav-number">2.1.</span> <span class="nav-text">Vue2.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue3-0"><span class="nav-number">2.2.</span> <span class="nav-text">Vue3.0</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#页面之间传值"><span class="nav-number">1.</span> <span class="nav-text">页面之间传值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#this-router-amp-this-route"><span class="nav-number">2.</span> <span class="nav-text">this.$router & this.$route</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#父子组间交互方式"><span class="nav-number">3.</span> <span class="nav-text">父子组间交互方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vuex"><span class="nav-number">3.1.</span> <span class="nav-text">Vuex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#props-emit"><span class="nav-number">3.2.</span> <span class="nav-text">props/$emit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sync-实现数据双向绑定"><span class="nav-number">3.3.</span> <span class="nav-text">sync 实现数据双向绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attrs-listeners"><span class="nav-number">3.4.</span> <span class="nav-text">$attrs/$listeners</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#provide-inject"><span class="nav-number">3.5.</span> <span class="nav-text">provide/inject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parent-children-root-refs"><span class="nav-number">3.6.</span> <span class="nav-text">$parent/$children/$root/$refs</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MVVM-实现原理，双向绑定原理"><span class="nav-number">4.</span> <span class="nav-text">MVVM 实现原理，双向绑定原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue2-0"><span class="nav-number">4.1.</span> <span class="nav-text">Vue2.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue3-0"><span class="nav-number">4.2.</span> <span class="nav-text">Vue3.0</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Virtual-DOM"><span class="nav-number">5.</span> <span class="nav-text">Virtual DOM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异步更新-DOM-以及-nextTick"><span class="nav-number">6.</span> <span class="nav-text">异步更新 DOM, 以及 nextTick</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vue-router-实现原理"><span class="nav-number">7.</span> <span class="nav-text">vue-router 实现原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#跨域方案"><span class="nav-number">8.</span> <span class="nav-text">跨域方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JSONP"><span class="nav-number">8.1.</span> <span class="nav-text">JSONP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CORS-跨域资源共享"><span class="nav-number">8.2.</span> <span class="nav-text">CORS 跨域资源共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-服务器代理"><span class="nav-number">8.3.</span> <span class="nav-text">proxy 服务器代理</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -567,7 +643,7 @@ $attrs/$listene">
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

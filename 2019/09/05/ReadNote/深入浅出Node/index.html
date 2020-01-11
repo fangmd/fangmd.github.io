@@ -119,7 +119,7 @@ Node 给 JavaScript 带来的意义
 异步调用：Don’t call me, I will call you.">
 <meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/chrome-node.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/ode-web-flow.jpg">
-<meta property="og:updated_time" content="2019-09-10T09:33:08.344Z">
+<meta property="og:updated_time" content="2019-10-12T07:39:38.320Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js 深入浅出笔记">
 <meta name="twitter:description" content="第 1 章 Node 简介1.1 Node 历程
@@ -451,7 +451,7 @@ Node 给 JavaScript 带来的意义
 <h3 id="setImmediate"><a href="#setImmediate" class="headerlink" title="setImmediate()"></a>setImmediate()</h3><p>优先级:<code>process.nextTick()</code> &gt; <code>setTimmediate()</code></p>
 <p>原因：事件循环观察者的检查有先后顺序。<code>process.nextTick()</code> 属于 idle 观察者，<code>setImmediate()</code> 属于 check 观察者。在每一轮检查中 idle 观察者 &gt; I/O 观察者 &gt; check 观察者</p>
 <p>一个 Tick 中，<code>setImmediate()</code> 只会执行一个，另一个会等待下一个 Tick 执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">// 加入两个nextTick()的回调函数 </div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行1&apos;); &#125;); </div><div class="line"></div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行2&apos;); &#125;); </div><div class="line"></div><div class="line">// 加入两个setImmediate()的回调函数 </div><div class="line">setImmediate(function () &#123; </div><div class="line">    console.log(&apos;setImmediate延迟执行1&apos;); </div><div class="line">    // 进入下次循环 process.nextTick(function () &#123;</div><div class="line">        console.log(&apos;强势插入&apos;); &#125;); &#125;); </div><div class="line"></div><div class="line">setImmediate(function () &#123;</div><div class="line">  console.log(&apos;setImmediate延迟执行2&apos;); &#125;); </div><div class="line">console.log(&apos;正常执行&apos;);</div><div class="line"></div><div class="line">其执行结果如下：</div><div class="line"></div><div class="line">正常执行 </div><div class="line">nextTick延迟执行1 </div><div class="line">nextTick延迟执行2 </div><div class="line">setImmediate延迟执行1 </div><div class="line">强势插入 </div><div class="line">setImmediate延迟执行2</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">// 加入两个nextTick()的回调函数 </div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行1&apos;); </div><div class="line">&#125;); </div><div class="line"></div><div class="line">process.nextTick(function () &#123;</div><div class="line">  console.log(&apos;nextTick延迟执行2&apos;); </div><div class="line">&#125;); </div><div class="line"></div><div class="line">// 加入两个setImmediate()的回调函数 </div><div class="line">setImmediate(function () &#123; </div><div class="line">    console.log(&apos;setImmediate延迟执行1&apos;); </div><div class="line">    // 进入下次循环 </div><div class="line">    process.nextTick(function () &#123;</div><div class="line">        console.log(&apos;强势插入&apos;); </div><div class="line">    &#125;); </div><div class="line">&#125;); </div><div class="line"></div><div class="line">setImmediate(function () &#123;</div><div class="line">  console.log(&apos;setImmediate延迟执行2&apos;); </div><div class="line">&#125;); </div><div class="line">console.log(&apos;正常执行&apos;);</div><div class="line"></div><div class="line">其执行结果如下：</div><div class="line"></div><div class="line">正常执行 </div><div class="line">nextTick延迟执行1 </div><div class="line">nextTick延迟执行2 </div><div class="line">setImmediate延迟执行1 </div><div class="line">强势插入 </div><div class="line">setImmediate延迟执行2</div></pre></td></tr></table></figure>
 <h2 id="3-5-事件驱动与高性能服务器"><a href="#3-5-事件驱动与高性能服务器" class="headerlink" title="3.5 事件驱动与高性能服务器"></a>3.5 事件驱动与高性能服务器</h2><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/ode-web-flow.jpg" alt="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/node/node-web-flow.jpg"></p>
 <h1 id="第-4-章-异步编程"><a href="#第-4-章-异步编程" class="headerlink" title="第 4 章 异步编程"></a>第 4 章 异步编程</h1><h2 id="4-1-函数式编程"><a href="#4-1-函数式编程" class="headerlink" title="4.1 函数式编程"></a>4.1 函数式编程</h2><ol>
 <li>高阶函数</li>
@@ -682,8 +682,8 @@ Node 给 JavaScript 带来的意义
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/05/Android/Android 版本/Android10.0/android-10.0-news/" rel="prev" title="Android10.0 新内容">
-                Android10.0 新内容 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/05/Android/Android 版本/Android9.0-P/android-9.0-news/" rel="prev" title="Android9.0 新内容">
+                Android9.0 新内容 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -756,7 +756,7 @@ Node 给 JavaScript 带来的意义
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-count">532</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -767,7 +767,7 @@ Node 给 JavaScript 带来的意义
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -778,7 +778,7 @@ Node 给 JavaScript 带来的意义
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-count">257</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -836,7 +836,7 @@ Node 给 JavaScript 带来的意义
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

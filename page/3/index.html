@@ -253,6 +253,955 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/07/前端/utils/webpack记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/07/前端/utils/webpack记录/" itemprop="url">Webpack 记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-07T13:18:12+08:00">
+                2019-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><ul>
+<li><a href="https://webpack.js.org/concepts/" target="_blank" rel="external">https://webpack.js.org/concepts/</a></li>
+</ul>
+<h2 id="Entry"><a href="#Entry" class="headerlink" title="Entry"></a>Entry</h2><p>打包开始的入口文件, webpack 开始打包从这个文件开始检索文件，绘制依赖图表</p>
+<blockquote>
+<p>可以设置多个入口 <a href="https://webpack.js.org/concepts/entry-points/" target="_blank" rel="external">entry-points</a></p>
+</blockquote>
+<p><code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="attr">ectry</span>: <span class="string">'./src/index.js'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="attr">entry</span>: &#123;</div><div class="line">    <span class="attr">app</span>: <span class="string">'./src/app.js'</span>,</div><div class="line">    <span class="attr">adminApp</span>: <span class="string">'./src/adminApp.js'</span></div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h2><p>Output 属性配置打包生成的 bundles 放置位置和文件名(默认: <code>./dist/main.js</code>)</p>
+<p><code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="attr">entry</span>: <span class="string">'./src/index.js'</span>,</div><div class="line">    <span class="attr">output</span>: &#123;</div><div class="line">        <span class="attr">path</span>: path.resolve(__dirname, <span class="string">'dist'</span>),</div><div class="line">        <span class="attr">filename</span>: <span class="string">'my-bundle.js'</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>dirname 总是返回被执行的 js 所在文件夹的绝对路径
+</strong>filename: 总是返回被执行的 js 的绝对路径</p>
+</blockquote>
+<ul>
+<li><a href="https://webpack.js.org/concepts/output/" target="_blank" rel="external">https://webpack.js.org/concepts/output/</a></li>
+<li><a href="https://webpack.js.org/configuration/output/" target="_blank" rel="external">https://webpack.js.org/configuration/output/</a></li>
+</ul>
+<p>使用 hash 命名输出的文件:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="comment">//...</span></div><div class="line">  output: &#123;</div><div class="line">    <span class="attr">path</span>: <span class="string">'/home/proj/cdn/assets/[hash]'</span>,</div><div class="line">    <span class="attr">publicPath</span>: <span class="string">'https://cdn.example.com/assets/[hash]/'</span></div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="publicPath"><a href="#publicPath" class="headerlink" title="publicPath"></a>publicPath</h3><blockquote>
+<p>publicPath 以 / 结尾</p>
+</blockquote>
+<p>静态资源最终访问路径 = output.publicPath + 资源loader或插件等配置路径</p>
+<h2 id="Loaders"><a href="#Loaders" class="headerlink" title="Loaders"></a>Loaders</h2><p>webpack 原生只支持 JavaScript, JSON 文件，Loaders 帮助 webpack 处理其他类型的文件。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="built_in">module</span>: &#123;</div><div class="line">        <span class="attr">rules</span>: [</div><div class="line">            &#123; <span class="attr">test</span>: <span class="regexp">/\.txt$/</span>, <span class="attr">use</span>: <span class="string">'raw-loader'</span> &#125;</div><div class="line">        ]</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>test</code>: 匹配文件类型</li>
+<li><code>use</code>: 使用那种 loader 解析文件，可以设置多个 loader</li>
+</ul>
+<h2 id="plugins"><a href="#plugins" class="headerlink" title="plugins"></a>plugins</h2><p>plugins 处理整个 bundle 文件的优化，asset 管理，环境变量 注入</p>
+<p><code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>); <span class="comment">// installed  via npm</span></div><div class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>); <span class="comment">//to access build-in plugins</span></div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">    plugins: [</div><div class="line">        <span class="keyword">new</span> HtmlWebpackPlugin(&#123; <span class="attr">template</span>: <span class="string">'./src/index.html'</span> &#125;)</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>html-webpack-plugin</code> 插件，帮助向 html 文件注入生成的 bundle.js 文件</li>
+</ul>
+<h2 id="Mode"><a href="#Mode" class="headerlink" title="Mode"></a>Mode</h2><p>设置打包模式</p>
+<ul>
+<li>development</li>
+<li>production</li>
+<li>none</li>
+</ul>
+<p>每个模式，背后包含了一些列的配置: <a href="https://webpack.js.org/configuration/mode/" target="_blank" rel="external">https://webpack.js.org/configuration/mode/</a></p>
+<p>根据 mode 设置不同的打包配置:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> config = &#123;</div><div class="line">  <span class="attr">entry</span>: <span class="string">'./app.js'</span></div><div class="line">  <span class="comment">//...</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">env, argv</span>) =&gt;</span> &#123;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (argv.mode === <span class="string">'development'</span>) &#123;</div><div class="line">    config.devtool = <span class="string">'source-map'</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (argv.mode === <span class="string">'production'</span>) &#123;</div><div class="line">    <span class="comment">//...</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">return</span> config;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/01/前端/html/html知识点集合/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/01/前端/html/html知识点集合/" itemprop="url">Html 知识点集合</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-01T13:18:12+08:00">
+                2019-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>载录自：<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML" target="_blank" rel="external">MDN</a></p>
+<p>HTML: 超文本标记语言 HyperText Markup Language, 定义网页内容的含义和结构</p>
+<h1 id="基本知识点"><a href="#基本知识点" class="headerlink" title="基本知识点"></a>基本知识点</h1><ol>
+<li>超文本：网页与网页之前的跳转链接</li>
+<li>标记(markup): 例子 head, title, body</li>
+<li>标签(tag): <code>&lt;&gt;</code>  不区分大小写</li>
+</ol>
+<h1 id="元素"><a href="#元素" class="headerlink" title="元素"></a>元素</h1><ol>
+<li>块级元素</li>
+<li>内联元素</li>
+<li>空元素</li>
+<li>嵌套元素</li>
+</ol>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><ol>
+<li>元素可以拥有属性：比如 class, id</li>
+<li>布尔属性: 可以没有值, <code>&lt;input type=&quot;text&quot; disabled&gt;, &lt;input type=&quot;text&quot; disabled=&quot;disabled&quot;&gt;</code></li>
+<li>属性在不加眼号的时候也是可以的，但是在某些情况下会影响原来的语意，所以始终添加眼号可以避免不必要的问题，同时增加可读性</li>
+<li>单眼号和双眼号都可以，但是必须成对使用</li>
+</ol>
+<h1 id="分析一个-HTML-文档"><a href="#分析一个-HTML-文档" class="headerlink" title="分析一个 HTML 文档"></a>分析一个 HTML 文档</h1><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<ol>
+<li><code>&lt;!DOCTYPE html&gt;</code>: 声明文档类型</li>
+</ol>
+<p>早期的 HTML 文档类型声明类似与链接，链接里面定义了页面需要遵循的规则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;</div><div class="line">&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</div></pre></td></tr></table></figure>
+<ol>
+<li><code>&lt;html&gt;</code> 根元素</li>
+<li><code>&lt;head&gt;</code>: 存放包含在 html 中，但是不会显示到界面上的内容</li>
+<li><code>&lt;meta charset=&quot;UTF-8&quot;&gt;</code>: 文档字符集编码</li>
+<li><code>&lt;title&gt;</code></li>
+<li><code>&lt;body&gt;</code>: 包含访问的页面上所显示的内容</li>
+</ol>
+<h2 id="html"><a href="#html" class="headerlink" title="html"></a>html</h2><ol>
+<li>为文档设置主语言 <code>&lt;html lang=&quot;en-US&quot;&gt;</code></li>
+</ol>
+<p>方便搜索引擎，允许在特定语言搜索结果中显示</p>
+<h2 id="head"><a href="#head" class="headerlink" title="head"></a>head</h2><p>存放包含在 html 中，但是不会显示到界面上的内容</p>
+<ol>
+<li><code>&lt;title&gt;</code></li>
+<li><code>&lt;meta&gt;</code>: 元数据，可以指定字符集，利用 name, content 特性 优化 SEO</li>
+</ol>
+<p>优化 SEO，在 <code>&lt;meta name=&quot;description&quot; content=&quot;The Mozil&quot; &gt;</code>, description 会在搜索引擎中显示。</p>
+<blockquote>
+<p>meta, name=keyword 已经不再使用，因为作弊者太多</p>
+</blockquote>
+<ol>
+<li><code>&lt;link rel=&quot;shortcut icon&quot; href=&quot;favicon.ico&quot; type=&quot;image/x-icon&quot;&gt;</code> 自定义图标</li>
+</ol>
+<p>16*16 像素，ico 格式(大多数游览器也支持 gif,png; ico 可以适配 ie6)</p>
+<ol>
+<li><p>css 引入 <code>&lt;link rel=&quot;stylesheet&quot; href=&quot;my-css-file.css&quot;&gt;</code></p>
+</li>
+<li><p>js 引入 <code>&lt;script src=&quot;my-js-file.js&quot;&gt;&lt;/script&gt;</code></p>
+</li>
+</ol>
+<blockquote>
+<p>script 元素不是空元素，必须有结束标记</p>
+</blockquote>
+<h1 id="HTML-特殊字体"><a href="#HTML-特殊字体" class="headerlink" title="HTML 特殊字体"></a>HTML 特殊字体</h1><p>如果需要在界面上显示 <code>&lt; &gt; &quot; &#39; &amp;</code> 字符，需要用 html 规定的等价字符代替。</p>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><p><code>&lt;a href=&quot;https://www.mozilla.org/en-US/&quot;&gt;the Mozilla homepage&lt;/a&gt;.</code></p>
+<ol>
+<li>可以添加 <code>title</code> 属性设置，当鼠标悬停的时候，会出现的提示信息</li>
+<li>下载链接时，使用 <code>download</code> 属性, 表示下载文件，而不是使用游览器打开文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;a href=&quot;https://download.mozilla.org/?product=firefox-latest-ssl&amp;os=win64&amp;lang=en-US&quot;</div><div class="line">   download=&quot;firefox-latest-64bit-installer.exe&quot;&gt;</div><div class="line">  Download Latest Firefox for Windows (64-bit) (English, US)</div><div class="line">&lt;/a&gt;</div></pre></td></tr></table></figure>
+<h2 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h2><p>URL: Uniform Resource Locator, 统一资源定位符</p>
+<ol>
+<li>文档片段 定位, <code>href=&quot;contacts.html#Mailing_address&quot;</code>, <code>#</code> 后面的是元素 id</li>
+</ol>
+<h1 id="html-书写要求"><a href="#html-书写要求" class="headerlink" title="html 书写要求"></a>html 书写要求</h1><ol>
+<li>语义化</li>
+</ol>
+<p>语义元素：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">页面结构：</div><div class="line">header: 页眉</div><div class="line">nav: 导航栏</div><div class="line">main: 主内容, 主内容中的子内容区段使用：article, section, div</div><div class="line">aside: 侧边栏，通常嵌套在 main 中</div><div class="line">footer: 页脚</div></pre></td></tr></table></figure>
+<p>无语义元素:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">span</div><div class="line">div</div></pre></td></tr></table></figure>
+<p>换行与水平风格线: <code>br, hr</code></p>
+<h1 id="多媒体与嵌入"><a href="#多媒体与嵌入" class="headerlink" title="多媒体与嵌入"></a>多媒体与嵌入</h1><h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p><code>&lt;img src=&quot;images/dinosaur.jpg&quot;&gt;</code></p>
+<p><code>src</code> 中能使用相对地址就使用相对地址，如果使用绝对地址会增加游览器工作(游览器需要重新从 DNS 中寻找 IP 地址)</p>
+<p>SEO 相关：搜索引擎也会获取图片文件名称，所以一个描述性的文件名会更好</p>
+<p><code>alt</code> 属性，设置在图片加载不出来的时候显示的文本</p>
+<blockquote>
+<p><code>imv</code>,<code>video</code> 这样的元素称为替换元素，因为这种元素内容和尺寸由外部资源决定。</p>
+</blockquote>
+<h3 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h3><p>SVG: 用于描述矢量图像的XML语言</p>
+<ul>
+<li>旧版浏览器不支持SVG，因此如果您需要在网站上支持旧版本的 IE，则可能不适合（SVG从IE9开始得到支持）。</li>
+</ul>
+<h3 id="响应式图片"><a href="#响应式图片" class="headerlink" title="响应式图片"></a>响应式图片</h3><h2 id="音频-视频"><a href="#音频-视频" class="headerlink" title="音频/视频"></a>音频/视频</h2><p>在 HTML5 之前，html 不支持视频，都是通过 <code>Flash</code> 加载视频的。</p>
+<p>HTML5 提供了新的媒体解决方案：<code>video, audio</code></p>
+<h2 id="嵌入"><a href="#嵌入" class="headerlink" title="嵌入"></a>嵌入</h2><p>iframe: 允许将其他 web 文档嵌入到当前文档中。</p>
+<p>设置禁止 iframe: 请求头中加 <code>X-Frame-Options: deny</code></p>
+<h3 id="iframe-安全隐患"><a href="#iframe-安全隐患" class="headerlink" title="iframe 安全隐患"></a>iframe 安全隐患</h3><ol>
+<li>点击劫持 (Clickjacking)</li>
+</ol>
+<p>攻击者将一个或多个透明的 iframe 覆盖在一个正常的网页上，用户点击网页的时候实际上是点击了 iframe 里面的内容。</p>
+<p>使用到的技术点：</p>
+<ol>
+<li>目标网页隐藏技术: css opacity 属性；双 iframe 隐藏</li>
+<li>点击操作劫持: 按钮伪造(按钮伪造成一个用户熟悉的按钮)</li>
+<li>拖拽技术: 拖拽实现跨域操作</li>
+</ol>
+<p>安全隐患解决方案：</p>
+<ol>
+<li>禁止 iframe</li>
+<li>使用 HTTPS: HTTPS防止嵌入式内容访问您的父文档中的内容，反之亦然。</li>
+<li>iframe 使用 sandbox 属性</li>
+</ol>
+<h3 id="CSP-指令"><a href="#CSP-指令" class="headerlink" title="CSP 指令"></a>CSP 指令</h3><p>CSP：内容安全策略, 提供一组 http 头</p>
+<p>比如 <code>X-Frame-Options</code>, 可以防止其他网站在其网站上嵌入你的内容(Clickjacking)</p>
+<h1 id="游览器解析-HTML"><a href="#游览器解析-HTML" class="headerlink" title="游览器解析 HTML"></a>游览器解析 HTML</h1><p>游览器解析 HTML 并显示，解析的过程是很宽松的，在 HTML 中出现错误的时候，页面页能够显示。</p>
+<p>游览器在解析 HTML 的时候会尝试修复一部分语法错误。</p>
+<h2 id="HTML-语法排错"><a href="#HTML-语法排错" class="headerlink" title="HTML 语法排错"></a>HTML 语法排错</h2><p>HTML 错误分析：<a href="https://validator.w3.org/" target="_blank" rel="external">https://validator.w3.org/</a></p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ol>
+<li>HTML 中的空白</li>
+</ol>
+<p>在标签内容中使用多个空白(空白字符 包括换行), 渲染代码的时候 html 会将连续空白合作为一个空白处理</p>
+<h1 id="表单"><a href="#表单" class="headerlink" title="表单"></a>表单</h1><p>表单不能嵌套</p>
+<h2 id="常用元素"><a href="#常用元素" class="headerlink" title="常用元素"></a>常用元素</h2><p>form, label, input, textarea, button</p>
+<ol>
+<li>form 标签</li>
+</ol>
+<p>属性: <code>action</code>, <code>method</code></p>
+<ol>
+<li>input </li>
+</ol>
+<p>是空元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">type: 设置类型</div><div class="line">value: 设置默认值</div><div class="line">name: 表示数据提交时候的 key</div></pre></td></tr></table></figure>
+<ol>
+<li><code>&lt;textarea&gt;</code></li>
+</ol>
+<p>不是空元素</p>
+<ol>
+<li>button</li>
+</ol>
+<p><code>&lt;button type=&quot;submit&quot;&gt;Send your message&lt;/button&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">type: submit, reset, button</div></pre></td></tr></table></figure>
+<ol>
+<li>label</li>
+</ol>
+<p>label 的 <code>for</code> 属性与 input 的 <code>id</code> 属性可以关联到一起</p>
+<h2 id="表单属性"><a href="#表单属性" class="headerlink" title="表单属性"></a>表单属性</h2><h3 id="通用属性"><a href="#通用属性" class="headerlink" title="通用属性"></a>通用属性</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">autofocus: default false,</div><div class="line">disabled: default false</div><div class="line">name: 提交时使用的 key</div><div class="line">value: 元素初始值</div></pre></td></tr></table></figure>
+<h3 id="文本输入框-input-textarea"><a href="#文本输入框-input-textarea" class="headerlink" title="文本输入框 (input, textarea)"></a>文本输入框 (input, textarea)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">readonly, disabled</div><div class="line">placeholder</div><div class="line">size</div></pre></td></tr></table></figure>
+<h4 id="单行文本框"><a href="#单行文本框" class="headerlink" title="单行文本框"></a>单行文本框</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">type: email, text, password, search, tel, url, number(max min), range</div><div class="line">可选中 type (额外具有 checked 属性) : checkbox, radio</div><div class="line">日期 type: datetime-local, month, time, week, date</div><div class="line">拾色器 type: color</div><div class="line">文件选择 type(accept 设置文件类型): file</div><div class="line">隐藏内容 type: hidden</div></pre></td></tr></table></figure>
+<h4 id="多行文本框"><a href="#多行文本框" class="headerlink" title="多行文本框"></a>多行文本框</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cols: default 20, 文本控件可见宽度</div><div class="line">rows</div><div class="line">wrap: default soft, soft|hard</div></pre></td></tr></table></figure>
+<h4 id="按钮"><a href="#按钮" class="headerlink" title="按钮"></a>按钮</h4><h2 id="表单数据校验"><a href="#表单数据校验" class="headerlink" title="表单数据校验"></a>表单数据校验</h2><p>客户端校验</p>
+<ol>
+<li>JS 校验</li>
+<li>HTML5 内置校验</li>
+</ol>
+<p>服务器端校验</p>
+<p>HTML5 内置校验属性:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">required</div><div class="line">pattern: 正则匹配</div><div class="line">maxlength, minlength</div><div class="line">自定义错误信息: addEventListener(&quot;input&quot;, function), 判断控件状态</div></pre></td></tr></table></figure>
+<p>约束 API <code>validity</code></p>
+<h1 id="事件模式"><a href="#事件模式" class="headerlink" title="事件模式"></a>事件模式</h1><p>事件发生时传播的过程。分为3个阶段:</p>
+<ol>
+<li>捕获阶段: 从 window 对象(自上向下)传到目标节点</li>
+<li>目标阶段: 在目标节点，目标接受事件</li>
+<li>冒泡阶段: 从节点(自下向上)传会到 window 对象</li>
+</ol>
+<h1 id="异步加载-js-async-defer"><a href="#异步加载-js-async-defer" class="headerlink" title="异步加载 js, async, defer"></a>异步加载 js, async, defer</h1><ol>
+<li>async: </li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/01/前端/html/前端安全知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/01/前端/html/前端安全知识/" itemprop="url">前端安全知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-01T13:18:12+08:00">
+                2019-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://blog.fundebug.com/2019/02/01/details-about-6-web-security/" target="_blank" rel="external">常见六大Web安全攻防解析</a></p>
+<h1 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h1><p>XSS: Cross-Site Scripting, 跨站脚本攻击</p>
+<p>原理：恶意攻击者向 web 页面中插入恶意可执行网页脚本代码，用户游览时代码被执行达到攻击的目的。</p>
+<p>攻击类型</p>
+<ol>
+<li>非持久型(反射型)</li>
+</ol>
+<p>特点：</p>
+<ul>
+<li>脚本不过服务器存储，直接通过一次http请求拿到用户数据</li>
+</ul>
+<p>防范措施:</p>
+<ul>
+<li>保证页面所有渲染数据来自服务器</li>
+<li>前端渲染前做 escape 转义编码 <code>escape(string)</code></li>
+</ul>
+<ol>
+<li>持久型 XSS (存储型)</li>
+</ol>
+<p>将一段脚本通过表单或http请求提交到数据库里面，网页从数据读取到数据后渲染执行了恶意代码。</p>
+<p>攻击成功需要满足的条件：</p>
+<ul>
+<li>POST 请求对于数据没有做转义直接存入数据库</li>
+<li>后端从数据库中取出数据时没有转义</li>
+<li>前端拿到数据后没有转义直接渲染</li>
+</ul>
+<h2 id="XSS-预防措施"><a href="#XSS-预防措施" class="headerlink" title="XSS 预防措施"></a>XSS 预防措施</h2><ol>
+<li>CSP</li>
+</ol>
+<p>开启 CSP 的两种方式：<code>设置 HTTP Header 中的 Content-Security-Policy</code>， <code>设置 meta 标签的方式</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">只允许加载本站资源: Content-Security-Policy: default-src &apos;self&apos;</div><div class="line">只允许加载 HTTPS 协议图片: Content-Security-Policy: img-src https://*</div><div class="line">允许加载任何来源框架: Content-Security-Policy: child-src &apos;none&apos;</div></pre></td></tr></table></figure>
+<ol>
+<li>HttpOnly Cookie</li>
+</ol>
+<p>预防XSS攻击窃取用户cookie最有效的防御手段。</p>
+<p>Web应用程序在设置cookie时，将其属性设为HttpOnly，就可以避免该网页的cookie被客户端恶意JavaScript窃取，保护用户cookie信息。</p>
+<ol>
+<li>转义字符</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">escape</span>(<span class="params">str</span>) </span>&#123;</div><div class="line">  str = str.replace(<span class="regexp">/&amp;/g</span>, <span class="string">'&amp;amp;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/&lt;/g</span>, <span class="string">'&amp;lt;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/&gt;/g</span>, <span class="string">'&amp;gt;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/"/g</span>, <span class="string">'&amp;quto;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/'/g</span>, <span class="string">'&amp;#39;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/`/g</span>, <span class="string">'&amp;#96;'</span>)</div><div class="line">  str = str.replace(<span class="regexp">/\//g</span>, <span class="string">'&amp;#x2F;'</span>)</div><div class="line">  <span class="keyword">return</span> str</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><p>CSRF: Cross Site Request Forgery, 跨站请求伪造</p>
+<p>在用户登入状态下，在用户不知情下，以用户名义发起请求。</p>
+<p>CSRF 原理：用户登入 A 网站并且登入账号，在没有登出的情况下访问了恶意网站，恶意网站向 A 服务器发起请求，如果 A 服务器没有 CSRF 防御就会被攻击。</p>
+<h2 id="如何防御"><a href="#如何防御" class="headerlink" title="如何防御"></a>如何防御</h2><ol>
+<li>GET 请求不对数据进行修改</li>
+<li>不让第三方网站获取到 Cookie</li>
+<li>阻止来自未知网站的请求</li>
+<li>请求时附带验证信息: 验证码，token</li>
+</ol>
+<p>一些具体做法：</p>
+<ul>
+<li>对 Cookie 设置 SameSite 属性，该属性表示 Cookie 不随着跨域请求发送</li>
+<li>Referer Check</li>
+<li>Anti CSRF Token</li>
+</ul>
+<p>请求时附带 token, 服务器比较 token 与 cookie 中的 token 是否一致。</p>
+<p>恶意攻击的请求能自动添加 Cookie ,但是不能获取 Cookie 中的详细内容。</p>
+<h1 id="点击劫持"><a href="#点击劫持" class="headerlink" title="点击劫持"></a>点击劫持</h1><p>iframe</p>
+<p>攻击者将需要攻击的网站通过 iframe 嵌套的方式嵌入自己的网页中，并将 iframe 设置为透明，在页面中透出一个按钮诱导用户点击。</p>
+<h2 id="如何防御-1"><a href="#如何防御-1" class="headerlink" title="如何防御"></a>如何防御</h2><ol>
+<li>设置请求头 <code>X-FRAME-OPTIONS DENY</code> 禁止页面被通过 iframe 加载</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">DENY，表示页面不允许通过 iframe 的方式展示</div><div class="line">SAMEORIGIN，表示页面可以在相同域名下通过 iframe 的方式展示</div><div class="line">ALLOW-FROM，表示页面可以在指定来源的 iframe 中展示</div></pre></td></tr></table></figure>
+<ol>
+<li>JS 防御，对于一些远古游览器</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">style</span> <span class="attr">id</span>=<span class="string">"click-jack"</span>&gt;</span><span class="css"></span></div><div class="line">    <span class="selector-tag">html</span> &#123;</div><div class="line">      <span class="attribute">display</span>: none <span class="meta">!important</span>;</div><div class="line">    &#125;</div><div class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="keyword">if</span> (self == top) &#123;</div><div class="line">      <span class="keyword">var</span> style = <span class="built_in">document</span>.getElementById(<span class="string">'click-jack'</span>)</div><div class="line">      <span class="built_in">document</span>.body.removeChild(style)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      top.location = self.location</div><div class="line">    &#125;</div><div class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure>
+<h1 id="SQL-注入"><a href="#SQL-注入" class="headerlink" title="SQL 注入"></a>SQL 注入</h1><p>通常在提交数据里面添加干扰 sql 语句的字符。</p>
+<h2 id="如何防御-2"><a href="#如何防御-2" class="headerlink" title="如何防御"></a>如何防御</h2><p>后台执行 sql 时，对于接口传入的数据进行转义。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/19/前端/babel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/19/前端/babel/" itemprop="url">babel 记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-19T13:18:12+08:00">
+                2019-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h1><h2 id="配置文件格式"><a href="#配置文件格式" class="headerlink" title="配置文件格式"></a>配置文件格式</h2><p>支持多种格式的配置文件</p>
+<ol>
+<li><code>babel.config.js</code></li>
+</ol>
+<p>优点：可以使用 js 动态生成配置</p>
+<ol>
+<li><code>.babelrc</code></li>
+</ol>
+<h2 id="配置内容"><a href="#配置内容" class="headerlink" title="配置内容"></a>配置内容</h2><ol>
+<li><code>presets</code></li>
+</ol>
+<p>设置转码规则</p>
+<ol>
+<li><code>plugins</code></li>
+</ol>
+<h2 id="babel-cli-使用"><a href="#babel-cli-使用" class="headerlink" title="babel-cli 使用"></a>babel-cli 使用</h2><p>全局安装 <code>babel-cli</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g @babel/core @babel/cli</div></pre></td></tr></table></figure>
+<blockquote>
+<p>babel 所需要的库都在 @babel 下(babel 7 之后)</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/16/flutter/feature/状态栏相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/16/flutter/feature/状态栏相关/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-16T10:49:53+08:00">
+                2019-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设置状态栏颜色"><a href="#设置状态栏颜色" class="headerlink" title="设置状态栏颜色"></a>设置状态栏颜色</h1><h2 id="在不使用-Appbar-的时候"><a href="#在不使用-Appbar-的时候" class="headerlink" title="在不使用 Appbar 的时候"></a>在不使用 Appbar 的时候</h2><p>方法一:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/services.dart&apos;;</div><div class="line"></div><div class="line">class MyApp extends StatelessWidget &#123;</div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return AnnotatedRegion&lt;SystemUiOverlayStyle&gt;(</div><div class="line">      value: SystemUiOverlayStyle(</div><div class="line">        statusBarColor: Colors.transparent, // 背景色</div><div class="line">        // statusBarIconBrightness: Brightness.dark // 设置字体颜色</div><div class="line">      ),</div><div class="line">      child: Scaffold(...),</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>方法二:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/services.dart&apos;;</div><div class="line"></div><div class="line">SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));</div></pre></td></tr></table></figure>
+<h2 id="在使用-Appbar-的时候"><a href="#在使用-Appbar-的时候" class="headerlink" title="在使用 Appbar 的时候"></a>在使用 Appbar 的时候</h2><p>方法一：修改主题颜色: primarySwatch</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">theme: ThemeData(</div><div class="line">  primarySwatch: Colors.blue,</div><div class="line">),</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/25/ReadNote/JavaScript权威指南/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1695,881 +2644,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/前端/vue/01-vue响应式原理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/27/前端/vue/01-vue响应式原理/" itemprop="url">Vue-响应式原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T13:18:12+08:00">
-                2019-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="数据变化和组件如何关联"><a href="#数据变化和组件如何关联" class="headerlink" title="数据变化和组件如何关联"></a>数据变化和组件如何关联</h1><ol>
-<li>vue 如何获取 data 中的数据(Vue 双向绑定的原理)</li>
-</ol>
-<p>Vue 双向绑定是由数据劫持结合发布者-订阅者模式实现的。</p>
-<p>数据劫持：Vue 会遍历 data 函数返回的对象的所有属性，使用 Object.defineProperty 劫持对象属性的 setter/getter, 在这些函数被调用的时候插入代码。</p>
-<blockquote>
-<p>&lt;=IE8 不支持 Object.defineProperty，所以不支持 Vue</p>
-</blockquote>
-<p>劫持例子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//在console.log(book.name)同时,直接给书加一个书号var Book = &#123;&#125;;var name = '';</span></div><div class="line"><span class="built_in">Object</span>.defineProperty(Book,<span class="string">'name'</span>,&#123;    <span class="attr">set</span>:<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</div><div class="line">        name = value;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'你取了一个书名叫:'</span>+value);</div><div class="line">    &#125;,    <span class="attr">get</span>:<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'get方法被监听到'</span>);        <span class="keyword">return</span> <span class="string">'&lt;'</span>+name+<span class="string">'&gt;'</span>;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<p>发布者-订阅者(Observer-Watcher)：两个步骤：初始化发布者，订阅者；订阅者注册法到发布者，发布者发消息的时候依次向订阅者发布消息。</p>
-<h1 id="Vue3-0"><a href="#Vue3-0" class="headerlink" title="Vue3.0"></a>Vue3.0</h1><p>Vue 3.0 开始使用 Proxy 类实现代理。达到响应式的效果</p>
-<p>data 中的数据对象是 <code>Observer</code></p>
-<ol>
-<li>如何监听 data 中数据对象的变化</li>
-</ol>
-<p>每个组件都有一个 watcher 对象监听变化，data 数据对象中通过 setter 修改数据后, 通知 watcher 更新组件</p>
-<p><img src="https://cn.vuejs.org/images/data.png" alt="https://cn.vuejs.org/images/data.png"></p>
-<ol>
-<li>组件异步更新队列</li>
-</ol>
-<p>组件异步更新队列有去重功能。</p>
-<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><ol>
-<li>受 JavaScript 的限制，data 中的数据对象属性不能动态添加。</li>
-</ol>
-<p>参考：</p>
-<ul>
-<li><a href="https://cn.vuejs.org/v2/guide/reactivity.html" target="_blank" rel="external">官方文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/前端/vue/Vue知识点合集/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/27/前端/vue/Vue知识点合集/" itemprop="url">Vue-响应式原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T13:18:12+08:00">
-                2019-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="父子组间交互方式"><a href="#父子组间交互方式" class="headerlink" title="父子组间交互方式"></a>父子组间交互方式</h1><h2 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h2><h2 id="props-emit"><a href="#props-emit" class="headerlink" title="props/$emit"></a>props/$emit</h2><h2 id="sync-实现数据双向绑定"><a href="#sync-实现数据双向绑定" class="headerlink" title="sync 实现数据双向绑定"></a>sync 实现数据双向绑定</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 父组间使用时</span></div><div class="line">&lt;custome-view :show.sync=<span class="string">"showCustomeView"</span>&gt;</div><div class="line"></div><div class="line"><span class="comment">//子组件</span></div><div class="line">props:&#123;</div><div class="line">  <span class="attr">show</span>: <span class="literal">false</span>,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 子组间修改值</span></div><div class="line"><span class="keyword">this</span>.$emit(<span class="string">'update:show'</span>, <span class="literal">false</span>);</div></pre></td></tr></table></figure>
-<h2 id="attrs-listeners"><a href="#attrs-listeners" class="headerlink" title="$attrs/$listeners"></a>$attrs/$listeners</h2><h2 id="provide-inject"><a href="#provide-inject" class="headerlink" title="provide/inject"></a>provide/inject</h2><p>父组间 provide 属性获取函数</p>
-<p>子组间 inject 注入父组间提供的属性和函数</p>
-<h2 id="parent-children-root-refs"><a href="#parent-children-root-refs" class="headerlink" title="$parent/$children/$root/$refs"></a>$parent/$children/$root/$refs</h2><p>缺点：多级访问麻烦</p>
-<h1 id="MVVM-实现原理，双向绑定原理"><a href="#MVVM-实现原理，双向绑定原理" class="headerlink" title="MVVM 实现原理，双向绑定原理"></a>MVVM 实现原理，双向绑定原理</h1><h2 id="Vue2-0"><a href="#Vue2-0" class="headerlink" title="Vue2.0"></a>Vue2.0</h2><p>通过数据劫持结合发布者-订阅者模式的方式实现。</p>
-<ol>
-<li>实现一个监听器 Observer, 用来劫持并监听所有属性，有变动就通知订阅者 Watcher</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">通过 Object.defineProperty() 实现对属性 set 方法的拦截</div></pre></td></tr></table></figure>
-<ol>
-<li>实现一个订阅者 Watcher, Watcher 绑定一个更新函数，收到属性变化后更新视图</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">直接修改 VDOM</div></pre></td></tr></table></figure>
-<ol>
-<li>实现一个解析器，扫描和解析每个节点的相关指令. 初始化节点上的模版数据，创建对应的 Watcher</li>
-</ol>
-<h2 id="Vue3-0"><a href="#Vue3-0" class="headerlink" title="Vue3.0"></a>Vue3.0</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Proxy 实现代理</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/22/ReadNote/阿里巴巴Java开发手册记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/22/ReadNote/阿里巴巴Java开发手册记录/" itemprop="url">阿里巴巴Java开发手册阅读记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-22T21:38:14+08:00">
-                2019-02-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h1><h2 id="各层命名规范"><a href="#各层命名规范" class="headerlink" title="各层命名规范"></a>各层命名规范</h2><p>Service/Dao 层</p>
-<ol>
-<li>获取单个对象 getXXX</li>
-<li>获取多个对象 listXXX</li>
-<li>获取统计值的方法 countXXX</li>
-<li>插入的方法 saveXXX/insertXXX</li>
-<li>删除的方法 removeXXX/deleteXXX</li>
-<li>修改的方法 updateXXX</li>
-</ol>
-<p>领域模型命名规范</p>
-<ol>
-<li>数据对象：xxxDO, xxx为数据表名</li>
-<li>数据传输对象：xxxDTO, xxx 为业务领域相关的名称</li>
-<li>展示对象: xxxVO, xxx 一般为网页名称</li>
-<li>POJO 是 DO/DTO/BO/VO 的统称，禁止命名成 xxxPOJO</li>
-</ol>
-<h1 id="常量相关"><a href="#常量相关" class="headerlink" title="常量相关"></a>常量相关</h1><ol>
-<li>不要使用一个常量类维护所有常量，要按照常量功能进行归类，分开维护</li>
-</ol>
-<h1 id="代码格式"><a href="#代码格式" class="headerlink" title="代码格式"></a>代码格式</h1><ol>
-<li>使用 4空格 缩进(或在 ide 中设置 tab=4space 并且勾选 Use tab character/insert spaces for tabs);</li>
-<li>注释的双斜线与注释内容中加一个空格</li>
-</ol>
-<h1 id="OOP-规约"><a href="#OOP-规约" class="headerlink" title="OOP 规约"></a>OOP 规约</h1><ol>
-<li>函数过时使用 <code>@Deprecated</code> 修饰，并说明采用的新函数</li>
-<li>不使用过时的类</li>
-<li>构造函数中禁止加入任何业务逻辑，如果有初始化逻辑，请放在 init 方法中</li>
-<li>POJO 类必须写 toString 方法，在方法抛出异常的时候可以直接调用 toString 方法打印其属性值</li>
-<li>类方法顺序：共有方法或保护方法 &gt; 私有方法 &gt; getter/setter</li>
-<li>慎用 Object 的 clone 方法来拷贝对象.</li>
-</ol>
-<h1 id="集合处理"><a href="#集合处理" class="headerlink" title="集合处理"></a>集合处理</h1><ol>
-<li>关于 hashCode, equals 处理<ol>
-<li>只要重写 equals, 必须重写 hashCode</li>
-<li>Set 存储不重复的对象，根据 hashCode, equals 判断，Set 存储的对象必须重写这两个方法</li>
-<li>如果自定义对象作为 Map 的 key, 必须重写 hashCode, equals。</li>
-<li>String 类重写了 hashCode, equals， 所有可以作为 key 使用</li>
-</ol>
-</li>
-<li>不要在 foreach 循环里面操作元素的 remove/add 操作，可以使用 Iterator 方式操作，如果是并发还需要加对象锁</li>
-<li>使用 entrySet 遍历 Map 类集合，不要使用 keySet 方式</li>
-<li>Map 中哪些可以为 null<ol>
-<li>Hashtable: 不能为 null, 线程安全</li>
-<li>ConcurrentHashMap: 不能为 null, 锁分段技术</li>
-<li>TreeMap: Value 可以为null, 线程不安全</li>
-<li>HashMap: Key, Value 可以为 null, 线程不安全</li>
-</ol>
-</li>
-</ol>
-<h1 id="并发处理"><a href="#并发处理" class="headerlink" title="并发处理"></a>并发处理</h1><ol>
-<li>创建线程和线程池时指定有意义的线程名称</li>
-<li>线程资源必须通过线程池提供</li>
-<li>线程池使用 ThreadPoolExecutor 方式创建</li>
-<li>对多个资源，数据库表，对象同时加锁时，需要保持一致的加锁顺序，否值可能造成死锁</li>
-<li>并发修改同一记录时，避免更新丢失，需要加锁。在应用层加锁或者在缓存加锁，或者在数据层使用乐观锁，使用 version 作为数据更新依据</li>
-<li>在并发场景下，通过使用双重检查锁(double-checked locking)实现延迟初始化的优化问题隐患</li>
-<li>volatile 解决多线程内存不可见问题。</li>
-</ol>
-<h1 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h1><ol>
-<li>switch 必须包含 default 语句</li>
-<li>高并发场景下，避免使用 == 作为中断或退出的条件，容易击穿(比如直接到-1)</li>
-<li>表达异常的分支时，不使用 else，而是使用 if return.</li>
-<li>循环体内语句要考量性能，比如在循环体外补货异常</li>
-<li>不需要参数校验的情况<ol>
-<li>底层调用频率高的方法，比如 dao, service 层通常不需要参数过滤，因为在上层已经做了参数校验</li>
-<li>被声明 private 被自己调用的方法，如果可以确认参数合法可以不用校验</li>
-</ol>
-</li>
-</ol>
-<h1 id="注释规约"><a href="#注释规约" class="headerlink" title="注释规约"></a>注释规约</h1><ol>
-<li>所有类必须添加创建者和创建日期</li>
-<li>所有枚举类字段必须有注释</li>
-</ol>
-<h1 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h1><ol>
-<li>NPE 防止<ol>
-<li>数据库查询结果可能为 null</li>
-<li>集合里的元素即使是 isNotEmpty, 取出的数据也可能是 null</li>
-<li>远程调用返回的对象，一律要求 null 判断</li>
-<li>Session 中获取的数据，null 判断</li>
-</ol>
-</li>
-<li>应用中不能直接使用日志系统(Log4j, Logback)中的API, 应该依赖使用日志框架 SLF4J 中的, 使用门面模式的日志框架，有利于维护各个类的日志处理方式统一</li>
-<li>日志文件至少保存 15 天</li>
-<li>谨慎记录日志。生产环境禁止输出 debug 的日志；有选择输出 info 日志。</li>
-<li>可以使用 warn 日志级别记录用户输入参数错误的情况，方便查找</li>
-</ol>
-<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><ol>
-<li>单元测试代码遵守 BCDE 原则<ol>
-<li>B: Border, 边界值测试，包括循环边界，特殊值，特殊时间点，数据顺序</li>
-<li>C: Correct, 正确的输入，并得到预期的结果</li>
-<li>D: Design, 与设计文档相结合，来编写单元测试</li>
-<li>E: Error, 强制错误信息输入(如：非法数据，异常流程，非业务允许输入等)，并得到预期的结果</li>
-</ol>
-</li>
-<li>和数据库相关的单元测试，设置自动回滚机制</li>
-</ol>
-<h1 id="安全规约"><a href="#安全规约" class="headerlink" title="安全规约"></a>安全规约</h1><ol>
-<li>用户敏感数据禁止直接展示(比如手机号脱敏处理)</li>
-<li>用户输入的 SQL 参数严格使用参数绑定，防止 SQL 注入</li>
-<li>用户请求传入的任何参数都必须做有效性验证：使用正则验证客户端的输入</li>
-<li>表单，AJAX 提交必须执行 CSRF 安全验证</li>
-<li>发帖，评论，发送即时消息等用户生成内容的场景必须实现防刷，文本内容违禁词过滤等风控策略</li>
-</ol>
-<h1 id="MySQL-数据库"><a href="#MySQL-数据库" class="headerlink" title="MySQL 数据库"></a>MySQL 数据库</h1><ol>
-<li>表示 是否 的字段，命名：is_xxx, 数据类型 unsigned tinyint(1 是，0 否)</li>
-<li>表名不使用复数名词</li>
-<li>主键索引：pk_xxx; 唯一索引 uk_xxx; 普通索引 idx_xxx</li>
-<li>小数类型为 decimal, 禁止使用 float, double</li>
-<li>表必备字段：id, gmt_create, gmt_modified(数据类型 datetime, 表示创建时间和更新时间)</li>
-<li>表名：业务名称_表作用</li>
-<li>单表行数超过 500w，或者容量超过 2gb，才推荐进行分库分表</li>
-</ol>
-<h2 id="索引规约"><a href="#索引规约" class="headerlink" title="索引规约"></a>索引规约</h2><p>跳过<br>。。。。</p>
-<h2 id="SQL-语句"><a href="#SQL-语句" class="headerlink" title="SQL 语句"></a>SQL 语句</h2><ol>
-<li>不要使用 count(列名|常量) 代替 count(*)</li>
-<li>count(distinct col) 计算该列除 NULL 之外的不重复行数</li>
-<li>使用 ISNULL() 判断是否是 NULL 值</li>
-<li>在代码中写分页查询逻辑的时，若 count 为 0 应直接返回</li>
-</ol>
-<h1 id="应用分层"><a href="#应用分层" class="headerlink" title="应用分层"></a>应用分层</h1><ol>
-<li>DO(Data Object): 此对象与数据库表结果一一对应，通过 DAO 层向上传输数据源对象</li>
-<li>DTO(Data Transfer Object): 数据传输对象，Service 或 Manager 向外传输的对象</li>
-<li>BO(Bussiness Object): 业务对象，由 Service 层输出的封装业务逻辑的对象</li>
-<li>AO(Application Object): 应用对象，在 Web 层与 Service 层之间抽象的复用对象模型</li>
-<li>VO(View Object): 显示层对象，通常是 Web 向模版渲染引擎层传输的对象</li>
-<li>Query: 数据查询对象，各层接收上层的查询请求。注意超过2个参数的查询封装，禁止使用 Map 类来传输</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/17/java/tips/动态代理处理网址字符集问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/17/java/tips/动态代理处理网址字符集问题/" itemprop="url">全局异常处理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-17T21:18:12+08:00">
-                2019-02-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java基础/" itemprop="url" rel="index">
-                    <span itemprop="name">java基础</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>参考：<a href="https://juejin.im/post/5c3ea92a5188251e101598aa" target="_blank" rel="external">Spring Boot统一异常处理最佳实践</a></p>
-<ol>
-<li>业务逻辑中尽量不去 <code>try catch</code>, 使用抛出异常的方式处理错误。</li>
-<li>所有的请求返回都应该是 <code>http: 200</code>, 使用返回的 json 数据中的 <code>code</code> 区分请求是否成功和请求的错误类型</li>
-</ol>
-<p>Controller 基本写法:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/goods/update"</span>)</div><div class="line"><span class="meta">@ResponseBody</span></div><div class="line"><span class="function"><span class="keyword">public</span> ResultBean <span class="title">updateGoods</span><span class="params">(Goods goods)</span> </span>&#123;</div><div class="line">    goodsService.update(goods);</div><div class="line">    <span class="keyword">return</span> ResultBean.success();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>异常统一处理类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ControllerAdvice</span></div><div class="line"><span class="meta">@ResponseBody</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebExceptionHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(WebExceptionHandler.class);</div><div class="line"></div><div class="line">    <span class="meta">@ExceptionHandler</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ResultBean <span class="title">unknownAccount</span><span class="params">(UnknownAccountException e)</span> </span>&#123;</div><div class="line">        log.error(<span class="string">"账号不存在"</span>, e);</div><div class="line">        <span class="keyword">return</span> ResultBean.error(<span class="number">1</span>, <span class="string">"账号不存在"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@ExceptionHandler</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ResultBean <span class="title">incorrectCredentials</span><span class="params">(IncorrectCredentialsException e)</span> </span>&#123;</div><div class="line">        log.error(<span class="string">"密码错误"</span>, e);</div><div class="line">        <span class="keyword">return</span> ResultBean.error(-<span class="number">2</span>, <span class="string">"密码错误"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@ExceptionHandler</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ResultBean <span class="title">unknownException</span><span class="params">(Exception e)</span> </span>&#123;</div><div class="line">        log.error(<span class="string">"发生了未知异常"</span>, e);</div><div class="line">        <span class="comment">// 发送邮件通知技术人员.</span></div><div class="line">        <span class="keyword">return</span> ResultBean.error(-<span class="number">99</span>, <span class="string">"系统出现错误, 请联系网站管理员!"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/Android/Android 版本/Android7.0-N/v2签名/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/Android/Android 版本/Android7.0-N/v2签名/" itemprop="url">v2签名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-22T22:38:14+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Android 7.0 开始引入了 v2 签名方式。</p>
-<p>旧签名工具：<code>jarsigner</code><br>新签名工具: <code>apksigner</code></p>
-<blockquote>
-<p>jarsigner 签名是 jdk 提供的签名工具，它是针对 apk 文件压缩后的文件进行的完整和安全性校验，而 apksign 也是通过对apk二进制文件的校验，也更安全。</p>
-</blockquote>
-<h2 id="v1-jarsigner"><a href="#v1-jarsigner" class="headerlink" title="v1 jarsigner"></a>v1 jarsigner</h2><p>签名后 apk 包内 <code>META-INF</code> 目录下有三个文件 <code>MANIFEST.MF</code>. <code>CERT.SF</code>, <code>CERT.RSA</code> 存储和签名相关的信息。</p>
-<p>问题：</p>
-<ol>
-<li>验证签名，必须读到 <code>.MF</code> 中的原始信息，所以需要解压。</li>
-<li>apk 包完整性校验不够强. </li>
-</ol>
-<h2 id="v2-apksigner"><a href="#v2-apksigner" class="headerlink" title="v2 apksigner"></a>v2 apksigner</h2><p>在 apk 包中增加了一个签名块, 存储签名，摘要，签名算法，证书链，额外属性等信息。</p>
-<p>v2 签名校验：定位到签名块，签证签名块中的信息。</p>
-<p>改善 v1 的两个问题：</p>
-<ol>
-<li>耗时问题</li>
-</ol>
-<p>v2 签名机制在校验的时候不需要解压包，所以校验快，也就是说安装时间也减少了。</p>
-<ol>
-<li>一致性校验强</li>
-</ol>
-<p>v2 签名机制直接基于 apk 的二进制内容做签名信息，打包后 apk 任意子节改变都会导致签名不通过。</p>
-<p>参考:</p>
-<ul>
-<li><a href="https://juejin.im/entry/59df9b48518825693e3d850a" target="_blank" rel="external">https://juejin.im/entry/59df9b48518825693e3d850a</a></li>
-<li><a href="https://www.jianshu.com/p/3a179acc7c4a" target="_blank" rel="external">https://www.jianshu.com/p/3a179acc7c4a</a></li>
-<li><a href="http://www.10tiao.com/html/223/201704/2651232457/1.html" target="_blank" rel="external">http://www.10tiao.com/html/223/201704/2651232457/1.html</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2619,7 +2693,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-count">532</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -2630,7 +2704,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -2641,7 +2715,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-count">257</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -2683,7 +2757,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

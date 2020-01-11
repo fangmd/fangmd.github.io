@@ -253,6 +253,934 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/features/Android 系统相机的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/24/Android/features/Android 系统相机的使用/" itemprop="url">Android 系统相机和相册调用的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
+                2016-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android-系统相机和相册调用的使用"><a href="#Android-系统相机和相册调用的使用" class="headerlink" title="Android 系统相机和相册调用的使用"></a>Android 系统相机和相册调用的使用</h1><h2 id="系统现有相机应用的调用"><a href="#系统现有相机应用的调用" class="headerlink" title="系统现有相机应用的调用"></a>系统现有相机应用的调用</h2><blockquote>
+<p>在开发的应用中调用系统现有应用，需要使用Intent指定开启的应用的Action和Category，然后通过startActivity(Intent)或者startActivityForResult(Intent,int)开启指定的Activity，如果使用startActivityForResult()方法开启并需要返回值，再重写onActivityResult(int,int,Intent)即可。</p>
+</blockquote>
+<pre><code>&lt;activity
+           android:name=&quot;com.android.camera.Camera&quot;
+           android:clearTaskOnLaunch=&quot;true&quot;
+           android:configChanges=&quot;orientation|keyboardHidden&quot;
+           android:screenOrientation=&quot;landscape&quot;
+           android:taskAffinity=&quot;android.task.camera&quot;
+           android:theme=&quot;@android:style/Theme.Black.NoTitleBar.Fullscreen&quot; &gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+           &lt;/intent-filter&gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;android.media.action.IMAGE_CAPTURE&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+           &lt;/intent-filter&gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;android.media.action.STILL_IMAGE_CAMERA&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+           &lt;/intent-filter&gt;
+       &lt;/activity&gt;
+       &lt;activity
+           android:name=&quot;com.android.camera.VideoCamera&quot;
+           android:clearTaskOnLaunch=&quot;true&quot;
+           android:configChanges=&quot;origientation|keyboardHidden&quot;
+           android:label=&quot;@string/video_camera_label&quot;
+           android:screenOrientation=&quot;landscape&quot;
+           android:taskAffinity=&quot;android.task.camcorder&quot;
+           android:theme=&quot;@android:style/theme.Black.NoTitleBar.Fullscreen&quot; &gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;android.media.action.VIDEO_CAMERA&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+           &lt;/intent-filter&gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;android.media.action.VIDEO_CAPTURE&quot; /&gt;
+               &lt;categroy android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+           &lt;/intent-filter&gt;
+       &lt;/activity&gt;
+</code></pre><ul>
+<li>android.media.action.IMAGE_CAPTURE：Intent的Action类型，从现有的相机应用中请求一张图片。</li>
+<li>android.media.action.VIDEO_CAPTURE：Intent的Action类型，从现有的相机应用中请求一段视频。</li>
+</ul>
+<p>上面两个参数，均在MediaStore类中以静态常量的形式定义好了，分别是：MediaStore.ACTION_IMAGE_CAPTURE(相机)和MediaStore.ACTION_VIDEO_CAPTURE(摄像机)。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/24/Android/features/Android 系统相机的使用/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/features/Android 分享模块/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/24/Android/features/Android 分享模块/" itemprop="url">Android 分享模块</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
+                2016-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android-分享模块"><a href="#Android-分享模块" class="headerlink" title="Android 分享模块"></a>Android 分享模块</h1><h2 id="系统自带的分享功能"><a href="#系统自带的分享功能" class="headerlink" title="系统自带的分享功能"></a>系统自带的分享功能</h2><blockquote>
+<p>通过系统自带的来启动分享功能</p>
+</blockquote>
+<pre><code>/** * 通过系统的组件进行分享 */ 
+private void shareBySystem(){ 
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setType(&quot;image/*&quot;); 
+    intent.putExtra(Intent.EXTRA_SUBJECT,&quot;Share&quot;); //设置分享的内容 
+    intent.putExtra(Intent.EXTRA_TEXT, &quot;I have successfully)&quot;); 
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(Intent.createChooser(intent, getTitle())); 
+}
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/24/Android/features/Android 分享模块/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/features/从系统相册中选择图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/24/Android/features/从系统相册中选择图片/" itemprop="url">Android 系统相机和相册调用的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
+                2016-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="从系统相册中选择图片"><a href="#从系统相册中选择图片" class="headerlink" title="从系统相册中选择图片"></a>从系统相册中选择图片</h1><h1 id="Uri-to-Path"><a href="#Uri-to-Path" class="headerlink" title="Uri to Path"></a>Uri to Path</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div></pre></td><td class="code"><pre><div class="line">public class PathUtils &#123;</div><div class="line">    /**</div><div class="line">     * Get a file path from a Uri. This will get the the path for Storage Access</div><div class="line">     * Framework Documents, as well as the _data field for the MediaStore and</div><div class="line">     * other file-based ContentProviders.</div><div class="line">     *</div><div class="line">     * @param context The context.</div><div class="line">     * @param uri     The Uri to query.</div><div class="line">     * @author paulburke</div><div class="line">     */</div><div class="line">    @TargetApi(Build.VERSION_CODES.KITKAT)</div><div class="line">    public static String getPath(final Context context, final Uri uri) &#123;</div><div class="line">        // DocumentProvider</div><div class="line">        if (Platform.hasKitKat() &amp;&amp; DocumentsContract.isDocumentUri(context, uri)) &#123;</div><div class="line">            // ExternalStorageProvider</div><div class="line">            if (isExternalStorageDocument(uri)) &#123;</div><div class="line">                final String docId = DocumentsContract.getDocumentId(uri);</div><div class="line">                final String[] split = docId.split(&quot;:&quot;);</div><div class="line">                final String type = split[0];</div><div class="line"></div><div class="line">                if (&quot;primary&quot;.equalsIgnoreCase(type)) &#123;</div><div class="line">                    return Environment.getExternalStorageDirectory() + &quot;/&quot; + split[1];</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                // TODO handle non-primary volumes</div><div class="line">            &#125; else if (isDownloadsDocument(uri)) &#123; // DownloadsProvider</div><div class="line"></div><div class="line">                final String id = DocumentsContract.getDocumentId(uri);</div><div class="line">                final Uri contentUri = ContentUris.withAppendedId(</div><div class="line">                        Uri.parse(&quot;content://downloads/public_downloads&quot;), Long.valueOf(id));</div><div class="line"></div><div class="line">                return getDataColumn(context, contentUri, null, null);</div><div class="line">            &#125; else if (isMediaDocument(uri)) &#123; // MediaProvider</div><div class="line">                final String docId = DocumentsContract.getDocumentId(uri);</div><div class="line">                final String[] split = docId.split(&quot;:&quot;);</div><div class="line">                final String type = split[0];</div><div class="line"></div><div class="line">                Uri contentUri = null;</div><div class="line">                if (&quot;image&quot;.equals(type)) &#123;</div><div class="line">                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;</div><div class="line">                &#125; else if (&quot;video&quot;.equals(type)) &#123;</div><div class="line">                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;</div><div class="line">                &#125; else if (&quot;audio&quot;.equals(type)) &#123;</div><div class="line">                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                final String selection = &quot;_id=?&quot;;</div><div class="line">                final String[] selectionArgs = new String[]&#123;</div><div class="line">                        split[1]</div><div class="line">                &#125;;</div><div class="line"></div><div class="line">                return getDataColumn(context, contentUri, selection, selectionArgs);</div><div class="line">            &#125;</div><div class="line">        &#125; else if (&quot;content&quot;.equalsIgnoreCase(uri.getScheme())) &#123; // MediaStore (and general)</div><div class="line">            return getDataColumn(context, uri, null, null);</div><div class="line">        &#125; else if (&quot;file&quot;.equalsIgnoreCase(uri.getScheme())) &#123; // File</div><div class="line">            return uri.getPath();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return null;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * Get the value of the data column for this Uri. This is useful for</div><div class="line">     * MediaStore Uris, and other file-based ContentProviders.</div><div class="line">     *</div><div class="line">     * @param context       The context.</div><div class="line">     * @param uri           The Uri to query.</div><div class="line">     * @param selection     (Optional) Filter used in the query.</div><div class="line">     * @param selectionArgs (Optional) Selection arguments used in the query.</div><div class="line">     * @return The value of the _data column, which is typically a file path.</div><div class="line">     */</div><div class="line">    public static String getDataColumn(Context context, Uri uri, String selection,</div><div class="line">                                       String[] selectionArgs) &#123;</div><div class="line"></div><div class="line">        Cursor cursor = null;</div><div class="line">        final String column = &quot;_data&quot;;</div><div class="line">        final String[] projection = &#123;</div><div class="line">                column</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);</div><div class="line">            if (cursor != null &amp;&amp; cursor.moveToFirst()) &#123;</div><div class="line">                final int columnIndex = cursor.getColumnIndexOrThrow(column);</div><div class="line">                return cursor.getString(columnIndex);</div><div class="line">            &#125;</div><div class="line">        &#125; finally &#123;</div><div class="line">            if (cursor != null)</div><div class="line">                cursor.close();</div><div class="line">        &#125;</div><div class="line">        return null;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    /**</div><div class="line">     * @param uri The Uri to check.</div><div class="line">     * @return Whether the Uri authority is ExternalStorageProvider.</div><div class="line">     */</div><div class="line">    public static boolean isExternalStorageDocument(Uri uri) &#123;</div><div class="line">        return &quot;com.android.externalstorage.documents&quot;.equals(uri.getAuthority());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * @param uri The Uri to check.</div><div class="line">     * @return Whether the Uri authority is DownloadsProvider.</div><div class="line">     */</div><div class="line">    public static boolean isDownloadsDocument(Uri uri) &#123;</div><div class="line">        return &quot;com.android.providers.downloads.documents&quot;.equals(uri.getAuthority());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * @param uri The Uri to check.</div><div class="line">     * @return Whether the Uri authority is MediaProvider.</div><div class="line">     */</div><div class="line">    public static boolean isMediaDocument(Uri uri) &#123;</div><div class="line">        return &quot;com.android.providers.media.documents&quot;.equals(uri.getAuthority());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/24/Android/第三方/Android第三方分享--Pocket/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/24/Android/第三方/Android第三方分享--Pocket/" itemprop="url">Android第三方分享--Pocket</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-24T11:38:14+08:00">
+                2016-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Android第三方分享–Pocket"><a href="#Android第三方分享–Pocket" class="headerlink" title="Android第三方分享–Pocket"></a>Android第三方分享–Pocket</h1><p>全过程记录</p>
+<p>官方文档地址：<a href="https://getpocket.com/developer/docs/authentication">https://getpocket.com/developer/docs/authentication</a></p>
+<h2 id="0-注册账号，创建一个应用"><a href="#0-注册账号，创建一个应用" class="headerlink" title="0 注册账号，创建一个应用"></a>0 注册账号，创建一个应用</h2><p><a href="http://getpocket.com/developer/apps/new">http://getpocket.com/developer/apps/new</a></p>
+<p>结果：</p>
+<p><img src="http://7xread.com1.z0.glb.clouddn.com/3ad58dbf-29af-4451-98e5-b8c300e1b120" alt=""></p>
+<h2 id="1-获取Token"><a href="#1-获取Token" class="headerlink" title="1 获取Token"></a>1 获取Token</h2><p>获取Token需要发起一个post请求</p>
+<p>地址：</p>
+<ul>
+<li><a href="https://getpocket.com/v3/oauth/request">https://getpocket.com/v3/oauth/request</a></li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>consumer_key–&gt;string    创建应用后获取的key</li>
+<li>redirect_uri    当授权过程已完成要调用的URL。此URL应直接返回到您的应用程序。请参阅有关在iOS和Android的REDIRECT_URI设置自定义的URL的详细信息特定于平台的注释部分。</li>
+<li>state    string    这个参数是可选项，通过您的应用程序使用的元数据的字符串。该字符串将在所有后续的认证响应返回。</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/24/Android/第三方/Android第三方分享--Pocket/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/23/Android/Android系统自带的style/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/23/Android/Android系统自带的style/" itemprop="url">Android系统自带的style</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-23T21:38:14+08:00">
+                2016-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Android系统自带的style"><a href="#Android系统自带的style" class="headerlink" title="Android系统自带的style"></a>Android系统自带的style</h1><blockquote>
+<p>查看文档的reference/android/R.style</p>
+</blockquote>
+<ul>
+<li>android:theme=”@android:style/Theme.Dialog” 对话框</li>
+<li>android:theme=”@android:style/Theme.NoTitleBar” 无标题栏</li>
+<li>android:theme=”@android:style/Theme.NoTitleBar.Fullscreen” 不显示应用程序标题栏，并全屏</li>
+<li>android:theme=”@android:style/Theme.Light” 背景为白色</li>
+<li>android:theme=”@android:style/Theme.Light.NoTitleBar” 白色背景并无标题栏</li>
+<li>android:theme=”@android:style/Theme.Light.NoTitleBar.Fullscreen” 白色背景，无标题栏，全屏</li>
+<li>android:theme=”@android:style/Theme.Black” 背景黑色</li>
+<li>android:theme=”@android:style/Theme.Black.NoTitleBar” 黑色背景，无标题栏</li>
+<li>android:theme=”@android:style/Theme.Black.NoTitleBar.Fullscreen” 黑色背景，无标题栏，全屏</li>
+<li>android:theme=”@android:style/Theme.Wallpaper” 用系统桌面为应用程序背景</li>
+<li>android:theme=”@android:style/Theme.Wallpaper.NoTitleBar” 用系统桌面为应用程序背景，且无标题栏</li>
+<li>android:theme=”@android:style/Theme.Wallpaper.NoTitleBar.Fullscreen” 用系统桌面为应用程序背景，无标题栏，全屏</li>
+<li>android:theme=”@android:style/Translucent” 透明主题</li>
+<li>android:theme=”@android:style/Theme.Translucent.NoTitleBar” 无标题栏的透明主题</li>
+<li>android:theme=”@android:style/Theme.Translucent.NoTitleBar.Fullscreen” 全屏模式的透明主题</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/22/Android/DataBinding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/04/22/Android/DataBinding/" itemprop="url">DataBinding</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-22T08:00:35+08:00">
+                2016-04-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="DataBinding"><a href="#DataBinding" class="headerlink" title="DataBinding"></a>DataBinding</h1><blockquote>
+<p>代替findViewById的官方方案</p>
+</blockquote>
+<p>官方文档：<a href="http://developer.android.com/intl/zh-cn/tools/data-binding/guide.html#data_binding_layout_files">http://developer.android.com/intl/zh-cn/tools/data-binding/guide.html#data_binding_layout_files</a></p>
+<ol>
+<li>它在支持包中，可以兼容低版本(到Android 2.1 API 7)</li>
+<li>必须使用<code>Gradle 1.5.0-alphal</code>以上编译</li>
+</ol>
+<h2 id="0-配置环境"><a href="#0-配置环境" class="headerlink" title="0 配置环境"></a>0 配置环境</h2><blockquote>
+<p>导入支持包</p>
+</blockquote>
+<p>在<code>build.gradle</code>文件中添加：</p>
+<pre><code>android {
+    ....
+    dataBinding {
+        enabled = true
+    }
+}
+</code></pre>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/04/22/Android/DataBinding/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/22/Android/ThreadPool/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -841,1035 +1769,6 @@ public void onConfigurationChanged(Configuration newConfig) {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/ShareSDK使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/ShareSDK使用/" itemprop="url">ShareSDK 使用记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
-                2016-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="ShareSDK-使用记录"><a href="#ShareSDK-使用记录" class="headerlink" title="ShareSDK 使用记录"></a>ShareSDK 使用记录</h1><h2 id="0-集成SDK"><a href="#0-集成SDK" class="headerlink" title="0 集成SDK"></a>0 集成SDK</h2><p>参考<a href="http://wiki.mob.com/android_%E5%BF%AB%E9%80%9F%E9%9B%86
-%E6%88%90%E6%8C%87%E5%8D%97/" target="_blank" rel="external">http://wiki.mob.com/android_%E5%BF%AB%E9%80%9F%E9%9B%86%E6%88%90%E6%8C%87%E5%8D%97/</a></p>
-<p>快速集成，这里不集成快捷分享内容。</p>
-<h2 id="分享模块"><a href="#分享模块" class="headerlink" title="分享模块"></a>分享模块</h2><pre><code>private void showShare() {
- ShareSDK.initSDK(this);
- OnekeyShare oks = new OnekeyShare();
- //关闭sso授权
- oks.disableSSOWhenAuthorize(); 
-
-// 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
- //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
- // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
- oks.setTitle(getString(R.string.share));
- // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
- oks.setTitleUrl(&quot;http://sharesdk.cn&quot;);
- // text是分享文本，所有平台都需要这个字段
- oks.setText(&quot;我是分享文本&quot;);
- // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
- //oks.setImagePath(&quot;/sdcard/test.jpg&quot;);//确保SDcard下面存在此张图片
- // url仅在微信（包括好友和朋友圈）中使用
- oks.setUrl(&quot;http://sharesdk.cn&quot;);
- // comment是我对这条分享的评论，仅在人人网和QQ空间使用
- oks.setComment(&quot;我是测试评论文本&quot;);
- // site是分享此内容的网站名称，仅在QQ空间使用
- oks.setSite(getString(R.string.app_name));
- // siteUrl是分享此内容的网站地址，仅在QQ空间使用
- oks.setSiteUrl(&quot;http://sharesdk.cn&quot;);
-
-// 启动分享GUI
- oks.show(this);
- }
-</code></pre><p>基本使用：</p>
-<ol>
-<li><p>获取相应的ShareParams对象</p>
-<pre><code>QQ.ShareParams sp = new QQ.ShareParams();
-</code></pre></li>
-<li><p>向<code>ShareParams</code>存入需要分享的数据，可分享数据参考上面的<code>oks</code>的注解</p>
-<pre><code>sp.setTitle(&quot;测试title&quot;);
-sp.setTitleUrl(&quot;http://sharesdk.cn&quot;); // 标题超级链接
-sp.setText(&quot;测试分享文本&quot;);
-sp.setImageUrl(&quot;http://f1.sharesdk.cn/imgs/2014/05/21/oESpJ78_533x800.jpg&quot;); // 分享网络图片
-</code></pre></li>
-<li><p>获得相应平台对象并分享<code>ShareParams</code></p>
-<pre><code>Platform qq = ShareSDK.getPlatform(QQ.NAME);
-qq.setPlatformActionListener(activity);
-qq.share(sp);
-</code></pre></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/极光推送/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/极光推送/" itemprop="url">极光推送</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
-                2016-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="极光推送"><a href="#极光推送" class="headerlink" title="极光推送"></a>极光推送</h1><h2 id="推送原理"><a href="#推送原理" class="headerlink" title="推送原理"></a>推送原理</h2><ul>
-<li>极光服务器</li>
-<li>公司服务器</li>
-<li>客户端</li>
-</ul>
-<p><strong>流程：</strong></p>
-<ol>
-<li>注册：客户端连接—&gt;极光服务器(一般只需注册一次)</li>
-<li>注册OK:极光服务器返回 regID –&gt; 客户端</li>
-<li>用户登入：客户端附带 regID—&gt;公司服务器</li>
-<li>登入OK：公司服务器 绑定推送 –&gt; 客户端</li>
-<li>服务器推送消息：公司服务器 msg，regID –&gt;极光服务器(极光服务器保存消息如果手机开启了就推送，客户端没有开启就需要保留推送消息一段时间)</li>
-</ol>
-<h2 id="推送系统结构"><a href="#推送系统结构" class="headerlink" title="推送系统结构"></a>推送系统结构</h2><ol>
-<li>Service 后台网络与广播</li>
-<li>BroadcastReceiver 接收广播</li>
-<li>Notification 通知</li>
-<li>Activity显示通知</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/18/Android/第三方/极光推送/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/第三方登入/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/第三方登入/" itemprop="url">第三方登入</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
-                2016-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="第三方登入，QQ"><a href="#第三方登入，QQ" class="headerlink" title="第三方登入，QQ"></a>第三方登入，QQ</h1><ol>
-<li>注册开发者</li>
-<li>创建应用：获得 key，id</li>
-<li>配置信息</li>
-</ol>
-<h2 id="登入代码："><a href="#登入代码：" class="headerlink" title="登入代码："></a>登入代码：</h2><pre><code>private Tencent mTencent;
-
-public void btnQqLogin(View view) {
-    //TODO: qq登入
-    // 参数1：appid
-    mTencent = Tencent.createInstance(&quot;1105344126&quot;, this.getApplicationContext());
-    // 登入
-    // 检查单前是否已经进行过qq登入，如果登入过就不用在登入了
-    if (mTencent.isSessionValid()) {
-        // 参数1：activity
-        // 参数2：scope：API的范围，表示登入后客户端能够调用什么功能
-        // 参数3：登入是否成功的接口回调
-        mTencent.login(this, &quot;all&quot;, new IUiListener() {
-            @Override
-            public void onComplete(Object o) {
-                Log.d(TAG, &quot;onComplete: &quot; + o.toString());
-            }
-
-            @Override
-            public void onError(UiError uiError) {
-                Log.d(TAG, &quot;onError: &quot;+uiError.toString());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, &quot;onCancel: &quot;);
-            }
-        });
-    }
-}
-</code></pre><p>login方法：用于登入获取授权的Token，Token用于让客户端可以直接访问用户的私有数据，而不需要密码；使用了OAuth协议的实现，能够保证安全，并且不需要频繁的登入。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/第三方/软件的统计分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/18/Android/第三方/软件的统计分析/" itemprop="url">软件的统计分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T12:18:12+08:00">
-                2016-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="软件的统计分析"><a href="#软件的统计分析" class="headerlink" title="软件的统计分析"></a>软件的统计分析</h1><ol>
-<li><p>用户量的统计</p>
-</li>
-<li><p>用户行为分析</p>
-</li>
-<li><p>软件运行状态</p>
-</li>
-</ol>
-<h2 id="分析工具-友盟"><a href="#分析工具-友盟" class="headerlink" title="分析工具 友盟"></a>分析工具 友盟</h2><ol>
-<li>注册开发者</li>
-<li>创建应用</li>
-<li>下载SDK</li>
-<li>整合，清单文件设置</li>
-</ol>
-<h2 id="识别机制"><a href="#识别机制" class="headerlink" title="识别机制"></a>识别机制</h2><ol>
-<li>获取手机厂商、型号  android.os.Build</li>
-<li>手机唯一识别码：IMEI，IMSI TelephonyManager</li>
-<li>手机号码：line no TelephonyManager</li>
-<li>android 序列号：“android_id” 从系统获取</li>
-<li>MAC地址</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/18/Android/视屏播放/SurfaceView/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/18/Android/视屏播放/SurfaceView/" itemprop="url">SurfaceView</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-18T11:38:14+08:00">
-                2016-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SurfaceView"><a href="#SurfaceView" class="headerlink" title="SurfaceView"></a>SurfaceView</h1><h2 id="和自定义view比较"><a href="#和自定义view比较" class="headerlink" title="和自定义view比较"></a>和自定义view比较</h2><p>自定义View：</p>
-<ol>
-<li>只能在主线程中绘制</li>
-<li>绘制效率低</li>
-<li>封装性好，便于复用</li>
-<li>可以通过自定义属性配置</li>
-</ol>
-<p>SurfaceView：</p>
-<ol>
-<li>封装性差</li>
-<li>可以在子线程中绘制</li>
-<li>绘制速度是普通view绘制的5倍，主要用于游戏和视频播放</li>
-<li>不可配置</li>
-</ol>
-<h2 id="一个基本的使用"><a href="#一个基本的使用" class="headerlink" title="一个基本的使用"></a>一个基本的使用</h2><h3 id="run接口实现类"><a href="#run接口实现类" class="headerlink" title="run接口实现类"></a>run接口实现类</h3><pre><code>public class DrawRunnable implements Runnable {
-    private static final String TAG = DrawRunnable.class.getName();
-    private SurfaceHolder mHolder;
-    private boolean running;
-    private final Paint mPaint;
-
-    public DrawRunnable(SurfaceHolder holder) {
-        mHolder = holder;
-        running = true;
-        mPaint = new Paint(); // 创建画笔耗时
-        mPaint.setTextSize(100);
-        mPaint.setColor(Color.BLUE);
-    }
-
-    @Override
-    public void run() {
-        while (running) {
-            Canvas canvas = mHolder.lockCanvas();
-            if (canvas != null) {
-                canvas.drawColor(Color.WHITE);
-                canvas.drawText(&quot;Surface绘制&quot;, 200, 200, mPaint);
-                mHolder.unlockCanvasAndPost(canvas);
-            }
-        }
-    }
-
-    public void setRunning(boolean runable) {
-        running = runable;
-    }
-}
-</code></pre><h3 id="mainactivity"><a href="#mainactivity" class="headerlink" title="mainactivity"></a>mainactivity</h3><pre><code>mSurface = (SurfaceView) findViewById(R.id.main_surface);
-SurfaceHolder holder = mSurface.getHolder();
-holder.addCallback(this);
-mDrawRunnable = new DrawRunnable(holder);
-new Thread(mDrawRunnable).start();
-</code></pre><h3 id="holder-addCallback-this-接口方法"><a href="#holder-addCallback-this-接口方法" class="headerlink" title="holder.addCallback(this);接口方法"></a>holder.addCallback(this);接口方法</h3><pre><code>@Override
-public void surfaceCreated(SurfaceHolder holder) {
-
-}
-
-@Override
-public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-}
-
-@Override
-public void surfaceDestroyed(SurfaceHolder holder) {
-    mDrawRunnable.setRunning(false); // 结束绘制
-}
-</code></pre><h2 id="播放视频"><a href="#播放视频" class="headerlink" title="播放视频"></a>播放视频</h2><pre><code>try {
-    mMediaPlayer = new MediaPlayer();
-    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), &quot;陈奕迅 - 陪你度过漫长岁月.mp4&quot;);
-    File externalStorageDirectory = Environment.getExternalStorageDirectory();
-    mMediaPlayer.setDataSource(file.getAbsolutePath());
-} catch (Exception e) {
-    e.printStackTrace();
-}
-
-@Override
-public void surfaceCreated(SurfaceHolder holder) {
-    mMediaPlayer.setDisplay(holder); // 设定展示平台
-    mMediaPlayer.setOnPreparedListener(this);
-    mMediaPlayer.prepareAsync();
-}
-
-@Override
-public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-}
-
-@Override
-public void surfaceDestroyed(SurfaceHolder holder) {
-    // 及时关闭
-    mMediaPlayer.stop();
-    mMediaPlayer.release();
-}
-
-@Override
-public void onPrepared(MediaPlayer mp) {
-    int videoWidth = mMediaPlayer.getVideoWidth();
-    int videoHeight = mMediaPlayer.getVideoHeight();
-    ViewGroup.LayoutParams layoutParams = mSurface.getLayoutParams();
-    layoutParams.height = videoHeight;
-    layoutParams.width = videoWidth;
-    mSurface.setLayoutParams(layoutParams);
-    //mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
-    mMediaPlayer.start();
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/17/Android/view/RecyclerView/RecyclerView-添加分割线/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/17/Android/view/RecyclerView/RecyclerView-添加分割线/" itemprop="url">RecyclerView - 添加分割线</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-17T18:38:14+08:00">
-                2016-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleItemDecoration</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ItemDecoration</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Drawable mDivider;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mLrOffset;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SimpleItemDecoration</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        mDivider = context.getResources().getDrawable(R.drawable.line_divider);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SimpleItemDecoration</span><span class="params">(Context context, <span class="keyword">int</span> lrOffset)</span> </span>&#123;</div><div class="line">        mDivider = context.getResources().getDrawable(R.drawable.line_divider);</div><div class="line">        mLrOffset = lrOffset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas c, RecyclerView parent, RecyclerView.State state)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDraw(c, parent, state);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDrawOver</span><span class="params">(Canvas c, RecyclerView parent, RecyclerView.State state)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDrawOver(c, parent, state);</div><div class="line">        <span class="keyword">int</span> left = parent.getPaddingLeft();</div><div class="line">        <span class="keyword">int</span> right = parent.getWidth() - parent.getPaddingRight();</div><div class="line"></div><div class="line">        <span class="keyword">int</span> childCount = parent.getChildCount();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; childCount; i++) &#123;</div><div class="line">            View child = parent.getChildAt(i);</div><div class="line"></div><div class="line">            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();</div><div class="line"></div><div class="line">            <span class="keyword">int</span> top = child.getBottom() + params.bottomMargin;</div><div class="line">            <span class="keyword">int</span> bottom = top + mDivider.getIntrinsicHeight();</div><div class="line"></div><div class="line">            mDivider.setBounds(left, top, right, bottom);</div><div class="line">            mDivider.draw(c);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getItemOffsets</span><span class="params">(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.getItemOffsets(outRect, view, parent, state);</div><div class="line">        <span class="keyword">int</span> i = ScreenUtils.dp2px(view.getContext(), <span class="number">1</span>);</div><div class="line">        <span class="keyword">int</span> left = ScreenUtils.dp2px(view.getContext(), mLrOffset);</div><div class="line">        outRect.set(left, i, left, <span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mRecyclerView.addItemDecoration(<span class="keyword">new</span> SimpleItemDecoration(getContext()));</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1919,7 +1818,7 @@ public void onPrepared(MediaPlayer mp) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">534</span>
+                <span class="site-state-item-count">532</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1930,7 +1829,7 @@ public void onPrepared(MediaPlayer mp) {
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">categories</span>
               
             </div>
@@ -1941,7 +1840,7 @@ public void onPrepared(MediaPlayer mp) {
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">261</span>
+                <span class="site-state-item-count">257</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -1983,7 +1882,7 @@ public void onPrepared(MediaPlayer mp) {
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
