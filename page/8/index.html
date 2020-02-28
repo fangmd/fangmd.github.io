@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,631 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/feature/InheritedWidget-国际化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/12/flutter/feature/InheritedWidget-国际化/" itemprop="url">Flutter 国际化 - InheritedWidget</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
+                2018-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="0-创建语言文件"><a href="#0-创建语言文件" class="headerlink" title="0 创建语言文件"></a>0 创建语言文件</h1><p><code>string_base.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">abstract class StringBase &#123;</div><div class="line">  String welcomeMessage;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>string_en.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class StringEn extends StringBase &#123;</div><div class="line">  @override</div><div class="line">  String welcomeMessage = &quot;Welcome To Flutter&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>string_zh.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class StringZh extends StringBase &#123;</div><div class="line">  @override</div><div class="line">  String welcomeMessage = &quot;欢迎 To Flutter&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="1-设置依赖"><a href="#1-设置依赖" class="headerlink" title="1 设置依赖"></a>1 设置依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dependencies:</div><div class="line">  flutter:</div><div class="line">    sdk: flutter</div><div class="line">  flutter_localizations:</div><div class="line">    sdk: flutter</div></pre></td></tr></table></figure>
+<h1 id="2-创建语言代理"><a href="#2-创建语言代理" class="headerlink" title="2 创建语言代理"></a>2 创建语言代理</h1><p><code>my_localizations_delegate.dart</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">import &apos;dart:async&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter/foundation.dart&apos;;</div><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/my_localizations.dart&apos;;</div><div class="line"></div><div class="line"></div><div class="line">class MyLocalizationsDelegate</div><div class="line">    extends LocalizationsDelegate&lt;MyLocalizations&gt; &#123;</div><div class="line">  MyLocalizationsDelegate();</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool isSupported(Locale locale) &#123;</div><div class="line">    ///支持中文和英语</div><div class="line">    return [&apos;en&apos;, &apos;zh&apos;].contains(locale.languageCode);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///根据locale，创建一个对象用于提供当前locale下的文本显示</div><div class="line">  @override</div><div class="line">  Future&lt;MyLocalizations&gt; load(Locale locale) &#123;</div><div class="line">    return new SynchronousFuture&lt;MyLocalizations&gt;(</div><div class="line">        new MyLocalizations(locale));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool shouldReload(LocalizationsDelegate&lt;MyLocalizations&gt; old) &#123;</div><div class="line">    return false;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///全局静态的代理</div><div class="line">  static MyLocalizationsDelegate delegate = new MyLocalizationsDelegate();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>语言包管理类：</p>
+<p><code>my_localizations.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_base.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_en.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_zh.dart&apos;;</div><div class="line"></div><div class="line">class MyLocalizations &#123;</div><div class="line">  final Locale locale;</div><div class="line"></div><div class="line">  MyLocalizations(this.locale);</div><div class="line"></div><div class="line">  ///根据不同 locale.languageCode 加载不同语言对应</div><div class="line">  static Map&lt;String, StringBase&gt; _localizedValues = &#123;</div><div class="line">    &apos;en&apos;: StringEN(),</div><div class="line">    &apos;zh&apos;: StringZH(),</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  StringBase get currentLocalized &#123;</div><div class="line">    return _localizedValues[locale.languageCode];</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///通过 Localizations 加载当前的 DefaultLocalizations</div><div class="line">  ///获取对应的 StringBase</div><div class="line">  static MyLocalizations of(BuildContext context) &#123;</div><div class="line">    return Localizations.of(context, MyLocalizations);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="3-创建一个工具类获取-String"><a href="#3-创建一个工具类获取-String" class="headerlink" title="3 创建一个工具类获取 String"></a>3 创建一个工具类获取 String</h1><p><code>common_utils.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/common/localization/my_localizations.dart&apos;;</div><div class="line">import &apos;package:p_project/style/string_base.dart&apos;;</div><div class="line"></div><div class="line">class CommonUtils &#123;</div><div class="line">  static StringBase getLocale(BuildContext context) &#123;</div><div class="line">    return MyLocalizations.of(context).currentLocalized;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="4-AppLocalizationContainer"><a href="#4-AppLocalizationContainer" class="headerlink" title="4 AppLocalizationContainer"></a>4 AppLocalizationContainer</h1><p><code>app_localization_container.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/common/c.dart&apos;;</div><div class="line"></div><div class="line">class AppLocalizationContainer extends StatefulWidget &#123;</div><div class="line">  final Widget child;</div><div class="line"></div><div class="line">  @override</div><div class="line">  State&lt;StatefulWidget&gt; createState() &#123;</div><div class="line">    return _AppLocalizationContainerState();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  AppLocalizationContainer(&#123;@required this.child&#125;);</div><div class="line"></div><div class="line">  static _AppLocalizationContainerState of(BuildContext context) &#123;</div><div class="line">    return (context.inheritFromWidgetOfExactType(</div><div class="line">            _AppLocalizationInheritedWidget) as _AppLocalizationInheritedWidget)</div><div class="line">        .data;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class _AppLocalizationContainerState extends State&lt;AppLocalizationContainer&gt; &#123;</div><div class="line">  String locale = ZH;</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return _AppLocalizationInheritedWidget(</div><div class="line">      data: this,</div><div class="line">      child: widget.child,</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  void setLocal(String locale) &#123;</div><div class="line">    print(&apos;change launguage $locale&apos;);</div><div class="line">    setState(() &#123;</div><div class="line">      this.locale = locale;</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class _AppLocalizationInheritedWidget extends InheritedWidget &#123;</div><div class="line">  final _AppLocalizationContainerState data;</div><div class="line"></div><div class="line">  _AppLocalizationInheritedWidget(&#123;</div><div class="line">    Key key,</div><div class="line">    @required this.data,</div><div class="line">    @required Widget child,</div><div class="line">  &#125;) : super(key: key, child: child);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(InheritedWidget oldWidget) =&gt; true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="5-AppRootWidget-与-main"><a href="#5-AppRootWidget-与-main" class="headerlink" title="5 AppRootWidget 与 main"></a>5 AppRootWidget 与 main</h1><p><code>app.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/app_localization_container.dart&apos;;</div><div class="line">import &apos;package:p_project/common/localization/my_localizations_delegate.dart&apos;;</div><div class="line">import &apos;package:p_project/page/home_page.dart&apos;;</div><div class="line">import &apos;package:flutter_localizations/flutter_localizations.dart&apos;;</div><div class="line"></div><div class="line">class AppRootWidget extends StatefulWidget &#123;</div><div class="line">  @override</div><div class="line">  AppRootWidgetState createState() =&gt; new AppRootWidgetState();</div><div class="line"></div><div class="line">  AppRootWidget();</div><div class="line">&#125;</div><div class="line"></div><div class="line">class AppRootWidgetState extends State&lt;AppRootWidget&gt; &#123;</div><div class="line">  ThemeData get _themeData =&gt; new ThemeData(</div><div class="line">        primaryColor: Colors.cyan,</div><div class="line">        accentColor: Colors.indigo,</div><div class="line">        scaffoldBackgroundColor: Colors.grey[300],</div><div class="line">      );</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    var locale = AppLocalizationContainer.of(context).locale;</div><div class="line">    return new MaterialApp(</div><div class="line">      title: &apos;Inherited&apos;,</div><div class="line">      debugShowCheckedModeBanner: false,</div><div class="line">      theme: _themeData,</div><div class="line">      localizationsDelegates: [</div><div class="line">        GlobalMaterialLocalizations.delegate,</div><div class="line">        GlobalWidgetsLocalizations.delegate,</div><div class="line">        MyLocalizationsDelegate.delegate,</div><div class="line">      ],</div><div class="line">      supportedLocales: [</div><div class="line">        const Locale(&apos;en&apos;, &apos;US&apos;), // English</div><div class="line">        const Locale(&apos;zh&apos;, &apos;Chinese&apos;), // Hebrew</div><div class="line">      ],</div><div class="line">      locale: Locale(locale),</div><div class="line">      routes: &#123;</div><div class="line">        &apos;/&apos;: (_) =&gt; HomePage(),</div><div class="line">      &#125;,</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>home_page.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/app_localization_container.dart&apos;;</div><div class="line">import &apos;package:p_project/common/common_utils.dart&apos;;</div><div class="line"></div><div class="line">class HomePage extends StatelessWidget &#123;</div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return Scaffold(</div><div class="line">      body: SafeArea(</div><div class="line">        child: Column(</div><div class="line">          children: &lt;Widget&gt;[</div><div class="line">            RaisedButton(</div><div class="line">              onPressed: () &#123;</div><div class="line">                AppLocalizationContainer.of(context).setLocal(&apos;zh&apos;);</div><div class="line">              &#125;,</div><div class="line">              child: Text(&apos;change launge - zh&apos;),</div><div class="line">            ),</div><div class="line">            RaisedButton(</div><div class="line">              onPressed: () &#123;</div><div class="line">                AppLocalizationContainer.of(context).setLocal(&apos;en&apos;);</div><div class="line">              &#125;,</div><div class="line">              child: Text(&apos;change launge - en&apos;),</div><div class="line">            ),</div><div class="line">            Text(CommonUtils.getLocale(context).welcomeMessage),</div><div class="line">            Text(AppLocalizationContainer.of(context).locale),</div><div class="line">          ],</div><div class="line">        ),</div><div class="line">      ),</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>main.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void main() =&gt; runApp(AppLocalizationContainer(</div><div class="line">      child: AppRootWidget(),</div><div class="line">    ));</div></pre></td></tr></table></figure>
+<p>参考</p>
+<ul>
+<li><a href="https://flutter.dev/docs/development/accessibility-and-localization/internationalization" target="_blank" rel="external">官方文档</a></li>
+<li><a href="https://github.com/CarGuo/GSYGithubAppFlutter" target="_blank" rel="external">https://github.com/CarGuo/GSYGithubAppFlutter</a></li>
+<li><a href="https://flutterbyexample.com/state-management-the-flutter-way" target="_blank" rel="external">https://flutterbyexample.com/state-management-the-flutter-way</a></li>
+<li><a href="https://stackoverflow.com/questions/52077970/flutter-how-to-create-a-singleton-from-an-http-request" target="_blank" rel="external">https://stackoverflow.com/questions/52077970/flutter-how-to-create-a-singleton-from-an-http-request</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/项目模块拆分/动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/12/flutter/项目模块拆分/动画/" itemprop="url">动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
+                2018-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>动画本质：</p>
+<p>通过数学公式根据 时间(Duration) 修改 Value, Value 值变化影响界面呈现。</p>
+<h1 id="相关类整理"><a href="#相关类整理" class="headerlink" title="相关类整理"></a>相关类整理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Animatable</div><div class="line">  - Tween：使用它创建 Value 初始值和结束值。</div><div class="line">    - ColorTween</div><div class="line">    - IntTween</div><div class="line"></div><div class="line"></div><div class="line">Animation</div><div class="line">  - CurvedAnimation：修改数学公式，插值器，控制 Value 变化过程</div><div class="line">  - AnimationController：设置动画时长，控制动画</div><div class="line">  - ReverseAnimation</div><div class="line"></div><div class="line">AnimatedBuilder: 可以省去 addListener</div></pre></td></tr></table></figure>
+<h1 id="动画创建基本过程"><a href="#动画创建基本过程" class="headerlink" title="动画创建基本过程"></a>动画创建基本过程</h1><h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="不设置-插值器-时默认是线形动画"><a href="#不设置-插值器-时默认是线形动画" class="headerlink" title="不设置 插值器 时默认是线形动画"></a>不设置 插值器 时默认是线形动画</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(</div><div class="line">    parent: animationController, curve: Curves.fastOutSlowIn));</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(animationController);</div><div class="line"></div><div class="line">animationController.addListener(() &#123;</div><div class="line">  setState(() &#123;&#125;);</div><div class="line">&#125;);</div><div class="line">animationController.forward();</div><div class="line"></div><div class="line">// animation.value 获取值</div></pre></td></tr></table></figure>
+<h2 id="设置-插值器"><a href="#设置-插值器" class="headerlink" title="设置 插值器"></a>设置 插值器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(</div><div class="line">    parent: animationController, curve: Curves.fastOutSlowIn));</div><div class="line"></div><div class="line">animationController.addListener(() &#123;</div><div class="line">  setState(() &#123;&#125;);</div><div class="line">&#125;);</div><div class="line">animationController.forward();</div></pre></td></tr></table></figure>
+<h1 id="使用-Transform-创建动画"><a href="#使用-Transform-创建动画" class="headerlink" title="使用 Transform 创建动画"></a>使用 Transform 创建动画</h1><blockquote>
+<p>用于子控件的整体动画<br>A widget that applies a transformation before painting its child.</p>
+</blockquote>
+<p>通过矩阵实现动画。</p>
+<p>平移：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Transform(</div><div class="line">  transform:</div><div class="line">  Matrix4.translationValues(animation.value * width, 0.0, 0.0),</div><div class="line">  child: ...,</div><div class="line">),</div></pre></td></tr></table></figure>
+<h1 id="AnimatedSwitcher"><a href="#AnimatedSwitcher" class="headerlink" title="AnimatedSwitcher"></a>AnimatedSwitcher</h1><blockquote>
+<p>用于插入控件，控件删除，控件大小改变时的动画</p>
+</blockquote>
+<p>默认效果：透明度渐变效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">AnimatedSwitcher(</div><div class="line">  duration: Duration(milliseconds: ANIMATED_DURATION_DEFAULT),</div><div class="line">  child: Visibility(</div><div class="line">    child: Text(&apos;Visibility Text&apos;),</div><div class="line">    key: ValueKey&lt;bool&gt;(_visibility),</div><div class="line">    visible: _visibility,</div><div class="line">  ),</div><div class="line">),</div></pre></td></tr></table></figure>
+<p>设置动画效果：缩小放大效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">AnimatedSwitcher(</div><div class="line">  switchOutCurve: switchOutCurve,</div><div class="line">  switchInCurve: switchInCurve,</div><div class="line">  duration: Duration(milliseconds: 500),</div><div class="line">  transitionBuilder: (Widget child, Animation&lt;double&gt; animation) &#123;</div><div class="line">    return ScaleTransition(child: child, scale: animation);</div><div class="line">  &#125;,</div><div class="line">  child: Text(</div><div class="line">    text,</div><div class="line">    key: new ValueKey&lt;String&gt;(text),</div><div class="line">    style: TextStyleUtils.normalSubText,</div><div class="line">  ),</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>必须设置 <code>key: new ValueKey&lt;String&gt;(text),</code></p>
+<p>设置 key 后在 Text 内容改变的时候，不会创建新的 Widget 而是执行一个动画改变内容。</p>
+<h1 id="复合动画"><a href="#复合动画" class="headerlink" title="复合动画"></a>复合动画</h1><ol>
+<li>多个 Animatable 设置同一个 AnimationController, 达到同时启动的效果</li>
+</ol>
+<p>参考：</p>
+<ul>
+<li><a href="[https://flutter.io/tutorials/animation/](https://flutter.io/tutorials/animation/"><a href="https://flutter.io/tutorials/animation/" target="_blank" rel="external">https://flutter.io/tutorials/animation/</a></a>)</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/项目模块拆分/样式管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/12/flutter/项目模块拆分/样式管理/" itemprop="url">样式管理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
+                2018-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="借助-Theme"><a href="#借助-Theme" class="headerlink" title="借助 Theme"></a>借助 Theme</h1><p>final ThemeData theme = Theme.of(context);</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">new Text(</div><div class="line">    demo.title,</div><div class="line">    style: theme.textTheme.subhead.copyWith(</div><div class="line">        color: isDark ? Colors.white : const Color(0xFF202124),</div><div class="line">    ),</div><div class="line">),</div></pre></td></tr></table></figure>
+<h1 id="定义工具类"><a href="#定义工具类" class="headerlink" title="定义工具类"></a>定义工具类</h1><p><code>TextStyle</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line"></div><div class="line">class TextStyleUtils &#123;</div><div class="line">  static const lagerTextSize = 30.0;</div><div class="line">  static const bigTextSize = 23.0;</div><div class="line">  static const normalTextSize = 18.0;</div><div class="line">  static const middleTextWhiteSize = 16.0;</div><div class="line">  static const smallTextSize = 14.0;</div><div class="line">  static const minTextSize = 12.0;</div><div class="line"></div><div class="line">  static const normalSubText = TextStyle(</div><div class="line">    color: Colors.black,</div><div class="line">    fontSize: normalTextSize,</div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="使用-InheritedWidget"><a href="#使用-InheritedWidget" class="headerlink" title="使用 InheritedWidget"></a>使用 InheritedWidget</h1><p>ShrineTheme 作为 root widget</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class ShrineTheme extends InheritedWidget &#123;</div><div class="line">  ShrineTheme(&#123; Key key, @required Widget child &#125;)</div><div class="line">    : assert(child != null),</div><div class="line">      super(key: key, child: child);</div><div class="line"></div><div class="line">  final Color cardBackgroundColor = Colors.white;</div><div class="line"></div><div class="line">  final TextStyle appBarTitleStyle = robotoRegular20(Colors.black87);</div><div class="line"></div><div class="line">  static ShrineTheme of(BuildContext context) =&gt; context.inheritFromWidgetOfExactType(ShrineTheme);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(ShrineTheme oldWidget) =&gt; false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>InheritedWidget 应用场景：全局主题替换，局部单例，全局单例，存储用户信息。存储全局变量</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/11/flutter/项目模块拆分/JSON与Bean/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/11/flutter/项目模块拆分/JSON与Bean/" itemprop="url">JSON 与 Bean</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-11T13:18:12+08:00">
+                2018-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用 <code>json_serializable</code>, <code>build_runner</code>, <code>json_annotation</code> 解决 JSON -&gt; Model 的问题。</p>
+<h1 id="设置依赖"><a href="#设置依赖" class="headerlink" title="设置依赖"></a>设置依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dependencies:</div><div class="line">  json_annotation: ^1.1.0</div><div class="line"></div><div class="line">dev_dependencies:</div><div class="line">  build_runner: ^0.10.2</div><div class="line">  json_serializable: ^1.2.0</div></pre></td></tr></table></figure>
+<h1 id="创建一个-Model"><a href="#创建一个-Model" class="headerlink" title="创建一个 Model"></a>创建一个 Model</h1><p><code>model/user_model.dart</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;user_model.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModel &#123;</div><div class="line">  String name;</div><div class="line">  int age;</div><div class="line"></div><div class="line">  UserModel(this.name, this.age);</div><div class="line"></div><div class="line">  factory UserModel.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelToJson(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>写完后会报错，先不管</p>
+</blockquote>
+<h1 id="使用-build-runner-自动生成-JSON解析-相关的代码"><a href="#使用-build-runner-自动生成-JSON解析-相关的代码" class="headerlink" title="使用 build_runner 自动生成 JSON解析 相关的代码"></a>使用 build_runner 自动生成 JSON解析 相关的代码</h1><p>创建 JSON 解析文件：在工程目录下执行下面命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flutter packages pub run build_runner build</div></pre></td></tr></table></figure>
+<p>执行完成后，在 <code>model</code> 文件夹下会生成 <code>user_model.g.dart</code> 文件, <code>user_model.dart</code> 的报错会消失。</p>
+<h1 id="写个单元测试"><a href="#写个单元测试" class="headerlink" title="写个单元测试"></a>写个单元测试</h1><p>在 <code>test</code> 文件夹下：</p>
+<p><code>json_test.dart</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_test/flutter_test.dart&apos;;</div><div class="line">import &apos;dart:convert&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter_app/model/user_model.dart&apos;;</div><div class="line"></div><div class="line">void main() &#123;</div><div class="line">  String JSON_STRING = &apos;&apos;&apos;&#123;&quot;name&quot;:&quot;fangmingdong&quot;,&quot;age&quot;:12&#125;&apos;&apos;&apos;;</div><div class="line"></div><div class="line">  group(&apos;jsonparse test&apos;, () &#123;</div><div class="line"></div><div class="line">    test(&apos;to json&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel(&apos;fangmingdong&apos;, 12);</div><div class="line">      String jsonStr = json.encode(userModel.toJson());</div><div class="line">      print(jsonStr);</div><div class="line">      expect(jsonStr, JSON_STRING);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    test(&apos;mockdata test&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel.fromJson(json.decode(JSON_STRING));</div><div class="line">      expect(userModel.age, 12);</div><div class="line">      expect(userModel.name, &apos;fangmingdong&apos;);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="工程级封装"><a href="#工程级封装" class="headerlink" title="工程级封装"></a>工程级封装</h1><p>通常接口设计都是以下面格式的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;code&quot;: 200,</div><div class="line">  &quot;msg&quot;: &quot;success&quot;,</div><div class="line">  &quot;data&quot;:&#123;</div><div class="line">      ...</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Android 中通常使用泛型解析上面的 JSON:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class BaseResponse&lt;T&gt;&#123;</div><div class="line">  int code;</div><div class="line">  String msg;</div><div class="line">  T data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是 <code>json_serializable</code> 并不支持泛型解析。</p>
+<h2 id="不太优雅的解决方案-继承"><a href="#不太优雅的解决方案-继承" class="headerlink" title="不太优雅的解决方案 继承"></a>不太优雅的解决方案 继承</h2><p>解析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;code&quot;: 200,</div><div class="line">  &quot;msg&quot;: &quot;success&quot;,</div><div class="line">  &quot;data&quot;: &#123;</div><div class="line">    &quot;name&quot;: &quot;fangmingdong&quot;,</div><div class="line">    &quot;age&quot;: 12,</div><div class="line">    &quot;book&quot;: &#123;</div><div class="line">      &quot;id&quot;: 1,</div><div class="line">      &quot;name&quot;: &quot;从你的全世界路过&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>base_response.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;base_response.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class BaseResponse&#123;</div><div class="line"></div><div class="line">  int code;</div><div class="line">  String msg;</div><div class="line"></div><div class="line">  BaseResponse(this.code, this.msg);</div><div class="line"></div><div class="line">  factory BaseResponse.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$BaseResponseFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$BaseResponseToJson(this);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>user_model.dart</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_app/model/base_response.dart&apos;;</div><div class="line">import &apos;package:flutter_app/model/book_model.dart&apos;;</div><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;user_model.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModel extends BaseResponse &#123;</div><div class="line">  UserModelReal data;</div><div class="line"></div><div class="line">  UserModel(this.data) : super(0, &apos;&apos;);</div><div class="line"></div><div class="line">  factory UserModel.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelToJson(this);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModelReal &#123;</div><div class="line">  String name;</div><div class="line">  int age;</div><div class="line">  BookModel book;</div><div class="line"></div><div class="line">  UserModelReal(this.name, this.age, this.book);</div><div class="line"></div><div class="line">  factory UserModelReal.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelRealFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelRealToJson(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>test:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_test/flutter_test.dart&apos;;</div><div class="line">import &apos;dart:convert&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter_app/model/user_model.dart&apos;;</div><div class="line">import &apos;package:flutter_app/model/book_model.dart&apos;;</div><div class="line"></div><div class="line">void main() &#123;</div><div class="line">  String JSON_STRING = &apos;&apos;&apos;&#123;&quot;code&quot;:200,&quot;msg&quot;:&quot;success&quot;,&quot;data&quot;:&#123;&quot;name&quot;:&quot;fangmingdong&quot;,&quot;age&quot;:12,&quot;book&quot;:&#123;&quot;id&quot;:1,&quot;name&quot;:&quot;从你的全世界路过&quot;&#125;&#125;&#125;&apos;&apos;&apos;;</div><div class="line"></div><div class="line">  group(&apos;jsonparse test&apos;, () &#123;</div><div class="line"></div><div class="line">    test(&apos;to json&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel(new UserModelReal(&apos;fangmingdong&apos;, 12, BookModel(1, &apos;从你的全世界路过&apos;)));</div><div class="line">      String jsonStr = json.encode(userModel.toJson());</div><div class="line">      print(jsonStr);</div><div class="line">//      expect(jsonStr, JSON_STRING);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    test(&apos;mockdata test&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel.fromJson(json.decode(JSON_STRING));</div><div class="line">      expect(userModel.data.age, 12);</div><div class="line">      expect(userModel.data.name, &apos;fangmingdong&apos;);</div><div class="line">      expect(userModel.code, 200);</div><div class="line">      expect(userModel.msg, &quot;success&quot;);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a href="https://juejin.im/post/5b5f00e7e51d45190571172f" target="_blank" rel="external">https://juejin.im/post/5b5f00e7e51d45190571172f</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/11/flutter/项目模块拆分/toast/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +907,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-11T13:18:12+08:00">
                 2018-09-11
@@ -303,7 +928,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -417,7 +1042,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-10T13:18:12+08:00">
                 2018-09-10
@@ -438,7 +1063,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -572,7 +1197,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-10T13:18:12+08:00">
                 2018-09-10
@@ -593,7 +1218,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -708,7 +1333,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-07T13:18:12+08:00">
                 2018-09-07
@@ -729,7 +1354,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -865,7 +1490,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-07T13:18:12+08:00">
                 2018-09-07
@@ -886,7 +1511,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1125,7 +1750,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-07T13:18:12+08:00">
                 2018-09-07
@@ -1146,7 +1771,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1229,909 +1854,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/06/flutter/项目相关/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/06/flutter/项目相关/" itemprop="url">Flutter 项目</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-06T13:18:12+08:00">
-                2018-09-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="三方库"><a href="#三方库" class="headerlink" title="三方库"></a>三方库</h1><ol>
-<li>网络请求插件：<a href="https://github.com/flutterchina/dio" target="_blank" rel="external">https://github.com/flutterchina/dio</a></li>
-<li>图片加载插件：<a href="https://github.com/renefloor/flutter_cached_network_image" target="_blank" rel="external">https://github.com/renefloor/flutter_cached_network_image</a></li>
-<li>瀑布流插件：<a href="https://github.com/letsar/flutter_staggered_grid_view" target="_blank" rel="external">https://github.com/letsar/flutter_staggered_grid_view</a></li>
-<li>共享参数插件：<a href="https://github.com/flutter/plugins/tree/master/packages/shared_preferences" target="_blank" rel="external">https://github.com/flutter/plugins/tree/master/packages/shared_preferences</a></li>
-<li>网络状态插件：<a href="https://github.com/flutter/plugins/tree/master/packages/connectivity" target="_blank" rel="external">https://github.com/flutter/plugins/tree/master/packages/connectivity</a></li>
-<li>跳转外部浏览器插件：<a href="https://github.com/flutter/plugins/tree/master/packages/url_launcher" target="_blank" rel="external">https://github.com/flutter/plugins/tree/master/packages/url_launcher</a></li>
-</ol>
-<p>图片加载效果库：transparent_image<br>图片缓存库：cached_network_image</p>
-<p>dio 网络框架<br>shared_preferences  本地数据缓存<br>fluttertoast    toast<br>device_info 设备信息<br>connectivity    网络链接<br>flutter_markdown    markdown解析<br>json_annotation json模板<br>json_serializable   json模板<br>url_launcher    启动外部浏览器<br>iconfont    字库图标<br>share   系统分享<br>flutter_spinkit 加载框样式<br>get_version 版本信息<br>flutter_webview_plugin  全屏的webview<br>sqflite 数据库<br>flutter_statusbar   状态栏<br>flutter_statusbar_manager 状态栏管理<br>flutter_svg svg<br>photo_view  图片预览<br>flutter_slidable    侧滑<br>flutter_swiper: 轮播控件</p>
-<h2 id="flutter-redux"><a href="#flutter-redux" class="headerlink" title="flutter_redux"></a>flutter_redux</h2><p>使用 Redux 的好处是：共享状态和单一数据。</p>
-<p>实际应用场景：App 主题切换，用户登入信息</p>
-<p>参考：<a href="https://juejin.im/post/5b79767ff265da435450a873" target="_blank" rel="external">https://juejin.im/post/5b79767ff265da435450a873</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/06/flutter/官方文档/01.Tour the framework/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/06/flutter/官方文档/01.Tour the framework/" itemprop="url">Tour the framework 笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-06T13:18:12+08:00">
-                2018-09-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>A Tour of the Flutter widget Framework</p>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Fluter widgets 架构类似 react-style 架构，灵感来源于 React。</p>
-<p>中心思想是 UI 绘制部分工作是脱离 Widgets的，Widgets 只是用于描述 View 的呈现方式。</p>
-<p>Widgets 状态改变之后，framework 会检查新的描述和旧的描述的差别并且更新 UI。</p>
-<h1 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world"></a>Hello world</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line"></div><div class="line">void main()&#123;</div><div class="line">    runApp(</div><div class="line">        Center(</div><div class="line">            child: Text(</div><div class="line">                &apos;Hello, world&apos;,</div><div class="line">                textDirection: TextDirection.ltr,</div><div class="line">            ),</div><div class="line">        ),</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>runApp</code> 函数，参数是 root Widget</p>
-<p>framework 构建所有的 widgets 从顶部一直往里知道最里层，使用 <code>RenderObject</code> 去解析 widget.</p>
-<h1 id="Basic-widgets"><a href="#Basic-widgets" class="headerlink" title="Basic widgets"></a>Basic widgets</h1><p>Flutter 包含很多基础的 widgets</p>
-<ul>
-<li>Text</li>
-<li>Row, Column</li>
-<li>Stack</li>
-<li>Container</li>
-</ul>
-<p><code>pubspec.yaml</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">flutter:</div><div class="line"></div><div class="line">  # The following line ensures that the Material Icons font is</div><div class="line">  # included with your application, so that you can use the icons in</div><div class="line">  # the material Icons class.</div><div class="line">  uses-material-design: true</div></pre></td></tr></table></figure>
-<p>为了使用 Metrial 相关的设计，通常将 <code>MaterialApp</code> 作为 root widget</p>
-<h1 id="Using-Material-Components"><a href="#Using-Material-Components" class="headerlink" title="Using Material Components"></a>Using Material Components</h1><ul>
-<li>Scaffold<ul>
-<li>AppBar</li>
-<li>Center</li>
-<li>FloatActionButton</li>
-</ul>
-</li>
-</ul>
-<h1 id="Handling-gestures"><a href="#Handling-gestures" class="headerlink" title="Handling gestures"></a>Handling gestures</h1><p>使用 <code>GestureDetecotr</code> 控件捕获触摸事件。</p>
-<h1 id="Changing-widgets-in-response-to-input"><a href="#Changing-widgets-in-response-to-input" class="headerlink" title="Changing widgets in response to input"></a>Changing widgets in response to input</h1><p>Stateless widgets 从父控件接收参数 存储在 final 成员变量中，使用这些参数构建 widgets</p>
-<p>为什么 <code>StatefulWidget</code> 和 <code>State</code> 分离，在 Flutter 中这两个对象有不同的生命周期。</p>
-<p>Widgets 是一个临时对象，用于构建当前应用的状态，State 对象在 <code>build</code> 期间是长期存在的 允许存储数据。</p>
-<h1 id="Bringing-it-all-together"><a href="#Bringing-it-all-together" class="headerlink" title="Bringing it all together"></a>Bringing it all together</h1><h1 id="Responding-to-widget-lifecycle-events"><a href="#Responding-to-widget-lifecycle-events" class="headerlink" title="Responding to widget lifecycle events"></a>Responding to widget lifecycle events</h1><p>State</p>
-<p>StatefulWidget 调用 <code>createState</code> 之后，framework 插入新的 State 对象到 tree 中并调用 <code>initState</code>。</p>
-<p>当不在需要 State object 的时候，framework 调用 <code>dispose</code> 销毁 State 对象。</p>
-<h1 id="Keys"><a href="#Keys" class="headerlink" title="Keys"></a>Keys</h1><h1 id="Global-Keys"><a href="#Global-Keys" class="headerlink" title="Global Keys"></a>Global Keys</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/06/flutter/官方文档/02.Codebook/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/06/flutter/官方文档/02.Codebook/" itemprop="url">Codebook 笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-06T13:18:12+08:00">
-                2018-09-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Design-basics"><a href="#Design-basics" class="headerlink" title="Design basics"></a>Design basics</h1><h2 id="Using-Themes-to-share-colors-and-font-styles"><a href="#Using-Themes-to-share-colors-and-font-styles" class="headerlink" title="Using Themes to share colors and font styles"></a>Using Themes to share colors and font styles</h2><p>有两种方式创建主题：</p>
-<ol>
-<li>App-wide</li>
-<li>使用 Theme Widgets</li>
-</ol>
-<h3 id="Creating-an-app-theme"><a href="#Creating-an-app-theme" class="headerlink" title="Creating an app theme"></a>Creating an app theme</h3><p>在创建 <code>MaterialApp</code> 的时候设置 <code>theme</code>：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">MaterialApp(</div><div class="line">  title: title,</div><div class="line">  theme: ThemeData(</div><div class="line">    brightness: Brightness.dart,</div><div class="line">    primaryColor: Colors.lightBlue[800],</div><div class="line">    accentColor: Colors.cyan[600],</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Themes-for-part-of-an-application"><a href="#Themes-for-part-of-an-application" class="headerlink" title="Themes for part of an application"></a>Themes for part of an application</h2><p>在应用部分地方设置独立主题</p>
-<p>创建独立 ThemeData:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Theme(</div><div class="line">  data: ThemeData(</div><div class="line">    accentColor: Colors.yellow,</div><div class="line">  ),</div><div class="line">  child: FloatingActionButton(</div><div class="line">    onPressed: ()&#123;&#125;,</div><div class="line">    child: Icon(Icons.add),</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<p>继承父 theme:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Theme(</div><div class="line">  data: Theme.of(context).copyWith(accentColor: Colors.yellow),</div><div class="line">  child: FloatingActionButton(</div><div class="line">    onPressed: ()&#123;&#125;,</div><div class="line">    child: Icon(Icons.add),</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Using-a-Theme"><a href="#Using-a-Theme" class="headerlink" title="Using a Theme"></a>Using a Theme</h2><p>通过 <code>Theme.of(context)</code> 函数获取当前主题</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Theme.of(context).textTheme.title</div></pre></td></tr></table></figure>
-<h2 id="Displaying-SnackBars"><a href="#Displaying-SnackBars" class="headerlink" title="Displaying SnackBars"></a>Displaying SnackBars</h2><p>做法：</p>
-<ol>
-<li>创建 Scaffold</li>
-<li>显示 SnackBar</li>
-<li>给 SnackBar 添加额外操作 action</li>
-</ol>
-<blockquote>
-<p>Scaffold 是一个遵守材料设计的布局控件</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Scaffold(</div><div class="line">  appBar: AppBar(</div><div class="line">    title: Text(&apos;SnackBar Demo&apos;),</div><div class="line">  ),</div><div class="line">  body: SnackBarPage(),</div><div class="line">)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">final snackBar = SnackBar(context: Text(&apos;Yay! A SnackBar!&apos;))</div><div class="line"></div><div class="line">Scaffold.of(context).showSnackBar(snackBar);</div></pre></td></tr></table></figure>
-<p>add action:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">final snackBar = SnackBar(</div><div class="line">  content: Text(&apos;Yar! A SnackBar!&apos;),</div><div class="line">  action: SnackBarAction(</div><div class="line">    label: &apos;Undo&apos;,</div><div class="line">    onPressed: ()&#123;</div><div class="line">      // some code to undo the chagne!</div><div class="line">    &#125;;</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Working-with-Tabs"><a href="#Working-with-Tabs" class="headerlink" title="Working with Tabs"></a>Working with Tabs</h2><ol>
-<li>创建 TabController</li>
-<li>创建 Tabs</li>
-<li>创建每个 tab 的内容</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">class TabBarDemo extends StatelessWidget &#123;</div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return MaterialApp(</div><div class="line">      home: DefaultTabController(</div><div class="line">        length: 3,</div><div class="line">        child: Scaffold(</div><div class="line">          appBar: AppBar(</div><div class="line">            bottom: TabBar(</div><div class="line">              tabs: [</div><div class="line">                Tab(icon: Icon(Icons.directions_car)),</div><div class="line">                Tab(icon: Icon(Icons.directions_transit)),</div><div class="line">                Tab(icon: Icon(Icons.directions_bike)),</div><div class="line">              ],</div><div class="line">            ),</div><div class="line">            title: Text(&apos;Tabs Demo&apos;),</div><div class="line">          ),</div><div class="line">          body: TabBarView(</div><div class="line">            children: [</div><div class="line">              Icon(Icons.directions_car),</div><div class="line">              Icon(Icons.directions_transit),</div><div class="line">              Icon(Icons.directions_bike),</div><div class="line">            ],</div><div class="line">          ),</div><div class="line">        ),</div><div class="line">      ),</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Using-custom-fonts"><a href="#Using-custom-fonts" class="headerlink" title="Using custom fonts"></a>Using custom fonts</h2><ol>
-<li>Import the font files</li>
-<li>Declare the font in the pubspec.yaml</li>
-<li>Set a font as the default</li>
-<li>Use a font in a specific Widget</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">awesome_app/</div><div class="line">  fonts/</div><div class="line">    Merriweather-Regular.ttf</div><div class="line">    Merriweather-Italic.ttf</div></pre></td></tr></table></figure>
-<p><code>pubspec.yaml</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">flutter:</div><div class="line">  fonts:</div><div class="line">    - family: Merriweather</div><div class="line">      fonts:</div><div class="line">        - asset: fonts/Merriweather-Regular.ttf</div><div class="line">        - asset: fonts/Merriweather-Italic.ttf</div><div class="line">          style: italic</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">MaterialApp(</div><div class="line">  title: &apos;Custom Fonts&apos;,</div><div class="line">  // Set Raleway as the default app font</div><div class="line">  theme: ThemeData(fontFamily: &apos;Raleway&apos;),</div><div class="line">  home: MyHomePage(),</div><div class="line">);</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Text(</div><div class="line">  &apos;Roboto Mono sample&apos;,</div><div class="line">  style: TextStyle(fontFamily: &apos;RobotoMono&apos;),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Exporting-fonts-from-a-package"><a href="#Exporting-fonts-from-a-package" class="headerlink" title="Exporting fonts from a package"></a>Exporting fonts from a package</h2><p>fonts 分装到库</p>
-<h2 id="add-a-Drawer-to-screen"><a href="#add-a-Drawer-to-screen" class="headerlink" title="add a Drawer to screen"></a>add a Drawer to screen</h2><h2 id="Updating-the-UI-based-on-orientation"><a href="#Updating-the-UI-based-on-orientation" class="headerlink" title="Updating the UI based on orientation"></a>Updating the UI based on orientation</h2><p>横竖屏显示不同的 UI</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">OrientationBuilder(</div><div class="line">  builder: (context, orientation) &#123;</div><div class="line">    return GridView.count(</div><div class="line">      // Create a grid with 2 columns in portrait mode, or 3 columns in</div><div class="line">      // landscape mode.</div><div class="line">      crossAxisCount: orientation == Orientation.portrait ? 2 : 3,</div><div class="line">    );</div><div class="line">  &#125;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<h1 id="Images"><a href="#Images" class="headerlink" title="Images"></a>Images</h1><h2 id="Display-images-from-the-internet"><a href="#Display-images-from-the-internet" class="headerlink" title="Display images from the internet"></a>Display images from the internet</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Image.network(</div><div class="line">    &apos;https://raw.githubusercontent.com/flutter/website/master/src/_includes/code/layout/lakes/images/lake.jpg&apos;,</div><div class="line">)</div></pre></td></tr></table></figure>
-<blockquote>
-<p>支持 gif</p>
-</blockquote>
-<h2 id="Fade-in-images-with-a-placeholder"><a href="#Fade-in-images-with-a-placeholder" class="headerlink" title="Fade in images with a placeholder"></a>Fade in images with a placeholder</h2><p>使用第三方库实现 <code>transparent_image</code>   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">FadeInImage.memoryNetwork(</div><div class="line">  placeholder: kTransparentImage,</div><div class="line">  image: &apos;https://github.com/flutter/website/blob/master/src/_includes/code/layout/lakes/images/lake.jpg?raw=true&apos;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<p>使用自定义 loading img：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">FadeInImage.assetNetwork(</div><div class="line">  placeholder: &apos;assets/loading.gif&apos;,</div><div class="line">  image: &apos;https://github.com/flutter/website/blob/master/src/_includes/code/layout/lakes/images/lake.jpg?raw=true&apos;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Working-with-cached-images"><a href="#Working-with-cached-images" class="headerlink" title="Working with cached images"></a>Working with cached images</h2><p>使用 <code>cached_network_image</code> 库实现缓存图片</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CachedNetworkImage(</div><div class="line">  placeholder: CircularProgressIndicator(),</div><div class="line">  imageUrl: &apos;https://github.com/flutter/website/blob/master/src/_includes/code/layout/lakes/images/lake.jpg?raw=true&apos;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<h1 id="Lists"><a href="#Lists" class="headerlink" title="Lists"></a>Lists</h1><h2 id="Create-a-basic-list"><a href="#Create-a-basic-list" class="headerlink" title="Create a basic list"></a>Create a basic list</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">ListView(</div><div class="line">  children: &lt;Widget&gt;[</div><div class="line">    ListTile(</div><div class="line">      leading: Icon(Icons.map),</div><div class="line">      title: Text(&apos;Map&apos;),</div><div class="line">    ),</div><div class="line">    ListTile(</div><div class="line">      leading: Icon(Icons.photo_album),</div><div class="line">      title: Text(&apos;Album&apos;),</div><div class="line">    ),</div><div class="line">    ListTile(</div><div class="line">      leading: Icon(Icons.phone),</div><div class="line">      title: Text(&apos;Phone&apos;),</div><div class="line">    ),</div><div class="line">  ],</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Make-a-horizontal-list"><a href="#Make-a-horizontal-list" class="headerlink" title="Make a horizontal list"></a>Make a horizontal list</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">ListView(</div><div class="line">  // This next line does the trick.</div><div class="line">  scrollDirection: Axis.horizontal,</div><div class="line">  children: &lt;Widget&gt;[</div><div class="line">    Container(</div><div class="line">      width: 160.0,</div><div class="line">      color: Colors.red,</div><div class="line">    ),</div><div class="line">    Container(</div><div class="line">      width: 160.0,</div><div class="line">      color: Colors.blue,</div><div class="line">    ),</div><div class="line">    Container(</div><div class="line">      width: 160.0,</div><div class="line">      color: Colors.green,</div><div class="line">    ),</div><div class="line">    Container(</div><div class="line">      width: 160.0,</div><div class="line">      color: Colors.yellow,</div><div class="line">    ),</div><div class="line">    Container(</div><div class="line">      width: 160.0,</div><div class="line">      color: Colors.orange,</div><div class="line">    ),</div><div class="line">  ],</div><div class="line">)</div></pre></td></tr></table></figure>
-<h2 id="Working-with-long-lists"><a href="#Working-with-long-lists" class="headerlink" title="Working with long lists"></a>Working with long lists</h2><p>create data source:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">final items = List&lt;String&gt;.generate(1000, (i) =&gt; &quot;Item $i&quot;);</div><div class="line"></div><div class="line">ListView.builder(</div><div class="line">  itemCount: items.length,</div><div class="line">  itemBuilder: (context, index) &#123;</div><div class="line">    return ListTile(</div><div class="line">      title: Text(&apos;$&#123;items[index]&#125;&apos;),</div><div class="line">    );</div><div class="line">  &#125;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Creating-lists-with-different-types-of-items"><a href="#Creating-lists-with-different-types-of-items" class="headerlink" title="Creating lists with different types of items"></a>Creating lists with different types of items</h2><ol>
-<li>Create a data source with different types of items</li>
-<li>Convert the data source into a List of Widgets</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// The base class for the different types of items the List can contain</div><div class="line">abstract class ListItem &#123;&#125;</div><div class="line"></div><div class="line">// A ListItem that contains data to display a heading</div><div class="line">class HeadingItem implements ListItem &#123;</div><div class="line">  final String heading;</div><div class="line"></div><div class="line">  HeadingItem(this.heading);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// A ListItem that contains data to display a message</div><div class="line">class MessageItem implements ListItem &#123;</div><div class="line">  final String sender;</div><div class="line">  final String body;</div><div class="line"></div><div class="line">  MessageItem(this.sender, this.body);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">final items = List&lt;ListItem&gt;.generate(</div><div class="line">  1200,</div><div class="line">  (i) =&gt; i % 6 == 0</div><div class="line">      ? HeadingItem(&quot;Heading $i&quot;)</div><div class="line">      : MessageItem(&quot;Sender $i&quot;, &quot;Message body $i&quot;),</div><div class="line">);</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">ListView.builder(</div><div class="line">  // Let the ListView know how many items it needs to build</div><div class="line">  itemCount: items.length,</div><div class="line">  // Provide a builder function. This is where the magic happens! We&apos;ll</div><div class="line">  // convert each item into a Widget based on the type of item it is.</div><div class="line">  itemBuilder: (context, index) &#123;</div><div class="line">    final item = items[index];</div><div class="line"></div><div class="line">    if (item is HeadingItem) &#123;</div><div class="line">      return ListTile(</div><div class="line">        title: Text(</div><div class="line">          item.heading,</div><div class="line">          style: Theme.of(context).textTheme.headline,</div><div class="line">        ),</div><div class="line">      );</div><div class="line">    &#125; else if (item is MessageItem) &#123;</div><div class="line">      return ListTile(</div><div class="line">        title: Text(item.sender),</div><div class="line">        subtitle: Text(item.body),</div><div class="line">      );</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>解析数据的时候 根据数据类型 创建不同的 ItemView</p>
-</blockquote>
-<h2 id="Creating-a-grid-list"><a href="#Creating-a-grid-list" class="headerlink" title="Creating a grid list"></a>Creating a grid list</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">GridView.count(</div><div class="line">  // Create a grid with 2 columns. If you change the scrollDirection to </div><div class="line">  // horizontal, this would produce 2 rows.</div><div class="line">  crossAxisCount: 2,</div><div class="line">  // Generate 100 Widgets that display their index in the List</div><div class="line">  children: List.generate(100, (index) &#123;</div><div class="line">    return Center(</div><div class="line">      child: Text(</div><div class="line">        &apos;Item $index&apos;,</div><div class="line">        style: Theme.of(context).textTheme.headline,</div><div class="line">      ),</div><div class="line">    );</div><div class="line">  &#125;),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h1 id="Handling-Gestures"><a href="#Handling-Gestures" class="headerlink" title="Handling Gestures"></a>Handling Gestures</h1><h2 id="Handling-Taps"><a href="#Handling-Taps" class="headerlink" title="Handling Taps"></a>Handling Taps</h2><ol>
-<li>Create the button</li>
-<li>Wrap it in a GestureDetector with an onTap callback</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">// Our GestureDetector wraps our button</div><div class="line">GestureDetector(</div><div class="line">  // When the child is tapped, show a snackbar </div><div class="line">  onTap: () &#123;</div><div class="line">    final snackBar = SnackBar(content: Text(&quot;Tap&quot;));</div><div class="line"></div><div class="line">    Scaffold.of(context).showSnackBar(snackBar);</div><div class="line">  &#125;,</div><div class="line">  // Our Custom Button!</div><div class="line">  child: Container(</div><div class="line">    padding: EdgeInsets.all(12.0),</div><div class="line">    decoration: BoxDecoration(</div><div class="line">      color: Theme.of(context).buttonColor,</div><div class="line">      borderRadius: BorderRadius.circular(8.0),</div><div class="line">    ),</div><div class="line">    child: Text(&apos;My Button&apos;),</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<p>自带的 button：<code>RaisedButton</code>, <code>FlatButton</code>, <code>CupertinoButton</code></p>
-<h2 id="Adding-Material-Touch-ripples"><a href="#Adding-Material-Touch-ripples" class="headerlink" title="Adding Material Touch ripples"></a>Adding Material Touch ripples</h2><p>波纹效果控件 <code>InkWell</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// The InkWell Wraps our custom flat button Widget</div><div class="line">InkWell(</div><div class="line">  // When the user taps the button, show a snackbar</div><div class="line">  onTap: () &#123;</div><div class="line">    Scaffold.of(context).showSnackBar(SnackBar(</div><div class="line">      content: Text(&apos;Tap&apos;),</div><div class="line">    ));</div><div class="line">  &#125;,</div><div class="line">  child: Container(</div><div class="line">    padding: EdgeInsets.all(12.0),</div><div class="line">    child: Text(&apos;Flat Button&apos;),</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="implement-Swipe-to-Dismiss"><a href="#implement-Swipe-to-Dismiss" class="headerlink" title="implement Swipe to Dismiss"></a>implement Swipe to Dismiss</h2><ol>
-<li>Create List of Items</li>
-<li>Wrap each item in a Dismissible Widget</li>
-<li>Provide “Leave Behind” indicators</li>
-</ol>
-<h1 id="Navigation"><a href="#Navigation" class="headerlink" title="Navigation"></a>Navigation</h1><h2 id="Navigate-to-a-new-screen-and-back"><a href="#Navigate-to-a-new-screen-and-back" class="headerlink" title="Navigate to a new screen and back"></a>Navigate to a new screen and back</h2><ol>
-<li>create two screens</li>
-<li>Navigate to the second screen using <code>Navigator.push</code></li>
-<li>Return to the first screen using <code>Navigator.pop</code>r</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// Within the `FirstScreen` Widget</div><div class="line">onPressed: () &#123;</div><div class="line">  Navigator.push(</div><div class="line">    context,</div><div class="line">     (builder: (context) =&gt; SecondScreen()),</div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>push</code> 参数二是一个 <code>Route</code>  需要自己创建。</p>
-<p>回到上个页面：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.pop(context);</div></pre></td></tr></table></figure>
-<h2 id="Send-data-to-a-new-screen"><a href="#Send-data-to-a-new-screen" class="headerlink" title="Send data to a new screen"></a>Send data to a new screen</h2><p>页面之间传递数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Navigator.push(</div><div class="line">          context,</div><div class="line">          MaterialPageRoute(</div><div class="line">            builder: (context) =&gt; DetailScreen(todo: todos[index]),</div><div class="line">          ),</div><div class="line">        );</div></pre></td></tr></table></figure>
-<h2 id="Return-data-from-a-screen"><a href="#Return-data-from-a-screen" class="headerlink" title="Return data from a screen"></a>Return data from a screen</h2><p>pop 的时候返回值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.pop(context, &apos;Yep!&apos;);</div></pre></td></tr></table></figure>
-<p>接收返回的值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">onTap: ()async &#123;</div><div class="line">  result = await Navigator.push(context, MaterialPageRoute(context)=&gt;SecondScreen(user: datas[index])));</div><div class="line">  Scaffold.of(context).showSnackBar(SnackBarText(&quot;$result&quot;)));</div><div class="line">&#125;,</div></pre></td></tr></table></figure>
-<h2 id="Navigate-with-named-routes"><a href="#Navigate-with-named-routes" class="headerlink" title="Navigate with named routes"></a>Navigate with named routes</h2><p>通过 <code>named route</code> 简化跳转代码 </p>
-<p>定义 routes:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">MaterialApp(</div><div class="line">  initialRoute: &apos;/&apos;,</div><div class="line">  routes: &#123;</div><div class="line">    &apos;/&apos;: (context) =&gt; FirstScreen(),</div><div class="line">    &apos;/second&apos;: (context) =&gt; SecondScreen(),</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>跳转：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.pushNamed(context, &apos;/second&apos;)</div></pre></td></tr></table></figure>
-<p>返回：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.pop(context);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>??? 如何传递值</p>
-</blockquote>
-<h2 id="Animating-a-Widget-across-screens"><a href="#Animating-a-Widget-across-screens" class="headerlink" title="Animating a Widget across screens"></a>Animating a Widget across screens</h2><p>界面跳转动画</p>
-<p>使用 <code>Hero</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Hero(</div><div class="line">          tag: &apos;imageHero&apos;,</div><div class="line">          child: Image.network(</div><div class="line">            &apos;https://raw.githubusercontent.com/flutter/website/master/src/_includes/code/layout/lakes/images/lake.jpg&apos;,</div><div class="line">          ),</div><div class="line">        ),</div></pre></td></tr></table></figure>
-<p>利用 tag 设置共享控件，效果类似 Android 中的共享元素。</p>
-<h1 id="Animation"><a href="#Animation" class="headerlink" title="Animation"></a>Animation</h1><h2 id="Fade-a-Widget-in-and-out"><a href="#Fade-a-Widget-in-and-out" class="headerlink" title="Fade a Widget in and out"></a>Fade a Widget in and out</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">AnimatedOpacity(</div><div class="line">          // If the Widget should be visible, animate to 1.0 (fully visible). If</div><div class="line">          // the Widget should be hidden, animate to 0.0 (invisible).</div><div class="line">          opacity: _visible ? 1.0 : 0.0,</div><div class="line">          duration: Duration(milliseconds: 500),</div><div class="line">          // The green box needs to be the child of the AnimatedOpacity</div><div class="line">          child: Container(</div><div class="line">            width: 200.0,</div><div class="line">            height: 200.0,</div><div class="line">            color: Colors.green,</div><div class="line">          ),</div><div class="line">        ),</div></pre></td></tr></table></figure>
-<h1 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h1><h2 id="Fetch-data-from-the-internet"><a href="#Fetch-data-from-the-internet" class="headerlink" title="Fetch data from the internet"></a>Fetch data from the internet</h2><p>添加网络请求库 <code>http</code></p>
-<p>发起请求：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Future&lt;http.Response&gt; fetchPost() &#123;</div><div class="line">  return http.get(&apos;https://jsonplaceholder.typicode.com/posts/1&apos;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>Future</code> 是 Dart 语言内部的类，在异步操作的时候使用，返回异常数据和异步处理结果。</p>
-<p>JSON -&gt; Object</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">class Post &#123;</div><div class="line">  final int userId;</div><div class="line">  final int id;</div><div class="line">  final String title;</div><div class="line">  final String body;</div><div class="line"></div><div class="line">  Post(&#123;this.userId, this.id, this.title, this.body&#125;);</div><div class="line"></div><div class="line">  factory Post.fromJson(Map&lt;String, dynamic&gt; json) &#123;</div><div class="line">    return Post(</div><div class="line">      userId: json[&apos;userId&apos;],</div><div class="line">      id: json[&apos;id&apos;],</div><div class="line">      title: json[&apos;title&apos;],</div><div class="line">      body: json[&apos;body&apos;],</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">//</div><div class="line">Post.fromJson(json.decode(response.body))</div></pre></td></tr></table></figure>
-<h2 id="Making-authenticated-requests"><a href="#Making-authenticated-requests" class="headerlink" title="Making authenticated requests"></a>Making authenticated requests</h2><p>http 请求设置 Header：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Future&lt;http.Response&gt; fetchPost() &#123;</div><div class="line">  return http.get(</div><div class="line">    &apos;https://jsonplaceholder.typicode.com/posts/1&apos;,</div><div class="line">    // Send authorization headers to your backend</div><div class="line">    headers: &#123;HttpHeaders.authorizationHeader: &quot;Basic your_api_token_here&quot;&#125;,</div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Working-with-WebSockets"><a href="#Working-with-WebSockets" class="headerlink" title="Working with WebSockets"></a>Working with WebSockets</h2><h2 id="Parsing-JSON-in-the-background"><a href="#Parsing-JSON-in-the-background" class="headerlink" title="Parsing JSON in the background"></a>Parsing JSON in the background</h2><p>网络请求正确写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Future&lt;List&lt;Photo&gt;&gt; fetchPhotos(http.Client client) async &#123;</div><div class="line">  final response =</div><div class="line">      await client.get(&apos;https://jsonplaceholder.typicode.com/photos&apos;);</div><div class="line"></div><div class="line">  // Use the compute function to run parsePhotos in a separate isolate</div><div class="line">  return compute(parsePhotos, response.body);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// A function that will convert a response body into a List&lt;Photo&gt;</div><div class="line">List&lt;Photo&gt; parsePhotos(String responseBody) &#123;</div><div class="line">  final parsed = json.decode(responseBody).cast&lt;Map&lt;String, dynamic&gt;&gt;();</div><div class="line"></div><div class="line">  return parsed.map&lt;Photo&gt;((json) =&gt; Photo.fromJson(json)).toList();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Persistence"><a href="#Persistence" class="headerlink" title="Persistence"></a>Persistence</h1><h2 id="Stroing-key-value-data-on-disk"><a href="#Stroing-key-value-data-on-disk" class="headerlink" title="Stroing key-value data on disk"></a>Stroing key-value data on disk</h2><p>使用 <code>shared_preferences</code> 库</p>
-<p>save:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">final prefs = await SharePreferences.getInstance();</div><div class="line"></div><div class="line">prefs.setInt(&apos;counter&apos;, counter);</div></pre></td></tr></table></figure>
-<p>reading data:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">final prefs = await SharedPreferences.getInstance();</div><div class="line"></div><div class="line">final counter = prefs.getInt(&apos;counter&apos;) ?? 0;</div></pre></td></tr></table></figure>
-<p>remove data:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">final prefs = await SharedPreferences.getInstance();</div><div class="line"></div><div class="line">prefs.remove(&apos;counter&apos;);</div></pre></td></tr></table></figure>
-<p>存储数据类型支持: <code>int</code>, <code>double</code>, <code>bool</code>, <code>string</code>, <code>stringList</code></p>
-<p>不建议存储大量的数据。</p>
-<h2 id="Reading-and-Writing-Files"><a href="#Reading-and-Writing-Files" class="headerlink" title="Reading and Writing Files"></a>Reading and Writing Files</h2><p>存储数据到 disk 需要联合使用 <code>path_provider</code> 插件 和 <code>dart:io</code> 库</p>
-<p>找到文件目录：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Future&lt;String&gt; get _localPath async&#123;</div><div class="line">  final directory = await getApplicationDocumentsDirectory();</div><div class="line"></div><div class="line">  return directory.path;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>创建文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Future&lt;File&gt; get _localFile async &#123;</div><div class="line">  final path = await _localPath;</div><div class="line">  return File(&apos;$path/counter.txt&apos;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>写数据：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Future&lt;File&gt; writeCounter(int counter) async &#123;</div><div class="line">  final file = await _localFile;</div><div class="line">  </div><div class="line">  // Write the file</div><div class="line">  return file.writeAsString(&apos;$counter&apos;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>read data:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Future&lt;int&gt; readCounter() async &#123;</div><div class="line">  try &#123;</div><div class="line">    final file = await _localFile;</div><div class="line"></div><div class="line">    // Read the file</div><div class="line">    String contents = await file.readAsString();</div><div class="line"></div><div class="line">    return int.parse(contents);</div><div class="line">  &#125; catch (e) &#123;</div><div class="line">    // If we encounter an error, return 0</div><div class="line">    return 0;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Forms"><a href="#Forms" class="headerlink" title="Forms"></a>Forms</h1><h2 id="Create-and-style-a-text-field"><a href="#Create-and-style-a-text-field" class="headerlink" title="Create and style a text field"></a>Create and style a text field</h2><p>Flutter 提供两个文本输入 widgets：<code>TextField</code>, <code>TextFormField</code></p>
-<p>常用 <code>TextField</code> 作为文本输入控件</p>
-<p>通过 <code>InputDecoration</code> 设置错误提示信息。，默认值，外观</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">TextField(</div><div class="line">  decoration: InputDecoration(</div><div class="line">    border: InputBorder.none,</div><div class="line">    hintText: &apos;Please enter a search term&apos;</div><div class="line">  ),</div><div class="line">);</div></pre></td></tr></table></figure>
-<h2 id="Retrieve-the-value-of-a-text-field"><a href="#Retrieve-the-value-of-a-text-field" class="headerlink" title="Retrieve the value of a text field"></a>Retrieve the value of a text field</h2><p>通过 <code>TextEditionController</code> 获取 <code>TextField</code>, <code>TextFormField</code> 的文本内容：</p>
-<blockquote>
-<p>同时需要 <code>dispose</code> ， 解除 TextEditionController 和 文本输入控件 的绑定</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">// Define a Custom Form Widget</div><div class="line">class MyCustomForm extends StatefulWidget &#123;</div><div class="line">  @override</div><div class="line">  _MyCustomFormState createState() =&gt; _MyCustomFormState();</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Define a corresponding State class. This class will hold the data related to</div><div class="line">// our Form.</div><div class="line">class _MyCustomFormState extends State&lt;MyCustomForm&gt; &#123;</div><div class="line">  // Create a text controller. We will use it to retrieve the current value</div><div class="line">  // of the TextField!</div><div class="line">  final myController = TextEditingController();</div><div class="line"></div><div class="line">  @override</div><div class="line">  void dispose() &#123;</div><div class="line">    // Clean up the controller when the Widget is disposed</div><div class="line">    myController.dispose();</div><div class="line">    super.dispose();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    // We will fill this out in the next step!</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>将 <code>TextEditionController</code> 和 文本输入控件绑定：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TextField(</div><div class="line">  controller: myController,</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>获取文本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">myController.text</div></pre></td></tr></table></figure>
-<h2 id="Handing-changes-to-a-text-field"><a href="#Handing-changes-to-a-text-field" class="headerlink" title="Handing changes to a text field"></a>Handing changes to a text field</h2><p>两种方案：</p>
-<ol>
-<li>使用 <code>TextField</code> 的属性 <code>onChanged</code></li>
-<li>使用 <code>TextEditingController</code></li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TextField(</div><div class="line">  onChanged: (text)&#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
-<h2 id="Focus-a-text-field"><a href="#Focus-a-text-field" class="headerlink" title="Focus a text field"></a>Focus a text field</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TextField(</div><div class="line">  autofocus: true,</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>点击 button 的时候如何让 <code>TextField</code> 仍然能获取焦点, 使用 <code>FocusNode</code></p>
-<h2 id="Building-a-form-with-validation"><a href="#Building-a-form-with-validation" class="headerlink" title="Building a form with validation"></a>Building a form with validation</h2><ol>
-<li>使用 <code>Globalkey</code> 创建  <code>Form</code></li>
-<li>添加 <code>TextFromField</code> 和数据验证代码</li>
-</ol>
-<h1 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/flutter/官方文档/00.Flutter for Android Developers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/05/flutter/官方文档/00.Flutter for Android Developers/" itemprop="url">Flutter for Android Developers</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-05T13:18:12+08:00">
-                2018-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://flutter.io/flutter-for-android/" target="_blank" rel="external">官方文档</a></p>
-<p>官方文档笔记</p>
-<h1 id="Views"><a href="#Views" class="headerlink" title="Views"></a>Views</h1><h2 id="Flutter-中与-View-相等的东西是什么？"><a href="#Flutter-中与-View-相等的东西是什么？" class="headerlink" title="Flutter 中与 View 相等的东西是什么？"></a>Flutter 中与 View 相等的东西是什么？</h2><p><code>Widget</code> 具有 Android 中 View 的作用。</p>
-<p>区别：</p>
-<ol>
-<li>生命周期不同：<code>Widget</code> 是不可变的，每次界面变化就会创建新的 <code>Widget</code>，<code>Widget</code> 的 <code>State</code> 变化也会形成新的 <code>Widget</code> 对象</li>
-<li><code>Widget</code> 是轻量级的。它不是 View 不会自己绘制内容，只是用于描述界面的。</li>
-</ol>
-<h2 id="如何更新-Widgets"><a href="#如何更新-Widgets" class="headerlink" title="如何更新 Widgets?"></a>如何更新 Widgets?</h2><p>需要通过改变  <code>Widget</code> 的 state 达到更新界面的效果。</p>
-<p>Widget 根据是否有状态可以分为：</p>
-<ul>
-<li>StatelessWidgets: 无状态的 Widget</li>
-<li>StatefulWidget: 有状态的 Widget </li>
-</ul>
-<blockquote>
-<p>StatefulWidget 父 Widget 可以是 StatelessWidget</p>
-</blockquote>
-<h2 id="Widget-如何布局？"><a href="#Widget-如何布局？" class="headerlink" title="Widget 如何布局？"></a>Widget 如何布局？</h2><p>Flutter 中在 widget tree 中写布局</p>
-<h2 id="如何添加和移除一个-Widget-从界面中？"><a href="#如何添加和移除一个-Widget-从界面中？" class="headerlink" title="如何添加和移除一个 Widget 从界面中？"></a>如何添加和移除一个 Widget 从界面中？</h2><p>Android 中通常使用 <code>addChild</code>,<code>removeChild</code> 实现动态添加和移除控件。</p>
-<p>在 Flutter 中做法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">_getToggleChild() &#123;</div><div class="line">  if (toggle) &#123;</div><div class="line">    return Text(&apos;Toggle One&apos;);</div><div class="line">  &#125; else &#123;</div><div class="line">    return MaterialButton(onPressed: () &#123;&#125;, child: Text(&apos;Toggle Two&apos;));</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">  body: Center(</div><div class="line">      child: _getToggleChild(),</div><div class="line">  )</div></pre></td></tr></table></figure>
-<p>通过改变 toggle 达到移除和添加 Widget 的效果。</p>
-<h2 id="Widget-如何添加动画？"><a href="#Widget-如何添加动画？" class="headerlink" title="Widget 如何添加动画？"></a>Widget 如何添加动画？</h2><p>在 Flutter 中需要使用 动画库中的Widgets 包裹 普通Widgets</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">body: Center(</div><div class="line">    child: Container(</div><div class="line">        child: FadeTransition(</div><div class="line">            opacity: curve,</div><div class="line">            child: FlutterLogo(</div><div class="line">              size: 100.0,</div><div class="line">            )))),</div></pre></td></tr></table></figure>
-<h2 id="如何使用-Cancas-绘制"><a href="#如何使用-Cancas-绘制" class="headerlink" title="如何使用 Cancas 绘制"></a>如何使用 Cancas 绘制</h2><p>使用 <code>CustomPainter</code></p>
-<h2 id="如何自定义-Widgets"><a href="#如何自定义-Widgets" class="headerlink" title="如何自定义 Widgets"></a>如何自定义 Widgets</h2><p>Flutter 中自定义 Widgets, 通常是其他 小Widget 的组合。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class CustomButton extends StatelessWidget &#123;</div><div class="line">  final String label;</div><div class="line"></div><div class="line">  CustomButton(this.label);</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return RaisedButton(onPressed: () &#123;&#125;, child: Text(label));</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Flutter-中类似-Intents-的东西？"><a href="#Flutter-中类似-Intents-的东西？" class="headerlink" title="Flutter 中类似 Intents 的东西？"></a>Flutter 中类似 Intents 的东西？</h2><p>Android 中通过 Intents 实现界面直接的跳转和传值。</p>
-<p>Flutter 中通过 <code>Navigator</code>, <code>Route</code> 实现界面跳转。</p>
-<p>在 Android 中需要在 <code>AndroidManifest.xml</code> 中声明 Activity.</p>
-<p>在 Flutter 中实现界面之间跳转：</p>
-<ol>
-<li>Specify a Map of route names. (MaterialApp)</li>
-<li>Directly navigate to a route. (WidgetApp)</li>
-</ol>
-<p>build map 例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">void main() &#123;</div><div class="line">  runApp(MaterialApp(</div><div class="line">    home: MyAppHome(), // becomes the route named &apos;/&apos;</div><div class="line">    routes: &lt;String, WidgetBuilder&gt; &#123;</div><div class="line">      &apos;/a&apos;: (BuildContext context) =&gt; MyPage(title: &apos;page A&apos;),</div><div class="line">      &apos;/b&apos;: (BuildContext context) =&gt; MyPage(title: &apos;page B&apos;),</div><div class="line">      &apos;/c&apos;: (BuildContext context) =&gt; MyPage(title: &apos;page C&apos;),</div><div class="line">    &#125;,</div><div class="line">  ));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Navigate to a route by push its name to the Navigator.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.of(context).pushNamed(&apos;/b&apos;);</div></pre></td></tr></table></figure>
-<h2 id="如何获取外部传入的-intents"><a href="#如何获取外部传入的-intents" class="headerlink" title="如何获取外部传入的 intents?"></a>如何获取外部传入的 intents?</h2><p>Flutter 通过和 Android 层交互实现获取 外部intents</p>
-<h2 id="startActivityForResult-在-Flutter-中的类似？"><a href="#startActivityForResult-在-Flutter-中的类似？" class="headerlink" title="startActivityForResult() 在 Flutter 中的类似？"></a>startActivityForResult() 在 Flutter 中的类似？</h2><p><code>await</code>, <code>push</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Map coordinates = await Navigator.of(context).pushNamed(&apos;/location&apos;);</div></pre></td></tr></table></figure>
-<p><code>pop</code> 的时候返回值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Navigator.of(context).pop(&#123;&quot;lat&quot;:43.821757,&quot;long&quot;:-79.226392&#125;);</div></pre></td></tr></table></figure>
-<h1 id="Aysnc-UI"><a href="#Aysnc-UI" class="headerlink" title="Aysnc UI"></a>Aysnc UI</h1><h2 id="runOnUiThread-在-Flutter-中？"><a href="#runOnUiThread-在-Flutter-中？" class="headerlink" title="runOnUiThread 在 Flutter 中？"></a>runOnUiThread 在 Flutter 中？</h2><p>Dart has a single-threaded execution model, with support for Isolates (a way to run Dart code on another thread), an event loop, and asynchronous programming. </p>
-<blockquote>
-<p>Dart 有一种单线程执行的模式，支持 Isolate(用于在其他线程执行代码)，一个事件队列，和异步的程序设计。</p>
-</blockquote>
-<p>除非使用 Isolate, Dart 的代码都在 主线程 中运行，并且被一个 事件队列 驱动。</p>
-<p>Flutter 中的事件队列类是 Android Main Looper。</p>
-<p>异步实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">loadData() async &#123;</div><div class="line">  String dataURL = &quot;https://jsonplaceholder.typicode.com/posts&quot;;</div><div class="line">  http.Response response = await http.get(dataURL);</div><div class="line">  setState(() &#123;</div><div class="line">    widgets = json.decode(response.body);</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="如何实现后台任务？"><a href="#如何实现后台任务？" class="headerlink" title="如何实现后台任务？"></a>如何实现后台任务？</h2><p>Android: <code>AsyncTask</code>, <code>LiveData</code>, <code>IntentService</code>, <code>JobScheduler</code>, <code>RxJava</code></p>
-<p>In Flutter, use <code>Isolates</code> to take advantage of multiple CPU cores to do long-running or computationally intensive tasks.</p>
-<p>Isolates are separate execution threads that do not share any memory with the main execution memory heap.</p>
-<p>Isloates 中不能使用 <code>setState()</code> 去修改 UI.</p>
-<h2 id="OKHttp-在-Flutter-中的替代品？"><a href="#OKHttp-在-Flutter-中的替代品？" class="headerlink" title="OKHttp 在 Flutter 中的替代品？"></a>OKHttp 在 Flutter 中的替代品？</h2><p><code>http</code> 包</p>
-<h2 id="如何显示长任务的进度条？"><a href="#如何显示长任务的进度条？" class="headerlink" title="如何显示长任务的进度条？"></a>如何显示长任务的进度条？</h2><p><code>ProgressIndicator</code></p>
-<h1 id="Project-structure-amp-resources"><a href="#Project-structure-amp-resources" class="headerlink" title="Project structure &amp; resources"></a>Project structure &amp; resources</h1><h2 id="图片资源存放在哪里？"><a href="#图片资源存放在哪里？" class="headerlink" title="图片资源存放在哪里？"></a>图片资源存放在哪里？</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Android density qualifier   Flutter pixel ratio</div><div class="line">ldpi    0.75x</div><div class="line">mdpi    1.0x</div><div class="line">hdpi    1.5x</div><div class="line">xhdpi   2.0x</div><div class="line">xxhdpi  3.0x</div><div class="line">xxxhdpi 4.0x</div></pre></td></tr></table></figure>
-<p>文件夹：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">images/my_icon.png</div><div class="line">images/2.0x/my_icon.png</div><div class="line">images/3.0x/my_icon.png</div></pre></td></tr></table></figure>
-<p>在 <code>pubspec.yaml</code> 中声明：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">assets:</div><div class="line"> - images/my_icon.png</div></pre></td></tr></table></figure>
-<p>使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@override</div><div class="line">Widget build(BuildContext context)&#123;</div><div class="line">    return Image.asset(&quot;images/my_icon.png&quot;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="如何存储-string，-多语言如何处理"><a href="#如何存储-string，-多语言如何处理" class="headerlink" title="如何存储 string， 多语言如何处理?"></a>如何存储 string， 多语言如何处理?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class Strings&#123;</div><div class="line">    static String welcomeMessage = &quot;Welcome to flutter&quot;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Text(Strings.welcomeMessage)</div></pre></td></tr></table></figure>
-<p>目前为止只能通过静态类存储重复使用的字符串。</p>
-<h2 id="包管理工具？"><a href="#包管理工具？" class="headerlink" title="包管理工具？"></a>包管理工具？</h2><p><code>pubspec.yaml</code></p>
-<h1 id="Activites-and-fragments"><a href="#Activites-and-fragments" class="headerlink" title="Activites and fragments"></a>Activites and fragments</h1><h2 id="What-are-the-equivalent-of-activities-and-fragments-in-Flutter"><a href="#What-are-the-equivalent-of-activities-and-fragments-in-Flutter" class="headerlink" title="What are the equivalent of activities and fragments in Flutter?"></a>What are the equivalent of activities and fragments in Flutter?</h2><p>在 Flutter 中 Activity 和 Fragment 的作用都被  Widget 替代。</p>
-<h1 id="如何监听-activity-生命周期？"><a href="#如何监听-activity-生命周期？" class="headerlink" title="如何监听 activity 生命周期？"></a>如何监听 activity 生命周期？</h1><p>通过 <code>WidgetsBinding</code> 和 监听 <code>didChangeAppLifecycleState()</code> 获取生命周期：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">inactive: IOS 独有，表示应用处在不可用状态。</div><div class="line"></div><div class="line">paused：应用在后台。</div><div class="line"></div><div class="line">resumed：应用到前台，可见</div><div class="line"></div><div class="line">suspending: Android 独有，应用暂停，类似 Android onStop</div></pre></td></tr></table></figure>
-<h1 id="Layouts-布局"><a href="#Layouts-布局" class="headerlink" title="Layouts 布局"></a>Layouts 布局</h1><h2 id="LinearLayout-替代品？"><a href="#LinearLayout-替代品？" class="headerlink" title="LinearLayout 替代品？"></a>LinearLayout 替代品？</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@override</div><div class="line">Widget build(BuildContext context)&#123;</div><div class="line">    return Row(</div><div class="line">        mainAxisAlignment: MainAxisAlignment.center,</div><div class="line">        children: &lt;Widget&gt;[</div><div class="line">            Text(&apos;Row Oen&apos;),</div><div class="line">            Text(&apos;Row Two&apos;),</div><div class="line">            Text(&apos;Row Three&apos;),</div><div class="line">            Text(&apos;Row Four&apos;),</div><div class="line">        ],</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用 <code>Row</code>, <code>Column</code> 代替 <code>LinearLayout</code></p>
-<h2 id="RelativeLayout-替代品？"><a href="#RelativeLayout-替代品？" class="headerlink" title="RelativeLayout 替代品？"></a>RelativeLayout 替代品？</h2><p>无</p>
-<h2 id="ScrollView-替代品？"><a href="#ScrollView-替代品？" class="headerlink" title="ScrollView 替代品？"></a>ScrollView 替代品？</h2><p>Flutter 中的 <code>ListView</code> 可以替代 Android 中的 <code>ScrollView</code>, <code>ListView</code></p>
-<h2 id="横屏模式如何处理？"><a href="#横屏模式如何处理？" class="headerlink" title="横屏模式如何处理？"></a>横屏模式如何处理？</h2><p>FlutterView handles the config change if AndroidManifest.xml contains:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:configChanges=&quot;orientation|screenSize&quot;</div></pre></td></tr></table></figure>
-<h1 id="Gesture-detection-and-touch-event-handling-手势检测和触摸事件处理"><a href="#Gesture-detection-and-touch-event-handling-手势检测和触摸事件处理" class="headerlink" title="Gesture detection and touch event handling 手势检测和触摸事件处理"></a>Gesture detection and touch event handling 手势检测和触摸事件处理</h1><h2 id="如何给-Widget-添加点击事件？"><a href="#如何给-Widget-添加点击事件？" class="headerlink" title="如何给 Widget 添加点击事件？"></a>如何给 Widget 添加点击事件？</h2><p>有两种方式添加触摸事件：</p>
-<ol>
-<li>Widget 的 <code>onPressed</code> 参数</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@override</div><div class="line">Widget build(BuildContext context)&#123;</div><div class="line">    return RaisedButton(</div><div class="line">        onPressed: ()&#123;</div><div class="line">            print(&quot;click&quot;);</div><div class="line">        &#125;,</div><div class="line">        child: Text(&quot;Button&quot;)</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>widget 不支持触摸事件监测的时候，使用 <code>GestureDetector</code> 包裹控件</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">@override</div><div class="line">Widget build(BuildContext context)&#123;</div><div class="line">    return Scaffold(</div><div class="line">        body: Center(</div><div class="line">            child: GestureDetector(</div><div class="line">                size: 200.0</div><div class="line">            ),</div><div class="line">            onTap: ()&#123;</div><div class="line">                print(&quot;tap&quot;);</div><div class="line">            &#125;,</div><div class="line">        ),</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="如何捕获其他事件？"><a href="#如何捕获其他事件？" class="headerlink" title="如何捕获其他事件？"></a>如何捕获其他事件？</h2><p>Tap:</p>
-<ul>
-<li>onTapDown</li>
-<li>onTapUp</li>
-<li>onTap</li>
-<li>onTapCancel</li>
-</ul>
-<p>Double Tap:</p>
-<ul>
-<li>onDoubleTap</li>
-</ul>
-<p>Long press:</p>
-<ul>
-<li>onLongPress</li>
-</ul>
-<p>Vertical drag:</p>
-<ul>
-<li>onVerticalDragStart</li>
-<li>onVerticalDragUpdate</li>
-<li>onVerticalDragEnd</li>
-</ul>
-<p>Horizontal drag:</p>
-<ul>
-<li>onHorizontalDragStart</li>
-<li>onHorizontalDragUpdate</li>
-<li>onHorizontalDragEnd</li>
-</ul>
-<h1 id="ListViews-amp-adapters"><a href="#ListViews-amp-adapters" class="headerlink" title="ListViews &amp; adapters"></a>ListViews &amp; adapters</h1><h2 id="ListView-的替代品在？"><a href="#ListView-的替代品在？" class="headerlink" title="ListView 的替代品在？"></a>ListView 的替代品在？</h2><p>在 Flutter 中使用 ListView 替代 Android 中的 ListView.</p>
-<p>Flutter 中不需要 adapter，只需要创建 List<widget> 传入到 ListView 中即可，也不需要控件的回收管理。</widget></p>
-<h2 id="如何知道点击的-item"><a href="#如何知道点击的-item" class="headerlink" title="如何知道点击的 item"></a>如何知道点击的 item</h2><p>widget 是独立的，所有点击事件也是独立的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">_getListData() &#123;</div><div class="line">  List&lt;Widget&gt; widgets = [];</div><div class="line">  for (int i = 0; i &lt; 100; i++) &#123;</div><div class="line">    widgets.add(GestureDetector(</div><div class="line">      child: Padding(</div><div class="line">          padding: EdgeInsets.all(10.0),</div><div class="line">          child: Text(&quot;Row $i&quot;)),</div><div class="line">      onTap: () &#123;</div><div class="line">        print(&apos;row tapped&apos;);</div><div class="line">      &#125;,</div><div class="line">    ));</div><div class="line">  &#125;</div><div class="line">  return widgets;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="如何动态更新-ListView？"><a href="#如何动态更新-ListView？" class="headerlink" title="如何动态更新 ListView？"></a>如何动态更新 ListView？</h2><p>直接修改 <code>List widgets = []</code> 数据源，重建对象。</p>
-<p>在数据量大的时候推荐使用 <code>ListView.Builder</code>, 这个类似 RecyclerView，会自动回收复用 list 的 item。在修改数据的时候不能重建对象，而是给 <code>widgets</code> 添加或者删除数据。</p>
-<h1 id="Working-with-text"><a href="#Working-with-text" class="headerlink" title="Working with text"></a>Working with text</h1><h2 id="如何自定义字体"><a href="#如何自定义字体" class="headerlink" title="如何自定义字体"></a>如何自定义字体</h2><p>把 字体文件 放到文件夹中，然后在 <code>pubspec.yaml</code> 中申明：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">fonts:</div><div class="line">- family: MyCustomFont</div><div class="line">  fonts:</div><div class="line">   - asset: fonts/MyCustomFont.ttf</div><div class="line">   - style: italic</div></pre></td></tr></table></figure>
-<p>使用：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@override</div><div class="line">Widget build(BuildContext context)&#123;</div><div class="line">    return Scaffold(</div><div class="line">        appBar: AppBar(</div><div class="line">            title: Text(&quot;Sample App&quot;)</div><div class="line">        ),</div><div class="line">        body: Center(</div><div class="line">            child: Text(</div><div class="line">                &apos;This is a custom font text&apos;,</div><div class="line">                style: TextStyle(fontFamily: &apos;MyCustomFont&apos;),</div><div class="line">            ),</div><div class="line">        ),</div><div class="line">    );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Text-widgets-样式"><a href="#Text-widgets-样式" class="headerlink" title="Text widgets 样式"></a>Text widgets 样式</h2><ul>
-<li>color</li>
-<li>decoration</li>
-<li>decorationColor</li>
-<li>decorationStyle</li>
-<li>fontFamily</li>
-<li>fontSize</li>
-<li>fontStyle</li>
-<li>fontWeight</li>
-<li>hashCode</li>
-<li>height</li>
-<li>inherit</li>
-<li>letterSpacing</li>
-<li>textBaseline</li>
-<li>wordSpacing</li>
-</ul>
-<h1 id="Form-input"><a href="#Form-input" class="headerlink" title="Form input"></a>Form input</h1><h2 id="hint-设置"><a href="#hint-设置" class="headerlink" title="hint 设置"></a>hint 设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">body: Center(</div><div class="line">    child: TextField(</div><div class="line">        decoration: InputDecoration(hintText: &quot;This is a hint&quot;),</div><div class="line">    )</div><div class="line">)</div></pre></td></tr></table></figure>
-<h2 id="如何显示验证错误信息？"><a href="#如何显示验证错误信息？" class="headerlink" title="如何显示验证错误信息？"></a>如何显示验证错误信息？</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">decoration: InputDecoration(hintText: &quot;This is a hint&quot;), errorText: _getErrorText()</div><div class="line"></div><div class="line">_getErrirText() &#123;</div><div class="line">    return _errorText;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Flutter-plugins"><a href="#Flutter-plugins" class="headerlink" title="Flutter plugins"></a>Flutter plugins</h1><ul>
-<li><code>geolocator</code>: GPS 传感器使用插件</li>
-<li><code>image_picker</code>: 相机操作</li>
-<li><code>flutter_facebook_login</code>: 使用 Facebook 登入插件</li>
-</ul>
-<p>Firebase 相关：。。。</p>
-<h2 id="自定义插件"><a href="#自定义插件" class="headerlink" title="自定义插件"></a>自定义插件</h2><h2 id="如何使用-NDK"><a href="#如何使用-NDK" class="headerlink" title="如何使用 NDK"></a>如何使用 NDK</h2><h1 id="Themes"><a href="#Themes" class="headerlink" title="Themes"></a>Themes</h1><h2 id="主题定义？"><a href="#主题定义？" class="headerlink" title="主题定义？"></a>主题定义？</h2><p>Flutter 中定义 themes 在 top level widget。</p>
-<p>top level widget 通常有两种：</p>
-<ol>
-<li>MaterialApp</li>
-<li>WidgetApp</li>
-</ol>
-<p>通过参数 ThemeData 修改主题的颜色。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class SampleApp extends StatelessWidget&#123;</div><div class="line">    @override</div><div class="line">    Widget build(BuildContext context)&#123;</div><div class="line">        return MaterialApp(</div><div class="line">            title: &apos;Sample App&apos;,</div><div class="line">            theme: ThemeData(</div><div class="line">                primarySwatch: Colors.blue,</div><div class="line">                textSelectionColor: Colors.red</div><div class="line">            ),</div><div class="line">            home: SampleAppPage(),</div><div class="line">        );</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="Databases-and-local-storage"><a href="#Databases-and-local-storage" class="headerlink" title="Databases and local storage"></a>Databases and local storage</h1><h2 id="Shared-Preferences-如何使用？"><a href="#Shared-Preferences-如何使用？" class="headerlink" title="Shared Preferences 如何使用？"></a>Shared Preferences 如何使用？</h2><p>通过插件使用 <code>Shared_Preferences</code> </p>
-<p>同时支持 Android， IOS</p>
-<h2 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h2><p>Android: <code>SQFlite</code></p>
-<h1 id="Notifications"><a href="#Notifications" class="headerlink" title="Notifications"></a>Notifications</h1><h2 id="消息推送？"><a href="#消息推送？" class="headerlink" title="消息推送？"></a>消息推送？</h2>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2181,8 +1903,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">532</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">536</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -2193,7 +1915,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -2203,8 +1925,8 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">257</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">258</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -2254,7 +1976,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

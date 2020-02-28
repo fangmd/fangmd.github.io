@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,835 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/01/flutter/官方文档/04.Animations in Flutter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/01/flutter/官方文档/04.Animations in Flutter/" itemprop="url">Animations in Flutter</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-01T13:18:12+08:00">
+                2018-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://flutter.io/tutorials/animation/" target="_blank" rel="external">https://flutter.io/tutorials/animation/</a></p>
+<h1 id="一个自动执行动画组件"><a href="#一个自动执行动画组件" class="headerlink" title="一个自动执行动画组件"></a>一个自动执行动画组件</h1><figure class="highlight dart"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/// 和 FadeAnimation 相同作用，不依赖第三方库版本</span></div><div class="line"><span class="comment">/// 进入界面的时候自执行动画(500ms)</span></div><div class="line"><span class="comment">/// 透明度动画: 0 -&gt; 1</span></div><div class="line"><span class="comment">/// 移动动画: -控件高度 -&gt; 0</span></div><div class="line"><span class="comment">///</span></div><div class="line"><span class="comment">/// 作用: 进入页面的时候自动执行的动画</span></div><div class="line"><span class="comment">///</span></div><div class="line"><span class="comment">///</span></div><div class="line"><span class="comment">/// 使用:</span></div><div class="line"><span class="comment">///</span></div><div class="line"><span class="comment">/// ```dart</span></div><div class="line"><span class="comment">/// FadeAnimationNoThird(</span></div><div class="line"><span class="comment">///   delay: 1.2,</span></div><div class="line"><span class="comment">///   child: Text('Demo'),</span></div><div class="line"><span class="comment">/// )</span></div><div class="line"><span class="comment">///</span></div></pre></td></tr></table></figure>
+<p>///<br>class FadeAnimationNoThird extends StatefulWidget {<br>  final double delay;<br>  final Widget child;</p>
+<p>  FadeAnimationNoThird({<br>    Key key,<br>    this.delay = 1,<br>    this.child,<br>  }) : super(key: key);</p>
+<p>  @override<br>  _FadeAnimationNoThirdState createState() =&gt; _FadeAnimationNoThirdState();<br>}</p>
+<p>class _FadeAnimationNoThirdState extends State<fadeanimationnothird><br>    with SingleTickerProviderStateMixin {<br>  AnimationController _controller;<br>  Animation opacityAnimation;<br>  Animation<offset> translateYAnimation;<br>  Duration delay = Duration.zero;<br>  bool _waitForDelay = true;<br>  bool _isDisposed = false;</offset></fadeanimationnothird></p>
+<p>  @override<br>  void initState() {<br>    _controller =<br>        AnimationController(vsync: this, duration: Duration(milliseconds: 500))<br>          ..addListener(() {<br>            setState(() {});<br>          });</p>
+<pre><code>opacityAnimation = Tween(begin: 0.0, end: 1.0)
+    .chain(CurveTween(curve: Curves.easeIn))
+    .animate(_controller);
+
+translateYAnimation = Tween&lt;Offset&gt;(begin: Offset(0, -1), end: Offset(0, 0))
+    .chain(CurveTween(curve: Curves.easeInOut))
+    .animate(_controller);
+
+_controller.forward();
+
+delay = Duration(milliseconds: (500 * widget.delay).round());
+
+initialize();
+super.initState();
+</code></pre><p>  }</p>
+<p>  void initialize() async {<br>    if (widget.delay != null) {<br>      await Future.delayed(delay);<br>    }<br>    _waitForDelay = false;<br>    executeInstruction();<br>  }</p>
+<p>  void executeInstruction() async {<br>    if (_isDisposed || _waitForDelay) {<br>      return;<br>    }<br>    _controller.forward();<br>  }</p>
+<p>  @override<br>  Widget build(BuildContext context) {<br>    /// 透明动画:<br>    /// Opacity: 无动画效果<br>    /// AnimatedOpacity<br>    /// FadeTransition</p>
+<pre><code>return SlideTransition(
+  position: translateYAnimation,
+  child: FadeTransition(
+    opacity: opacityAnimation,
+    child: widget.child,
+  ),
+);
+</code></pre><p>  }</p>
+<p>  void dispose() {<br>    _isDisposed = true;<br>    _controller.dispose();<br>    super.dispose();<br>  }<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"># 基本动画概念和类</div><div class="line"></div><div class="line">重点概念：</div><div class="line"></div><div class="line">1. 动画效果实际上是通过改变某个值实现的，Animation 实现值的改变</div><div class="line">2. Animation 对象知道当前动画的状态</div><div class="line">3. 使用 AnimationController 管理 Animation</div><div class="line">4. CurvedAnimation 实现非线形的动画</div><div class="line">5. Tween 实现两个数据值之间的动画，比如红到蓝</div><div class="line">6. 使用 Listeners 和 StatusListeners 监听动画状态的改变</div><div class="line"></div><div class="line"></div><div class="line">`Animation&lt;double&gt;`:</div><div class="line"></div><div class="line">1. 管理值的改变 `.value`</div><div class="line">2. 这个对象不知道界面的变化和呈现</div><div class="line"></div><div class="line">`CurvedAniamtion`:</div><div class="line"></div><div class="line">1. 继承自 `Animation&lt;double&gt;`</div><div class="line">2. 实现值非线形的变化</div><div class="line"></div><div class="line">`AnimationController`：</div><div class="line"></div><div class="line">1. 继承自 `Animation&lt;double&gt;`</div><div class="line">2. 附带控制动画的函数, `.forward()`, `.reverse()`</div><div class="line">3. value ranges from 0.0 to 1.0</div><div class="line"></div><div class="line">`Twenn`:</div></pre></td></tr></table></figure></p>
+<p>final Tween doubleTween = Tween<double>(begin: -200.0, end: 0.0);</double></p>
+<p>final Tween colorTween =<br>    ColorTween(begin: Colors.transparent, end: Colors.black54);</p>
+<p>final AnimationController controller = AnimationController(<br>    duration: const Duration(milliseconds: 500), vsync: this);<br>Animation<int> alpha = IntTween(begin: 0, end: 255).animate(controller);<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1. 继承自 `Animatable`</div><div class="line">2. 可以定义 value 的开始和结束</div><div class="line">3. `ColorTween` 处理颜色改变</div><div class="line">4. `animate()` 函数生成 `Animation&lt;double&gt;` 对象</div><div class="line"></div><div class="line"># 动画例子</div><div class="line"></div><div class="line">关键点：</div><div class="line"></div><div class="line">1. 通过 `addListener`, `setState` 将基础动画添加到 Widget 中</div><div class="line"></div><div class="line">## tween 例子</div></pre></td></tr></table></figure></int></p>
+<p>with SingleTickerProviderStateMixin</p>
+<p>  @override<br>  void initState() {<br>    controller =<br>        AnimationController(duration: const Duration(seconds: 1), vsync: this);<br>    tween = Tween(begin: 0.0, end: 100.0).animate(controller);<br>    tween.addListener((){<br>      setState(() {</p>
+<pre><code>  });
+});
+super.initState();
+</code></pre><p>  }</p>
+<p>SizedBox(width: tween.value ?? 0.0, height: tween.value ?? 0.0, child: FlutterLogo()),</p>
+<p>  @override<br>  void dispose() {<br>    controller.dispose();<br>    super.dispose();<br>  }<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">语法简化：</div></pre></td></tr></table></figure></p>
+<p>animation = tween.animate(controller)<br>          ..addListener(() {<br>            setState(() {<br>              // the animation object’s value is the changed state<br>            });<br>          });<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 使用 AnimatedWidget</div><div class="line"></div><div class="line">可以不用设置 `addListener`, `setState`.</div></pre></td></tr></table></figure></p>
+<p>class AnimatedLogo extends AnimatedWidget {<br>  AnimatedLogo({Key key, Animation<double> animation})<br>      : super(key: key, listenable: animation);</double></p>
+<p>  Widget build(BuildContext context) {<br>    final Animation<double> animation = listenable;<br>    return Center(<br>      child: Container(<br>        margin: EdgeInsets.symmetric(vertical: 10.0),<br>        height: animation.value,<br>        width: animation.value,<br>        child: FlutterLogo(),<br>      ),<br>    );<br>  }<br>}<br>```</double></p>
+<blockquote>
+<p>注意构造函数</p>
+</blockquote>
+<h2 id="addStatusListener"><a href="#addStatusListener" class="headerlink" title="addStatusListener"></a>addStatusListener</h2><h2 id="AnimatedBuilder"><a href="#AnimatedBuilder" class="headerlink" title="AnimatedBuilder"></a>AnimatedBuilder</h2><h1 id="列表动画"><a href="#列表动画" class="headerlink" title="列表动画"></a>列表动画</h1><p>使用 <code>AnimatedList</code> 创建 List</p>
+<h1 id="动画控件"><a href="#动画控件" class="headerlink" title="动画控件"></a>动画控件</h1><ul>
+<li>SizeTransition</li>
+<li>RotationTransition</li>
+<li>ScaleTransition</li>
+<li>FadeTransition</li>
+</ul>
+<h1 id="页面跳转动画"><a href="#页面跳转动画" class="headerlink" title="页面跳转动画"></a>页面跳转动画</h1><p>Hero</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/31/ReadNote/自己动手设计数据库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/31/ReadNote/自己动手设计数据库/" itemprop="url">自己动手设计数据库</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-31T13:18:12+08:00">
+                2018-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="第-1-章-关系数据库"><a href="#第-1-章-关系数据库" class="headerlink" title="第 1 章 关系数据库"></a>第 1 章 关系数据库</h1><h2 id="早期数据库模型"><a href="#早期数据库模型" class="headerlink" title="早期数据库模型"></a>早期数据库模型</h2><h3 id="层次数据库模型"><a href="#层次数据库模型" class="headerlink" title="层次数据库模型"></a>层次数据库模型</h3><p>类似公司组织架构。</p>
+<p>父表可以与多个子表相连，子表子能有一个父表。</p>
+<p>字表存储一个数据都必须与父表关联。</p>
+<p>多对多情况下会产生冗余数据</p>
+<h3 id="网状数据库模型"><a href="#网状数据库模型" class="headerlink" title="网状数据库模型"></a>网状数据库模型</h3><p>解决层次数据库出现的一些问题。</p>
+<h2 id="关系数据库模型"><a href="#关系数据库模型" class="headerlink" title="关系数据库模型"></a>关系数据库模型</h2><p>关系模型将关系分为 一对一，一对多，多对多。</p>
+<p>两个表之间的关系通过匹配一个共享字段的值来隐形建立。</p>
+<h3 id="检索数据"><a href="#检索数据" class="headerlink" title="检索数据"></a>检索数据</h3><p>结构化查询语言 SQL</p>
+<h3 id="关系型数据库的优势"><a href="#关系型数据库的优势" class="headerlink" title="关系型数据库的优势"></a>关系型数据库的优势</h3><ol>
+<li>内置多层次完整性</li>
+<li>数据在逻辑和物理上都独立与数据库</li>
+<li>确保数据一致性和准确性</li>
+<li>简便的数据检索</li>
+</ol>
+<h2 id="关系数据库管理系统"><a href="#关系数据库管理系统" class="headerlink" title="关系数据库管理系统"></a>关系数据库管理系统</h2><p>RDBMS， 一种应用程序，可以用来创建，维护，修改以及操作关系数据库。</p>
+<h1 id="第-2-章-设计目标"><a href="#第-2-章-设计目标" class="headerlink" title="第 2 章 设计目标"></a>第 2 章 设计目标</h1><h2 id="为什么要关注数据库设计"><a href="#为什么要关注数据库设计" class="headerlink" title="为什么要关注数据库设计"></a>为什么要关注数据库设计</h2><p>数据库设计对于数据库中数据的一致性，完整性和准确性至关重要。</p>
+<h2 id="优秀设计的目标"><a href="#优秀设计的目标" class="headerlink" title="优秀设计的目标"></a>优秀设计的目标</h2><ul>
+<li>数据库应支持设定的和即时的信息检索</li>
+<li>正确且高效的构建表</li>
+<li>数据完整性落实到字段，表以及关系层次</li>
+<li>数据库支持与组织相关的业务规则</li>
+<li>数据库适应未来发展</li>
+</ul>
+<h2 id="优秀设计好处"><a href="#优秀设计好处" class="headerlink" title="优秀设计好处"></a>优秀设计好处</h2><ul>
+<li>数据库结构易于修改和维护</li>
+<li>数据易于修改</li>
+<li>信息易于检索</li>
+<li>终端用户应用易于开发和创建</li>
+</ul>
+<h2 id="数据库设计方法"><a href="#数据库设计方法" class="headerlink" title="数据库设计方法"></a>数据库设计方法</h2><h3 id="传统设计方法"><a href="#传统设计方法" class="headerlink" title="传统设计方法"></a>传统设计方法</h3><p>需求分析，数据建模，规范化</p>
+<p>数据建模阶段，每个表都需要指定一个 主键，通过 外键 建立关系。</p>
+<p>规范化：将大表分解成小表的过程，减少冗余数据和重复数据。</p>
+<h2 id="规范化"><a href="#规范化" class="headerlink" title="规范化"></a>规范化</h2><p>传统规范化方法并不好用</p>
+<h1 id="第-3-章-术语"><a href="#第-3-章-术语" class="headerlink" title="第 3 章 术语"></a>第 3 章 术语</h1><h2 id="术语为何重要"><a href="#术语为何重要" class="headerlink" title="术语为何重要"></a>术语为何重要</h2><ol>
+<li>用于表达和定义关系数据库模型的特殊思想和概念</li>
+<li>用于表达和定义数据库设计过程本身</li>
+<li>用于讨论关系数据库或 RDBMS</li>
+</ol>
+<h2 id="关于值的术语"><a href="#关于值的术语" class="headerlink" title="关于值的术语"></a>关于值的术语</h2><p>数据：data，无意义</p>
+<p>信息：由 数据 组成，有意义</p>
+<p>存储的是数据，检索的是信息。</p>
+<p>空值（null）：缺失值，未知值</p>
+<h2 id="关于结构的术语"><a href="#关于结构的术语" class="headerlink" title="关于结构的术语"></a>关于结构的术语</h2><p><strong>表</strong></p>
+<ul>
+<li>每个表包含至少一个称为主键的字段</li>
+</ul>
+<p>数据表： 存储数据的表称为</p>
+<p>验证表（查找表）：存储专门用于实现数据完整性的数据，属于静态表。</p>
+<p><strong>字段（属性）</strong></p>
+<ul>
+<li>数据库中最小结构</li>
+</ul>
+<ol>
+<li>复合字段：包含两个或以上不同项</li>
+<li>多值字段：包含多个相同类型的值</li>
+<li>计算字段</li>
+</ol>
+<p><strong>记录（元组）</strong></p>
+<p><strong>视图</strong>：一个虚表，由数据库中一个或多个表的字段组成，组成视图的表称为基表。</p>
+<p>为什么称为虚表：因为视图只是从基表中获取数据，而不存储数据。</p>
+<p>视图的重要：</p>
+<ol>
+<li>可用于同时处理多个表中的数据。</li>
+<li>可用以防止某些用户查看或操作单个表或一组表中特定字段。</li>
+<li>可用于实现数据完整性。</li>
+</ol>
+<p><strong>键</strong></p>
+<p>主键是整个表中最为重要的键：</p>
+<ul>
+<li>主键值在整个数据库中表识某一特定记录</li>
+<li>主键字段在整个数据库中表识给定的某个表</li>
+<li>主键实现表层次的完整性，与数据库中其他表建立关系。</li>
+</ul>
+<p>将一个表中的主键作为另一个表的外键，实现两个表的连接。</p>
+<h2 id="关于关系的术语"><a href="#关于关系的术语" class="headerlink" title="关于关系的术语"></a>关于关系的术语</h2><p><strong>关系</strong></p>
+<p>表和表之间联系产生的方式：使用主键和外键，借助第三个表（联系表，关联表）。</p>
+<p><strong>关系类型</strong></p>
+<ul>
+<li>一对一关系</li>
+<li>一对多关系</li>
+<li>多对多关系：需要联系表实现关联</li>
+</ul>
+<p><strong>参与的类型</strong></p>
+<p>一个表插入数据时，另一个表是否必须更新。</p>
+<ul>
+<li>强制的</li>
+<li>可选的</li>
+</ul>
+<p><strong>参与度</strong></p>
+<p>作用：</p>
+<ol>
+<li>确定某一特定表中必须与关联表中的单一记录相关联的最好记录条数</li>
+<li>确定某一特定表中被允许与关联表中单一记录相关联的最多纪录条数</li>
+</ol>
+<h2 id="关于完整性的术语"><a href="#关于完整性的术语" class="headerlink" title="关于完整性的术语"></a>关于完整性的术语</h2><p><strong>字段说明</strong></p>
+<ul>
+<li>一般元素：字段名称，描述，父表</li>
+<li>物理元素</li>
+<li>逻辑元素</li>
+</ul>
+<p><strong>数据完整性</strong></p>
+<p>数据库中数据的有效性，一致性和准确性。</p>
+<ol>
+<li>表层次完整性：确保表中无重复数据，记录标识唯一不为空值</li>
+<li>字段级完整性：每个字段的结构健全，每个字段的值有效</li>
+<li>关系层次完整性：表之间的关系健全。</li>
+<li>业务规则</li>
+</ol>
+<h1 id="第-4-章-概念性概述"><a href="#第-4-章-概念性概述" class="headerlink" title="第 4 章 概念性概述"></a>第 4 章 概念性概述</h1><h2 id="完成设计过程的重要性"><a href="#完成设计过程的重要性" class="headerlink" title="完成设计过程的重要性"></a>完成设计过程的重要性</h2><p>数据库中结构完整性和数据完整性的水平与贯彻设计过程的程度成正比。</p>
+<h2 id="明确宗旨和任务目标"><a href="#明确宗旨和任务目标" class="headerlink" title="明确宗旨和任务目标"></a>明确宗旨和任务目标</h2><h2 id="分析现有数据库"><a href="#分析现有数据库" class="headerlink" title="分析现有数据库"></a>分析现有数据库</h2><h2 id="创建数据结构"><a href="#创建数据结构" class="headerlink" title="创建数据结构"></a>创建数据结构</h2><p>定义表和字段，建立键，以及为每个字段定义字段说明。</p>
+<h2 id="确定和建立表关系"><a href="#确定和建立表关系" class="headerlink" title="确定和建立表关系"></a>确定和建立表关系</h2><h2 id="确定和定义业务规则"><a href="#确定和定义业务规则" class="headerlink" title="确定和定义业务规则"></a>确定和定义业务规则</h2><p>确定数据库各方面的限制，建立业务规则，以及定义和实现验证表。</p>
+<h2 id="确定和定义视图"><a href="#确定和定义视图" class="headerlink" title="确定和定义视图"></a>确定和定义视图</h2><p>了解用户如何使用各自的数据，确定数据库中红需要建立的视图类型。</p>
+<h2 id="审核数据完整性"><a href="#审核数据完整性" class="headerlink" title="审核数据完整性"></a>审核数据完整性</h2><ol>
+<li>审核每个表，确保其符合正确设计的标准</li>
+<li>审核和检查每个字段的字段说明</li>
+<li>检查每种关系的有效性，确认关系类型，以及确定关系中每个表的参与特征。</li>
+<li>审核之前确定的业务规则并确认数据库各方面的限制</li>
+</ol>
+<h1 id="第-5-章-大幕开启"><a href="#第-5-章-大幕开启" class="headerlink" title="第 5 章 大幕开启"></a>第 5 章 大幕开启</h1><h1 id="第-6-章-分析现有数据库"><a href="#第-6-章-分析现有数据库" class="headerlink" title="第 6 章 分析现有数据库"></a>第 6 章 分析现有数据库</h1><h1 id="第-7-章-建立表结构"><a href="#第-7-章-建立表结构" class="headerlink" title="第 7 章 建立表结构"></a>第 7 章 建立表结构</h1><h1 id="第-8-章-键"><a href="#第-8-章-键" class="headerlink" title="第 8 章 键"></a>第 8 章 键</h1><p>键类型：</p>
+<ol>
+<li>候选键</li>
+<li>主键</li>
+<li>外键</li>
+<li>非键</li>
+</ol>
+<h1 id="第-9-章-字段说明"><a href="#第-9-章-字段说明" class="headerlink" title="第 9 章 字段说明"></a>第 9 章 字段说明</h1><p>字段说明重要的原因：</p>
+<ol>
+<li>字段说明有助于建立和执行字段级完整性</li>
+<li>未每个字段定义字段说明能提升整体数据完整性</li>
+<li>定义字段说明能获得对数据的性质和用途的完整认识</li>
+<li>字段说明构成数据库的“数据字典”</li>
+</ol>
+<h1 id="第-10-章-表关系"><a href="#第-10-章-表关系" class="headerlink" title="第 10 章 表关系"></a>第 10 章 表关系</h1><p>关系是关系数据库的重要组成部分：</p>
+<ol>
+<li>对于存在逻辑联系的两个表，可在两表之间建立连接</li>
+<li>有助于进一步改进表结构和将冗余数据减少至最少</li>
+<li>这种机制能实现同时多个表中提取数据</li>
+</ol>
+<p>自联结关系：表内部记录之间的关系</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/20/Android/架构/官方架构组件/Android Architecture Components关键点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/20/Android/架构/官方架构组件/Android Architecture Components关键点/" itemprop="url">Android Architecture Components 关键点</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-20T12:18:12+08:00">
+                2018-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h1><p>用于管理数据,它持有 LiveData. 处理数据持久化,存取等具体逻辑, 相当于 MVP 中的 Presenter.</p>
+<h2 id="LiveData-实现数据驱动型编程"><a href="#LiveData-实现数据驱动型编程" class="headerlink" title="LiveData 实现数据驱动型编程"></a>LiveData 实现数据驱动型编程</h2><p>自需要对 View 注册 LiveData.</p>
+<p>LiveData 数据变更后，会自动更新 View.</p>
+<h2 id="ViewModel-具有数据共享的作用"><a href="#ViewModel-具有数据共享的作用" class="headerlink" title="ViewModel 具有数据共享的作用"></a>ViewModel 具有数据共享的作用</h2><p>同一个 Activity/Fragment 对应同一个 ViewModel</p>
+<p>ViewModel 的存在是依赖 Activity 或者 Fragment的，不管你在什么地方获取ViewModel ，只要你用的是相同的Activity 或者 Fragment，那么获取到的ViewModel将是同一个 (前提是key值是一样的)，所以ViewModel 也具有数据共享的作用！</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/e8955f525f4c" target="_blank" rel="external">https://www.jianshu.com/p/e8955f525f4c</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/20/看源码/JSBridge原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/20/看源码/JSBridge原理/" itemprop="url">JSBridge 原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-20T09:38:14+08:00">
+                2018-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>项目地址：<a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="external">https://github.com/lzyzsd/JsBridge</a></p>
+<p>项目作用: Android 与 js 交互方案。</p>
+<h1 id="与-原生-JS-交互方式比有什么优点"><a href="#与-原生-JS-交互方式比有什么优点" class="headerlink" title="与 原生 JS 交互方式比有什么优点"></a>与 原生 JS 交互方式比有什么优点</h1><h1 id="目录结构和类介绍"><a href="#目录结构和类介绍" class="headerlink" title="目录结构和类介绍"></a>目录结构和类介绍</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">- BridgeHandler</div><div class="line">- BridgeUtil</div><div class="line">- BridgeWebView</div><div class="line">- BridgeWebViewClient</div><div class="line">- CallBackFunction</div><div class="line">- DefaultHandle</div><div class="line">- Message</div><div class="line">- WebViewJavascriptBridge</div></pre></td></tr></table></figure>
+<h2 id="WebViewJavascriptBridge"><a href="#WebViewJavascriptBridge" class="headerlink" title="WebViewJavascriptBridge"></a>WebViewJavascriptBridge</h2><p>是一个接口，<code>BridgeWebView</code> 实现了 WebViewJavascriptBridge</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WebViewJavascriptBridge</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data, CallBackFunction responseCallback)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>这个地方的代码感觉作者没有写好, BridgeWebView 中实际起作用的方法是 doSend</p>
+</blockquote>
+<h2 id="DefaultHandler-BridgeHandler"><a href="#DefaultHandler-BridgeHandler" class="headerlink" title="DefaultHandler, BridgeHandler"></a>DefaultHandler, BridgeHandler</h2><p>JS 调用原生方法的时候，Handler 接收来自 JS 传递的参数</p>
+<p>DefaultHandler： 在没有设置 Handler 的时候会触发。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BridgeHandler</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">(String data, CallBackFunction function)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="CallBackFunction"><a href="#CallBackFunction" class="headerlink" title="CallBackFunction"></a>CallBackFunction</h2><p>回调函数。</p>
+<p>使用场景：在 app 方法被调起之后，app 可以通过这个方法 给JS传数据处理结果</p>
+<blockquote>
+<p>在 BridgeHandler 中使用</p>
+</blockquote>
+<h2 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h2><p>JS 与 Native 交互的信息封装类。</p>
+<p>包含了：</p>
+<ol>
+<li>callbackId：CallBackFunction id，通过这个 id 找到 CallBackFunction 函数</li>
+<li>data: Native 调用 JS 是传递的参数</li>
+<li>handlerName：暂时没有实际作用</li>
+<li>responseId: native call js 时，返回值通过 CallBackFunction 函数返回，通过 responseId 找到 CallBackFunction。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">成员变量：</div><div class="line">private String callbackId; //callbackId</div><div class="line">private String responseId; //responseId</div><div class="line">private String responseData; //responseData</div><div class="line">private String data; //data of message</div><div class="line">private String handlerName; //name of handler</div><div class="line"></div><div class="line">函数：</div><div class="line">getter/setter</div><div class="line">toJson</div><div class="line">toObject</div><div class="line">toArrayList</div></pre></td></tr></table></figure>
+<p>toJson: 将 Message 中的成员变量转化成 JSON 形式，使用场景：与 <code>javascript:WebViewJavascriptBridge._handleMessageFromNative(&#39;%s&#39;);</code> 拼接通过 <code>webView.loadUrl</code> 调用。</p>
+<p>toArrayList: 清理事件队列时使用，String -&gt; List<message>, 获取 JS 端所有的事件一个一个处理。</message></p>
+<h2 id="BridgeWebViewClient"><a href="#BridgeWebViewClient" class="headerlink" title="BridgeWebViewClient"></a>BridgeWebViewClient</h2><blockquote>
+<p>自定义WebViewClient必须要集成此类</p>
+</blockquote>
+<p><code>shouldOverrideUrlLoading</code>:</p>
+<p>JS 与 Native 交互是通过 URL拦截 方式实现的。</p>
+<p>在这里 JSBridge 会拦截属于自己需要处理的内容。</p>
+<p><code>onPageFinished</code>: </p>
+<p>向页面注入一段 JS 代码，内容在 <code>assets/WebViewJavascriptBridge.js</code> 中。</p>
+<p>处理 <code>startupMessage</code> 中存储的事件。</p>
+<h2 id="BridgeWebView"><a href="#BridgeWebView" class="headerlink" title="BridgeWebView"></a>BridgeWebView</h2><p>成员变量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Map&lt;String, CallBackFunction&gt; responseCallbacks = <span class="keyword">new</span> HashMap&lt;String, CallBackFunction&gt;();</div><div class="line">Map&lt;String, BridgeHandler&gt; messageHandlers = <span class="keyword">new</span> HashMap&lt;String, BridgeHandler&gt;();</div><div class="line">BridgeHandler defaultHandler = <span class="keyword">new</span> DefaultHandler();</div></pre></td></tr></table></figure>
+<p>responseCallbacks： 存储 native call js 时，返回值 CallBackFunction 函数</p>
+<p>messageHandlers: 存储所有 Handlers, BridgeHandler, </p>
+<p>defaultHandler: 默认 Handler</p>
+<h1 id="调用流程"><a href="#调用流程" class="headerlink" title="调用流程"></a>调用流程</h1><h2 id="JS-Call-Native"><a href="#JS-Call-Native" class="headerlink" title="JS Call Native"></a>JS Call Native</h2><p>Native 端要注册一个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">webView.registerHandler(&quot;methodName&quot;, (data, function) -&gt; &#123;</div><div class="line">    try &#123;</div><div class="line">        JSONObject jsonObject = new JSONObject(data);</div><div class="line">        jsCallBack.call(jsonObject.optString(&quot;tel&quot;));</div><div class="line">    &#125; catch (JSONException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>注册 Handler，参数2 BridgeHandler 存储在 <code>messageHandlers</code> 中, 参数1 表示调用唯一表示。</p>
+<p>JS 调用 Native 注册的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NativePageController(&apos;callFunc&apos;, &#123;&apos;tel&apos; : &apos;18888888888&apos;&#125;);</div></pre></td></tr></table></figure>
+<p>参数1 表示调用唯一表示，参数2 data 传递的数据。这些数据会转成 url 形式传递到native。</p>
+<p>JS 调用 Native 注册的方法后，<code>shouldOverrideUrlLoading</code> 最先获取到 url 数据，解析 url，发现属于 js 调用方法就会开始处理。 <code>flushMessageQueue</code> 处理所有 JS 端出发的事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">flushMessageQueue</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (Thread.currentThread() == Looper.getMainLooper().getThread()) &#123;</div><div class="line">        loadUrl(BridgeUtil.JS_FETCH_QUEUE_FROM_JAVA, <span class="keyword">new</span> CallBackFunction() &#123;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">                <span class="comment">// deserializeMessage 反序列化消息</span></div><div class="line">                List&lt;Message&gt; list = <span class="keyword">null</span>;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    list = Message.toArrayList(data);</div><div class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (list == <span class="keyword">null</span> || list.size() == <span class="number">0</span>) &#123;</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size(); i++) &#123;</div><div class="line">                    Message m = list.get(i);</div><div class="line">                    String responseId = m.getResponseId();</div><div class="line">                    <span class="comment">// 是否是response  CallBackFunction</span></div><div class="line">                    <span class="keyword">if</span> (!TextUtils.isEmpty(responseId)) &#123;</div><div class="line">                        CallBackFunction function = responseCallbacks.get(responseId);</div><div class="line">                        String responseData = m.getResponseData();</div><div class="line">                        function.onCallBack(responseData);</div><div class="line">                        responseCallbacks.remove(responseId);</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        CallBackFunction responseFunction = <span class="keyword">null</span>;</div><div class="line">                        <span class="comment">// if had callbackId 如果有回调Id</span></div><div class="line">                        <span class="keyword">final</span> String callbackId = m.getCallbackId();</div><div class="line">                        <span class="keyword">if</span> (!TextUtils.isEmpty(callbackId)) &#123;</div><div class="line">                            responseFunction = <span class="keyword">new</span> CallBackFunction() &#123;</div><div class="line">                                <span class="meta">@Override</span></div><div class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">                                    Message responseMsg = <span class="keyword">new</span> Message();</div><div class="line">                                    responseMsg.setResponseId(callbackId);</div><div class="line">                                    responseMsg.setResponseData(data);</div><div class="line">                                    queueMessage(responseMsg);</div><div class="line">                                &#125;</div><div class="line">                            &#125;;</div><div class="line">                        &#125; <span class="keyword">else</span> &#123;</div><div class="line">                            responseFunction = <span class="keyword">new</span> CallBackFunction() &#123;</div><div class="line">                                <span class="meta">@Override</span></div><div class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">                                    <span class="comment">// do nothing</span></div><div class="line">                                &#125;</div><div class="line">                            &#125;;</div><div class="line">                        &#125;</div><div class="line">                        <span class="comment">// BridgeHandler执行</span></div><div class="line">                        BridgeHandler handler;</div><div class="line">                        <span class="keyword">if</span> (!TextUtils.isEmpty(m.getHandlerName())) &#123;</div><div class="line">                            handler = messageHandlers.get(m.getHandlerName());</div><div class="line">                        &#125; <span class="keyword">else</span> &#123;</div><div class="line">                            handler = defaultHandler;</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">if</span> (handler != <span class="keyword">null</span>)&#123;</div><div class="line">                            handler.handler(m.getData(), responseFunction);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>data -&gt; List<message>, 生成事件集合</message></li>
+<li>通过 函数表示 从 messageHandlers 中找到对应的 Handler，调用 Handler 开始处理数据</li>
+</ol>
+<blockquote>
+<p>js 端多次调用 native 时事件会以 json 形式存储在 js 端，等待 app 去获取所有事件，依次处理</p>
+</blockquote>
+<p>Native 处理事件后，通过如何返回参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Message responseMsg = new Message();</div><div class="line">responseMsg.setResponseId(callbackId);</div><div class="line">responseMsg.setResponseData(data);</div><div class="line">queueMessage(responseMsg);</div></pre></td></tr></table></figure>
+<h2 id="Native-Call-JS"><a href="#Native-Call-JS" class="headerlink" title="Native Call JS"></a>Native Call JS</h2><p>JS 端注册 Handler :</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">NativePageController.registerHandler(<span class="string">"Name"</span>, (data)&#123;</div><div class="line"></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>Native 端掉用 JS:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">webView.callHandler(<span class="string">"Name"</span>, <span class="string">"&#123;data...&#125;"</span>, <span class="keyword">new</span> CallBackFunction() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">                </div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>调用 js 代码的时候：<code>doSend</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 保存message到消息队列</div><div class="line"> * <span class="doctag">@param</span> handlerName handlerName</div><div class="line"> * <span class="doctag">@param</span> data data</div><div class="line"> * <span class="doctag">@param</span> responseCallback CallBackFunction</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSend</span><span class="params">(String handlerName, String data, CallBackFunction responseCallback)</span> </span>&#123;</div><div class="line">    Message m = <span class="keyword">new</span> Message();</div><div class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(data)) &#123;</div><div class="line">        m.setData(data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (responseCallback != <span class="keyword">null</span>) &#123;</div><div class="line">        String callbackStr = String.format(BridgeUtil.CALLBACK_ID_FORMAT, ++uniqueId + (BridgeUtil.UNDERLINE_STR + SystemClock.currentThreadTimeMillis()));</div><div class="line">        responseCallbacks.put(callbackStr, responseCallback);</div><div class="line">        m.setCallbackId(callbackStr);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(handlerName)) &#123;</div><div class="line">        m.setHandlerName(handlerName);</div><div class="line">    &#125;</div><div class="line">    queueMessage(m);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>生成 Message 对象，</li>
+<li>responseCallbacks 中存储接收返回数据的 responseCallback</li>
+<li>开始处理, Message 生成 URL 调用。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 分发message 必须在主线程才分发成功</div><div class="line"> * <span class="doctag">@param</span> m Message</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message m)</span> </span>&#123;</div><div class="line">    String messageJson = m.toJson();</div><div class="line">    <span class="comment">//escape special characters for json string  为json字符串转义特殊字符</span></div><div class="line">    messageJson = messageJson.replaceAll(<span class="string">"(\\\\)([^utrn])"</span>, <span class="string">"\\\\\\\\$1$2"</span>);</div><div class="line">    messageJson = messageJson.replaceAll(<span class="string">"(?&lt;=[^\\\\])(\")"</span>, <span class="string">"\\\\\""</span>);</div><div class="line">    String javascriptCommand = String.format(BridgeUtil.JS_HANDLE_MESSAGE_FROM_JAVA, messageJson);</div><div class="line">    <span class="comment">// 必须要找主线程才会将数据传递出去 --- 划重点</span></div><div class="line">    <span class="keyword">if</span> (Thread.currentThread() == Looper.getMainLooper().getThread()) &#123;</div><div class="line">        <span class="keyword">this</span>.loadUrl(javascriptCommand);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>JS 端处理完成后，返回数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 获取到CallBackFunction data执行调用并且从数据集移除</div><div class="line"> * <span class="doctag">@param</span> url</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">handlerReturnData</span><span class="params">(String url)</span> </span>&#123;</div><div class="line">    String functionName = BridgeUtil.getFunctionFromReturnUrl(url);</div><div class="line">    CallBackFunction f = responseCallbacks.get(functionName);</div><div class="line">    String data = BridgeUtil.getDataFromReturnUrl(url);</div><div class="line">    <span class="keyword">if</span> (f != <span class="keyword">null</span>) &#123;</div><div class="line">        f.onCallBack(data);</div><div class="line">        responseCallbacks.remove(functionName);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>从 URL 获取 函数标示</li>
+<li>通过 标示从 <code>responseCallbacks</code> 中获取 CallBackFunction</li>
+<li>从 URL 获取 data</li>
+<li>CallBackFunction 调用并传 data 参数。</li>
+<li>移除 responseCallbacks 中对于的 CallBackFunction</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>JSBridge 的设计方式可以扩展到其他的跨平台（需要两个平台都能作为服务端）互调情况下。</p>
+<ol>
+<li>两个平台之间信息交互通过 JSON</li>
+<li>JSON 中包括：调用接口的唯一标示，data 数据，handler 名字（数据接收函数的唯一标示），接收返回数据函数的唯一标示。</li>
+<li>创建一个 Message 类存储 JSON 中的数据，方便处理</li>
+</ol>
+<p>数据结构：</p>
+<ol>
+<li>messageHandlers Map, Key 函数唯一标示，需要提前约定，调用的时候也需要</li>
+<li>responseCallbacks Map，key 是动态生成的唯一标示</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/react-native/读书笔记-ReactNative跨品台移动应用开发/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +1111,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-01T13:18:12+08:00">
                 2018-08-01
@@ -303,7 +1132,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -521,7 +1350,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-30T13:18:12+08:00">
                 2018-07-30
@@ -542,7 +1371,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -678,7 +1507,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-27T13:18:12+08:00">
                 2018-07-27
@@ -699,7 +1528,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -816,7 +1645,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-27T13:18:12+08:00">
                 2018-07-27
@@ -837,7 +1666,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -988,7 +1817,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-16T13:18:12+08:00">
                 2018-07-16
@@ -1009,7 +1838,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1130,7 +1959,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-12T13:18:12+08:00">
                 2018-07-12
@@ -1151,7 +1980,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1262,687 +2091,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/07/前端/css/css权威指南笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/07/前端/css/css权威指南笔记/" itemprop="url">html5 权威指南笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-07T13:18:12+08:00">
-                2018-05-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="HTML-标记与文档结构"><a href="#HTML-标记与文档结构" class="headerlink" title="HTML 标记与文档结构"></a>HTML 标记与文档结构</h1><ol>
-<li>文本用闭合标签</li>
-<li>引用内容用自闭合标签</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">块级标签：</div><div class="line">&lt;h1&gt;：6级标签</div><div class="line">&lt;p&gt;：段落</div><div class="line">&lt;ol&gt;：有序列表</div><div class="line">&lt;li&gt;：列表项</div><div class="line">&lt;blockquote&gt;: 独立引用</div><div class="line"></div><div class="line">行内标签：</div><div class="line">&lt;a&gt;: 连接</div><div class="line">&lt;img&gt;: 图片</div><div class="line">&lt;em&gt;: 斜体</div><div class="line">&lt;strong&gt;: 重要</div><div class="line">&lt;abbr&gt;: 简写</div><div class="line">&lt;cite&gt;: 引证</div><div class="line">&lt;q&gt;: 文本内引用</div></pre></td></tr></table></figure>
-<h3 id="HTML模版"><a href="#HTML模版" class="headerlink" title="HTML模版"></a>HTML模版</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">    &lt;head&gt;</div><div class="line">        &lt;meta charset=&quot;UTF-8&quot;/&gt;</div><div class="line">        &lt;title&gt;MyTitle&lt;/title&gt;</div><div class="line">        &lt;style&gt;</div><div class="line">        /* CSS 规则放在这里*/</div><div class="line">        &lt;/style&gt;</div><div class="line">    &lt;/head&gt;</div><div class="line"></div><div class="line">    &lt;body&gt;</div><div class="line">        &lt;!-- 网页内容 --&gt;</div><div class="line"></div><div class="line">    &lt;/body&gt;</div><div class="line"></div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
-<h1 id="CSS-工作原理"><a href="#CSS-工作原理" class="headerlink" title="CSS 工作原理"></a>CSS 工作原理</h1><p>给文档添加样式的三种方法：</p>
-<ol>
-<li>行内样式</li>
-<li>嵌入样式</li>
-<li>链接样式 <code>&lt;link href=&quot;styles.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</code></li>
-</ol>
-<p>CSS 规则命名惯例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">p&#123;color:red;&#125;</div><div class="line">选择符号&#123;属性: 值;&#125;</div></pre></td></tr></table></figure>
-<p>选择符组合：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">h1, h2, h3&#123;color: blue; font-weight: bold;&#125;</div></pre></td></tr></table></figure>
-<p>多条规则作用于一个选择符号：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">h1, h2, h3&#123;color: blue; font-weight: bold;&#125;</div><div class="line">h3&#123;font-style: italic;&#125;</div></pre></td></tr></table></figure>
-<p>选择符分类：</p>
-<ol>
-<li>上下文选择符</li>
-<li>ID和类选择符号</li>
-<li>属性选择符</li>
-</ol>
-<h2 id="上下文选择符"><a href="#上下文选择符" class="headerlink" title="上下文选择符"></a>上下文选择符</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">article p &#123;font-weight: bold;&#125;</div></pre></td></tr></table></figure>
-<p>子选择符<code>&gt;</code> (父子元素)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">section &gt; h2 &#123;font-style: italic;&#125;</div></pre></td></tr></table></figure>
-<p>紧邻同胞选择符号+: (同胞且相邻)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">h2 + p &#123;font-variant: smaill-caps;&#125;</div></pre></td></tr></table></figure>
-<p>一般同胞选择符:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">h2 ~ a &#123;color: red;&#125;</div></pre></td></tr></table></figure>
-<p>通用选择符:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">* &#123;color: green;&#125;</div></pre></td></tr></table></figure>
-<h2 id="ID-和-类选择符"><a href="#ID-和-类选择符" class="headerlink" title="ID 和 类选择符"></a>ID 和 类选择符</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">.类名</div></pre></td></tr></table></figure>
-<p>标签带类选择符：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">p.specialtext &#123;color: red;&#125;</div></pre></td></tr></table></figure>
-<p>多类选择器：(同时设置多个类的标签)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">.specialtest.featured&#123;font-size: 120%&#125;</div></pre></td></tr></table></figure>
-<p>ID 选择符号：<code>#</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;p id=&quot;specialtext&quot;&gt; This is the special text.&lt;/p&gt;</div><div class="line"></div><div class="line">#specialtext &#123;...&#125;</div></pre></td></tr></table></figure>
-<p>ID 可以用于页内导航</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;a href=&apos;#bio&apos;&gt; Biographt &lt;/a&gt;</div><div class="line"></div><div class="line">返回顶部：</div><div class="line"></div><div class="line">&lt;a href=&apos;#&apos;&gt; Top &lt;/a&gt;</div></pre></td></tr></table></figure>
-<h3 id="ID-与-类-区别"><a href="#ID-与-类-区别" class="headerlink" title="ID 与 类 区别"></a>ID 与 类 区别</h3><p>ID 页内唯一。</p>
-<p>类：页面中一类标签。</p>
-<h2 id="属性选择符"><a href="#属性选择符" class="headerlink" title="属性选择符"></a>属性选择符</h2><p>选择任何带有某个属性名的标签。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">标签名[属性名]</div><div class="line"></div><div class="line">标签名[属性名=&quot;属性值&quot;]</div></pre></td></tr></table></figure>
-<h3 id="UI-伪类"><a href="#UI-伪类" class="headerlink" title="UI 伪类"></a>UI 伪类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">link: 链接等待点击</div><div class="line">visited: 点击过的链接</div><div class="line">hover: 鼠标悬停</div><div class="line">active: 链接正在被点击</div><div class="line"></div><div class="line">a:hover &#123;color: red&#125;</div></pre></td></tr></table></figure>
-<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>CSS 中的祖先 元素也会向后代传递一样东西：CSS 属性的值。</p>
-<p>不是所有的属性都能继承。</p>
-<h1 id="定位元素"><a href="#定位元素" class="headerlink" title="定位元素"></a>定位元素</h1><h2 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h2><p>每个元素在页面上都会生成一个盒子。</p>
-<p>盒子属性：border, padding, margin</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;margin: 5px 10px 12px 8px;&#125;</div></pre></td></tr></table></figure>
-<h3 id="叠加外边距"><a href="#叠加外边距" class="headerlink" title="叠加外边距"></a>叠加外边距</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">p &#123;height:50px; border:1px solid #000; backgroundcolor:#fff; margin-top:50px; margin-bottom:30px;&#125;</div></pre></td></tr></table></figure>
-<p>两个 p 标签相遇的时候，之间的距离只有 50, 而不是 80.</p>
-<h2 id="盒子大小"><a href="#盒子大小" class="headerlink" title="盒子大小"></a>盒子大小</h2><h2 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h2><p>css 布局的核心 <code>position</code> 属性：static, relative, absolute, fixed. 默认值：static.</p>
-<h2 id="显示属性"><a href="#显示属性" class="headerlink" title="显示属性"></a>显示属性</h2><p>display: block, inline</p>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">background-color</div><div class="line">background-image</div><div class="line">background-repeat</div><div class="line">background-position</div><div class="line">background-size</div><div class="line">background-attachment</div></pre></td></tr></table></figure>
-<p>背景图居中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">background-image:url(images/turq_spiral_150.png);</div><div class="line">background-repeat: no-repeat;</div><div class="line">background-position: 50% 50%;</div></pre></td></tr></table></figure>
-<p>背景尺寸：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// fit xy</div><div class="line">background-size: cover;</div><div class="line"></div><div class="line">// 缩放图片，使其恰好适合背景区；保持宽高比</div><div class="line">background-size: contain;</div></pre></td></tr></table></figure>
-<p>背景粘附：背景图片是否随元素滚动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">background-attachment: fixed;</div></pre></td></tr></table></figure>
-<p>简写背景属性:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">body&#123;</div><div class="line">    background: url(images/watermark.png) center #fff no-repeat contain fixed;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="字体和文本"><a href="#字体和文本" class="headerlink" title="字体和文本"></a>字体和文本</h1><h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">font-family</div><div class="line">font-size</div><div class="line">font-style</div><div class="line">font-weitht</div><div class="line">font-variant</div><div class="line">font (简写属性)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">p&#123;</div><div class="line">    font: blod italic small-caps .9em helvetica, arial, sans-serif;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>简写规则：</p>
-<ol>
-<li>必须声明 font-size, font-family</li>
-<li>顺序：<code>font-weight, font-syle, font-variant</code> 不分先后，然后是 <code>font-szie</code>, <code>font-family</code></li>
-</ol>
-<h2 id="文本属性"><a href="#文本属性" class="headerlink" title="文本属性"></a>文本属性</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">text-indent: 文本缩进</div><div class="line">letter-spacing: 字符间距</div><div class="line">word-spacing: 单词间距</div><div class="line">text-decoratioin: 文本装饰 underline, overline, line-through, blink, none</div><div class="line">text-align: 文本对齐 left right center justify</div><div class="line">line-height: 行高</div><div class="line">text-transform: 文本转换 none, uppercase, lowercase, capitalize</div><div class="line">vertical-align: 垂直对齐 sub, super, top, middle, bottom, 长度值</div></pre></td></tr></table></figure>
-<h1 id="5-页面布局"><a href="#5-页面布局" class="headerlink" title="5 页面布局"></a>5 页面布局</h1><p>多栏布局三种基本的实现方案：固定宽度，流动，弹性。</p>
-<h1 id="6-界面组件"><a href="#6-界面组件" class="headerlink" title="6 界面组件"></a>6 界面组件</h1><h1 id="8-响应式设计"><a href="#8-响应式设计" class="headerlink" title="8 响应式设计"></a>8 响应式设计</h1>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/28/Android/第三方/X5WebView使用小结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/28/Android/第三方/X5WebView使用小结/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-28T15:43:10+08:00">
-                2018-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><a href="https://x5.tencent.com/tbs/index.html" target="_blank" rel="external">官方地址</a></p>
-<p>简单理解：使用 X5内核 的 WebView</p>
-<p>主要作用：</p>
-<ol>
-<li>兼容好：无系统内核的碎片化问题，更少的兼容性问题；</li>
-<li>速度快：相比系统webview的网页打开速度有30+%的提升；</li>
-</ol>
-<p>额外功能：</p>
-<ol>
-<li>视频播放</li>
-<li>文件查看：pdf，office，音乐，压缩文件</li>
-<li>下载能力</li>
-</ol>
-<h1 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h1><p>X5内核运行对手机的要求：</p>
-<blockquote>
-<p>1)手机ROM版本高于或等于2.2版本<br>2)手机RAM大于500M，该RAM值通过手机 /proc/meminfo 文件的MemTotal动态获取<br>注：如果不满足上述条件，SDK会自动切换到系统WebView，SDK使用者不用关心该切换过程。</p>
-</blockquote>
-<p>关于 X5内核：</p>
-<ol>
-<li>大小：23M左右，只在 wifi 条件下会触发下载</li>
-<li>手机中所有需要 X5内核 的应用共用一个 内核文件</li>
-<li>其他腾讯系应用（微信，qq，qq空间，qq游览器）如果有用到游览器功能都会加载 X5内核，所以大多数手机都已经安装 X5内核</li>
-</ol>
-<h2 id="内核静态导入方法"><a href="#内核静态导入方法" class="headerlink" title="内核静态导入方法"></a>内核静态导入方法</h2><p><a href="https://x5.tencent.com/tbs/technical.html#/detail/sdk/1/8a591c85-337e-4c60-a45a-cf0839819f63" target="_blank" rel="external">官方文档</a></p>
-<p>出现的问题：</p>
-<ol>
-<li>静态导入的 jar 的版本低（3.5, 官方最新3.6）</li>
-<li>包体积会增大：包体积改变：3.5M -&gt; 29.9M （可以根据具体应用精简一部分，比如不需要游戏性能的去除游戏相关 so 包)</li>
-<li>静态导入模式下，部分机型 可能出现无法共享手机中已有的内核（也就是 无法使用 X5WebView 内核）</li>
-<li>首次启动还是有可能无法启动 X5WebView 内核</li>
-</ol>
-<blockquote>
-<p>静态导入模式只适合特定应用场景，比如不允许安装腾讯系应用的定制机</p>
-</blockquote>
-<h2 id="64位手机加载-X5内核"><a href="#64位手机加载-X5内核" class="headerlink" title="64位手机加载 X5内核"></a>64位手机加载 X5内核</h2><p><a href="https://x5.tencent.com/tbs/technical.html#/detail/sdk/1/34cf1488-7dc2-41ca-a77f-0014112bcab7" target="_blank" rel="external">https://x5.tencent.com/tbs/technical.html#/detail/sdk/1/34cf1488-7dc2-41ca-a77f-0014112bcab7</a></p>
-<p>项目中加入 armeabi so 文件 <code>liblbs.so</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ndk &#123;</div><div class="line">    abiFilters &quot;armeabi&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="混淆"><a href="#混淆" class="headerlink" title="混淆"></a>混淆</h1><p>sdk 中的 jar 包中的代码已经混淆</p>
-<h1 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h1><ol>
-<li>应用第一次开启有一定几率不能够启动 X5内核</li>
-<li>手机重启后应用有一定几率不能启动 X5内核</li>
-</ol>
-<h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><p>TbsSuiteNew.apk：检测手机中是否已经有 X5内核。</p>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><h2 id="基本配置，内核加载"><a href="#基本配置，内核加载" class="headerlink" title="基本配置，内核加载"></a>基本配置，内核加载</h2><p>自定义 Application 中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">private void initX5WebView() &#123;</div><div class="line">    QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() &#123;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void onViewInitFinished(boolean arg0) &#123;</div><div class="line">            LoggerUtils.d(&quot;WebView&quot;, &quot;X5WebView onViewInitFinished init finished:&quot; + arg0);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        public void onCoreInitFinished() &#123;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    QbSdk.initX5Environment(getApplicationContext(), cb);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>其他使用方式和WebView无异，具体见官方文档</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/07/macos/brew使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/07/macos/brew使用/" itemprop="url">brew 使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-07T12:18:12+08:00">
-                2018-04-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Mac-OS/" itemprop="url" rel="index">
-                    <span itemprop="name">Mac OS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="下载的包地址"><a href="#下载的包地址" class="headerlink" title="下载的包地址"></a>下载的包地址</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/local/Cellar</div></pre></td></tr></table></figure>
-<h1 id="基本指令"><a href="#基本指令" class="headerlink" title="基本指令"></a>基本指令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">brew search [TEXT|/REGEX/]</div><div class="line">brew (info|home|options) [FORMULA...]</div><div class="line">brew install FORMULA...</div><div class="line">brew update</div><div class="line">brew upgrade [FORMULA...]</div><div class="line">brew uninstall FORMULA...</div><div class="line">brew list [FORMULA...]</div></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/前端/css/CSS-布局/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/14/前端/css/CSS-布局/" itemprop="url">CSS 布局</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-14T13:18:12+08:00">
-                2018-03-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/前端/" itemprop="url" rel="index">
-                    <span itemprop="name">前端</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="display-属性"><a href="#display-属性" class="headerlink" title="display 属性"></a>display 属性</h1><p>display 是 CSS 中最重要的用于控制布局的属性。每个元素都有一个默认的 display 值，这与元素的类型有关。</p>
-<p>对于大多数元素它们的默认值通常是 block 或 inline 。一个 block 元素通常被叫做块级元素。一个 inline 元素通常被叫做行内元素。</p>
-<h2 id="block"><a href="#block" class="headerlink" title="block"></a>block</h2><p>一个块级元素会新开始一行并且尽可能撑满容器。</p>
-<p>常见块级元素：<code>div</code>, <code>form</code>, <code>p</code>, html5 中的 <code>header</code>, <code>footer</code>, <code>section</code></p>
-<h2 id="inline"><a href="#inline" class="headerlink" title="inline"></a>inline</h2><p>插入后不会打破原有的布局。</p>
-<p>常见: <code>span</code>，<code>a</code></p>
-<h2 id="none"><a href="#none" class="headerlink" title="none"></a>none</h2><p>隐藏一个空间，类似 Android 中 visibile 属性中的 none。</p>
-<h1 id="margin-0-auto"><a href="#margin-0-auto" class="headerlink" title="margin: 0 auto;"></a>margin: 0 auto;</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#main &#123;</div><div class="line">  width: 600px;</div><div class="line">  margin: 0 auto; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>设置一个元素的宽度，然后设置 <code>margin: 0 auto</code>, 使其相对父控件 <strong>水平居中</strong>。</p>
-<p><code>max-width: 600px;</code>: 约束实现适配窗口小于设置的 width 的问题。</p>
-<h1 id="position"><a href="#position" class="headerlink" title="position"></a>position</h1><h2 id="static"><a href="#static" class="headerlink" title="static"></a>static</h2><p>元素不会被特殊的定位</p>
-<blockquote>
-<p>section 的 position 默认是 static</p>
-</blockquote>
-<h2 id="relative"><a href="#relative" class="headerlink" title="relative"></a>relative</h2><p>表现的和 static 一样，除非你添加了一些额外的属性.</p>
-<p><code>top</code>, <code>left</code>, <code>bottom</code>, <code>right</code>: 表示相对父控件的位置坐标。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">.relative1 &#123;</div><div class="line">  position: relative;</div><div class="line">&#125;</div><div class="line">.relative2 &#123;</div><div class="line">  position: relative;</div><div class="line">  top: -20px;</div><div class="line">  left: 20px;</div><div class="line">  background-color: white;</div><div class="line">  width: 500px;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="fixed"><a href="#fixed" class="headerlink" title="fixed"></a>fixed</h2><p>元素会相对于视窗来定位，</p>
-<p><code>top</code>, <code>left</code>, <code>bottom</code>, <code>right</code>: 表示相对 窗口 的位置坐标。</p>
-<h2 id="absolute"><a href="#absolute" class="headerlink" title="absolute"></a>absolute</h2><p>跳过父控件，直接相对 body 元素进行定位。</p>
-<p><code>top</code>, <code>left</code>, <code>bottom</code>, <code>right</code>: 表示相对 body 控件的位置坐标。</p>
-<h1 id="float"><a href="#float" class="headerlink" title="float"></a>float</h1><p>实现文字环绕图片效果。</p>
-<h1 id="flexbox"><a href="#flexbox" class="headerlink" title="flexbox"></a>flexbox</h1><p>Flex 容器（flex container）</p>
-<p>6 个属性作用于容器：</p>
-<ul>
-<li>flex-direction:  row | row-reverse | column | column-reverse, 决定主轴方向（项目排列方向）</li>
-<li>flex-wrap：nowrap | wrap | wrap-reverse， 项目排列不下的时候是否要换行</li>
-<li>flex-flow：<code>&lt;flex-direction&gt; || &lt;flex-wrap&gt;</code></li>
-<li>justify-content: flex-start | flex-end | center | space-between | space-around; 项目在主轴上的排列方式</li>
-<li>align-items：flex-start | flex-end | center | baseline | stretch; 项目在交叉轴上如何排列</li>
-<li>align-content: 决定行之间的间隔</li>
-<li>flex: flex-grow flex-shrink flex-basis|auto|initial|inherit;</li>
-</ul>
-<p>作用于子控件：</p>
-<ul>
-<li>align-self: flex-start | flex-end | center | baseline | stretch, 子控件在交叉轴上如何排列</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">/* Basic values */</div><div class="line">flex: auto;</div><div class="line">flex: initial;</div><div class="line">flex: none;</div><div class="line">flex: 2;</div><div class="line"></div><div class="line">/* One value, unitless number: flex-grow */</div><div class="line">flex: 2;</div><div class="line"></div><div class="line">/* One value, width/height: flex-basis */</div><div class="line">flex: 10em;</div><div class="line">flex: 30px;</div><div class="line"></div><div class="line">/* Two values: flex-grow | flex-basis */</div><div class="line">flex: 1 30px;</div><div class="line"></div><div class="line">/* Two values: flex-grow | flex-shrink */</div><div class="line">flex: 2 2;</div><div class="line"></div><div class="line">/* Three values: flex-grow | flex-shrink | flex-basis */</div><div class="line">flex: 2 2 10%;</div></pre></td></tr></table></figure>
-<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="左导航，右数据列表"><a href="#左导航，右数据列表" class="headerlink" title="左导航，右数据列表"></a>左导航，右数据列表</h2><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/css/layout-blog.png" alt="layout-blog"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">.layout-container &#123;</div><div class="line">    height:100%;</div><div class="line">    width: 100%;</div><div class="line">    position: relative;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-left  &#123;</div><div class="line">    background-color: red;</div><div class="line">    width: 20%;</div><div class="line">    height: 100%;</div><div class="line">    position: fixed;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right &#123;</div><div class="line">    background-color: blue;</div><div class="line">    width: 80%;</div><div class="line">    margin-left: 20%;</div><div class="line">    position: static;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right h1&#123;</div><div class="line">    height: 200px;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right-list-container&#123;</div><div class="line">    position: relative;</div><div class="line">    margin: 0 auto;</div><div class="line">    max-width: 970px;</div><div class="line">    background-color: green;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;div class=&quot;layout-container&quot;&gt;</div><div class="line">    </div><div class="line">    &lt;div class=&quot;layout-left&quot;&gt;</div><div class="line">        &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">    &lt;div class=&quot;layout-right&quot;&gt;</div><div class="line"></div><div class="line">        &lt;div class=&quot;layout-right-list-container&quot;&gt;</div><div class="line"></div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line">            &lt;h1&gt;Title&lt;/h1&gt;</div><div class="line"></div><div class="line">        &lt;/div&gt;</div><div class="line"></div><div class="line">    &lt;/div&gt;      </div><div class="line"></div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<h2 id="flex-实现-左导航，右数据列表"><a href="#flex-实现-左导航，右数据列表" class="headerlink" title="flex 实现 左导航，右数据列表"></a>flex 实现 左导航，右数据列表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">.layout-container &#123;</div><div class="line">    display: -webkit-flex;</div><div class="line">    display: flex;</div><div class="line">    width: 100%;</div><div class="line">    height: 100%;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-left &#123;</div><div class="line">    width: 20%;</div><div class="line">    height: 100%;</div><div class="line">    background-color: red;</div><div class="line">    position: fixed;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right &#123;</div><div class="line">    display: flex;</div><div class="line">    width: 80%; </div><div class="line">    background-color: blue;</div><div class="line">    margin-left: 20%;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right h1 &#123;</div><div class="line">    height: 200px;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.layout-right-list-container &#123;</div><div class="line">    max-width: 970px;</div><div class="line">    height: 100%;</div><div class="line">    margin: 0 auto;</div><div class="line">    background-color: green;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>参考：</p>
-<ul>
-<li><a href="http://zh.learnlayout.com/margin-auto.html" target="_blank" rel="external">http://zh.learnlayout.com/</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html</a></li>
-<li><a href="http://flexboxfroggy.com/#zh-cn" target="_blank" rel="external">http://flexboxfroggy.com/#zh-cn</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1992,8 +2140,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">532</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">536</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -2004,7 +2152,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -2014,8 +2162,8 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">257</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">258</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -2065,7 +2213,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

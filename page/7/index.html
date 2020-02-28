@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,732 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/06/Android/Android安全/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/06/Android/Android安全/" itemprop="url">Android App 安全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-06T08:00:35+08:00">
+                2018-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="四大组件安全"><a href="#四大组件安全" class="headerlink" title="四大组件安全"></a>四大组件安全</h1><blockquote>
+<p>这里提到的组件访问权限主要是指跨应用的进程间通信（IPC，Inter-Process Communication）</p>
+</blockquote>
+<p>组件安全主要是为了防止外部应用恶意访问。</p>
+<p>设置权限开放属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">android:exported=[&quot;true&quot; | &quot;false&quot;]</div></pre></td></tr></table></figure>
+<h2 id="Application-相关设置"><a href="#Application-相关设置" class="headerlink" title="Application 相关设置"></a>Application 相关设置</h2><ol>
+<li>debugable 属性设置成 false, 默认就是 false</li>
+<li>allowBackup: 设置成 false, </li>
+</ol>
+<h2 id="使用-LocalBroadcastManager"><a href="#使用-LocalBroadcastManager" class="headerlink" title="使用 LocalBroadcastManager"></a>使用 LocalBroadcastManager</h2><p>使用本地广播</p>
+<h1 id="WebView-安全"><a href="#WebView-安全" class="headerlink" title="WebView 安全"></a>WebView 安全</h1><ol>
+<li>Android4.2 以下有 JS 任意代码执行的漏洞</li>
+<li>使用 Https</li>
+<li>file 协议安全漏洞，如果 app 不需要支持 file 协议可以禁止</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//若不需支持，则直接禁止 file 协议</div><div class="line">setAllowFileAccess(false);</div><div class="line">setAllowFileAccessFromFileURLs(false);</div><div class="line">setAllowUniversalAccessFromFileURLs(false);</div></pre></td></tr></table></figure>
+<ol>
+<li>密码明文保存漏洞</li>
+</ol>
+<p>WebView 默认是开启密码保存功能的，密码会明文保存在 <code>/data/data/com.package.name/databases/webview.db</code> 中，应该禁止密码保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">WebSettings.setSavePassword(false)</div></pre></td></tr></table></figure>
+<ol>
+<li>开启安全游览模式</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;manifest&gt;</div><div class="line">    &lt;meta-data android:name=&quot;android.webkit.WebView.EnableSafeBrowsing&quot; </div><div class="line">               android:value=&quot;true&quot; /&gt; </div><div class="line">    &lt;application&gt; </div><div class="line">     ... </div><div class="line">    &lt;/application&gt; </div><div class="line">&lt;/manifest&gt;</div></pre></td></tr></table></figure>
+<p>启用安全浏览模式后，WebView 将参考安全浏览的恶意软件和钓鱼网站数据库检查访问的 URL ，在用户打开之前给予危险提示，体验类似以于Chrome浏览器。</p>
+<h1 id="数据存储安全"><a href="#数据存储安全" class="headerlink" title="数据存储安全"></a>数据存储安全</h1><ol>
+<li>密钥类信息不要硬编码，可以写在 JNI 中</li>
+<li>SharePreferences 不能存放敏感信息，并且在使用的时候设置权限为 MODE_PRIVATE</li>
+<li>签名配置信息不要加入到版本管理里面</li>
+</ol>
+<h1 id="数据传输安全"><a href="#数据传输安全" class="headerlink" title="数据传输安全"></a>数据传输安全</h1><ol>
+<li>HTTPS 协议</li>
+<li>Android 网络安全性配置</li>
+</ol>
+<p>可以设置应用只信任某个 CA 证书。<a href="https://developer.android.com/training/articles/security-config?hl=zh-cn#CertificatePinning" target="_blank" rel="external">网络安全配置</a></p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ol>
+<li>日志输出</li>
+</ol>
+<p>正式版本要关闭日志</p>
+<ol>
+<li>代码混淆和加固</li>
+<li>漏洞检查工具</li>
+</ol>
+<p>参考：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/35100057" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/35100057</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/25/java/JDBC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/25/java/JDBC/" itemprop="url">JDBC</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-25T13:18:12+08:00">
+                2018-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>JDBC: java database connectivity 数据库连接，用于执行 sql 语句的 java api。可以为多种关系数据库提供统一的访问。</p>
+<p>JDBC 需要连接驱动，驱动是两个设备之间通讯的桥梁。驱动需要满足一定的格式，格式由设备提供商规定。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><blockquote>
+<p>JDBC 一套由 Sun 公司定义的接口，其实现类由数据库厂商编写。</p>
+</blockquote>
+<h1 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h1><p>使用的 jar 包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-connnector-java-5.1.47-bin.jar</div></pre></td></tr></table></figure>
+<ol>
+<li>注册驱动</li>
+<li>获取链接</li>
+<li>获取语句执行平台</li>
+<li>执行 sql 语句</li>
+<li>处理结果</li>
+<li>释放资源</li>
+</ol>
+<blockquote>
+<p>异常处理：Establishing SSL connection without server’s identity verification is not recommended.<br>解决方案：Put the useSSL=false at the end of the name database:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">    public static void main(String[] args) throws ClassNotFoundException, SQLException &#123;</div><div class="line"></div><div class="line">//        1。 注册驱动，Driver 中源码可知已经注册了</div><div class="line">//        DriverManager.registerDriver(new Driver());</div><div class="line">        // 使用反射方式注册驱动</div><div class="line">        Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</div><div class="line">        // 2. 获取数据库连接</div><div class="line">        // url:  数据库地址 jdbc:mysql://ip:port//数据库名字</div><div class="line">        String url = &quot;jdbc:mysql://localhost:3306/jdbc_ex?useSSL=false&quot;;</div><div class="line">        String userName = &quot;root&quot;;</div><div class="line">        String pwd = &quot;happy0224&quot;;</div><div class="line">        Connection connection = DriverManager.getConnection(url, userName, pwd);</div><div class="line">        System.out.println(connection);</div><div class="line">        // 3。 获取语句执行平台</div><div class="line">        Statement statement = connection.createStatement();</div><div class="line"></div><div class="line">        // 4. 执行 sql</div><div class="line">        // statement.executeUpdate() 执行 insert delete update</div><div class="line">        // 返回 int 表示影响的记录数</div><div class="line">        int row = statement.executeUpdate(&quot;INSERT INTO sort values(null,&apos;汽车用品2&apos;, 5000, &apos;haha&apos; )&quot;);</div><div class="line">        System.out.println(row);</div><div class="line"></div><div class="line">        // 6. 释放资源</div><div class="line">        statement.close();</div><div class="line">        connection.close();</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>结果处理：查询</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">        ResultSet resultSet = statement.executeQuery(&quot;select * from sort&quot;);</div><div class="line">        while (resultSet.next()) &#123;</div><div class="line">            // 获取每列数据 getXXX 参数建议使用 列名String</div><div class="line">//            resultSet.getInt(&quot;sid&quot;)</div><div class="line">            System.out.println(resultSet.getInt(&quot;sid&quot;));</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>SQL 注入攻击：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">select * from users where username=&apos;a&apos; and pwd=&apos;2&apos;;</div><div class="line"></div><div class="line"></div><div class="line">“select * from users where username=&apos;+ userName +&apos; and pwd=&quot; + pwd + &quot;;”</div><div class="line"></div><div class="line">userName = 1;</div><div class="line">pwd = 1&apos; or 1=1</div></pre></td></tr></table></figure>
+<p>防止注入攻击：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 使用子接口 PreparedStatement (SQl 预编译存储，多次高效执行SQL)</div><div class="line">String sql = &quot;select * from users where username=? and password=?&quot;;</div><div class="line">PreparedStatement preparedStatement = connection.prepareStatement(sql);</div><div class="line">//  参数替换占位符</div><div class="line">preparedStatement.setString(1, &quot;username&quot;);</div><div class="line">preparedStatement.setString(2, &quot;pwd&quot;);</div><div class="line">//</div></pre></td></tr></table></figure>
+<p>更新：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">String sql = &quot;update sort set sname=?, sprice? where sid=?&quot;;</div><div class="line">PreparedStatement preparedStatement = connection.prepareStatement(sql);</div><div class="line">preparedStatement.setString(1, &quot;asdas&quot;);</div><div class="line">int row = preparedStatement.executeUpdate();</div></pre></td></tr></table></figure>
+<p>查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">String sql = &quot;select * from sort where sid=?&quot;;</div><div class="line">PreparedStatement preparedStatement = connection.prepareStatement(sql);</div><div class="line">preparedStatement.setString(1, &quot;&quot;);</div><div class="line">ResultSet resultSet = preparedStatement.executeQuery();</div></pre></td></tr></table></figure>
+<h1 id="JDBC-工具类"><a href="#JDBC-工具类" class="headerlink" title="JDBC 工具类"></a>JDBC 工具类</h1><p>使用的 jar 包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">commons-dbutils-1.7.jar</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">package jdbc;</div><div class="line"></div><div class="line">import java.sql.*;</div><div class="line"></div><div class="line">public class JDBCUtils &#123;</div><div class="line"></div><div class="line">    private JDBCUtils() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private static Connection connection;</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        try &#123;</div><div class="line">            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</div><div class="line">            String url = &quot;jdbc:mysql://localhost:3306/jdbc_ex?useSSL=false&quot;;</div><div class="line">            String userName = &quot;root&quot;;</div><div class="line">            String pwd = &quot;123&quot;;</div><div class="line">            connection = DriverManager.getConnection(url, userName, pwd);</div><div class="line">        &#125; catch (ClassNotFoundException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (SQLException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            throw new RuntimeException(&quot;database connect fail&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static Connection getConnection() &#123;</div><div class="line">        return connection;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void close(Connection con, Statement statement, ResultSet resultSet) &#123;</div><div class="line">        if (resultSet != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                resultSet.close();</div><div class="line">            &#125; catch (SQLException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if (statement != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                statement.close();</div><div class="line">            &#125; catch (SQLException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (connection != null) &#123;</div><div class="line">            try &#123;</div><div class="line">                con.close();</div><div class="line">            &#125; catch (SQLException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="properties-配置文件"><a href="#properties-配置文件" class="headerlink" title="properties 配置文件"></a>properties 配置文件</h1><p>src 目录下：</p>
+<p><code>config.properties</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">driverClass=com.mysql.jdbc.Driver</div><div class="line">url=jdbc:mysql://localhost:3306/jdbc_ex?useSSL=false</div></pre></td></tr></table></figure>
+<h1 id="DBUtils"><a href="#DBUtils" class="headerlink" title="DBUtils"></a>DBUtils</h1><p><a href="https://commons.apache.org/proper/commons-dbutils/" target="_blank" rel="external">https://commons.apache.org/proper/commons-dbutils/</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">QueryRunner: Executes SQL queries with pluggable strategies for handling ResultSets. This class is thread safe.</div><div class="line">ResultSetHandler: Interface</div><div class="line">DbUtils: A collection of JDBC helper methods. This class is thread safe.</div></pre></td></tr></table></figure>
+<p>增删改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public static void delete() throws SQLException &#123;</div><div class="line">    QueryRunner queryRunner = new QueryRunner();</div><div class="line">    String sql = &quot;delete from sort where sid=?&quot;;</div><div class="line">    int update = queryRunner.update(connection, sql, 9);</div><div class="line">    System.out.println(&quot;delete row:&quot; + update);</div><div class="line">&#125;</div><div class="line"></div><div class="line">public static void update() throws SQLException &#123;</div><div class="line">    QueryRunner queryRunner = new QueryRunner();</div><div class="line">    String sql = &quot;update sort set sname=?, sprice=?, sdesc=? where sid=9&quot;;</div><div class="line">    Object[] params = new Object[]&#123;&quot;null&quot;, 0, &quot;null--&quot;&#125;;</div><div class="line">    int update = queryRunner.update(connection, sql, params);</div><div class="line">    System.out.println(&quot;update row:&quot; + update);</div><div class="line">&#125;</div><div class="line"></div><div class="line">public static void insert() throws SQLException &#123;</div><div class="line">    QueryRunner qR = new QueryRunner();</div><div class="line">    String sql = &quot;insert into sort values(?, ?, ?, ?)&quot;;</div><div class="line">    Object[] params = new Object[]&#123;9, &quot;体育用品&quot;, 299, &quot;购买&quot;&#125;;</div><div class="line">    int update = qR.update(connection, sql, params);</div><div class="line">    System.out.println(&quot;insert row:&quot; + update);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ArrayHandler: 只得到 sql 结果的第一条记录，返回值：Object[]</div><div class="line">ArrayListHandler: 得到 sql 结果的全部数据， 返回值：List&lt;Object[]&gt;</div><div class="line">BeanHandler: Convert the first row of the ResultSet into a bean with the Class given in the constructor.</div><div class="line">BeanListHandler: </div><div class="line">ColumnHandler：Object</div><div class="line">ColumnListHandler: 取一列 返回 List&lt;Object&gt;</div><div class="line">ScalarHanlder:  查询后只有一个结果的时候使用。</div><div class="line">MapHandler: 列名：列值</div><div class="line">MapListHandler: List&lt;Map&lt;String, Object&gt;&gt;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Bean 必须由 空构造函数， setter/getter</p>
+</blockquote>
+<h1 id="连接池"><a href="#连接池" class="headerlink" title="连接池"></a>连接池</h1><p>以 JDBC 为例子，用池子管理 Connection</p>
+<p>连接池规范接口：<code>javas.sql.DataSource</code></p>
+<p>常见连接池：DBCP,C3PO</p>
+<h1 id="DBCP"><a href="#DBCP" class="headerlink" title="DBCP"></a>DBCP</h1><blockquote>
+<p>Tomcat JavaWeb 服务器</p>
+</blockquote>
+<p>需要使用的 jar 包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">commons-dbcp2-2.5.0.jar</div><div class="line">commons-pool2-2.5.0.jar</div></pre></td></tr></table></figure>
+<p>基本使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">BasicDataSource basicDataSource = new BasicDataSource();</div><div class="line">basicDataSource.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);</div><div class="line">basicDataSource.setUrl(&quot;jdbc:mysql://localhost:3306/jdbc_ex?usee&quot;);</div><div class="line">basicDataSource.setUsername(&quot;root&quot;);</div><div class="line">basicDataSource.setPassword(</div><div class="line">try &#123;</div><div class="line">    Connection connection = basicDataSource.getConnection();</div><div class="line">&#125; catch (SQLException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">    throw new RuntimeException(&quot;database connect fail&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="常见配置项目"><a href="#常见配置项目" class="headerlink" title="常见配置项目"></a>常见配置项目</h2><p>必须项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">driverClassName</div><div class="line">url</div><div class="line">username</div><div class="line">password</div></pre></td></tr></table></figure>
+<p>基本项（扩展）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">maxActive</div><div class="line">minidle</div><div class="line">maxidle</div><div class="line">initialSize</div></pre></td></tr></table></figure>
+<h2 id="DBCPUtils"><a href="#DBCPUtils" class="headerlink" title="DBCPUtils"></a>DBCPUtils</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public class JDBCUtils &#123;</div><div class="line"></div><div class="line">    private static BasicDataSource dataSource = new BasicDataSource();</div><div class="line"></div><div class="line">    static &#123;</div><div class="line">        // 基本配置</div><div class="line">        dataSource.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);</div><div class="line">        dataSource.setUrl(&quot;jdbc:mysql://localhost:3306/jdbc_ex?useSSL=false&quot;);</div><div class="line">        dataSource.setUsername(&quot;root&quot;);</div><div class="line">        dataSource.setPassword(&quot;---&quot;);</div><div class="line"></div><div class="line">        // 其他配置</div><div class="line">        dataSource.setInitialSize(10); // 初始化连接数</div><div class="line">        dataSource.setMinIdle(2); // 最小空闲</div><div class="line">        dataSource.setMaxIdle(5); //最大空闲</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static DataSource getDataSource() &#123;</div><div class="line">        return dataSource;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>连接池使用–QueryRunner 创建简化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">QueryRunner queryRunner = new QueryRunner(DBCPUtils.getDataSource());</div></pre></td></tr></table></figure>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><blockquote>
+<p>Transaction</p>
+</blockquote>
+<h2 id="命令行模拟事务"><a href="#命令行模拟事务" class="headerlink" title="命令行模拟事务"></a>命令行模拟事务</h2><p>先关闭 autocommit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">start transaction;</div><div class="line"></div><div class="line">//sql</div><div class="line"></div><div class="line">commit; // rollback;</div></pre></td></tr></table></figure>
+<h2 id="Connect-实现事务"><a href="#Connect-实现事务" class="headerlink" title="Connect 实现事务"></a>Connect 实现事务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">Connection connection = JDBCUtils.getConnection();</div><div class="line">//关闭自动提交</div><div class="line">connection.setAutoCommit(false);</div><div class="line"></div><div class="line">//。。。sql</div><div class="line"></div><div class="line">connection.commit();</div><div class="line">//or</div><div class="line">connection.rollback();</div></pre></td></tr></table></figure>
+<h2 id="事务特性"><a href="#事务特性" class="headerlink" title="事务特性"></a>事务特性</h2><ol>
+<li>A 原子性，事务中包含的逻辑不可分割</li>
+<li>C 一致性，数据的完整性</li>
+<li>I 隔离性，事务在执行期间不能收到其他事务的影响</li>
+<li>D 持久性，事务执行成功后数据持久保存</li>
+</ol>
+<h2 id="事务安全隐含"><a href="#事务安全隐含" class="headerlink" title="事务安全隐含"></a>事务安全隐含</h2><h3 id="读："><a href="#读：" class="headerlink" title="读："></a>读：</h3><ul>
+<li>脏读：一个事务读到另一个事务未提交的数据</li>
+<li>不可重读：一个事务读到另一个事务已提交的数据，导致两次查询结果不一致</li>
+<li>幻读：一个事务读到另一个事务已提交的插入的数据，导致多次查询结果不一致</li>
+</ul>
+<h3 id="写："><a href="#写：" class="headerlink" title="写："></a>写：</h3><ul>
+<li>丢失更新</li>
+</ul>
+<p>处理丢失更新问题：</p>
+<ol>
+<li>悲观锁：认为一定为出现数据丢失</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// for update 数据库的锁机制，排他锁</div><div class="line">select * from account for update</div></pre></td></tr></table></figure>
+<blockquote>
+<p>在查询的时候加入 for update</p>
+</blockquote>
+<ol>
+<li>乐观锁</li>
+</ol>
+<blockquote>
+<p>要求程序员自己控制</p>
+</blockquote>
+<p>数据库中额外加个字段(version).</p>
+<p>事务在提交的时候，比较数据中的 version 和自己基于修改的 version 版本是否一致。</p>
+<h3 id="隔离级别："><a href="#隔离级别：" class="headerlink" title="隔离级别："></a>隔离级别：</h3><ul>
+<li>Read Uncommited, 读未提交，引发脏读</li>
+<li>Read Committed，读已提交；引发 不可重读</li>
+<li>Repeatable Read，可重复读；mysql 默认隔离级别，引发 幻读</li>
+<li>Serializable，可串行化；安全，但是性能不好，需要等另一个事务结束才能继续事务</li>
+</ul>
+<p>效率:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">读未提交 &gt; 读已提交 &gt; 可重复读 &gt; 可串行化</div></pre></td></tr></table></figure>
+<p>拦截程度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">读未提交 &lt; 读已提交 &lt; 可重复读 &lt; 可串行化</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/24/database/sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/24/database/sql/" itemprop="url">sql 学习记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-24T13:18:12+08:00">
+                2018-10-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index">
+                    <span itemprop="name">Database</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="实用记录"><a href="#实用记录" class="headerlink" title="实用记录"></a>实用记录</h1><h2 id="insert-中内嵌-select"><a href="#insert-中内嵌-select" class="headerlink" title="insert 中内嵌 select"></a>insert 中内嵌 select</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">insert</span> <span class="keyword">into</span> sys_roles_permissions(role_id, permission_id) <span class="keyword">values</span>(<span class="number">1</span>, (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> sys_permissions <span class="keyword">where</span> permission <span class="keyword">like</span> <span class="string">'all'</span>));</div></pre></td></tr></table></figure>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>sql: Structure Query Language 结构化查询语言</p>
+<p>ddl: 数据定义语言，create drop alter</p>
+<p>dml：数据操纵语言， insert update delete</p>
+<p>dcl: 数据控制语言, 定义访问权限，安全设置，取消访问权限，grant</p>
+<p>DQL: 数据查询语言，select from whete</p>
+<h1 id="数据库-CRUD"><a href="#数据库-CRUD" class="headerlink" title="数据库 CRUD"></a>数据库 CRUD</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"># 查看 mysql 中所有数据库</div><div class="line">show databases;</div><div class="line"></div><div class="line">information_schema:</div><div class="line">mysql:</div><div class="line">perfomance_schema:</div><div class="line"></div><div class="line"># 创建数据库 数据库名称，字符集，校对规则</div><div class="line">create database db_example;</div><div class="line">create database db_example character set utf8;</div><div class="line">create database db_example character set utf8 collate utf8_bin;</div><div class="line"></div><div class="line"># 切换当前数据库</div><div class="line">use db_example;</div><div class="line"></div><div class="line"># 查看当前正在使用的数据库</div><div class="line">select database();</div><div class="line"></div><div class="line"># 查看数据库创建的语句</div><div class="line">show create database db_example;</div><div class="line"></div><div class="line"># 修改数据库</div><div class="line">alter database 数据库的名字 character set 字符集;</div></pre></td></tr></table></figure>
+<p>删除数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">drop database 数据库名字;</div></pre></td></tr></table></figure>
+<h1 id="表的-CRUD-操作"><a href="#表的-CRUD-操作" class="headerlink" title="表的 CRUD 操作"></a>表的 CRUD 操作</h1><h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">create table 表名(</div><div class="line">    列名 列类型(长度) 约束,</div><div class="line">    列名2 列类型(长度) 约束,</div><div class="line">);</div><div class="line"></div><div class="line">列类型：int char(固定长度) varchar(可变长度) double float boolean date(YYYY-MM-DD) time(hh:mm:ss) datetime(YYYY-MM-DD hh:mm:ss)默认是null timestamp(YYYY-MM-DD hh:mm:ss)默认使用当前时间 text(存放文本) blob(存放二进制)</div><div class="line">长度：mysql高版本中，代表字符个数，和是否是汉子无关</div><div class="line"></div><div class="line">列的约束:</div><div class="line">    主键约束: primary key</div><div class="line">    唯一约束: unique</div><div class="line">    非空约束: not null</div></pre></td></tr></table></figure>
+<h2 id="查看表"><a href="#查看表" class="headerlink" title="查看表"></a>查看表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">show tables;</div><div class="line"></div><div class="line">查看表定义：查看表创建时使用的 sql 语句</div><div class="line">show create table 表名称;</div><div class="line"></div><div class="line">查看表结构：</div><div class="line">desc 表名;</div></pre></td></tr></table></figure>
+<h2 id="修改表："><a href="#修改表：" class="headerlink" title="修改表："></a>修改表：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">添加列：add</div><div class="line">alter table 表名 add 列名 列类型 列约束;</div><div class="line"></div><div class="line">修改列：modify</div><div class="line">alter table 表名 modify 列名 列类型 列约束;</div><div class="line">alter table student modify sex varchar(2);</div><div class="line"></div><div class="line">修改列名：change</div><div class="line">alter table 表名称 change 旧列名 新列名 列类型(列长度) 列约束;</div><div class="line"></div><div class="line">删除列：drop</div><div class="line">alter table 表名 drop 列名;</div><div class="line"></div><div class="line">修改表名称：to</div><div class="line">remane table 表名 to 表名;</div><div class="line"></div><div class="line">修改表字符集：</div><div class="line">alter table 表名 character set 字符集;</div></pre></td></tr></table></figure>
+<h2 id="删除表："><a href="#删除表：" class="headerlink" title="删除表："></a>删除表：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">drop table 表名;</div></pre></td></tr></table></figure>
+<h1 id="表中记录的-CRUD"><a href="#表中记录的-CRUD" class="headerlink" title="表中记录的 CRUD"></a>表中记录的 CRUD</h1><h2 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 插入全数据</div><div class="line">insert into 表名(列名1， 列名2, 列名3) values(值1, 值2, 值3);</div><div class="line">insert into 表名 values(值1, 值2, 值3);</div><div class="line"></div><div class="line"># 批量插入</div><div class="line">insert into student values(值1, 值2, 值3),(值1, 值2, 值3),(值1, 值2, 值3);</div></pre></td></tr></table></figure>
+<p>批量插入的效率比单条插入高，需要处理的语句少。<br>批量插入数据事务操作。</p>
+<h2 id="删除记录"><a href="#删除记录" class="headerlink" title="删除记录"></a>删除记录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">delete from 表名 [where 条件];</div><div class="line"></div><div class="line">没有指定条件就会删除全部数据。</div><div class="line"></div><div class="line">delete: DML 一条一条删除表中数据</div><div class="line">truncate: DDL 先删除表，再重建表 </div><div class="line">哪个效率高？：数据量少的时候 delete 高效，数据量多的时候 truncate 高效。</div><div class="line"></div><div class="line">删除表中所有数据：</div><div class="line">delete from table_name;</div><div class="line">truncate table table_name</div></pre></td></tr></table></figure>
+<h2 id="更新表记录"><a href="#更新表记录" class="headerlink" title="更新表记录"></a>更新表记录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">update 表名 set 列名=列值, 列名2=列值2 [where 条件];</div><div class="line"></div><div class="line">参数如果是字符串，日期 需要加单眼号。</div></pre></td></tr></table></figure>
+<h2 id="查询记录"><a href="#查询记录" class="headerlink" title="查询记录"></a>查询记录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">select [distinct] [*] [列名，列名2] from 表名 [where 条件] [group by having] [order by];</div><div class="line"></div><div class="line">distinct: 去除重复的数据</div><div class="line"></div><div class="line">查询所有数据:</div><div class="line">select * from 表名;</div><div class="line"></div><div class="line">查询所有商品，显示指定列：</div><div class="line">select [列名, 列名] from 表名；</div><div class="line"></div><div class="line">别名查询： as 可以省略</div><div class="line">    表别名</div><div class="line">    select p.pname, p.price from product as p;</div><div class="line">    列别名</div><div class="line">    select pname as 商品名称, price as 商品价格  from product;</div><div class="line"></div><div class="line">去重复：</div><div class="line">select distinct price from product;</div><div class="line"></div><div class="line">select 运算查询：(在查询结果上做了运算):</div><div class="line">select *, price*1.5 as 加价格 from product;</div><div class="line">select pname, price, price*1.5 as 加价格 from product;</div><div class="line"></div><div class="line">条件查询 where: 指定条件，确定要操作的记录</div><div class="line">select * from product where price &gt; 60;</div><div class="line"></div><div class="line">    where 后的条件写法</div><div class="line">        -- 关系运算 &gt; &gt;= &lt; &lt;= = != &lt;&gt; (不等于)</div><div class="line">        -- 逻辑运算 and or not</div><div class="line">        -- 模糊查询 like, _代表一个字符，% 代表多个字符</div><div class="line">            select * from product where pname like &apos;_熊%&apos;;</div><div class="line">        -- 在某个范围值内 in</div><div class="line">            select * from product where cno in (1,4,5);</div><div class="line">        -- 排序查询 order by 关键字 asc: ascend 升序(默认), desc descend 降序</div><div class="line">            select * from product order by price;</div><div class="line">            select * from product order by price desc;</div><div class="line">            select * from product where pname like &apos;%小%&apos; order by price desc;</div><div class="line"></div><div class="line">聚合函数</div><div class="line">    sum()</div><div class="line">        select sum(price) from product;</div><div class="line">    avg(),</div><div class="line">        select avg(price) from product;</div><div class="line">    count(),</div><div class="line">        select count(price) from product;</div><div class="line">    max(),</div><div class="line">        select max(price) from product;</div><div class="line">    min(),</div><div class="line">        select min(price) from product;</div><div class="line"></div><div class="line">    where 后面不能使用聚合函数！</div><div class="line">        (错误)select * from product where price &gt; avg(price); </div><div class="line">        (正确)select * from product where price &gt; (select avg(price) from product);</div><div class="line"></div><div class="line">分组：group by</div><div class="line"></div><div class="line">    根据字段分组, 分组后统计个数：</div><div class="line">        select cno, count(*) from product group by cno;</div><div class="line">    根据字段分组,</div><div class="line">        select cno, avg(price) </div><div class="line">        from product group by cno</div><div class="line">        having avg(price) &gt; 60;</div><div class="line">    having 关键字，可以接聚合函数，出现在分组之后，</div><div class="line">    where 关键字，不能接聚合函数，出现在分组之前</div><div class="line"></div><div class="line">编写顺序：</div><div class="line"></div><div class="line">    select .. from .. where .. group by .. having .. order by</div><div class="line"></div><div class="line">执行顺序</div><div class="line">    </div><div class="line">    from .. where .. group by .. having .. select .. order by</div></pre></td></tr></table></figure>
+<h1 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h1><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>建立数据库原则：</p>
+<ol>
+<li>一个项目一个数据库</li>
+</ol>
+<p>多表之间的关系如何维护：</p>
+<ol>
+<li>外键约束<br> alter table product add foreign key(cno) references category(cid);</li>
+<li>多表之间的建表原则<br> 一对多：多的一边加外键<br> 多对多：通过中间表维护关系，中间表至少有两个外键分别指向两个表。<br> 一对一：一张表维护；两张表使用同一个 id 作为主键；使用外键<pre><code>拆表操作：将常用信息和不常用信息拆开，减少臃肿
+</code></pre></li>
+</ol>
+<p>商城例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">create table user(</div><div class="line">    uid int primary key auto_increment,</div><div class="line">    username varchar(31),</div><div class="line">    password varchar(31),</div><div class="line">    phone varchar(11)</div><div class="line">);</div><div class="line"></div><div class="line">insert into user values(null, &apos;章三&apos;, &apos;111111&apos;, &apos;15669262390&apos;);</div><div class="line"></div><div class="line">订单表：</div><div class="line">create table orders (</div><div class="line">    oid int primary key auto_increment,</div><div class="line">    sum int not null,</div><div class="line">    otime timestamp,</div><div class="line">    address varchar(100),</div><div class="line">    uno int,</div><div class="line">    foreign key(uno) references user(uid)</div><div class="line">);</div><div class="line"></div><div class="line">insert into orders values(null, 200, null, &apos;北京海淀&apos;, 1);</div><div class="line">insert into orders values(null, 234, null, &apos;北京朝阳&apos;, 1);</div><div class="line"></div><div class="line">商品分类表：</div><div class="line">create table category(</div><div class="line">    cid int primary key auto_increment,</div><div class="line">    cname varchar(15),</div><div class="line">    cdesc varchar(100)</div><div class="line">);</div><div class="line"></div><div class="line">insert into category values(null, &apos;手机数码&apos;, &apos;电子产品&apos;);</div><div class="line">insert into category values(null, &apos;鞋靴箱包&apos;, &apos;江南皮革厂&apos;);</div><div class="line">insert into category values(null, &apos;香烟水酒&apos;, &apos;茅台，二锅头&apos;);</div><div class="line">insert into category values(null, &apos;酸奶饼干&apos;, &apos;哇哈哈，蒙牛伊利&apos;);</div><div class="line">insert into category values(null, &apos;馋嘴零食&apos;, &apos;瓜子花生，八宝粥&apos;);</div><div class="line"></div><div class="line">商品表:</div><div class="line">create table product(</div><div class="line">    pid int primary key auto_increment,</div><div class="line">    pname varchar(10),</div><div class="line">    price double,</div><div class="line">    cno int,</div><div class="line">    foreign key(cno) references category(cid)</div><div class="line">);</div><div class="line"></div><div class="line">insert into product values(null, &apos;小米mix2&apos;, 998, 1);</div><div class="line">insert into product values(null, &apos;锤子&apos;, 2998, 1);</div><div class="line">insert into product values(null, &apos;adidas&apos;, 299, 2);</div><div class="line">insert into product values(null, &apos;老村长&apos;, 89, 3);</div><div class="line">insert into product values(null, &apos;劲酒&apos;, 35, 3);</div><div class="line">insert into product values(null, &apos;小熊饼干&apos;, 1, 4);</div><div class="line">insert into product values(null, &apos;卫龙辣条&apos;, 1, 5);</div><div class="line">insert into product values(null, &apos;旺旺血饼&apos;, 1, 5);</div><div class="line"></div><div class="line">订单项目：中间表(订单-商品)</div><div class="line">create table orderitem(</div><div class="line">    ono int,</div><div class="line">    pno int,</div><div class="line">    foreign key(ono) references orders(oid),</div><div class="line">    foreign key(pno) references product(pid),</div><div class="line">    ocount int,</div><div class="line">    subsum double</div><div class="line">);</div><div class="line"></div><div class="line">insert into orderitem value(1, 7, 100, 100);</div><div class="line">insert into orderitem value(1, 8, 101, 101);</div><div class="line"></div><div class="line">insert into orderitem value(2, 5, 1, 35);</div><div class="line">insert into orderitem value(2, 1, 3, 998);</div></pre></td></tr></table></figure>
+<h2 id="多表查询-1"><a href="#多表查询-1" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="交叉连接查询，笛卡尔积："><a href="#交叉连接查询，笛卡尔积：" class="headerlink" title="交叉连接查询，笛卡尔积："></a>交叉连接查询，笛卡尔积：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select * from product;</div><div class="line">select * from category;</div><div class="line"></div><div class="line">(无意义)select * from product, category;</div><div class="line">(过滤有意义的数据) select * from product as p, category as c where p.cno=c.cid;</div><div class="line">(过滤有意义的数据) select * from product p, category c where p.cno=c.cid;</div></pre></td></tr></table></figure>
+<p>内连接查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">-- 隐式内连接</div><div class="line">select * from product p, category c where p.cno=c.cid;</div><div class="line"></div><div class="line">--显示内连接</div><div class="line">select * from product p INNER JOIN category c ON p.cno=c.cid;</div><div class="line"></div><div class="line">区别：</div><div class="line">隐式连接：在查询的结果上做条件过滤</div><div class="line">显示连接：带着条件去查询结果，效率高</div><div class="line"></div><div class="line">左外连接：保证左表全，右边没有对应的数据使用 NULL 填充</div><div class="line">SELECT * FROM product p LEFT OUTER JOIN category c ON p.cno=c.cid;</div><div class="line">右外连接：保证右表全</div><div class="line">SELECT * FROM product p RIGHT OUTER JOIN category c ON p.cno=c.cid;</div><div class="line"></div><div class="line">INSERT INTO product values(null, &apos;NIKE&apos;, 800, NULL);</div></pre></td></tr></table></figure>
+<p>内连接:交集；<br>左外连接：左边表全部；<br>右外连接：右边表全部；</p>
+<h3 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">limit 索引 个数</div><div class="line"></div><div class="line">select * from product limit 0, 2;</div><div class="line">select * from product limit 1, 2;</div><div class="line"></div><div class="line">startIndex = (index-1)*2</div></pre></td></tr></table></figure>
+<h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">查询分类为手机数码的所有商品：</div><div class="line">select cid from category c where cname=&apos;手机数码&apos;;</div><div class="line">select * from product p where p.cid=1;</div><div class="line"></div><div class="line">查询商品名称和商品分类的信息:</div><div class="line">左连接：</div><div class="line">select p.pname,c.cname from product p LEFT OUTER JOIN category c on p.cno=cid;</div><div class="line">子查询</div><div class="line">select p.pname, (select cname from category c where p.cno=c.cid) 商品名称 FROM product p;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/17/flutter/项目模块拆分/日志/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/17/flutter/项目模块拆分/日志/" itemprop="url">日志</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-17T13:18:12+08:00">
+                2018-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Flutter/" itemprop="url" rel="index">
+                    <span itemprop="name">Flutter</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://pub.dartlang.org/packages/logging#-readme-tab-" target="_blank" rel="external">https://pub.dartlang.org/packages/logging</a></p>
+<p><code>log.dart</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">import &apos;package:logging/logging.dart&apos;;</div><div class="line"></div><div class="line">class Log &#123;</div><div class="line">  static final Logger log = new Logger(&apos;Log&apos;);</div><div class="line"></div><div class="line">  static bool needInit = true;</div><div class="line"></div><div class="line">  static const String TAG = &apos;App&apos;;</div><div class="line"></div><div class="line">  static d(&#123;String tag = TAG, String message&#125;) &#123;</div><div class="line">    init();</div><div class="line">    log.fine(&apos;$tag ====&gt; $message&apos;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  static void init() &#123;</div><div class="line">    if (needInit) &#123;</div><div class="line">      needInit = false;</div><div class="line">      Logger.root.level = Level.ALL;</div><div class="line">      Logger.root.onRecord.listen((LogRecord rec) &#123;</div><div class="line">        print(&apos;$&#123;rec.level.name&#125;: $&#123;rec.time&#125;: $&#123;rec.message&#125;&apos;);</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  static w(&#123;String tag = TAG, String message&#125;) &#123;</div><div class="line">    init();</div><div class="line">    log.warning(&apos;$tag ====&gt; $message&apos;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  static e(&#123;String tag = TAG, String message&#125;) &#123;</div><div class="line">    init();</div><div class="line">    log.severe(&apos;$tag ====&gt; $message&apos;);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/14/flutter/feature/Flutter 常用控件继承关系/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +1008,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -303,7 +1029,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -418,7 +1144,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -439,7 +1165,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -564,7 +1290,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -585,7 +1311,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -690,7 +1416,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/13/flutter/dart/语法记录/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/13/flutter/dart/语法tip/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -709,7 +1435,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/13/flutter/dart/语法记录/" itemprop="url">Dart 语法记录</a></h1>
+                <a class="post-title-link" href="/2018/09/13/flutter/dart/语法tip/" itemprop="url">Dart 语法tip</a></h1>
         
 
         <div class="post-meta">
@@ -719,7 +1445,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-13T13:18:12+08:00">
                 2018-09-13
@@ -740,7 +1466,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -780,353 +1506,14 @@
       
         
           
-            <p><a href="https://www.dartlang.org/guides/language/language-tour" target="_blank" rel="external">https://www.dartlang.org/guides/language/language-tour</a></p>
-<h1 id="一些基本概念"><a href="#一些基本概念" class="headerlink" title="一些基本概念"></a>一些基本概念</h1><ul>
-<li>所有可引用的变量都是 Object，Object 包括： class，numbers，Function，null。</li>
-<li>Dart 是强类型语言，但是类型声明不是必须的，因为 dart 可以推断类型</li>
-<li>dart 函数内部可以嵌套函数</li>
-<li>dart 没有关键字 public, protected, private, 使用 <code>_</code> 表示私有 </li>
-</ul>
-<h1 id="String-字符串拼接"><a href="#String-字符串拼接" class="headerlink" title="String 字符串拼接"></a>String 字符串拼接</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$variableName</div><div class="line"></div><div class="line">$&#123;expression&#125;</div></pre></td></tr></table></figure>
-<h1 id="引用声明"><a href="#引用声明" class="headerlink" title="引用声明"></a>引用声明</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var: 定义一个没有类型的变量</div><div class="line">dynamic: </div><div class="line">String/int/bool: 指定类型的变量</div><div class="line"></div><div class="line">// ex:</div><div class="line">var name = &apos;bob&apos;;</div><div class="line">dynamic name = &apos;bob&apos;;</div><div class="line">String name = &apos;bob&apos;;</div></pre></td></tr></table></figure>
-<p>所有没有初始化的变量都是 null.</p>
-<h1 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">final: 可以设置一次的常量，通常属于类的成员变量，在构造函数中初始化。</div><div class="line">const：不能修改的常量，编译时期决定值</div><div class="line"></div><div class="line">// ex:</div><div class="line">final name = &apos;bob&apos;;</div><div class="line">final String name = &apos;bob&apos;;</div><div class="line"></div><div class="line">const bar = 1000;</div><div class="line">const double atm = 1.0;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">static const: 类常量</div><div class="line">static var: 类变量</div></pre></td></tr></table></figure>
-<h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><ul>
-<li>int</li>
-<li>double</li>
-<li>String</li>
-<li>bool</li>
-<li>List</li>
-<li>Map</li>
-<li>Runes</li>
-</ul>
-<h1 id="函数-Functions"><a href="#函数-Functions" class="headerlink" title="函数 Functions"></a>函数 Functions</h1><ol>
-<li>函数可以不定义返回值，但是不推荐这么做</li>
-<li>函数体只有一行代码的时候可以简写 <code>=&gt; expr</code> 相当于 <code>{ return expr; }</code></li>
+            <ol>
+<li>如果变量为 null 就赋值</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bool isNoble(int atomicNumber) =&gt; _nobleGases[atomicNumber] != null;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">b ??= value // 如果 b 为 null 就赋值</div></pre></td></tr></table></figure>
 <ol>
-<li>函数可以设置必须参数和可选参数</li>
-<li>函数参数可以设置默认值，如果设置默认值并且没有传参数的情况下为 null</li>
-<li>匿名函数</li>
-<li>所有函数都有返回值，没有 <code>return</code> 就返回 <code>null</code></li>
+<li>assert</li>
 </ol>
-<h1 id="类型处理"><a href="#类型处理" class="headerlink" title="类型处理"></a>类型处理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">as: typecast</div><div class="line">is: True if the object has the specified type</div><div class="line">is! : False if the object has the specified type</div></pre></td></tr></table></figure>
-<h1 id="赋值语句"><a href="#赋值语句" class="headerlink" title="赋值语句"></a>赋值语句</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a = value</div><div class="line">b ??= value // 如果 b 为 null 就赋值</div></pre></td></tr></table></figure>
-<h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><p>抛出异常：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">throw FormatException(&apos;.....&apos;)</div><div class="line"></div><div class="line">throw &apos;Out of llamas&apos;</div></pre></td></tr></table></figure>
-<p>捕获异常：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">try&#123;</div><div class="line">    breedMoreLlamas();</div><div class="line">&#125; on OutOfLlamasException &#123;</div><div class="line">    buyMoreLlamas();</div><div class="line">&#125;</div><div class="line"></div><div class="line">try &#123;</div><div class="line">  // ···</div><div class="line">&#125; on Exception catch (e) &#123;</div><div class="line">  print(&apos;Exception details:\n $e&apos;);</div><div class="line">&#125; catch (e, s) &#123;</div><div class="line">  print(&apos;Exception details:\n $e&apos;);</div><div class="line">  print(&apos;Stack trace:\n $s&apos;);</div><div class="line">&#125; finally&#123;</div><div class="line">    //....</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="单例"><a href="#单例" class="headerlink" title="单例"></a>单例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">class Singleton &#123;</div><div class="line">  static final Singleton _singleton = new Singleton._internal();</div><div class="line"></div><div class="line">  factory Singleton() &#123;</div><div class="line">    return _singleton;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  Singleton._internal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="constant-构造函数"><a href="#constant-构造函数" class="headerlink" title="constant 构造函数"></a>constant 构造函数</h1><h1 id="factory-构造函数"><a href="#factory-构造函数" class="headerlink" title="factory 构造函数"></a>factory 构造函数</h1><h1 id="Getter-sertter"><a href="#Getter-sertter" class="headerlink" title="Getter/sertter"></a>Getter/sertter</h1><p>dart 类的成员变量有隐含的 getter/sertter</p>
-<p>同时可以定于额外的 getter/setter</p>
-<h1 id="类相关需要了解的"><a href="#类相关需要了解的" class="headerlink" title="类相关需要了解的"></a>类相关需要了解的</h1><ol>
-<li>dart 也有抽象类，抽象方法</li>
-<li>类可以 实现也可以继承。<code>implements</code> 不继承构造函数，<code>extends</code> 继承构造函数</li>
-<li>类 可以重写 算数运算符</li>
-</ol>
-<h1 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">单行注释：//</div><div class="line"></div><div class="line">多行注释:</div><div class="line">/*</div><div class="line">*</div><div class="line">*/</div><div class="line"></div><div class="line">文档注释：</div><div class="line"></div><div class="line">///</div><div class="line">///</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/feature/InheritedWidget-主题切换/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/flutter/feature/InheritedWidget-主题切换/" itemprop="url">Flutter 国际化 - InheritedWidget</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="使用-InheritedWidget"><a href="#使用-InheritedWidget" class="headerlink" title="使用 InheritedWidget"></a>使用 InheritedWidget</h1><p>ShrineTheme 作为 root widget</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class ShrineTheme extends InheritedWidget &#123;</div><div class="line">  ShrineTheme(&#123; Key key, @required Widget child &#125;)</div><div class="line">    : assert(child != null),</div><div class="line">      super(key: key, child: child);</div><div class="line"></div><div class="line">  final Color cardBackgroundColor = Colors.white;</div><div class="line"></div><div class="line">  final TextStyle appBarTitleStyle = robotoRegular20(Colors.black87);</div><div class="line"></div><div class="line">  static ShrineTheme of(BuildContext context) =&gt; context.inheritFromWidgetOfExactType(ShrineTheme);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(ShrineTheme oldWidget) =&gt; false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>InheritedWidget 应用场景：全局主题替换，局部单例，全局单例，存储用户信息。存储全局变量</p>
-<p>参考：</p>
-<p><a href="https://flutterbyexample.com/state-management-the-flutter-way" target="_blank" rel="external">https://flutterbyexample.com/state-management-the-flutter-way</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/feature/InheritedWidget-国际化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/flutter/feature/InheritedWidget-国际化/" itemprop="url">Flutter 国际化 - InheritedWidget</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="0-创建语言文件"><a href="#0-创建语言文件" class="headerlink" title="0 创建语言文件"></a>0 创建语言文件</h1><p><code>string_base.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">abstract class StringBase &#123;</div><div class="line">  String welcomeMessage;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>string_en.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class StringEn extends StringBase &#123;</div><div class="line">  @override</div><div class="line">  String welcomeMessage = &quot;Welcome To Flutter&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>string_zh.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class StringZh extends StringBase &#123;</div><div class="line">  @override</div><div class="line">  String welcomeMessage = &quot;欢迎 To Flutter&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="1-设置依赖"><a href="#1-设置依赖" class="headerlink" title="1 设置依赖"></a>1 设置依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dependencies:</div><div class="line">  flutter:</div><div class="line">    sdk: flutter</div><div class="line">  flutter_localizations:</div><div class="line">    sdk: flutter</div></pre></td></tr></table></figure>
-<h1 id="2-创建语言代理"><a href="#2-创建语言代理" class="headerlink" title="2 创建语言代理"></a>2 创建语言代理</h1><p><code>my_localizations_delegate.dart</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">import &apos;dart:async&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter/foundation.dart&apos;;</div><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/my_localizations.dart&apos;;</div><div class="line"></div><div class="line"></div><div class="line">class MyLocalizationsDelegate</div><div class="line">    extends LocalizationsDelegate&lt;MyLocalizations&gt; &#123;</div><div class="line">  MyLocalizationsDelegate();</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool isSupported(Locale locale) &#123;</div><div class="line">    ///支持中文和英语</div><div class="line">    return [&apos;en&apos;, &apos;zh&apos;].contains(locale.languageCode);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///根据locale，创建一个对象用于提供当前locale下的文本显示</div><div class="line">  @override</div><div class="line">  Future&lt;MyLocalizations&gt; load(Locale locale) &#123;</div><div class="line">    return new SynchronousFuture&lt;MyLocalizations&gt;(</div><div class="line">        new MyLocalizations(locale));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool shouldReload(LocalizationsDelegate&lt;MyLocalizations&gt; old) &#123;</div><div class="line">    return false;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///全局静态的代理</div><div class="line">  static MyLocalizationsDelegate delegate = new MyLocalizationsDelegate();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>语言包管理类：</p>
-<p><code>my_localizations.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_base.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_en.dart&apos;;</div><div class="line">import &apos;package:passon_movie/common/language/string_zh.dart&apos;;</div><div class="line"></div><div class="line">class MyLocalizations &#123;</div><div class="line">  final Locale locale;</div><div class="line"></div><div class="line">  MyLocalizations(this.locale);</div><div class="line"></div><div class="line">  ///根据不同 locale.languageCode 加载不同语言对应</div><div class="line">  static Map&lt;String, StringBase&gt; _localizedValues = &#123;</div><div class="line">    &apos;en&apos;: StringEN(),</div><div class="line">    &apos;zh&apos;: StringZH(),</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  StringBase get currentLocalized &#123;</div><div class="line">    return _localizedValues[locale.languageCode];</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ///通过 Localizations 加载当前的 DefaultLocalizations</div><div class="line">  ///获取对应的 StringBase</div><div class="line">  static MyLocalizations of(BuildContext context) &#123;</div><div class="line">    return Localizations.of(context, MyLocalizations);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="3-创建一个工具类获取-String"><a href="#3-创建一个工具类获取-String" class="headerlink" title="3 创建一个工具类获取 String"></a>3 创建一个工具类获取 String</h1><p><code>common_utils.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/common/localization/my_localizations.dart&apos;;</div><div class="line">import &apos;package:p_project/style/string_base.dart&apos;;</div><div class="line"></div><div class="line">class CommonUtils &#123;</div><div class="line">  static StringBase getLocale(BuildContext context) &#123;</div><div class="line">    return MyLocalizations.of(context).currentLocalized;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="4-AppLocalizationContainer"><a href="#4-AppLocalizationContainer" class="headerlink" title="4 AppLocalizationContainer"></a>4 AppLocalizationContainer</h1><p><code>app_localization_container.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/common/c.dart&apos;;</div><div class="line"></div><div class="line">class AppLocalizationContainer extends StatefulWidget &#123;</div><div class="line">  final Widget child;</div><div class="line"></div><div class="line">  @override</div><div class="line">  State&lt;StatefulWidget&gt; createState() &#123;</div><div class="line">    return _AppLocalizationContainerState();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  AppLocalizationContainer(&#123;@required this.child&#125;);</div><div class="line"></div><div class="line">  static _AppLocalizationContainerState of(BuildContext context) &#123;</div><div class="line">    return (context.inheritFromWidgetOfExactType(</div><div class="line">            _AppLocalizationInheritedWidget) as _AppLocalizationInheritedWidget)</div><div class="line">        .data;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class _AppLocalizationContainerState extends State&lt;AppLocalizationContainer&gt; &#123;</div><div class="line">  String locale = ZH;</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return _AppLocalizationInheritedWidget(</div><div class="line">      data: this,</div><div class="line">      child: widget.child,</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  void setLocal(String locale) &#123;</div><div class="line">    print(&apos;change launguage $locale&apos;);</div><div class="line">    setState(() &#123;</div><div class="line">      this.locale = locale;</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class _AppLocalizationInheritedWidget extends InheritedWidget &#123;</div><div class="line">  final _AppLocalizationContainerState data;</div><div class="line"></div><div class="line">  _AppLocalizationInheritedWidget(&#123;</div><div class="line">    Key key,</div><div class="line">    @required this.data,</div><div class="line">    @required Widget child,</div><div class="line">  &#125;) : super(key: key, child: child);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(InheritedWidget oldWidget) =&gt; true;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="5-AppRootWidget-与-main"><a href="#5-AppRootWidget-与-main" class="headerlink" title="5 AppRootWidget 与 main"></a>5 AppRootWidget 与 main</h1><p><code>app.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/app_localization_container.dart&apos;;</div><div class="line">import &apos;package:p_project/common/localization/my_localizations_delegate.dart&apos;;</div><div class="line">import &apos;package:p_project/page/home_page.dart&apos;;</div><div class="line">import &apos;package:flutter_localizations/flutter_localizations.dart&apos;;</div><div class="line"></div><div class="line">class AppRootWidget extends StatefulWidget &#123;</div><div class="line">  @override</div><div class="line">  AppRootWidgetState createState() =&gt; new AppRootWidgetState();</div><div class="line"></div><div class="line">  AppRootWidget();</div><div class="line">&#125;</div><div class="line"></div><div class="line">class AppRootWidgetState extends State&lt;AppRootWidget&gt; &#123;</div><div class="line">  ThemeData get _themeData =&gt; new ThemeData(</div><div class="line">        primaryColor: Colors.cyan,</div><div class="line">        accentColor: Colors.indigo,</div><div class="line">        scaffoldBackgroundColor: Colors.grey[300],</div><div class="line">      );</div><div class="line"></div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    var locale = AppLocalizationContainer.of(context).locale;</div><div class="line">    return new MaterialApp(</div><div class="line">      title: &apos;Inherited&apos;,</div><div class="line">      debugShowCheckedModeBanner: false,</div><div class="line">      theme: _themeData,</div><div class="line">      localizationsDelegates: [</div><div class="line">        GlobalMaterialLocalizations.delegate,</div><div class="line">        GlobalWidgetsLocalizations.delegate,</div><div class="line">        MyLocalizationsDelegate.delegate,</div><div class="line">      ],</div><div class="line">      supportedLocales: [</div><div class="line">        const Locale(&apos;en&apos;, &apos;US&apos;), // English</div><div class="line">        const Locale(&apos;zh&apos;, &apos;Chinese&apos;), // Hebrew</div><div class="line">      ],</div><div class="line">      locale: Locale(locale),</div><div class="line">      routes: &#123;</div><div class="line">        &apos;/&apos;: (_) =&gt; HomePage(),</div><div class="line">      &#125;,</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>home_page.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line">import &apos;package:p_project/app_localization_container.dart&apos;;</div><div class="line">import &apos;package:p_project/common/common_utils.dart&apos;;</div><div class="line"></div><div class="line">class HomePage extends StatelessWidget &#123;</div><div class="line">  @override</div><div class="line">  Widget build(BuildContext context) &#123;</div><div class="line">    return Scaffold(</div><div class="line">      body: SafeArea(</div><div class="line">        child: Column(</div><div class="line">          children: &lt;Widget&gt;[</div><div class="line">            RaisedButton(</div><div class="line">              onPressed: () &#123;</div><div class="line">                AppLocalizationContainer.of(context).setLocal(&apos;zh&apos;);</div><div class="line">              &#125;,</div><div class="line">              child: Text(&apos;change launge - zh&apos;),</div><div class="line">            ),</div><div class="line">            RaisedButton(</div><div class="line">              onPressed: () &#123;</div><div class="line">                AppLocalizationContainer.of(context).setLocal(&apos;en&apos;);</div><div class="line">              &#125;,</div><div class="line">              child: Text(&apos;change launge - en&apos;),</div><div class="line">            ),</div><div class="line">            Text(CommonUtils.getLocale(context).welcomeMessage),</div><div class="line">            Text(AppLocalizationContainer.of(context).locale),</div><div class="line">          ],</div><div class="line">        ),</div><div class="line">      ),</div><div class="line">    );</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>main.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void main() =&gt; runApp(AppLocalizationContainer(</div><div class="line">      child: AppRootWidget(),</div><div class="line">    ));</div></pre></td></tr></table></figure>
-<p>参考</p>
-<ul>
-<li><a href="https://flutter.dev/docs/development/accessibility-and-localization/internationalization" target="_blank" rel="external">官方文档</a></li>
-<li><a href="https://github.com/CarGuo/GSYGithubAppFlutter" target="_blank" rel="external">https://github.com/CarGuo/GSYGithubAppFlutter</a></li>
-<li><a href="https://flutterbyexample.com/state-management-the-flutter-way" target="_blank" rel="external">https://flutterbyexample.com/state-management-the-flutter-way</a></li>
-<li><a href="https://stackoverflow.com/questions/52077970/flutter-how-to-create-a-singleton-from-an-http-request" target="_blank" rel="external">https://stackoverflow.com/questions/52077970/flutter-how-to-create-a-singleton-from-an-http-request</a></li>
-</ul>
+<p>断言，在生成环境下不会执行，在开发环境下会抛出明显的错误提示。</p>
 
           
         
@@ -1199,7 +1586,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
                 2018-09-12
@@ -1220,7 +1607,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1317,7 +1704,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/项目模块拆分/动画/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/feature/InheritedWidget-主题切换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Double">
@@ -1336,7 +1723,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/12/flutter/项目模块拆分/动画/" itemprop="url">动画</a></h1>
+                <a class="post-title-link" href="/2018/09/12/flutter/feature/InheritedWidget-主题切换/" itemprop="url">Flutter 国际化 - InheritedWidget</a></h1>
         
 
         <div class="post-meta">
@@ -1346,7 +1733,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
                 2018-09-12
@@ -1367,7 +1754,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1407,336 +1794,11 @@
       
         
           
-            <p>动画本质：</p>
-<p>通过数学公式根据 时间(Duration) 修改 Value, Value 值变化影响界面呈现。</p>
-<h1 id="相关类整理"><a href="#相关类整理" class="headerlink" title="相关类整理"></a>相关类整理</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Animatable</div><div class="line">  - Tween：使用它创建 Value 初始值和结束值。</div><div class="line">    - ColorTween</div><div class="line">    - IntTween</div><div class="line"></div><div class="line"></div><div class="line">Animation</div><div class="line">  - CurvedAnimation：修改数学公式，插值器，控制 Value 变化过程</div><div class="line">  - AnimationController：设置动画时长，控制动画</div><div class="line">  - ReverseAnimation</div><div class="line"></div><div class="line">AnimatedBuilder: 可以省去 addListener</div></pre></td></tr></table></figure>
-<h1 id="动画创建基本过程"><a href="#动画创建基本过程" class="headerlink" title="动画创建基本过程"></a>动画创建基本过程</h1><h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="不设置-插值器-时默认是线形动画"><a href="#不设置-插值器-时默认是线形动画" class="headerlink" title="不设置 插值器 时默认是线形动画"></a>不设置 插值器 时默认是线形动画</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(</div><div class="line">    parent: animationController, curve: Curves.fastOutSlowIn));</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(animationController);</div><div class="line"></div><div class="line">animationController.addListener(() &#123;</div><div class="line">  setState(() &#123;&#125;);</div><div class="line">&#125;);</div><div class="line">animationController.forward();</div><div class="line"></div><div class="line">// animation.value 获取值</div></pre></td></tr></table></figure>
-<h2 id="设置-插值器"><a href="#设置-插值器" class="headerlink" title="设置 插值器"></a>设置 插值器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">animationController = AnimationController(duration: Duration(seconds: 2), vsync: this);</div><div class="line"></div><div class="line">animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(</div><div class="line">    parent: animationController, curve: Curves.fastOutSlowIn));</div><div class="line"></div><div class="line">animationController.addListener(() &#123;</div><div class="line">  setState(() &#123;&#125;);</div><div class="line">&#125;);</div><div class="line">animationController.forward();</div></pre></td></tr></table></figure>
-<h1 id="使用-Transform-创建动画"><a href="#使用-Transform-创建动画" class="headerlink" title="使用 Transform 创建动画"></a>使用 Transform 创建动画</h1><blockquote>
-<p>用于子控件的整体动画<br>A widget that applies a transformation before painting its child.</p>
-</blockquote>
-<p>通过矩阵实现动画。</p>
-<p>平移：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Transform(</div><div class="line">  transform:</div><div class="line">  Matrix4.translationValues(animation.value * width, 0.0, 0.0),</div><div class="line">  child: ...,</div><div class="line">),</div></pre></td></tr></table></figure>
-<h1 id="AnimatedSwitcher"><a href="#AnimatedSwitcher" class="headerlink" title="AnimatedSwitcher"></a>AnimatedSwitcher</h1><blockquote>
-<p>用于插入控件，控件删除，控件大小改变时的动画</p>
-</blockquote>
-<p>默认效果：透明度渐变效果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">AnimatedSwitcher(</div><div class="line">  duration: Duration(milliseconds: ANIMATED_DURATION_DEFAULT),</div><div class="line">  child: Visibility(</div><div class="line">    child: Text(&apos;Visibility Text&apos;),</div><div class="line">    key: ValueKey&lt;bool&gt;(_visibility),</div><div class="line">    visible: _visibility,</div><div class="line">  ),</div><div class="line">),</div></pre></td></tr></table></figure>
-<p>设置动画效果：缩小放大效果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">AnimatedSwitcher(</div><div class="line">  switchOutCurve: switchOutCurve,</div><div class="line">  switchInCurve: switchInCurve,</div><div class="line">  duration: Duration(milliseconds: 500),</div><div class="line">  transitionBuilder: (Widget child, Animation&lt;double&gt; animation) &#123;</div><div class="line">    return ScaleTransition(child: child, scale: animation);</div><div class="line">  &#125;,</div><div class="line">  child: Text(</div><div class="line">    text,</div><div class="line">    key: new ValueKey&lt;String&gt;(text),</div><div class="line">    style: TextStyleUtils.normalSubText,</div><div class="line">  ),</div><div class="line">)</div></pre></td></tr></table></figure>
-<p>必须设置 <code>key: new ValueKey&lt;String&gt;(text),</code></p>
-<p>设置 key 后在 Text 内容改变的时候，不会创建新的 Widget 而是执行一个动画改变内容。</p>
-<h1 id="复合动画"><a href="#复合动画" class="headerlink" title="复合动画"></a>复合动画</h1><ol>
-<li>多个 Animatable 设置同一个 AnimationController, 达到同时启动的效果</li>
-</ol>
-<p>参考：</p>
-<ul>
-<li><a href="[https://flutter.io/tutorials/animation/](https://flutter.io/tutorials/animation/"><a href="https://flutter.io/tutorials/animation/" target="_blank" rel="external">https://flutter.io/tutorials/animation/</a></a>)</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/项目模块拆分/样式管理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/flutter/项目模块拆分/样式管理/" itemprop="url">样式管理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="借助-Theme"><a href="#借助-Theme" class="headerlink" title="借助 Theme"></a>借助 Theme</h1><p>final ThemeData theme = Theme.of(context);</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">new Text(</div><div class="line">    demo.title,</div><div class="line">    style: theme.textTheme.subhead.copyWith(</div><div class="line">        color: isDark ? Colors.white : const Color(0xFF202124),</div><div class="line">    ),</div><div class="line">),</div></pre></td></tr></table></figure>
-<h1 id="定义工具类"><a href="#定义工具类" class="headerlink" title="定义工具类"></a>定义工具类</h1><p><code>TextStyle</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter/material.dart&apos;;</div><div class="line"></div><div class="line">class TextStyleUtils &#123;</div><div class="line">  static const lagerTextSize = 30.0;</div><div class="line">  static const bigTextSize = 23.0;</div><div class="line">  static const normalTextSize = 18.0;</div><div class="line">  static const middleTextWhiteSize = 16.0;</div><div class="line">  static const smallTextSize = 14.0;</div><div class="line">  static const minTextSize = 12.0;</div><div class="line"></div><div class="line">  static const normalSubText = TextStyle(</div><div class="line">    color: Colors.black,</div><div class="line">    fontSize: normalTextSize,</div><div class="line">  );</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="使用-InheritedWidget"><a href="#使用-InheritedWidget" class="headerlink" title="使用 InheritedWidget"></a>使用 InheritedWidget</h1><p>ShrineTheme 作为 root widget</p>
+            <h1 id="使用-InheritedWidget"><a href="#使用-InheritedWidget" class="headerlink" title="使用 InheritedWidget"></a>使用 InheritedWidget</h1><p>ShrineTheme 作为 root widget</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class ShrineTheme extends InheritedWidget &#123;</div><div class="line">  ShrineTheme(&#123; Key key, @required Widget child &#125;)</div><div class="line">    : assert(child != null),</div><div class="line">      super(key: key, child: child);</div><div class="line"></div><div class="line">  final Color cardBackgroundColor = Colors.white;</div><div class="line"></div><div class="line">  final TextStyle appBarTitleStyle = robotoRegular20(Colors.black87);</div><div class="line"></div><div class="line">  static ShrineTheme of(BuildContext context) =&gt; context.inheritFromWidgetOfExactType(ShrineTheme);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(ShrineTheme oldWidget) =&gt; false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>InheritedWidget 应用场景：全局主题替换，局部单例，全局单例，存储用户信息。存储全局变量</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/11/flutter/项目模块拆分/JSON与Bean/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/flutter/项目模块拆分/JSON与Bean/" itemprop="url">JSON 与 Bean</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-11T13:18:12+08:00">
-                2018-09-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>使用 <code>json_serializable</code>, <code>build_runner</code>, <code>json_annotation</code> 解决 JSON -&gt; Model 的问题。</p>
-<h1 id="设置依赖"><a href="#设置依赖" class="headerlink" title="设置依赖"></a>设置依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">dependencies:</div><div class="line">  json_annotation: ^1.1.0</div><div class="line"></div><div class="line">dev_dependencies:</div><div class="line">  build_runner: ^0.10.2</div><div class="line">  json_serializable: ^1.2.0</div></pre></td></tr></table></figure>
-<h1 id="创建一个-Model"><a href="#创建一个-Model" class="headerlink" title="创建一个 Model"></a>创建一个 Model</h1><p><code>model/user_model.dart</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;user_model.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModel &#123;</div><div class="line">  String name;</div><div class="line">  int age;</div><div class="line"></div><div class="line">  UserModel(this.name, this.age);</div><div class="line"></div><div class="line">  factory UserModel.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelToJson(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>写完后会报错，先不管</p>
-</blockquote>
-<h1 id="使用-build-runner-自动生成-JSON解析-相关的代码"><a href="#使用-build-runner-自动生成-JSON解析-相关的代码" class="headerlink" title="使用 build_runner 自动生成 JSON解析 相关的代码"></a>使用 build_runner 自动生成 JSON解析 相关的代码</h1><p>创建 JSON 解析文件：在工程目录下执行下面命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">flutter packages pub run build_runner build</div></pre></td></tr></table></figure>
-<p>执行完成后，在 <code>model</code> 文件夹下会生成 <code>user_model.g.dart</code> 文件, <code>user_model.dart</code> 的报错会消失。</p>
-<h1 id="写个单元测试"><a href="#写个单元测试" class="headerlink" title="写个单元测试"></a>写个单元测试</h1><p>在 <code>test</code> 文件夹下：</p>
-<p><code>json_test.dart</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_test/flutter_test.dart&apos;;</div><div class="line">import &apos;dart:convert&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter_app/model/user_model.dart&apos;;</div><div class="line"></div><div class="line">void main() &#123;</div><div class="line">  String JSON_STRING = &apos;&apos;&apos;&#123;&quot;name&quot;:&quot;fangmingdong&quot;,&quot;age&quot;:12&#125;&apos;&apos;&apos;;</div><div class="line"></div><div class="line">  group(&apos;jsonparse test&apos;, () &#123;</div><div class="line"></div><div class="line">    test(&apos;to json&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel(&apos;fangmingdong&apos;, 12);</div><div class="line">      String jsonStr = json.encode(userModel.toJson());</div><div class="line">      print(jsonStr);</div><div class="line">      expect(jsonStr, JSON_STRING);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    test(&apos;mockdata test&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel.fromJson(json.decode(JSON_STRING));</div><div class="line">      expect(userModel.age, 12);</div><div class="line">      expect(userModel.name, &apos;fangmingdong&apos;);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="工程级封装"><a href="#工程级封装" class="headerlink" title="工程级封装"></a>工程级封装</h1><p>通常接口设计都是以下面格式的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;code&quot;: 200,</div><div class="line">  &quot;msg&quot;: &quot;success&quot;,</div><div class="line">  &quot;data&quot;:&#123;</div><div class="line">      ...</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Android 中通常使用泛型解析上面的 JSON:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class BaseResponse&lt;T&gt;&#123;</div><div class="line">  int code;</div><div class="line">  String msg;</div><div class="line">  T data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>但是 <code>json_serializable</code> 并不支持泛型解析。</p>
-<h2 id="不太优雅的解决方案-继承"><a href="#不太优雅的解决方案-继承" class="headerlink" title="不太优雅的解决方案 继承"></a>不太优雅的解决方案 继承</h2><p>解析：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;code&quot;: 200,</div><div class="line">  &quot;msg&quot;: &quot;success&quot;,</div><div class="line">  &quot;data&quot;: &#123;</div><div class="line">    &quot;name&quot;: &quot;fangmingdong&quot;,</div><div class="line">    &quot;age&quot;: 12,</div><div class="line">    &quot;book&quot;: &#123;</div><div class="line">      &quot;id&quot;: 1,</div><div class="line">      &quot;name&quot;: &quot;从你的全世界路过&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>base_response.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;base_response.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class BaseResponse&#123;</div><div class="line"></div><div class="line">  int code;</div><div class="line">  String msg;</div><div class="line"></div><div class="line">  BaseResponse(this.code, this.msg);</div><div class="line"></div><div class="line">  factory BaseResponse.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$BaseResponseFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$BaseResponseToJson(this);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>user_model.dart</code>:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_app/model/base_response.dart&apos;;</div><div class="line">import &apos;package:flutter_app/model/book_model.dart&apos;;</div><div class="line">import &apos;package:json_annotation/json_annotation.dart&apos;;</div><div class="line"></div><div class="line">part &apos;user_model.g.dart&apos;;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModel extends BaseResponse &#123;</div><div class="line">  UserModelReal data;</div><div class="line"></div><div class="line">  UserModel(this.data) : super(0, &apos;&apos;);</div><div class="line"></div><div class="line">  factory UserModel.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelToJson(this);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@JsonSerializable()</div><div class="line">class UserModelReal &#123;</div><div class="line">  String name;</div><div class="line">  int age;</div><div class="line">  BookModel book;</div><div class="line"></div><div class="line">  UserModelReal(this.name, this.age, this.book);</div><div class="line"></div><div class="line">  factory UserModelReal.fromJson(Map&lt;String, dynamic&gt; json) =&gt;</div><div class="line">      _$UserModelRealFromJson(json);</div><div class="line"></div><div class="line">  Map&lt;String, dynamic&gt; toJson() =&gt; _$UserModelRealToJson(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>test:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">import &apos;package:flutter_test/flutter_test.dart&apos;;</div><div class="line">import &apos;dart:convert&apos;;</div><div class="line"></div><div class="line">import &apos;package:flutter_app/model/user_model.dart&apos;;</div><div class="line">import &apos;package:flutter_app/model/book_model.dart&apos;;</div><div class="line"></div><div class="line">void main() &#123;</div><div class="line">  String JSON_STRING = &apos;&apos;&apos;&#123;&quot;code&quot;:200,&quot;msg&quot;:&quot;success&quot;,&quot;data&quot;:&#123;&quot;name&quot;:&quot;fangmingdong&quot;,&quot;age&quot;:12,&quot;book&quot;:&#123;&quot;id&quot;:1,&quot;name&quot;:&quot;从你的全世界路过&quot;&#125;&#125;&#125;&apos;&apos;&apos;;</div><div class="line"></div><div class="line">  group(&apos;jsonparse test&apos;, () &#123;</div><div class="line"></div><div class="line">    test(&apos;to json&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel(new UserModelReal(&apos;fangmingdong&apos;, 12, BookModel(1, &apos;从你的全世界路过&apos;)));</div><div class="line">      String jsonStr = json.encode(userModel.toJson());</div><div class="line">      print(jsonStr);</div><div class="line">//      expect(jsonStr, JSON_STRING);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    test(&apos;mockdata test&apos;, () &#123;</div><div class="line">      UserModel userModel = UserModel.fromJson(json.decode(JSON_STRING));</div><div class="line">      expect(userModel.data.age, 12);</div><div class="line">      expect(userModel.data.name, &apos;fangmingdong&apos;);</div><div class="line">      expect(userModel.code, 200);</div><div class="line">      expect(userModel.msg, &quot;success&quot;);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>参考：</p>
-<ul>
-<li><a href="https://juejin.im/post/5b5f00e7e51d45190571172f" target="_blank" rel="external">https://juejin.im/post/5b5f00e7e51d45190571172f</a></li>
-</ul>
+<p><a href="https://flutterbyexample.com/state-management-the-flutter-way" target="_blank" rel="external">https://flutterbyexample.com/state-management-the-flutter-way</a></p>
 
           
         
@@ -1820,8 +1882,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">532</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">536</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1832,7 +1894,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1842,8 +1904,8 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">257</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">258</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1893,7 +1955,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

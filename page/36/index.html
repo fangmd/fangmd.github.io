@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -253,6 +253,753 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/" itemprop="url">设计模式之蝉 - 抽象工厂方法模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-16T21:38:14+08:00">
+                2016-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="产品类"><a href="#产品类" class="headerlink" title="产品类"></a>产品类</h2><p>Human 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Human</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">talk</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getSex</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>人种抽象类：包含对肤色，语言的定义</p>
+<p>白色人种：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractWhiteHuman</span> <span class="keyword">implements</span> <span class="title">Human</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"白色人种的肤色是白色的！"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">talk</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"英语"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>黑色人种，黄色人种类似。</p>
+<p>每个人种都有两个实现类，定义性别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FemaleYellowHuman</span> <span class="keyword">extends</span> <span class="title">AbstractYellowHuman</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getSex</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"Female"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MaleYellowHuman</span></div></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/07/16/ReadNote/设计模式/创建者模式/设计模式之蝉-抽象工厂模式/#more" rel="contents">
+              Weiterlesen &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/12/Android/测试/单元测试-基本教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/12/Android/测试/单元测试-基本教程/" itemprop="url">Mockito 单元测试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-12T13:18:12+08:00">
+                2016-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://www.vogella.com/tutorials/Mockito/article.html" target="_blank" rel="external">http://www.vogella.com/tutorials/Mockito/article.html</a></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果你不了解JUnit查看下面的教程:<a href="http://www.vogella.com/tutorials/JUnit/article.html" target="_blank" rel="external">http://www.vogella.com/tutorials/JUnit/article.html</a></p>
+<h1 id="使用-mock-对象-进行测试"><a href="#使用-mock-对象-进行测试" class="headerlink" title="使用 mock 对象 进行测试"></a>使用 mock 对象 进行测试</h1><h2 id="测试前提"><a href="#测试前提" class="headerlink" title="测试前提"></a>测试前提</h2><p>解耦</p>
+<p>单元测试需要在隔离的情况下测试一个类. 来自其他类或者系统的影响应该消除. 为了消除来自其他类的影响,可以通过接口的方式来实现.</p>
+<h2 id="不同测试类的分类"><a href="#不同测试类的分类" class="headerlink" title="不同测试类的分类"></a>不同测试类的分类</h2><p><em>dummy object</em> 会传递但是不会使用, 它的方法不会被调用, 可以用来填充方法的参数列表.</p>
+<p><em>Fake objects’</em> 它在运行的时候不会使用实际的数据库,而是使用内存中临时创建的虚拟数据库.</p>
+<p><em>stub class</em> 是接口或者类的部分实现,用来测试过程中运行. 响应外部的测试, 记录调用信息.</p>
+<p><em>mock object</em> 是接口或者类的虚拟实现,</p>
+<p><em>Text doubles</em>可以被传递到其他的测试对象中. 测试可以验证类的反馈是否正常.</p>
+<p>Mock 对象的配置需要的代码少.</p>
+<h2 id="Mock-对象生成"><a href="#Mock-对象生成" class="headerlink" title="Mock 对象生成"></a>Mock 对象生成</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/12/Android/测试/单元测试-开始/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/12/Android/测试/单元测试-开始/" itemprop="url">单元测试-开始</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-12T13:18:12+08:00">
+                2016-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h1><p>单元测试是为了测试某一个代码单元而写的测试代码。</p>
+<p>单元测试，是为了测试某一个类的某一个方法能否正常工作，而写的测试代码。</p>
+<p>测试通常分3步骤：</p>
+<ol>
+<li>setup: 准备前提条件，比如 创建需要被测试的对象</li>
+<li>执行操作：使用被测试对象的测试方法</li>
+<li>验证结果：测试对象的测试方法执行结果是不是和我们期望的一样</li>
+</ol>
+<p>常见的 java 单元测试框架： JUnit，TestNG 等</p>
+<h1 id="JUnit单元测试框架的使用"><a href="#JUnit单元测试框架的使用" class="headerlink" title="JUnit单元测试框架的使用"></a>JUnit单元测试框架的使用</h1><p>测试有返回值的方法，对于没有返回值的方法使用 Mockito</p>
+<h2 id="方法修饰符"><a href="#方法修饰符" class="headerlink" title="方法修饰符"></a>方法修饰符</h2><ul>
+<li><code>@Before</code>: 每个测试方法执行前都会执行一次</li>
+<li><p><code>@Test</code></p>
+<p>  添加允许的异常，比如：<code>@Test(expected = IllegalArgumentException.class)</code> 表示测试方法抛出 IllegalArgumentException 属于正常现象</p>
+</li>
+<li><p><code>@After</code></p>
+</li>
+<li><code>@BeforeClass</code>: 只能修饰静态方法，在测试类测试开始时执行一次</li>
+<li><p><code>@AfterClass</code>: 只能修饰静态方法</p>
+</li>
+<li><p><code>@Ignore(String s)</code>: 表示这个测试方法不进行测试，比如 “not implemented yet”，方法未实现的时候</p>
+<h2 id="断言方法验证结果"><a href="#断言方法验证结果" class="headerlink" title="断言方法验证结果"></a>断言方法验证结果</h2></li>
+<li><p><code>assertEquals(expected, actual)</code></p>
+</li>
+<li><code>assertEquals(expexted, actual, tolerance)</code>: 参数3表示两个数的允许偏差值</li>
+<li><code>assertTrue(boolean condition)</code></li>
+<li><code>assertFalse(boolean condition</code></li>
+<li><code>assertNull(Object obj)</code></li>
+<li><code>assertNotNull(Object obj)</code></li>
+<li><code>assertSame(expected, actual)</code></li>
+<li><code>assertNotSame(experted, actual)</code></li>
+<li><code>fail()</code>: 让测试方法失败</li>
+</ul>
+<p><strong><em>注意：</em></strong>上面的所有方法都有一个重载方法，可以在前面加个 String 参数作为错误提示。 比如：<code>assertEquals(&quot;Current user Id should be 1&quot;, 1, currentUser.id());</code></p>
+<h1 id="Mockito-使用"><a href="#Mockito-使用" class="headerlink" title="Mockito 使用"></a>Mockito 使用</h1><p>mock：创建一个类的虚假的对象，在测试环境中，用来替换掉真实的对象</p>
+<p>Mock 通常作用：</p>
+<ol>
+<li>验证这个对象的某些方法的调用情况，调用了多少次，参数是什么等等</li>
+<li>指定这个对象的某些方法的行为，返回特定的值，或者是执行特定的动作</li>
+</ol>
+<p>Mockito 是一个 Mock 框架</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>需要测试的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">if</span> (password == <span class="keyword">null</span> || password.length() &lt; <span class="number">6</span>) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    mUserManager.performLogin(username, password);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>需要验证 <code>performLogin</code> 是否执行了</p>
+<p>测试代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLogin</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    UserManager mockUserManager = Mockito.mock(UserManager.class);</div><div class="line">    LoginPresenter loginPresenter = <span class="keyword">new</span> LoginPresenter();</div><div class="line">    loginPresenter.setUserManager(mockUserManager);  <span class="comment">//&lt;==</span></div><div class="line"></div><div class="line">    loginPresenter.login(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div><div class="line"></div><div class="line">    Mockito.verify(mockUserManager).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用 Mockito 验证对象方法调用情况的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(userManager).performLogin(<span class="string">"name"</span>, <span class="string">"password"</span>)</div></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="验证方法调用"><a href="#验证方法调用" class="headerlink" title="验证方法调用"></a>验证方法调用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div></pre></td></tr></table></figure>
+<p>验证方法调用次数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager, Mockito.times(<span class="number">1</span>)).performLogin(<span class="string">"xiaochuang"</span>, <span class="string">"xiaochuang password"</span>);</div></pre></td></tr></table></figure>
+<p>验证次数：最多，最少，不执行：<code>atMost(count)</code>, <code>atLeast(count)</code>, <code>nerver()</code></p>
+<p>不管参数的验证：<code>any</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.verify(mockUserManager).performLogin(Mockito.anyString(), Mockito.anyString());</div></pre></td></tr></table></figure>
+<ul>
+<li><code>anyString()</code></li>
+<li><code>anyInt</code></li>
+<li>….</li>
+</ul>
+<h3 id="指定-mock-对象的某些方法的行为"><a href="#指定-mock-对象的某些方法的行为" class="headerlink" title="指定 mock 对象的某些方法的行为"></a>指定 mock 对象的某些方法的行为</h3><h4 id="执行方法返回值"><a href="#执行方法返回值" class="headerlink" title="执行方法返回值"></a>执行方法返回值</h4><p>例子：测试代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">login</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="comment">//假设我们对密码强度有一定要求，使用一个专门的validator来验证密码的有效性</span></div><div class="line">    <span class="keyword">if</span> (mPasswordValidator.verifyPassword(password)) <span class="keyword">return</span>;  <span class="comment">//&lt;==</span></div><div class="line"></div><div class="line">    mUserManager.performLogin(<span class="keyword">null</span>, password);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面的代码中需要考虑：密码的验证方法可能需要联网，我们通过 mock 让这个方法返回 true／false</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.when(mockObject.targetMethod(args)).thenReturn(desiredReturnValue);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//先创建一个mock对象</span></div><div class="line">PasswordValidator mockValidator = Mockito.mock(PasswordValidator.class);</div><div class="line"></div><div class="line"><span class="comment">//当调用mockValidator的verifyPassword方法，同时传入"xiaochuang_is_handsome"时，返回true</span></div><div class="line">Mockito.when(mockValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>)).thenReturn(<span class="keyword">true</span>);</div><div class="line"></div><div class="line"><span class="comment">//当调用mockValidator的verifyPassword方法，同时传入"xiaochuang_is_not_handsome"时，返回false</span></div><div class="line">Mockito.when(validator.verifyPassword(<span class="string">"xiaochuang_is_not_handsome"</span>)).thenReturn(<span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+<h4 id="指定方法执行特定动作"><a href="#指定方法执行特定动作" class="headerlink" title="指定方法执行特定动作"></a>指定方法执行特定动作</h4><p>例子：测试代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loginCallbackVersion</span><span class="params">(String username, String password)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (username == <span class="keyword">null</span> || username.length() == <span class="number">0</span>) <span class="keyword">return</span>;</div><div class="line">    <span class="comment">//假设我们对密码强度有一定要求，使用一个专门的validator来验证密码的有效性</span></div><div class="line">    <span class="keyword">if</span> (mPasswordValidator.verifyPassword(password)) <span class="keyword">return</span>;</div><div class="line"></div><div class="line">    <span class="comment">//login的结果将通过callback传递回来。</span></div><div class="line">    mUserManager.performLogin(username, password, <span class="keyword">new</span> NetworkCallback() &#123;  <span class="comment">//&lt;==</span></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(Object data)</span> </span>&#123;</div><div class="line">            <span class="comment">//update view with data</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(<span class="keyword">int</span> code, String msg)</span> </span>&#123;</div><div class="line">            <span class="comment">//show error msg</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>指定 mock 对象执行特定的动作的写法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Mockito.doAnswer(desiredAnswer).when(mockObject).targetMethod(args);</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> Mockito.doAnswer(<span class="keyword">new</span> Answer() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">answer</span><span class="params">(InvocationOnMock invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        <span class="comment">//这里可以获得传给performLogin的参数</span></div><div class="line">        Object[] arguments = invocation.getArguments();</div><div class="line"></div><div class="line">        <span class="comment">//callback是第三个参数</span></div><div class="line">        NetworkCallback callback = (NetworkCallback) arguments[<span class="number">2</span>];</div><div class="line"></div><div class="line">        callback.onFailure(<span class="number">500</span>, <span class="string">"Server error"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="number">500</span>;</div><div class="line">    &#125;</div><div class="line">&#125;).when(mockUserManager).performLogin(anyString(), anyString(), any(NetworkCallback.class));</div></pre></td></tr></table></figure>
+<h3 id="Spy"><a href="#Spy" class="headerlink" title="Spy"></a>Spy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//假设目标类的实现是这样的</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PasswordValidator</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">verifyPassword</span><span class="params">(String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"xiaochuang_is_handsome"</span>.equals(password);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSpy</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//跟创建mock类似，只不过调用的是spy方法，而不是mock方法。spy的用法</span></div><div class="line">    PasswordValidator spyValidator = Mockito.spy(PasswordValidator.class);</div><div class="line"></div><div class="line">    <span class="comment">//在默认情况下，spy对象会调用这个类的真实逻辑，并返回相应的返回值，这可以对照上面的真实逻辑</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>); <span class="comment">//true</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_not_handsome"</span>); <span class="comment">//false</span></div><div class="line"></div><div class="line">    <span class="comment">//spy对象的方法也可以指定特定的行为</span></div><div class="line">    Mockito.when(spyValidator.verifyPassword(anyString())).thenReturn(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">//同样的，可以验证spy对象的方法调用情况</span></div><div class="line">    spyValidator.verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>);</div><div class="line">    Mockito.verify(spyValidator).verifyPassword(<span class="string">"xiaochuang_is_handsome"</span>); <span class="comment">//pass</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>spy与mock的唯一区别就是默认行为不一样：spy对象的方法默认调用真实的逻辑，mock对象的方法默认什么都不做，或直接返回默认值。</p>
+<h1 id="Robolectric"><a href="#Robolectric" class="headerlink" title="Robolectric"></a>Robolectric</h1><p>测试 Activity</p>
+<p>参考:</p>
+<ul>
+<li><a href="http://www.jianshu.com/p/b2717dc245da" target="_blank" rel="external">http://www.jianshu.com/p/b2717dc245da</a></li>
+<li><a href="http://www.jianshu.com/p/1d52fde638cf" target="_blank" rel="external">http://www.jianshu.com/p/1d52fde638cf</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/11/Android/Android 版本/Android5.0/design包/Behavior-低栏拉出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/11/Android/Android 版本/Android5.0/design包/Behavior-低栏拉出/" itemprop="url">CoordinatorLayout Behavior - 底栏拉出</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-11T14:38:14+08:00">
+                2016-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><ol>
+<li>根布局为<code>CoordinatorLayout</code></li>
+<li>正常布局占满整个屏幕</li>
+<li><p>(可选) 添加一个底布局全部拉出的时候显示的头布局, 相关属性:</p>
+<pre><code>&lt;RelativeLayout
+android:id=&quot;@+id/design_bottom_sheet_bar&quot;
+android:layout_width=&quot;match_parent&quot;
+android:layout_height=&quot;?attr/actionBarSize&quot;
+android:background=&quot;@color/colorAccent&quot;
+app:layout_anchor=&quot;@+id/design_bottom_sheet&quot;
+app:layout_anchorGravity=&quot;top&quot;
+android:layout_gravity=&quot;bottom&quot;
+android:visibility=&quot;gone&quot;&gt;
+
+&lt;TextView
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;点击收起BottomSheet&quot;
+    android:textColor=&quot;#ffffff&quot;
+    android:layout_centerInParent=&quot;true&quot;/&gt;
+
+&lt;/RelativeLayout&gt;
+</code></pre></li>
+<li><p>可拉出的底布布局: 下面的<code>ImageView</code>为占位控件可替换成正常的布局控件,</p>
+<pre><code>&lt;RelativeLayout
+android:id=&quot;@+id/design_bottom_sheet&quot;
+android:layout_width=&quot;match_parent&quot;
+android:layout_height=&quot;match_parent&quot;
+android:minHeight=&quot;100dp&quot;
+app:behavior_peekHeight=&quot;56dp&quot;
+app:behavior_hideable=&quot;false&quot;
+app:layout_behavior=&quot;@string/bottom_sheet_behavior&quot;
+android:background=&quot;#ffffff&quot;
+&gt;
+&lt;TextView
+    android:id=&quot;@+id/bottom_sheet_tv&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;56dp&quot;
+    android:layout_centerHorizontal=&quot;true&quot;
+    android:gravity=&quot;center&quot;
+    android:text=&quot;这是一个BottomSheet&quot;/&gt;
+&lt;ImageView
+    android:id=&quot;@+id/bottom_sheet_iv&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:layout_centerInParent=&quot;true&quot;
+    android:padding=&quot;10dp&quot;
+    android:minHeight=&quot;100dp&quot;
+    android:adjustViewBounds=&quot;true&quot;
+    android:scaleType=&quot;centerInside&quot;
+    android:layout_gravity=&quot;center&quot;/&gt;
+&lt;/RelativeLayout&gt;
+</code></pre></li>
+<li><p>活动代码:</p>
+<pre><code>private void initBehavior() {
+mBehavior = BottomSheetBehavior.from(mDesignBottomSheet);
+mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+    @Override
+    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+        // if(newState!=BottomSheetBehavior.STATE_COLLAPSED&amp;&amp;bottom_sheet_tv.getVisibility()==View.VISIBLE){
+        //  bottom_sheet_tv.setVisibility(View.GONE);    
+        //bottom_sheet_iv.setVisibility(View.VISIBLE);
+        //  }else if(newState==BottomSheetBehavior.STATE_COLLAPSED&amp;&amp;bottom_sheet_tv.getVisibility()==View.GONE){
+        // bottom_sheet_tv.setVisibility(View.VISIBLE);
+        //bottom_sheet_iv.setVisibility(View.GONE);
+        //}
+
+        if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            mDesignBottomSheetBar.setVisibility(View.GONE);
+        } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+            mDesignBottomSheetBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 滑动过程中
+     * @param bottomSheet
+     * @param slideOffset
+     */
+    @Override
+    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+        if (bottomSheet.getTop() &lt; 2 * mDesignBottomSheetBar.getHeight()) {
+            mDesignBottomSheetBar.setVisibility(View.VISIBLE);
+            mDesignBottomSheetBar.setAlpha(slideOffset);
+            mDesignBottomSheetBar.setTranslationY(bottomSheet.getTop() - 2 * mDesignBottomSheetBar.getHeight());
+        } else {
+            mDesignBottomSheetBar.setVisibility(View.INVISIBLE);
+        }
+    }
+});
+}
+</code></pre></li>
+<li><p>修改底部拉出布局的高度:</p>
+<pre><code>/**
+ * 修改底部拉出布局的高度,流出标题栏的位置
+ *
+ * @param hasFocus
+ */
+@Override
+public void onWindowFocusChanged(boolean hasFocus) {
+super.onWindowFocusChanged(hasFocus);
+//修改SetBottomSheet的高度 留出顶部工具栏的位置
+
+// 下面的代码可以调整拉出的高度,也可以直接在布局中写死高度
+if (!isSetBottomSheetHeight) {
+    CoordinatorLayout.LayoutParams linearParams = (CoordinatorLayout.LayoutParams) mDesignBottomSheet.getLayoutParams();
+    linearParams.height = mBaiduMapCoordinatorLayout.getHeight() - mDesignBottomSheetBar.getHeight();
+    mDesignBottomSheet.setLayoutParams(linearParams);
+    isSetBottomSheetHeight = true;//设置标记 只执行一次
+}
+}
+</code></pre></li>
+<li><p>点击折叠布局:</p>
+<pre><code>@OnClick(R.id.design_bottom_sheet_bar)
+public void onClick() {
+mBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+}
+</code></pre></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/09/Android/权限管理/Android Permission--Requesting Permission at Run Time/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +1029,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-09T13:18:12+08:00">
                 2016-07-09
@@ -303,7 +1050,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -357,7 +1104,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/07/09/Android/权限管理/Android Permission--Requesting Permission at Run Time/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -431,7 +1178,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-03T13:18:12+08:00">
                 2016-07-03
@@ -452,7 +1199,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -569,7 +1316,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-02T13:18:12+08:00">
                 2016-07-02
@@ -590,7 +1337,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -777,7 +1524,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-24T21:18:12+08:00">
                 2016-06-24
@@ -798,7 +1545,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -914,7 +1661,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-12T13:18:12+08:00">
                 2016-06-12
@@ -935,7 +1682,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1122,7 +1869,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-04T13:18:12+08:00">
                 2016-06-04
@@ -1143,7 +1890,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1186,626 +1933,10 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/06/04/Android/权限管理/Android权限管理/#more" rel="contents">
-              Read more &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
           <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/04/Android/架构/MVP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/04/Android/架构/MVP/" itemprop="url">MVP 学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-04T13:18:12+08:00">
-                2016-06-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="MVP-学习"><a href="#MVP-学习" class="headerlink" title="MVP 学习"></a>MVP 学习</h1><h2 id="MVP-是什么"><a href="#MVP-是什么" class="headerlink" title="MVP 是什么"></a>MVP 是什么</h2><blockquote>
-<p>一种设计模式</p>
-</blockquote>
-<p>包含四个要素：</p>
-<ol>
-<li>View：负责绘制UI元素，与用户进行交互(比如Activity)</li>
-<li>View interface：需要View实现的接口，View通过View interface与Presenter进行交互，降低耦合，方便进行单元测试</li>
-<li>Model：负责存储，检索，操作数据(有时也实现一个Model interface用来降低耦合);也有人理解为JavaBean；</li>
-<li>Presenter：作为View与Model交互的中间纽带，处理与用户交互的负责逻辑</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/04/Android/架构/MVP/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/03/Android/tips/intent和Bundle传值/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/03/Android/tips/intent和Bundle传值/" itemprop="url">Intent传值和Intent+Bundle传值</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-03T13:18:12+08:00">
-                2016-06-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Intent传值和Intent-Bundle传值"><a href="#Intent传值和Intent-Bundle传值" class="headerlink" title="Intent传值和Intent+Bundle传值"></a>Intent传值和Intent+Bundle传值</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Android中Intent本身就能传值，但是为什么又要加入Bundle传值？</p>
-<h2 id="使用Intent-Bundle-的好处"><a href="#使用Intent-Bundle-的好处" class="headerlink" title="使用Intent + Bundle 的好处"></a>使用Intent + Bundle 的好处</h2><p>Bundle实现了对传递数据的封装。</p>
-<h3 id="0"><a href="#0" class="headerlink" title="0"></a>0</h3><p>当A–&gt;B–&gt;C界面跳转的时候：</p>
-<p>如果中间传递的数据都一样，那么Bundle对象就可以多次使用，而不用在Intent中反复的获取和放入数据；</p>
-<p>使传递过程中的代码更简洁；</p>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>当A–&gt;B; A–&gt;C界面跳转的时候：</p>
-<p>如果两种跳转要传递的数据相同或者部分相同，就可以使用同一个Bundle对象，而不用多次写Intent的放入数据方法；</p>
-<p>参考：</p>
-<ul>
-<li><a href="http://blog.csdn.net/garretly/article/details/6207950" target="_blank" rel="external">http://blog.csdn.net/garretly/article/details/6207950</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/01/Android/screanadapter/Android适配--屏幕适配--基本概念/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/01/Android/screanadapter/Android适配--屏幕适配--基本概念/" itemprop="url">Android适配--屏幕适配--基本概念</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-01T09:13:12+08:00">
-                2016-06-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>让 app 在不同屏幕尺寸和不同屏幕分辨率的手机上的显示效果相同</p>
-<h1 id="几个重要的概念"><a href="#几个重要的概念" class="headerlink" title="几个重要的概念"></a>几个重要的概念</h1><h2 id="屏幕尺寸"><a href="#屏幕尺寸" class="headerlink" title="屏幕尺寸"></a>屏幕尺寸</h2><ul>
-<li>含义：手机对角线的物理尺寸</li>
-<li>单位：英寸（inch），1 英寸 = 2.54cm</li>
-</ul>
-<h2 id="屏幕分辨率"><a href="#屏幕分辨率" class="headerlink" title="屏幕分辨率"></a>屏幕分辨率</h2><ul>
-<li>含义：手机在横向，纵向上的像素点数总和</li>
-<li>宽 × 高 例如：1080*1920，在各个方向上的像素点个数</li>
-<li>单位：px（pixel），1px = 1 像素点</li>
-</ul>
-<p>手机常见的分辨率：320<em>480,480</em>800,720<em>1280,1080</em>1920</p>
-<h2 id="屏幕像素密度"><a href="#屏幕像素密度" class="headerlink" title="屏幕像素密度"></a>屏幕像素密度</h2><ul>
-<li>含义：每英寸的像素点数</li>
-<li>单位：dpi（dots per ich）</li>
-</ul>
-<p>android 手机对于每一类手机屏幕都有相应的屏幕像素密度：</p>
-<ul>
-<li>低密度(Idpi) , 204*320, 120dpi</li>
-<li>中密度(mdpi), 320*480, 160dpi</li>
-<li>高密度(hdpi), 480*800, 240dpi</li>
-<li>超高密度(xhdpi), 720*1280, 320dpi</li>
-<li>超超高密度(xxhdpi), 1080*1920, 480dpi</li>
-</ul>
-<p>nexus6：560dpi</p>
-<p>56dp</p>
-<h2 id="屏幕尺寸，分辨率，像素密度三者之间的关系"><a href="#屏幕尺寸，分辨率，像素密度三者之间的关系" class="headerlink" title="屏幕尺寸，分辨率，像素密度三者之间的关系"></a>屏幕尺寸，分辨率，像素密度三者之间的关系</h2><p><img src="http://upload-images.jianshu.io/upload_images/944365-2b5dc928ab334440.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="http://upload-images.jianshu.io/upload_images/944365-2b5dc928ab334440.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p>
-<h2 id="密度无关像素"><a href="#密度无关像素" class="headerlink" title="密度无关像素"></a>密度无关像素</h2><ul>
-<li>含义：device-independent pixel，叫 dp 或者 dip，与终端上的实际物理像素点无关</li>
-<li>单位：dp，可以保证在不同屏幕像素密度的设备上显示相同的效果</li>
-</ul>
-<h2 id="独立比例像素"><a href="#独立比例像素" class="headerlink" title="独立比例像素"></a>独立比例像素</h2><ul>
-<li>含义：scale-independent pixel,叫 sp，sip</li>
-<li><p>单位：sp</p>
-<blockquote>
-<p>推荐使用 12sp,14sp,18sp,22sp 作为字体大小值，不推荐使用奇数和小数容易造成精度丢失问题，小于 12sp 的字体太小看不清。</p>
-</blockquote>
-</li>
-</ul>
-<p>参考：</p>
-<ul>
-<li><a href="http://www.jianshu.com/p/ec5a1a30694b" target="_blank" rel="external">http://www.jianshu.com/p/ec5a1a30694b</a></li>
-<li><a href="http://www.jianshu.com/p/ad563d169871" target="_blank" rel="external">http://www.jianshu.com/p/ad563d169871</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/21/program/UML/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/05/21/program/UML/" itemprop="url">UML 图</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-21T12:18:12+08:00">
-                2016-05-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="UML"><a href="#UML" class="headerlink" title="UML"></a>UML</h1><h2 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h2><h3 id="类之间的关系"><a href="#类之间的关系" class="headerlink" title="类之间的关系"></a>类之间的关系</h3><h4 id="泛化关系-generalization"><a href="#泛化关系-generalization" class="headerlink" title="泛化关系 generalization"></a>泛化关系 generalization</h4><p>类继承表现：泛化(generalize)和实现(realize)</p>
-<h5 id="泛化-generalize"><a href="#泛化-generalize" class="headerlink" title="泛化 generalize"></a>泛化 generalize</h5><p>继承非抽象类</p>
-<pre><code>直线+空心箭头
-</code></pre><h5 id="实现关系-realize"><a href="#实现关系-realize" class="headerlink" title="实现关系 realize"></a>实现关系 realize</h5><p>继承抽象类</p>
-<pre><code>虚线+空心箭头
-</code></pre><h4 id="聚合关系-aggregation"><a href="#聚合关系-aggregation" class="headerlink" title="聚合关系 aggregation"></a>聚合关系 aggregation</h4><p>实体对象之间的关系，表示整体由部分构成；与组合关系不同的是，整体和部分不是强依赖的，即使整体不存在了，部分仍然存在；</p>
-<pre><code>直线+空心菱形
-</code></pre><h4 id="组合关系-composition"><a href="#组合关系-composition" class="headerlink" title="组合关系 composition"></a>组合关系 composition</h4><p>但组合关系是一种强依赖的特殊聚合关系，如果整体不存在了，则部分也不存在了；</p>
-<pre><code>直线+实心菱形
-</code></pre><h4 id="关联关系-association"><a href="#关联关系-association" class="headerlink" title="关联关系(association)"></a>关联关系(association)</h4><p>描述不同类的对象之间的结构关系；它是一种静态关系， 通常与运行状态无关，一般由常识等因素决定的；它一般用来定义对象之间静态的、天然的结构； 所以，关联关系是一种“强关联”的关系；</p>
-<pre><code>直线+[不闭合箭头]
-</code></pre><p>成员变量</p>
-<h4 id="依赖关系-dependency"><a href="#依赖关系-dependency" class="headerlink" title="依赖关系(dependency)"></a>依赖关系(dependency)</h4><p>描述一个对象在运行期间会用到另一个对象的关系；</p>
-<pre><code>虚线+不闭合箭头
-</code></pre><p>注：在最终代码中，依赖关系体现为类构造方法及类方法的传入参数，箭头的指向为调用关系；依赖关系处理临时知道对方外，还是“使用”对方的方法和属性；</p>
-<p>参考:<a href="http://design-patterns.readthedocs.io/zh_CN/latest/read_uml.html" target="_blank" rel="external">http://design-patterns.readthedocs.io/zh_CN/latest/read_uml.html</a></p>
-
-          
         
       
     </div>
@@ -1887,8 +2018,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">532</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-count">536</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -1899,7 +2030,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               
             </div>
           
@@ -1909,8 +2040,8 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">257</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-count">258</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1960,7 +2091,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
