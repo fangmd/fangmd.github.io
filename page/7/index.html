@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,264 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Android/架构/官方架构组件/LiveData/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/12/Android/架构/官方架构组件/LiveData/" itemprop="url">LiveData</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T12:18:12+08:00">
+                2018-11-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="2018-11-15-LiveData-源码阅读"><a href="#2018-11-15-LiveData-源码阅读" class="headerlink" title="2018-11-15 LiveData 源码阅读"></a>2018-11-15 LiveData 源码阅读</h1><h1 id="不能白看源码，面试如何回答"><a href="#不能白看源码，面试如何回答" class="headerlink" title="不能白看源码，面试如何回答"></a>不能白看源码，面试如何回答</h1><blockquote>
+<p>简单的说下 LiveData 原理？</p>
+</blockquote>
+<p>本质上是一个观察者模式，Activity 或 Fragment 中实现观察者，LiveData 是被观察者，LiveData 中存储的数据变更的时候触发事件。</p>
+<blockquote>
+<p>说下 LiveData 的优缺点？</p>
+</blockquote>
+<p>优点：</p>
+<ol>
+<li>响应式编程</li>
+</ol>
+<p>由于观察者模式的特性，实现了响应式编程，LiveData 数据变化后自动触发 UI 更新，</p>
+<ol>
+<li>解耦, 对 MVP 模式的补充</li>
+</ol>
+<p>没有对比就没有伤害：传统的 MVP 模式在使用的时候，Presenter 中需要传入一个 接口 作为与 View 交互的桥梁，而 LiveData 刚好可以替代了这个 接口。这样 Presenter 中就不需要持有 View(通常是View实现接口传到Presenter中直接使用) 对象，解耦更加彻底</p>
+<blockquote>
+<p>应该还不算是 MVVM, 个人理解使用了 DataBinding 才算 MVVM</p>
+</blockquote>
+<ol>
+<li>实现了生命周期的监听， 避免内存泄露</li>
+</ol>
+<p>缺点：</p>
+<p>暂时没想到</p>
+<blockquote>
+<p>LiveData 如何实现生命周期的监听？</p>
+</blockquote>
+<p>这个有点复杂了，很难几句话说清楚。</p>
+<p>白话版本：Activity, Fragment 中有一个成员变量，这个对象在 Activity 和 Fragment 的生命周期函数中会执行一个类似 <code>lifecycleChange(event)</code> 的函数并把当前生命周期事件作为参数传入。然后把生命周期 Event 传递给 LiveData。 最后 LiveData 根据生命周期事件判断是否要取消观察者模式的订阅。</p>
+<p>专业版本：Activity, Fragment 中有一个成员变量 <code>mLifecycleRegistry</code>，这个对象在 Activity 和 Fragment 的生命周期函数中会执行 <code>mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.XXXX);</code> ，然后把生命周期 Event 传递给 LifecycleObserver。 最后 LifecycleObserver 根据生命周期事件判断是否要取消观察者模式的订阅。</p>
+<blockquote>
+<p>Activity 或者 Fragment 哪些生命周期状态下可以接收事件消息？</p>
+</blockquote>
+<p><code>onStart, onResume, onPause</code></p>
+<blockquote>
+<p>不能接收数据的生命周期时(onStop)，LiveData 中数据变化会不会生效?</p>
+</blockquote>
+<p>可以生效，在 Activity 回到 <code>onResume</code> 的时候会显示 LiveData 中最新的数据。</p>
+<blockquote>
+<p>知道setValue 和 postValue 的区别吗？</p>
+</blockquote>
+<p><code>setValue</code> 必须在主线程中执行, <code>postValue</code> 可以在子线程中执行。</p>
+<blockquote>
+<p>如何实现线程切换的？</p>
+</blockquote>
+<p>在内部创建了 <code>MainHandler</code> ，构建一个 <code>Runnable</code> 给 <code>MainHandler</code> 执行，实现线程切换。</p>
+<h1 id="LiveData-源码解析"><a href="#LiveData-源码解析" class="headerlink" title="LiveData 源码解析"></a>LiveData 源码解析</h1><blockquote>
+<p>LiveData是一个数据持有者，其本身实现了观察者模式，支持数据监控（被观察），并且可以感知组件的生命周期。</p>
+</blockquote>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p><code>LiveData</code> 是一个抽象类，通常在使用 <code>LiveData</code> 的时候我们是使用其子类 <code>MutableLiveData</code>。</p>
+<p><code>XXViewModel.class</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// 创建 LiveData</div><div class="line">private MutableLiveData&lt;Object&gt; mDataMutableLiveData = new MutableLiveData&lt;&gt;();</div><div class="line"></div><div class="line">// LiveData 改变数据, 触发观察者</div><div class="line">mDataMutableLiveData.postValue(object);</div><div class="line">// setValue 在主线程中执行</div><div class="line">// postValue 可以在子线程中执行</div></pre></td></tr></table></figure>
+<p><code>XXActivity</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">//获取 ViewModel 对象</div><div class="line">mViewModel = ViewModelProviders.of(this).get(XXViewModel.class);</div><div class="line"></div><div class="line">//设置观察者</div><div class="line">mViewModel.getDataMutableLiveData().observe(this, this::dataChange);</div><div class="line"></div><div class="line">// LiveData 中数据改变的时候处罚</div><div class="line">private void dataChange(Object s) &#123;</div><div class="line">    // data change</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>LiveData 使用了观察者模式。</p>
+<ol>
+<li>被观察者：<code>LiveData</code></li>
+<li>观察者，需要实现：<code>LifecycleOwner</code> 接口，<code>Activity, Fragment</code> 都实现了 <code>LifecycleOwner</code> 接口，所以在使用的时候我们通常使用 <code>Activity, Fragment</code> 作为观察者。</li>
+</ol>
+<p>观察者唯一的作用是提供：<code>Lifecycle</code> 对象。<code>Lifecycle</code> 是抽象类，实际返回的是 <code>LifecycleRegistry</code> 对象。</p>
+<p><code>LifecycleOwner.class</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public interface LifecycleOwner &#123;</div><div class="line">    @NonNull</div><div class="line">    Lifecycle getLifecycle();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Activity 和 Fragment 中都有成员变量 <code>mLifecycleRegistry</code>，并在 <code>getLifecycle</code> 函数中返回该对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);</div><div class="line"></div><div class="line">@Override</div><div class="line">public Lifecycle getLifecycle() &#123;</div><div class="line">    return mLifecycleRegistry;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="被观察者添加观察者过程"><a href="#被观察者添加观察者过程" class="headerlink" title="被观察者添加观察者过程"></a>被观察者添加观察者过程</h2><p>调用 LiveData#observer 函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public void observe(@NonNull LifecycleOwner owner, @NonNull Observer&lt;T&gt; observer)</div></pre></td></tr></table></figure>
+<p><code>android.arch.lifecycle.Observer</code> 是一个接口，里面只有一个函数 <code>onChanged</code> 作为被观察者数据改变后触发的回调函数。</p>
+<p>添加观察者过程实际上是把 <code>Observer</code> 传递给 <code>LiveData</code> 对象 和 <code>LifecycleRegistry</code> 对象。</p>
+<p>LiveData 中存储 observer：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private SafeIterableMap&lt;Observer&lt;T&gt;, ObserverWrapper&gt; mObservers = new SafeIterableMap&lt;&gt;();</div><div class="line"></div><div class="line">Map: observer: new LifecycleBoundObserver(owner, observer)</div></pre></td></tr></table></figure>
+<p>LifecycleRegistry 中存储 observer:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private FastSafeIterableMap&lt;LifecycleObserver, ObserverWithState&gt; mObserverMap = new FastSafeIterableMap&lt;&gt;();</div><div class="line"></div><div class="line">Map: LifecycleBoundObserver(owner, observer): ObserverWithState(observer, initialState)</div></pre></td></tr></table></figure>
+<p><code>LifecycleBoundObserver</code> 对象作为生命周期状态变化后调用函数存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class LifecycleBoundObserver extends ObserverWrapper implements GenericLifecycleObserver</div><div class="line"></div><div class="line">生命周期变化后触发：</div><div class="line">public void onStateChanged(LifecycleOwner source, Lifecycle.Event event)</div></pre></td></tr></table></figure>
+<p>到此关键对象：</p>
+<ol>
+<li>LiveData: 作为数据入口，维护观察者和被观察者的关系</li>
+<li>Observer：数据改变后最终触发的函数，回调接口，调用端实现</li>
+<li>LifecycleOwner: Activity, Fragment 提供 Lifecycle</li>
+<li>Lifecycle, LifecycleRegistry</li>
+<li>LifecycleObserver，GenericLifecycleObserver, LifecycleBoundObserver: 封装了 Observer, LifecycleOwner 对象</li>
+</ol>
+<h2 id="Activity-和-Fragment-的生命周期是如何和-LiveData-产生关联的？"><a href="#Activity-和-Fragment-的生命周期是如何和-LiveData-产生关联的？" class="headerlink" title="Activity 和 Fragment 的生命周期是如何和 LiveData 产生关联的？"></a>Activity 和 Fragment 的生命周期是如何和 LiveData 产生关联的？</h2><p>LiveData 和 生命周期的关系基本操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">生命周期正常的时候， addObserver 注册观察者；生命周期结束的时候 removeObserver 取消观察者</div></pre></td></tr></table></figure>
+<p>上面添加订阅和取消订阅都是内部自动执行的，不需要用户去手动触发。</p>
+<p>上面提到 Activity，Fragment 都实现了 <code>LifecycleOwner</code> 接口，成员变量中有 <code>mLifecycleRegistry</code> 对象。</p>
+<p>在 Activty, Fragment 生命周期函数中调用下面函数将生命周期事件传递出来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.XXXX);</div></pre></td></tr></table></figure>
+<p><code>mLifecycleRegistry</code> 触发生命周期改变函数后，调用下面函数(中间省略了部分步骤)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mLifecycleObserver.onStateChanged(owner, event);</div><div class="line"></div><div class="line">LifecycleBoundObserver 就是这里的 mLifecycleObserver</div><div class="line">//根据事件判断是否要解除订阅</div></pre></td></tr></table></figure>
+<h2 id="setValue-与-postValue"><a href="#setValue-与-postValue" class="headerlink" title="setValue 与 postValue"></a>setValue 与 postValue</h2><p><code>setValue</code> 必须在主线程中执行,<code>postValue</code> 可以在子线程中执行，</p>
+<p><strong>如何实现的线程切换？</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ArchTaskExecutor.getInstance().postToMainThread(mPostValueRunnable);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>ArchTaskExecutor 使用了代理模式, 实际函数执行类是 DefaultTaskExecutor</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TaskExecutor 接口</div><div class="line">    |- ArchTaskExecutor 实现</div><div class="line">    |- DefaultTaskExecutor 实现</div></pre></td></tr></table></figure>
+<p>Runnable 最终执行位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void postToMainThread(Runnable runnable) &#123;</div><div class="line">    if (mMainHandler == null) &#123;</div><div class="line">        synchronized (mLock) &#123;</div><div class="line">            if (mMainHandler == null) &#123;</div><div class="line">                mMainHandler = new Handler(Looper.getMainLooper());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    //noinspection ConstantConditions</div><div class="line">    mMainHandler.post(runnable);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>线程切换通过 Handler 实现</p>
+</blockquote>
+<p>MainHandler 创建方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mMainHandler = new Handler(Looper.getMainLooper());</div></pre></td></tr></table></figure>
+<p>判断是否是 MainThread:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Looper.getMainLooper().getThread() == Thread.currentThread();</div></pre></td></tr></table></figure>
+<h1 id="Fun-with-LiveData-Android-Dev-Summit-‘18"><a href="#Fun-with-LiveData-Android-Dev-Summit-‘18" class="headerlink" title="Fun with LiveData (Android Dev Summit ‘18)"></a>Fun with LiveData (Android Dev Summit ‘18)</h1><ul>
+<li>LiveData 作为 ViewModel 与 Activity 之间沟通的桥梁。</li>
+<li>LiveData 是一个 Observable, Activity 中创建对应的 Observer。</li>
+<li>LiveData is Lifecycle-Aware。</li>
+</ul>
+<p>也就是说 Lifecycle(Activity, Fragment) <code>onStop, onDestory</code>之后，LiveData 会自动和 Lifecycle 解除绑定，</p>
+<ul>
+<li>LiveData 是一个 Value Holder</li>
+</ul>
+<p>给 LiveData 设置一个值，这个值回传递给 Lifecycle(Activity, Fragment).<br>在监听之外时间设置的 Value 会在监听开始的时候直接获取到。</p>
+<h2 id="LiveData-beyond-the-ViewModel"><a href="#LiveData-beyond-the-ViewModel" class="headerlink" title="LiveData beyond the ViewModel"></a>LiveData beyond the ViewModel</h2><p>当我们有 Repository 的时候，Repository 向外暴露 LiveData, 如何将这个 LiveData 和 Lifecycle 绑定？</p>
+<blockquote>
+<p>if you need a lifecycle in your ViewModel, you probably need Transformation. - Yigit</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">LiveData&lt;UserEntity&gt; map = Transformations.map(userIdLiveData, new Function&lt;String, UserEntity&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    public UserEntity apply(String input) &#123;</div><div class="line">        return respository,getUser(input);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">LiveData&lt;UserEntity&gt; yLiveData = Transformations.switchMap(userIdLiveData, new Function&lt;String, LiveData&lt;UserEntity&gt;&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    public LiveData&lt;UserEntity&gt; apply(String input) &#123;</div><div class="line">        return respository.getDataForUser(input);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="MediatorLiveData-使用"><a href="#MediatorLiveData-使用" class="headerlink" title="MediatorLiveData 使用"></a>MediatorLiveData 使用</h2><p>MediatorLiveData 可以监听多个 LiveData。</p>
+<p>计算两个 LiveData 中存储的 String 总长度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">final MediatorLiveData&lt;Integer&gt; integerMediatorLiveData = new MediatorLiveData&lt;Integer&gt;;</div><div class="line">Observer&lt;String&gt; onChanged = new Observer&lt;String&gt;() &#123;</div><div class="line">    @Override</div><div class="line">    public void onChanged(String s) &#123;</div><div class="line">        String value = userIdLiveData.getValue();</div><div class="line">        String value1 = userIdLiveData2.getValue();</div><div class="line">        integerMediatorLiveData.setValue(value.length() + value1.length());</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">integerMediatorLiveData.addSource(userIdLiveData, onChanged);</div><div class="line">integerMediatorLiveData.addSource(userIdLiveData2, onChanged);</div></pre></td></tr></table></figure>
+<p><a href="https://www.youtube.com/watch?v=2rO4r-JOQtA&amp;list=PLWz5rJ2EKKc8WFYCR9esqGGY0vOZm2l6e&amp;index=3" target="_blank" rel="external">Fun with LiveData (Android Dev Summit ‘18)</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/06/Android/Android安全/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +540,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-06T08:00:35+08:00">
                 2018-11-06
@@ -303,7 +561,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -464,7 +722,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-25T13:18:12+08:00">
                 2018-10-25
@@ -485,7 +743,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -704,7 +962,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-24T13:18:12+08:00">
                 2018-10-24
@@ -725,7 +983,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -873,7 +1131,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-17T13:18:12+08:00">
                 2018-09-17
@@ -894,7 +1152,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1008,7 +1266,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -1029,7 +1287,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1144,7 +1402,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -1165,7 +1423,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1290,7 +1548,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-14T13:18:12+08:00">
                 2018-09-14
@@ -1311,7 +1569,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1445,7 +1703,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-13T13:18:12+08:00">
                 2018-09-13
@@ -1466,7 +1724,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1586,7 +1844,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
                 2018-09-12
@@ -1607,7 +1865,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1695,144 +1953,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/flutter/feature/InheritedWidget-主题切换/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/flutter/feature/InheritedWidget-主题切换/" itemprop="url">Flutter 国际化 - InheritedWidget</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-12T13:18:12+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Flutter/" itemprop="url" rel="index">
-                    <span itemprop="name">Flutter</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="使用-InheritedWidget"><a href="#使用-InheritedWidget" class="headerlink" title="使用 InheritedWidget"></a>使用 InheritedWidget</h1><p>ShrineTheme 作为 root widget</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">class ShrineTheme extends InheritedWidget &#123;</div><div class="line">  ShrineTheme(&#123; Key key, @required Widget child &#125;)</div><div class="line">    : assert(child != null),</div><div class="line">      super(key: key, child: child);</div><div class="line"></div><div class="line">  final Color cardBackgroundColor = Colors.white;</div><div class="line"></div><div class="line">  final TextStyle appBarTitleStyle = robotoRegular20(Colors.black87);</div><div class="line"></div><div class="line">  static ShrineTheme of(BuildContext context) =&gt; context.inheritFromWidgetOfExactType(ShrineTheme);</div><div class="line"></div><div class="line">  @override</div><div class="line">  bool updateShouldNotify(ShrineTheme oldWidget) =&gt; false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>InheritedWidget 应用场景：全局主题替换，局部单例，全局单例，存储用户信息。存储全局变量</p>
-<p>参考：</p>
-<p><a href="https://flutterbyexample.com/state-management-the-flutter-way" target="_blank" rel="external">https://flutterbyexample.com/state-management-the-flutter-way</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1882,8 +2002,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">536</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">537</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1894,7 +2014,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1905,7 +2025,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">258</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -1955,7 +2075,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

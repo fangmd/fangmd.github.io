@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,149 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/21/Android/animate/ConstraintLayout实现动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/21/Android/animate/ConstraintLayout实现动画/" itemprop="url">ConstraintLayout 实现动画</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:38:14+08:00">
+                2017-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="方式二-设置属性"><a href="#方式二-设置属性" class="headerlink" title="方式二 设置属性"></a>方式二 设置属性</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">mConstraintSet1 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet1.clone(mRoot);</div><div class="line">mConstraintSet2 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet2.clone(<span class="keyword">this</span>, R.layout.activity_constaint_layout_animate_small);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change2</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    TransitionManager.beginDelayedTransition(mRoot);</div><div class="line">    <span class="keyword">if</span> (mChanged) &#123;</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.START, <span class="number">0</span>);</div><div class="line">        mConstraintSet1.constrainWidth(R.id.view, mWidthMax);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.TOP, <span class="number">0</span>);</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">int</span> margin = (mWidthMax - mWidthMin) / <span class="number">2</span>;</div><div class="line">        Log.d(TAG, <span class="string">"change: "</span> + margin);</div><div class="line">        mConstraintSet1.constrainWidth(R.id.view, mWidthMin);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.LEFT, margin);</div><div class="line">        mConstraintSet1.setMargin(R.id.view, ConstraintSet.TOP, <span class="number">200</span>);</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125;</div><div class="line">    mChanged = !mChanged;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="方式一-创建两个布局"><a href="#方式一-创建两个布局" class="headerlink" title="方式一 创建两个布局"></a>方式一 创建两个布局</h1><blockquote>
+<p>两个布局的控件 id 要一样， constraint 的约束属性要齐全</p>
+</blockquote>
+<p><code>activity_constaint_layout_animate.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;android.support.constraint.ConstraintLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/c_animate_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:background=&quot;#a1a1a1&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.constainslayoutAnimate.ConstraintLayoutAnimateActivity&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/view&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;300dp&quot;</div><div class="line">        android:background=&quot;#a0ffaa&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:layout_width=&quot;0dp&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:onClick=&quot;change&quot;</div><div class="line">        android:text=&quot;Change&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</div></pre></td></tr></table></figure>
+<p><code>activity_constaint_layout_animate_small.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;android.support.constraint.ConstraintLayout</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</div><div class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</div><div class="line">    android:id=&quot;@+id/c_animate_root&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:background=&quot;#a1a1a1&quot;</div><div class="line">    tools:context=&quot;com.fangmingdong.androiddemo.constainslayoutAnimate.ConstraintLayoutAnimateActivity&quot;&gt;</div><div class="line"></div><div class="line">    &lt;View</div><div class="line">        android:id=&quot;@+id/view&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;200dp&quot;</div><div class="line">        android:layout_marginLeft=&quot;20dp&quot;</div><div class="line">        android:layout_marginRight=&quot;20dp&quot;</div><div class="line">        android:layout_marginTop=&quot;20dp&quot;</div><div class="line">        android:background=&quot;#a0ffaa&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintTop_toTopOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">    &lt;Button</div><div class="line">        android:layout_width=&quot;0dp&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:onClick=&quot;change&quot;</div><div class="line">        android:text=&quot;Change&quot;</div><div class="line">        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</div><div class="line">        app:layout_constraintRight_toRightOf=&quot;parent&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.constraint.ConstraintLayout&gt;</div></pre></td></tr></table></figure>
+<p>使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mConstraintSet1 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet1.clone(mRoot);</div><div class="line">mConstraintSet2 = <span class="keyword">new</span> ConstraintSet();</div><div class="line">mConstraintSet2.clone(<span class="keyword">this</span>, R.layout.activity_constaint_layout_animate_small);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">    TransitionManager.beginDelayedTransition(mRoot);</div><div class="line">    <span class="keyword">if</span> (mChanged) &#123;</div><div class="line">        mConstraintSet2.applyTo(mRoot);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        mConstraintSet1.applyTo(mRoot);</div><div class="line">    &#125;</div><div class="line">    mChanged = !mChanged;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/21/Android/四大组件/Context/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +425,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:38:14+08:00">
                 2017-12-21
@@ -303,7 +446,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -512,7 +655,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:03:14+08:00">
                 2017-12-21
@@ -533,7 +676,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -581,7 +724,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/12/21/Android/优化/Android内存优化-内存管理/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -655,7 +798,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T12:18:12+08:00">
                 2017-12-21
@@ -676,7 +819,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -793,7 +936,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T09:23:14+08:00">
                 2017-12-21
@@ -814,7 +957,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -902,165 +1045,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/15/jenkins/Jenkins使用记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/15/jenkins/Jenkins使用记录/" itemprop="url">Jenkins 使用记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-15T12:18:12+08:00">
-                2017-12-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">Jenkins</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>环境：macos</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="brew-安装-推荐"><a href="#brew-安装-推荐" class="headerlink" title="brew 安装(推荐)"></a>brew 安装(推荐)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 使用brew安装</div><div class="line">brew install jenkins</div><div class="line">// 启动，直接运行jenkins即可启动服务</div><div class="line">jenkins</div></pre></td></tr></table></figure>
-<h2 id="下载安装包安装（不推荐）"><a href="#下载安装包安装（不推荐）" class="headerlink" title="下载安装包安装（不推荐）"></a>下载安装包安装（不推荐）</h2><p>官方网站 下载后，安装</p>
-<p><strong>注意：</strong>这种方法安装后会有权限问题</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://jenkins.io/download/</div></pre></td></tr></table></figure>
-<p>安装完成后会自动打开 <code>https://localhost:8080</code> </p>
-<h1 id="构建触发器"><a href="#构建触发器" class="headerlink" title="构建触发器"></a>构建触发器</h1><ul>
-<li>根据提交进行构建（Build when a change is pushed to GitHub）</li>
-<li>定期进行构建（Build periodically）</li>
-<li>定期检测代码更新，如有更新则进行构建（Poll SCM）</li>
-</ul>
-<h1 id="问题1"><a href="#问题1" class="headerlink" title="问题1"></a>问题1</h1><p><code>/Users/Shared/Jenkins/Home/secrets/initialAdminPassword</code> 文件打不开</p>
-<p>处理方法：<a href="https://stackoverflow.com/questions/37146063/how-do-i-get-initial-admin-password-for-jenkins-on-mac" target="_blank" rel="external">https://stackoverflow.com/questions/37146063/how-do-i-get-initial-admin-password-for-jenkins-on-mac</a></p>
-<ol>
-<li><p>finder 打开 <code>/Users/Shared/Jenkins/Home</code> 目录，</p>
-</li>
-<li><p>设置 <code>secrets</code> 文件夹的权限，</p>
-</li>
-<li><p>设置 <code>initialAdminPassword</code> 文件的权限</p>
-</li>
-</ol>
-<p>获取密码</p>
-<h1 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h1><p>卡在创建用户的界面了</p>
-<p>处理：不创建用户，在 <code>save And Finish</code> 按钮的左边有个 使用 admin 登入的按钮</p>
-<h1 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h1><p><code>系统管理</code> -》<code>管理用户</code></p>
-<h1 id="启动-amp-停止"><a href="#启动-amp-停止" class="headerlink" title="启动 &amp; 停止"></a>启动 &amp; 停止</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">设置开机自启动：sudo launchctl load -w /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line">取消开机自启动：sudo launchctl unload -w /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line">手动启动：Java -jar jenkins.war</div><div class="line">后台启动(默认端口)：nohup java -jar jenkins.war &amp;</div><div class="line">后台启动(指定端口)：nohup java -jar jenkins.war -httpPort=88 &amp;</div><div class="line">后台启动(HTTPS)：nohup java -jar jenkins.war -httpsPort=88 &amp;</div><div class="line"></div><div class="line">启动 ： sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line"></div><div class="line">停止： sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/15/jenkins/JenkinsAndroid/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1090,7 +1074,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-15T12:18:12+08:00">
                 2017-12-15
@@ -1111,7 +1095,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1248,6 +1232,165 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/15/jenkins/Jenkins使用记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/15/jenkins/Jenkins使用记录/" itemprop="url">Jenkins 使用记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-15T12:18:12+08:00">
+                2017-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">Jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>环境：macos</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="brew-安装-推荐"><a href="#brew-安装-推荐" class="headerlink" title="brew 安装(推荐)"></a>brew 安装(推荐)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 使用brew安装</div><div class="line">brew install jenkins</div><div class="line">// 启动，直接运行jenkins即可启动服务</div><div class="line">jenkins</div></pre></td></tr></table></figure>
+<h2 id="下载安装包安装（不推荐）"><a href="#下载安装包安装（不推荐）" class="headerlink" title="下载安装包安装（不推荐）"></a>下载安装包安装（不推荐）</h2><p>官方网站 下载后，安装</p>
+<p><strong>注意：</strong>这种方法安装后会有权限问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://jenkins.io/download/</div></pre></td></tr></table></figure>
+<p>安装完成后会自动打开 <code>https://localhost:8080</code> </p>
+<h1 id="构建触发器"><a href="#构建触发器" class="headerlink" title="构建触发器"></a>构建触发器</h1><ul>
+<li>根据提交进行构建（Build when a change is pushed to GitHub）</li>
+<li>定期进行构建（Build periodically）</li>
+<li>定期检测代码更新，如有更新则进行构建（Poll SCM）</li>
+</ul>
+<h1 id="问题1"><a href="#问题1" class="headerlink" title="问题1"></a>问题1</h1><p><code>/Users/Shared/Jenkins/Home/secrets/initialAdminPassword</code> 文件打不开</p>
+<p>处理方法：<a href="https://stackoverflow.com/questions/37146063/how-do-i-get-initial-admin-password-for-jenkins-on-mac" target="_blank" rel="external">https://stackoverflow.com/questions/37146063/how-do-i-get-initial-admin-password-for-jenkins-on-mac</a></p>
+<ol>
+<li><p>finder 打开 <code>/Users/Shared/Jenkins/Home</code> 目录，</p>
+</li>
+<li><p>设置 <code>secrets</code> 文件夹的权限，</p>
+</li>
+<li><p>设置 <code>initialAdminPassword</code> 文件的权限</p>
+</li>
+</ol>
+<p>获取密码</p>
+<h1 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h1><p>卡在创建用户的界面了</p>
+<p>处理：不创建用户，在 <code>save And Finish</code> 按钮的左边有个 使用 admin 登入的按钮</p>
+<h1 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h1><p><code>系统管理</code> -》<code>管理用户</code></p>
+<h1 id="启动-amp-停止"><a href="#启动-amp-停止" class="headerlink" title="启动 &amp; 停止"></a>启动 &amp; 停止</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">设置开机自启动：sudo launchctl load -w /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line">取消开机自启动：sudo launchctl unload -w /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line">手动启动：Java -jar jenkins.war</div><div class="line">后台启动(默认端口)：nohup java -jar jenkins.war &amp;</div><div class="line">后台启动(指定端口)：nohup java -jar jenkins.war -httpPort=88 &amp;</div><div class="line">后台启动(HTTPS)：nohup java -jar jenkins.war -httpsPort=88 &amp;</div><div class="line"></div><div class="line">启动 ： sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</div><div class="line"></div><div class="line">停止： sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/12/c++/c++ Primer4th 笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1277,7 +1420,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-12T13:18:12+08:00">
                 2017-12-12
@@ -1298,7 +1441,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1352,7 +1495,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/12/12/c++/c++ Primer4th 笔记/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1426,7 +1569,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-11T13:18:12+08:00">
                 2017-12-11
@@ -1447,7 +1590,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1498,7 +1641,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/12/11/ReadNote/数据结构、算法与应用c++语言描述/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1572,7 +1715,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-07T08:00:35+08:00">
                 2017-12-07
@@ -1593,7 +1736,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1645,144 +1788,10 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/12/07/Android/cpu适配/so文件ABI与CPU/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/01/Android/触摸事件/View移动最佳实践/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/01/Android/触摸事件/View移动最佳实践/" itemprop="url">View 移动最佳实践</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-01T09:13:12+08:00">
-                2017-12-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">        mTouchView.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() &#123;</div><div class="line"></div><div class="line">            <span class="keyword">private</span> <span class="keyword">float</span> mStartY;</div><div class="line">            <span class="keyword">private</span> <span class="keyword">float</span> mStartX;</div><div class="line"></div><div class="line">            <span class="keyword">private</span> <span class="keyword">float</span> mDownViewX;</div><div class="line">            <span class="keyword">private</span> <span class="keyword">float</span> mDownViewY;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>&#123;</div><div class="line"></div><div class="line">                <span class="keyword">if</span> (mIsAnimating) &#123;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">                &#125;</div><div class="line"></div><div class="line"><span class="comment">//                mDetector.onTouchEvent(event);</span></div><div class="line"></div><div class="line">                <span class="keyword">int</span> action = event.getAction();</div><div class="line">                <span class="keyword">switch</span> (action) &#123;</div><div class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</div><div class="line">                        mDownViewX = mTouchView.getX();</div><div class="line">                        mDownViewY = mTouchView.getY();</div><div class="line"></div><div class="line">                        mStartX = event.getRawX();</div><div class="line">                        mStartY = event.getRawY();</div><div class="line">                        Log.d(TAG, <span class="string">"onTouch: ACTION_DOWN   getRawX="</span> + mStartX + <span class="string">",getRawY="</span> + mStartY);</div><div class="line">                        Log.d(TAG, <span class="string">"onTouch: ACTION_DOWN   x="</span> + mDownViewX + <span class="string">",y="</span> + mDownViewY);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_MOVE:</div><div class="line"></div><div class="line">                        <span class="keyword">float</span> newX = event.getRawX();</div><div class="line">                        <span class="keyword">float</span> newY = event.getRawY();</div><div class="line">                        <span class="keyword">float</span> offsetX = newX - mStartX;</div><div class="line">                        <span class="keyword">float</span> offsetY = newY - mStartY;</div><div class="line"></div><div class="line">                        mTouchView.setX(mTouchView.getX() + offsetX);</div><div class="line">                        mTouchView.setY(mTouchView.getY() + offsetY);</div><div class="line"></div><div class="line">                        Log.d(TAG, <span class="string">"onTouch: ACTION_MOVE   offsetX="</span> + offsetX +</div><div class="line">                                <span class="string">",offsetY="</span> + offsetY);</div><div class="line"></div><div class="line">                        mStartX = newX;</div><div class="line">                        mStartY = newY;</div><div class="line"></div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_UP:</div><div class="line"></div><div class="line">                        <span class="comment">//</span></div><div class="line">                        autoScrollTo(mDownViewX, mDownViewY);</div><div class="line"></div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:</div><div class="line"></div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mIsAnimating;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">autoScrollTo</span><span class="params">(<span class="keyword">float</span> x, <span class="keyword">float</span> y)</span> </span>&#123;</div><div class="line">        Log.d(TAG, <span class="string">"autoScrollTo: x="</span> + x + <span class="string">", y="</span> + y + <span class="string">",, mTouchView.getX()"</span> + mTouchView.getX() +</div><div class="line">                <span class="string">",,mTouchView.getY()"</span> + mTouchView.getY());</div><div class="line">        ViewPropertyAnimator animate = mTouchView.animate();</div><div class="line">        animate.translationXBy(x - mTouchView.getX());</div><div class="line">        animate.translationYBy(y - mTouchView.getY());</div><div class="line">        animate.setListener(<span class="keyword">new</span> Animator.AnimatorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">                mIsAnimating = <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">                mIsAnimating = <span class="keyword">false</span>;</div><div class="line">                Log.d(TAG, <span class="string">"onAnimationEnd: x="</span> + mTouchView.getX() + <span class="string">", y="</span> + mTouchView.getY());</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        animate.setDuration(<span class="number">800</span>);</div><div class="line">        animate.start();</div><div class="line"></div><div class="line"><span class="comment">//        mTouchView.setX(x);</span></div><div class="line"><span class="comment">//        mTouchView.setY(y);</span></div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-          
         
       
     </div>
@@ -1864,8 +1873,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">536</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">537</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1876,7 +1885,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1887,7 +1896,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">258</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -1937,7 +1946,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

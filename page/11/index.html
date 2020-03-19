@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,176 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/12/server/nginx/nginx使用记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/12/server/nginx/nginx使用记录/" itemprop="url">nginx 使用记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-12T13:18:12+08:00">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Server/" itemprop="url" rel="index">
+                    <span itemprop="name">Server</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="配置文件地址"><a href="#配置文件地址" class="headerlink" title="配置文件地址"></a>配置文件地址</h1><p>installed by brew in mac:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/local/etc/nginx/nginx.conf</div></pre></td></tr></table></figure>
+<p>ubuntu:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/etc/nginx</div></pre></td></tr></table></figure>
+<h1 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">nginx -s stop       快速关闭Nginx，可能不保存相关信息，并迅速终止web服务。</div><div class="line">nginx -s quit       平稳关闭Nginx，保存相关信息，有安排的结束web服务。</div><div class="line">nginx -s reload     因改变了Nginx相关配置，需要重新加载配置而重载。</div><div class="line">nginx -s reopen     重新打开日志文件。</div><div class="line">nginx -c filename   为 Nginx 指定一个配置文件，来代替缺省的。</div><div class="line">nginx -t            不运行，而仅仅测试配置文件。nginx 将检查配置文件的语法的正确性，并尝试打开配置文件中所引用到的文件。</div><div class="line">nginx -v            显示 nginx 的版本。</div><div class="line">nginx -V            显示 nginx 的版本，编译器版本和配置参数。</div></pre></td></tr></table></figure>
+<h1 id="配置项解释"><a href="#配置项解释" class="headerlink" title="配置项解释"></a>配置项解释</h1><p>简单单个 http 服务器配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div></pre></td><td class="code"><pre><div class="line">#运行用户</div><div class="line">#user somebody;</div><div class="line"></div><div class="line">#启动进程,通常设置成和cpu的数量相等</div><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">#全局错误日志</div><div class="line">error_log  D:/Tools/nginx-1.10.1/logs/error.log;</div><div class="line">error_log  D:/Tools/nginx-1.10.1/logs/notice.log  notice;</div><div class="line">error_log  D:/Tools/nginx-1.10.1/logs/info.log  info;</div><div class="line"></div><div class="line">#PID文件，记录当前启动的nginx的进程ID</div><div class="line">pid        D:/Tools/nginx-1.10.1/logs/nginx.pid;</div><div class="line"></div><div class="line">#工作模式及连接数上限</div><div class="line">events &#123;</div><div class="line">    worker_connections 1024;    #单个后台worker process进程的最大并发链接数</div><div class="line">&#125;</div><div class="line"></div><div class="line">#设定http服务器，利用它的反向代理功能提供负载均衡支持</div><div class="line">http &#123;</div><div class="line">    #设定mime类型(邮件支持类型),类型由mime.types文件定义</div><div class="line">    include       D:/Tools/nginx-1.10.1/conf/mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line"></div><div class="line">    #设定日志</div><div class="line">    log_format  main  &apos;[$remote_addr] - [$remote_user] [$time_local] &quot;$request&quot; &apos;</div><div class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</div><div class="line"></div><div class="line">    access_log    D:/Tools/nginx-1.10.1/logs/access.log main;</div><div class="line">    rewrite_log     on;</div><div class="line"></div><div class="line">    #sendfile 指令指定 nginx 是否调用 sendfile 函数（zero copy 方式）来输出文件，对于普通应用，</div><div class="line">    #必须设为 on,如果用来进行下载等应用磁盘IO重负载应用，可设置为 off，以平衡磁盘与网络I/O处理速度，降低系统的uptime.</div><div class="line">    sendfile        on;</div><div class="line">    #tcp_nopush     on;</div><div class="line"></div><div class="line">    #连接超时时间</div><div class="line">    keepalive_timeout  120;</div><div class="line">    tcp_nodelay        on;</div><div class="line"></div><div class="line">    #gzip压缩开关</div><div class="line">    #gzip  on;</div><div class="line"></div><div class="line">    #设定实际的服务器列表</div><div class="line">    upstream zp_server1&#123;</div><div class="line">        server 127.0.0.1:8089;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    #HTTP服务器</div><div class="line">    server &#123;</div><div class="line">        #监听80端口，80端口是知名端口号，用于HTTP协议</div><div class="line">        listen       80;</div><div class="line"></div><div class="line">        #定义使用www.xx.com访问</div><div class="line">        server_name  www.helloworld.com;</div><div class="line"></div><div class="line">        #首页</div><div class="line">        index index.html</div><div class="line"></div><div class="line">        #指向webapp的目录</div><div class="line">        root D:\01_Workspace\Project\github\zp\SpringNotes\spring-security\spring-shiro\src\main\webapp;</div><div class="line"></div><div class="line">        #编码格式</div><div class="line">        charset utf-8;</div><div class="line"></div><div class="line">        #代理配置参数</div><div class="line">        proxy_connect_timeout 180;</div><div class="line">        proxy_send_timeout 180;</div><div class="line">        proxy_read_timeout 180;</div><div class="line">        proxy_set_header Host $host;</div><div class="line">        proxy_set_header X-Forwarder-For $remote_addr;</div><div class="line"></div><div class="line">        #反向代理的路径（和upstream绑定），location 后面设置映射的路径</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass http://zp_server1;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        #静态文件，nginx自己处理</div><div class="line">        location ~ ^/(images|javascript|js|css|flash|media|static)/ &#123;</div><div class="line">            root D:\01_Workspace\Project\github\zp\SpringNotes\spring-security\spring-shiro\src\main\webapp\views;</div><div class="line">            #过期30天，静态文件不怎么更新，过期可以设大一点，如果频繁更新，则可以设置得小一点。</div><div class="line">            expires 30d;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        #设定查看Nginx状态的地址</div><div class="line">        location /NginxStatus &#123;</div><div class="line">            stub_status           on;</div><div class="line">            access_log            on;</div><div class="line">            auth_basic            &quot;NginxStatus&quot;;</div><div class="line">            auth_basic_user_file  conf/htpasswd;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        #禁止访问 .htxxx 文件</div><div class="line">        location ~ /\.ht &#123;</div><div class="line">            deny all;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        #错误处理页面（可选择性配置）</div><div class="line">        #error_page   404              /404.html;</div><div class="line">        #error_page   500 502 503 504  /50x.html;</div><div class="line">        #location = /50x.html &#123;</div><div class="line">        #    root   html;</div><div class="line">        #&#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">     #设定mime类型,类型由mime.type文件定义</div><div class="line">    include       /etc/nginx/mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    #设定日志格式</div><div class="line">    access_log    /var/log/nginx/access.log;</div><div class="line"></div><div class="line">    #设定负载均衡的服务器列表</div><div class="line">    upstream load_balance_server &#123;</div><div class="line">        #weigth参数表示权值，权值越高被分配到的几率越大</div><div class="line">        server 192.168.1.11:80   weight=5;</div><div class="line">        server 192.168.1.12:80   weight=1;</div><div class="line">        server 192.168.1.13:80   weight=6;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">   #HTTP服务器</div><div class="line">   server &#123;</div><div class="line">        #侦听80端口</div><div class="line">        listen       80;</div><div class="line"></div><div class="line">        #定义使用www.xx.com访问</div><div class="line">        server_name  www.helloworld.com;</div><div class="line"></div><div class="line">        #对所有请求进行负载均衡请求</div><div class="line">        location / &#123;</div><div class="line">            root        /root;                 #定义服务器的默认网站根目录位置</div><div class="line">            index       index.html index.htm;  #定义首页索引文件的名称</div><div class="line">            proxy_pass  http://load_balance_server ;#请求转向load_balance_server 定义的服务器列表</div><div class="line"></div><div class="line">            #以下是一些反向代理的配置(可选择性配置)</div><div class="line">            #proxy_redirect off;</div><div class="line">            proxy_set_header Host $host;</div><div class="line">            proxy_set_header X-Real-IP $remote_addr;</div><div class="line">            #后端的Web服务器可以通过X-Forwarded-For获取用户真实IP</div><div class="line">            proxy_set_header X-Forwarded-For $remote_addr;</div><div class="line">            proxy_connect_timeout 90;          #nginx跟后端服务器连接超时时间(代理连接超时)</div><div class="line">            proxy_send_timeout 90;             #后端服务器数据回传时间(代理发送超时)</div><div class="line">            proxy_read_timeout 90;             #连接成功后，后端服务器响应时间(代理接收超时)</div><div class="line">            proxy_buffer_size 4k;              #设置代理服务器（nginx）保存用户头信息的缓冲区大小</div><div class="line">            proxy_buffers 4 32k;               #proxy_buffers缓冲区，网页平均在32k以下的话，这样设置</div><div class="line">            proxy_busy_buffers_size 64k;       #高负荷下缓冲大小（proxy_buffers*2）</div><div class="line">            proxy_temp_file_write_size 64k;    #设定缓存文件夹大小，大于这个值，将从upstream服务器传</div><div class="line"></div><div class="line">            client_max_body_size 10m;          #允许客户端请求的最大单文件字节数</div><div class="line">            client_body_buffer_size 128k;      #缓冲区代理缓冲用户端请求的最大字节数</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="网站有多个-webapp-的配置"><a href="#网站有多个-webapp-的配置" class="headerlink" title="网站有多个 webapp 的配置"></a>网站有多个 webapp 的配置</h2><p>当一个网站功能越来越丰富时，往往需要将一些功能相对独立的模块剥离出来，独立维护。这样的话，通常，会有多个 webapp。</p>
+<p>举个例子：假如 www.helloworld.com 站点有好几个<br>webapp，finance（金融）、product（产品）、admin（用户中心）。访问这些应用的方式通过上下文(context)来进行区分:www.helloworld.com/finance/www.helloworld.com/product/www.helloworld.com/admin/</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">http &#123;</div><div class="line">    #此处省略一些基本配置</div><div class="line"></div><div class="line">    upstream product_server&#123;</div><div class="line">        server www.helloworld.com:8081;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    upstream admin_server&#123;</div><div class="line">        server www.helloworld.com:8082;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    upstream finance_server&#123;</div><div class="line">        server www.helloworld.com:8083;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        #此处省略一些基本配置</div><div class="line">        #默认指向product的server</div><div class="line">        location / &#123;</div><div class="line">            proxy_pass http://product_server;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        location /product/&#123;</div><div class="line">            proxy_pass http://product_server;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        location /admin/ &#123;</div><div class="line">            proxy_pass http://admin_server;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        location /finance/ &#123;</div><div class="line">            proxy_pass http://finance_server;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="https-反向代理配置"><a href="#https-反向代理配置" class="headerlink" title="https 反向代理配置"></a>https 反向代理配置</h2><p>使用 nginx 配置 https 需要知道几点：</p>
+<ol>
+<li>HTTPS 的固定端口号是 443，不同于 HTTP 的 80 端口</li>
+<li>SSL 标准需要引入安全证书，所以在 nginx.conf 中你需要指定证书和它对应的 key</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">#HTTP服务器</div><div class="line">  server &#123;</div><div class="line">      #监听443端口。443为知名端口号，主要用于HTTPS协议</div><div class="line">      listen       443 ssl;</div><div class="line"></div><div class="line">      #定义使用www.xx.com访问</div><div class="line">      server_name  www.helloworld.com;</div><div class="line"></div><div class="line">      #ssl证书文件位置(常见证书文件格式为：crt/pem)</div><div class="line">      ssl_certificate      cert.pem;</div><div class="line">      #ssl证书key位置</div><div class="line">      ssl_certificate_key  cert.key;</div><div class="line"></div><div class="line">      #ssl配置参数（选择性配置）</div><div class="line">      ssl_session_cache    shared:SSL:1m;</div><div class="line">      ssl_session_timeout  5m;</div><div class="line">      #数字签名，此处使用MD5</div><div class="line">      ssl_ciphers  HIGH:!aNULL:!MD5;</div><div class="line">      ssl_prefer_server_ciphers  on;</div><div class="line"></div><div class="line">      location / &#123;</div><div class="line">          root   /root;</div><div class="line">          index  index.html index.htm;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="静态站点配置"><a href="#静态站点配置" class="headerlink" title="静态站点配置"></a>静态站点配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    include       mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    sendfile        on;</div><div class="line">    keepalive_timeout  65;</div><div class="line"></div><div class="line">    gzip on;</div><div class="line">    gzip_types text/plain application/x-javascript text/css application/xml text/javascript application/javascript image/jpeg image/gif image/png;</div><div class="line">    gzip_vary on;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  static.zp.cn;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">            root /app/dist;</div><div class="line">            index index.html;</div><div class="line">            #转发任何请求到 index.html</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="搭建文件服务器"><a href="#搭建文件服务器" class="headerlink" title="搭建文件服务器"></a>搭建文件服务器</h2><p>Nginx 中的配置要点：</p>
+<ol>
+<li>将 autoindex 开启可以显示目录，默认不开启。</li>
+<li>将 autoindex_exact_size 开启可以显示文件的大小。</li>
+<li>将 autoindex_localtime 开启可以显示文件的修改时间。root 用来设置开放为文件服务的根路径。</li>
+<li>charset 设置为 charset utf-8,gbk;，可以避免中文乱码问题（windows 服务器下设置后，依然乱码，本人暂时没有找到解决方法）。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">autoindex on;# 显示目录</div><div class="line">autoindex_exact_size on;# 显示文件大小</div><div class="line">autoindex_localtime on;# 显示文件时间</div><div class="line"></div><div class="line">server &#123;</div><div class="line">    charset      utf-8,gbk; # windows 服务器下设置后，依然乱码，暂时无解</div><div class="line">    listen       9050 default_server;</div><div class="line">    listen       [::]:9050 default_server;</div><div class="line">    server_name  _;</div><div class="line">    root         /share/fs;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="跨域解决方案"><a href="#跨域解决方案" class="headerlink" title="跨域解决方案"></a>跨域解决方案</h2><ol>
+<li><p>CORS<br>在后端服务器设置 HTTP 响应头，把你需要运行访问的域名加入加入 Access-Control-Allow-Origin 中。</p>
+</li>
+<li><p>jsonp<br>把后端根据请求，构造 json 数据，并返回，前端用 jsonp 跨域。</p>
+</li>
+</ol>
+<p>nginx 根据第一种思路，也提供了一种解决跨域的解决方案。</p>
+<p><code>enable-cors.conf</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"># allow origin list</div><div class="line">set $ACAO &apos;*&apos;;</div><div class="line"></div><div class="line"># set single origin</div><div class="line">if ($http_origin ~* (www.helloworld.com)$) &#123;</div><div class="line">  set $ACAO $http_origin;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if ($cors = &quot;trueget&quot;) &#123;</div><div class="line">    add_header &apos;Access-Control-Allow-Origin&apos; &quot;$http_origin&quot;;</div><div class="line">    add_header &apos;Access-Control-Allow-Credentials&apos; &apos;true&apos;;</div><div class="line">    add_header &apos;Access-Control-Allow-Methods&apos; &apos;GET, POST, OPTIONS&apos;;</div><div class="line">    add_header &apos;Access-Control-Allow-Headers&apos; &apos;DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type&apos;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if ($request_method = &apos;OPTIONS&apos;) &#123;</div><div class="line">  set $cors &quot;$&#123;cors&#125;options&quot;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if ($request_method = &apos;GET&apos;) &#123;</div><div class="line">  set $cors &quot;$&#123;cors&#125;get&quot;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if ($request_method = &apos;POST&apos;) &#123;</div><div class="line">  set $cors &quot;$&#123;cors&#125;post&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来，在你的服务器中 include enable-cors.conf 来引入跨域配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"># ----------------------------------------------------</div><div class="line"># 此文件为项目 nginx 配置片段</div><div class="line"># 可以直接在 nginx config 中 include（推荐）</div><div class="line"># 或者 copy 到现有 nginx 中，自行配置</div><div class="line"># www.helloworld.com 域名需配合 dns hosts 进行配置</div><div class="line"># 其中，api 开启了 cors，需配合本目录下另一份配置文件</div><div class="line"># ----------------------------------------------------</div><div class="line">upstream front_server&#123;</div><div class="line">  server www.helloworld.com:9000;</div><div class="line">&#125;</div><div class="line">upstream api_server&#123;</div><div class="line">  server www.helloworld.com:8080;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server &#123;</div><div class="line">  listen       80;</div><div class="line">  server_name  www.helloworld.com;</div><div class="line"></div><div class="line">  location ~ ^/api/ &#123;</div><div class="line">    include enable-cors.conf;</div><div class="line">    proxy_pass http://api_server;</div><div class="line">    rewrite &quot;^/api/(.*)$&quot; /$1 break;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  location ~ ^/ &#123;</div><div class="line">    proxy_pass http://front_server;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/07/前端/css/css权威指南笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +452,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-07T13:18:12+08:00">
                 2018-05-07
@@ -303,7 +473,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -479,7 +649,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/04/28/Android/第三方/X5WebView使用小结/" itemprop="url">Unbenannt</a></h1>
+                <a class="post-title-link" href="/2018/04/28/Android/第三方/X5WebView使用小结/" itemprop="url">Untitled</a></h1>
         
 
         <div class="post-meta">
@@ -489,7 +659,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-28T15:43:10+08:00">
                 2018-04-28
@@ -648,7 +818,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-07T12:18:12+08:00">
                 2018-04-07
@@ -669,7 +839,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -782,7 +952,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-14T13:18:12+08:00">
                 2018-03-14
@@ -803,7 +973,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -963,7 +1133,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-07T21:03:14+08:00">
                 2018-02-07
@@ -984,7 +1154,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1143,7 +1313,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-07T09:23:14+08:00">
                 2018-02-07
@@ -1164,7 +1334,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1209,7 +1379,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/02/07/Android/features/Androud应用Background和Foreground捕获/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1283,7 +1453,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-01T22:38:14+08:00">
                 2018-02-01
@@ -1304,7 +1474,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1347,7 +1517,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/02/01/Android/Android 版本/Android5.0/StateListAnimator 的使用/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1421,7 +1591,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-01T09:38:14+08:00">
                 2018-02-01
@@ -1442,7 +1612,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1579,7 +1749,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-29T21:03:14+08:00">
                 2018-01-29
@@ -1600,7 +1770,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1648,141 +1818,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span></span>&#123;</div><div class="line">  <span class="keyword">private</span> LinkedHashMap&lt;Integer, Integer&gt; map;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> CAPACITY;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> capacity)</span></span>&#123;</div><div class="line">    CAPACITY = capacity;</div><div class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;Integer, Integer&gt;(capacity, <span class="number">0.75f</span>, <span class="keyword">true</span>)&#123;</div><div class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry eldest)</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> size()&gt;CAPACITY;</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> map.getOrDefault(key, -<span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span></span>&#123;</div><div class="line">    map.put(key, value);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>图片缓存</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> maxMemory = (<span class="keyword">int</span>) (Runtime.getRuntime().totalMemory()/<span class="number">1024</span>);</div><div class="line"><span class="keyword">int</span> cacheSize = maxMemory/<span class="number">8</span>;</div><div class="line"></div><div class="line">        mMemoryCache = <span class="keyword">new</span> LruCache&lt;String,Bitmap&gt;(cacheSize)&#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">sizeOf</span><span class="params">(String key, Bitmap value)</span> </span>&#123;</div><div class="line">                <span class="keyword">return</span> value.getRowBytes()*value.getHeight()/<span class="number">1024</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/Android/优化/08-Android优化-DiskLruCache管理缓存文件 copy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/29/Android/优化/08-Android优化-DiskLruCache管理缓存文件 copy/" itemprop="url">Android内存优化 -- DiskLruCache</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-29T21:03:14+08:00">
-                2018-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>DiskLruCache 是一个第三方库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">implementation &apos;com.jakewharton:disklrucache:2.0.2&apos;</div></pre></td></tr></table></figure>
 
           
         
@@ -1866,8 +1901,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">536</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">537</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1878,7 +1913,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1889,7 +1924,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">258</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -1939,7 +1974,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

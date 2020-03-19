@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -253,6 +253,190 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/25/Android/animate/Android 动画总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/25/Android/animate/Android 动画总结/" itemprop="url">Animation 总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-25T21:38:14+08:00">
+                2017-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Get-Animated-Android-Dev-Summit-‘18"><a href="#Get-Animated-Android-Dev-Summit-‘18" class="headerlink" title="Get Animated (Android Dev Summit ‘18)"></a>Get Animated (Android Dev Summit ‘18)</h1><h2 id="Animator"><a href="#Animator" class="headerlink" title="Animator"></a>Animator</h2><p>属性动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ObjectAnimator -&gt;isA ValueAnimator -&gt;isA Animator</div><div class="line">                    AnimatorSet -&gt;isA Animator</div><div class="line"></div><div class="line">ViewPropertyAnimator -Backed by -&gt; ValueAnimator</div><div class="line">PropertyValuesHolder -Userd by -&gt; ValueAniamtor</div></pre></td></tr></table></figure>
+<p>使用属性动画的时候不要使用字符串指定属性 <code>alpha</code> -&gt; <code>View.ALPHA</code></p>
+<h3 id="PropertyValuesHolder-使用"><a href="#PropertyValuesHolder-使用" class="headerlink" title="PropertyValuesHolder 使用"></a>PropertyValuesHolder 使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private void startProAnimation() &#123;</div><div class="line">    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0.2f, 1f);</div><div class="line"></div><div class="line">    ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(mTvTitle, scaleX, scaleY, alpha);</div><div class="line">    ObjectAnimator objectAnimator2 = ObjectAnimator.ofPropertyValuesHolder(mTvSubTitle, scaleX, scaleY, alpha);</div><div class="line"></div><div class="line">    AnimatorSet animatorSet = new AnimatorSet();</div><div class="line">    animatorSet.playTogether(objectAnimator, objectAnimator2);</div><div class="line">    animatorSet.setDuration(1000);</div><div class="line">    animatorSet.setInterpolator(new OvershootInterpolator());</div><div class="line">    animatorSet.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用-AnimatorSet-协调多个-Animator"><a href="#使用-AnimatorSet-协调多个-Animator" class="headerlink" title="使用 AnimatorSet 协调多个 Animator"></a>使用 AnimatorSet 协调多个 Animator</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">animatorSet.play(objectAnimator)</div><div class="line">            .with(objectAnimator)</div><div class="line">            .before(objectAnimator)</div><div class="line">            .after(objectAnimator2);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void startProAnimation() &#123;</div><div class="line">    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f);</div><div class="line">    PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0.2f, 1f);</div><div class="line"></div><div class="line">    ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(mTvTitle, scaleX, scaleY, alpha);</div><div class="line">    ObjectAnimator objectAnimator2 = ObjectAnimator.ofPropertyValuesHolder(mTvSubTitle, scaleX, scaleY, alpha);</div><div class="line">    objectAnimator.setDuration(1000);</div><div class="line">    objectAnimator2.setDuration(1000);</div><div class="line">    objectAnimator.setInterpolator(new OvershootInterpolator());</div><div class="line">    objectAnimator.setInterpolator(new OvershootInterpolator());</div><div class="line"></div><div class="line">    AnimatorSet animatorSet = new AnimatorSet();</div><div class="line">    animatorSet.play(objectAnimator)</div><div class="line">            .after(objectAnimator2);</div><div class="line">    animatorSet.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="ViewPropertyAnimator"><a href="#ViewPropertyAnimator" class="headerlink" title="ViewPropertyAnimator"></a>ViewPropertyAnimator</h3><p>ex:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">view.animate()</div><div class="line">    .scaleX(1f).scaleY(1f).alpha(1f)</div><div class="line">    .setInterpolator(new OvershootInterpolator())</div><div class="line">    .start();</div></pre></td></tr></table></figure>
+<h3 id="ValueAnimator"><a href="#ValueAnimator" class="headerlink" title="ValueAnimator"></a>ValueAnimator</h3><blockquote>
+<p>更加自由的动画</p>
+</blockquote>
+<p>例子：TextView 显示省略号动画</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void startValueAnimator() &#123;</div><div class="line">    ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 4);</div><div class="line">    valueAnimator.setDuration(1000);</div><div class="line">    valueAnimator.setRepeatCount(-1);</div><div class="line">    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">        @Override</div><div class="line">        public void onAnimationUpdate(ValueAnimator animation) &#123;</div><div class="line">            int value = (int) animation.getAnimatedValue();</div><div class="line">            StringBuilder stringBuilder = new StringBuilder();</div><div class="line">            for (int i = 0; i &lt; value; i++) &#123;</div><div class="line">                stringBuilder.append(&quot;.&quot;);</div><div class="line">            &#125;</div><div class="line">            mTvSubTitle.setText(&quot;I am stupid&quot; + stringBuilder.toString());</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    valueAnimator.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>最好封装到自定义 TextView 中</p>
+</blockquote>
+<h3 id="使用哪个-Animator"><a href="#使用哪个-Animator" class="headerlink" title="使用哪个 Animator"></a>使用哪个 Animator</h3><ol>
+<li>ObjectAnimator: 已有属性修改的动画</li>
+<li>ValueAnimator: 自定义动画</li>
+<li>ViewPropertyAniamtor: 多个属性动画作用于一个 View</li>
+<li>PropertyValuesHolder: 多个属性作用与一个 对象</li>
+<li>AnimatorSet: 处理多个 Animator</li>
+</ol>
+<h2 id="Pyysics-based-Animation"><a href="#Pyysics-based-Animation" class="headerlink" title="Pyysics-based Animation"></a>Pyysics-based Animation</h2><p>SpringAnimation</p>
+<h2 id="MotionLayout"><a href="#MotionLayout" class="headerlink" title="MotionLayout"></a>MotionLayout</h2><h1 id="基本内容"><a href="#基本内容" class="headerlink" title="基本内容"></a>基本内容</h1><blockquote>
+<p>2017/10/25 添加 <a href="http://hencoder.com/ui-1-6/">http://hencoder.com/ui-1-6/</a> 内容</p>
+</blockquote>
+<h2 id="动画分类"><a href="#动画分类" class="headerlink" title="动画分类"></a>动画分类</h2><ul>
+<li>补间动画</li>
+<li>帧动画</li>
+<li>属性动画</li>
+</ul>
+<h2 id="动画属性"><a href="#动画属性" class="headerlink" title="动画属性"></a>动画属性</h2><ul>
+<li>translate:平移动画</li>
+<li>scale:缩放动画</li>
+<li>rotate:旋转动画</li>
+<li>alpha:透明度</li>
+<li>interpolator</li>
+<li>duration</li>
+</ul>
+<h2 id="创建动画的方式"><a href="#创建动画的方式" class="headerlink" title="创建动画的方式"></a>创建动画的方式</h2><ul>
+<li>xml</li>
+<li>code</li>
+</ul>
+<h2 id="帧动画"><a href="#帧动画" class="headerlink" title="帧动画"></a>帧动画</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>设计弥补安卓不能播放gif图</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/25/Android/animate/Android 动画总结/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/25/Android/view/自定义View/自定义View-方法流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -282,7 +466,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-25T09:23:14+08:00">
                 2017-10-25
@@ -303,7 +487,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -354,7 +538,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/25/Android/view/自定义View/自定义View-方法流程/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -428,7 +612,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-22T21:18:12+08:00">
                 2017-10-22
@@ -449,7 +633,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -496,7 +680,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/22/ReadNote/数据库原理笔记/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -570,7 +754,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-19T09:38:14+08:00">
                 2017-10-19
@@ -591,7 +775,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -711,7 +895,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-13T14:38:14+08:00">
                 2017-10-13
@@ -732,7 +916,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -845,7 +1029,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-11T09:38:14+08:00">
                 2017-10-11
@@ -866,7 +1050,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -912,7 +1096,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/11/看源码/Retrofit源码分析/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -986,7 +1170,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-09T09:38:14+08:00">
                 2017-10-09
@@ -1007,7 +1191,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1060,7 +1244,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/09/看源码/OKHttp源码/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1134,7 +1318,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-04T13:18:12+08:00">
                 2017-10-04
@@ -1155,7 +1339,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1198,7 +1382,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/04/ReadNote/计算机网络-自顶向下方法/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1272,7 +1456,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-02T13:18:12+08:00">
                 2017-10-02
@@ -1293,7 +1477,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1354,7 +1538,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/02/ReadNote/如何高效学习笔记/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1428,7 +1612,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-27T09:38:14+08:00">
                 2017-09-27
@@ -1449,7 +1633,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1497,156 +1681,7 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/09/27/看源码/一个视频播放器源码分析/#more" rel="contents">
-              Weiterlesen &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/25/看源码/transitionseverywhere源码分析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Double">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/head1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Double">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/25/看源码/transitionseverywhere源码分析/" itemprop="url">Transition 动画</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-25T09:38:14+08:00">
-                2017-09-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="关于-transition"><a href="#关于-transition" class="headerlink" title="关于 transition"></a>关于 transition</h1><p>google 关于 transition 的文档地址 <a href="https://developer.android.com/training/transitions/index.html">https://developer.android.com/training/transitions/index.html</a></p>
-<p>下面是文档的部分渣翻：</p>
-<h2 id="The-Transitions-Framework"><a href="#The-Transitions-Framework" class="headerlink" title="The Transitions Framework"></a>The Transitions Framework</h2><p>这个框架用于帮助开发者创建动画，帮助用户了解界面的变化过程。</p>
-<p>这个框架具有的特性：</p>
-<ol>
-<li>Group-level animations：可以同时创建多个动画</li>
-<li>Transition-based animation：基于开始和结束时候 view 的属性创建动画</li>
-<li>Build-in animations：内置了一些已经实现好的动画效果，比如 渐入，渐出，移动</li>
-<li>Resource file support：支持使用 xml 文件定义动画</li>
-<li>Lifecycle callbacks：支持动画过程的回调</li>
-</ol>
-<p><img src="https://developer.android.com/images/transitions/transitions_diagram.png" alt="transitions 动画"></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/25/看源码/transitionseverywhere源码分析/#more" rel="contents">
-              Weiterlesen &raquo;
+              Read more &raquo;
             </a>
           </div>
           <!--/noindex-->
@@ -1731,8 +1766,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">536</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">537</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -1743,7 +1778,7 @@
             <div class="site-state-item site-state-categories">
               
                 <span class="site-state-item-count">24</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               
             </div>
           
@@ -1754,7 +1789,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">258</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -1804,7 +1839,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
