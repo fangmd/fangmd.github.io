@@ -1,0 +1,786 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="数据库,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="原文链接：如果有人问你数据库的原理，叫他看这篇文章 基础知识O(1) vs O(n^2)时间复杂度用来检验某个算法处理一定量的数据要花多长时间。 合并排序讲解一种排序算法 合并合并两个已经排好序的数列。">
+<meta name="keywords" content="数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库原理">
+<meta property="og:url" content="http://yoursite.com/2017/10/22/ReadNote/数据库原理笔记/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="原文链接：如果有人问你数据库的原理，叫他看这篇文章 基础知识O(1) vs O(n^2)时间复杂度用来检验某个算法处理一定量的数据要花多长时间。 合并排序讲解一种排序算法 合并合并两个已经排好序的数列。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/7cc829d3jw1f3drdnwywaj20gl08ljst.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/7cc829d3jw1f3drdpqm1oj20cl0apdhp.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/7cc829d3jw1f3drdsruaqj20hp09075r.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/mw690/7cc829d3jw1f3drdtcrs7j20dq0fijtz.jpg">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.337Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库原理">
+<meta name="twitter:description" content="原文链接：如果有人问你数据库的原理，叫他看这篇文章 基础知识O(1) vs O(n^2)时间复杂度用来检验某个算法处理一定量的数据要花多长时间。 合并排序讲解一种排序算法 合并合并两个已经排好序的数列。">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/22/ReadNote/数据库原理笔记/">
+
+
+
+
+
+  <title>数据库原理 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/22/ReadNote/数据库原理笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据库原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-22T21:18:12+08:00">
+                2017-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文链接：<a href="http://blog.jobbole.com/100349/" target="_blank" rel="noopener">如果有人问你数据库的原理，叫他看这篇文章</a></p>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><h2 id="O-1-vs-O-n-2"><a href="#O-1-vs-O-n-2" class="headerlink" title="O(1) vs O(n^2)"></a>O(1) vs O(n^2)</h2><p>时间复杂度用来检验某个算法处理一定量的数据要花多长时间。</p>
+<h2 id="合并排序"><a href="#合并排序" class="headerlink" title="合并排序"></a>合并排序</h2><p>讲解一种排序算法</p>
+<h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><p>合并两个已经排好序的数列。</p>
+<p><img src="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif" alt="http://ww2.sinaimg.cn/mw690/7cc829d3jw1f3drdn5ynkg208w05cjsj.gif"></p>
+<a id="more"></a>
+<h3 id="拆分"><a href="#拆分" class="headerlink" title="拆分"></a>拆分</h3><p><img src="http://ww4.sinaimg.cn/large/7cc829d3jw1f3drdnwywaj20gl08ljst.jpg" alt="http://ww4.sinaimg.cn/large/7cc829d3jw1f3drdnwywaj20gl08ljst.jpg"></p>
+<p>步骤数量的值是 log(N) 底数2</p>
+<h3 id="排序阶段"><a href="#排序阶段" class="headerlink" title="排序阶段"></a>排序阶段</h3><p>整体成本是 N*log(N) 次运算。</p>
+<h2 id="阵列，树和哈希表"><a href="#阵列，树和哈希表" class="headerlink" title="阵列，树和哈希表"></a>阵列，树和哈希表</h2><p>介绍3种数据结构</p>
+<h3 id="阵列"><a href="#阵列" class="headerlink" title="阵列"></a>阵列</h3><p><img src="http://ww2.sinaimg.cn/large/7cc829d3jw1f3drdpqm1oj20cl0apdhp.jpg" alt="http://ww2.sinaimg.cn/large/7cc829d3jw1f3drdpqm1oj20cl0apdhp.jpg"></p>
+<p>类似一个表格。</p>
+<p>如果要找出所有在 UK 工作的人，需要 N 次运算（使用 树型结构 可以减少运算次数）</p>
+<h3 id="树和数据库索引"><a href="#树和数据库索引" class="headerlink" title="树和数据库索引"></a>树和数据库索引</h3><p>二叉查找树是带有特殊属性的二叉树，每个节点的关键字必须：</p>
+<ol>
+<li>比保存在左子树的任何键值都要大</li>
+<li>比保存在右子树的任何键值都要小</li>
+</ol>
+<p>查询的成本是 log(N)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">回到刚才的问题</span><br><span class="line"></span><br><span class="line">需要使用二叉查找树存储 表中的 城市 列</span><br><span class="line"></span><br><span class="line">- 你在树中查找代表 UK 的节点</span><br><span class="line"></span><br><span class="line">- 在『UK 节点』你会找到 UK 员工那些行的位置</span><br><span class="line"></span><br><span class="line">需要 log(N) 次运算</span><br></pre></td></tr></table></figure>
+<h4 id="B-树索引"><a href="#B-树索引" class="headerlink" title="B+树索引"></a>B+树索引</h4><h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><p>快速查找值</p>
+<p>理解哈希表会帮助我们接下来理解一个数据库常见的联接操作，叫做『哈希联接』</p>
+<p>构建哈希表需要：元素的关键字，关键字的哈希函数，关键字比较函数</p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p><img src="http://ww1.sinaimg.cn/large/7cc829d3jw1f3drdsruaqj20hp09075r.jpg" alt="http://ww1.sinaimg.cn/large/7cc829d3jw1f3drdsruaqj20hp09075r.jpg"></p>
+<p>上图使用 元素最后一位作为关键字。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">现在，比方说你要找元素 59：</span><br><span class="line"></span><br><span class="line">哈希表计算 59 的哈希码，等于9。</span><br><span class="line">查找哈希桶 9，第一个找到的元素是 99。因为 99 不等于 59， 那么 99 不是正确的元素。</span><br><span class="line">用同样的逻辑，查找第二个元素(9)，第三个(79)，……，最后一个(29)。</span><br><span class="line">元素不存在。</span><br><span class="line">搜索耗费了 7 次运算。</span><br></pre></td></tr></table></figure>
+<p>哈希表的设计关键在于：找到好的哈希函数，让哈希桶里包含非常少的元素。</p>
+<h4 id="阵列-vs-哈希表"><a href="#阵列-vs-哈希表" class="headerlink" title="阵列 vs 哈希表"></a>阵列 vs 哈希表</h4><ul>
+<li>一个哈希表可以只装载一半到内存，剩下的哈希桶可以留在硬盘上。</li>
+<li>用阵列的话，你需要一个连续内存空间。如果你加载一个大表，很难分配足够的连续内存空间。</li>
+<li>用哈希表的话，你可以选择你要的关键字（比如，一个人的国家和姓氏）。</li>
+</ul>
+<h1 id="全局概览"><a href="#全局概览" class="headerlink" title="全局概览"></a>全局概览</h1><p><img src="http://ww4.sinaimg.cn/mw690/7cc829d3jw1f3drdtcrs7j20dq0fijtz.jpg" alt="http://ww4.sinaimg.cn/mw690/7cc829d3jw1f3drdtcrs7j20dq0fijtz.jpg"></p>
+<p>核心组件：</p>
+<ul>
+<li>进程管理器（process manager）：很多数据库具备一个需要妥善管理的进程/线程池。再者，为了实现纳秒级操作，一些现代数据库使用自己的线程而不是操作系统线程。</li>
+<li>网络管理器（network manager）：网路I/O是个大问题，尤其是对于分布式数据库。所以一些数据库具备自己的网络管理器。</li>
+<li>文件系统管理器（File system manager）：磁盘I/O是数据库的首要瓶颈。具备一个文件系统管理器来完美地处理OS文件系统甚至取代OS文件系统，是非常重要的。</li>
+<li>内存管理器（memory manager）：为了避免磁盘I/O带来的性能损失，需要大量的内存。但是如果你要处理大容量内存你需要高效的内存管理器，尤其是你有很多查询同时使用内存的时候。</li>
+<li>安全管理器（Security Manager）：用于对用户的验证和授权。</li>
+<li>客户端管理器（Client manager）：用于管理客户端连接。</li>
+</ul>
+<p>工具：</p>
+<ul>
+<li>备份管理器（Backup manager）：用于保存和恢复数据。</li>
+<li>复原管理器（Recovery manager）：用于崩溃后重启数据库到一个一致状态。</li>
+<li>监控管理器（Monitor manager）：用于记录数据库活动信息和提供监控数据库的工具。</li>
+<li>Administration管理器（Administration manager）：用于保存元数据（比如表的名称和结构），提供管理数据库、模式、表空间的工具。</li>
+</ul>
+<p>查询管理器：</p>
+<ul>
+<li>查询解析器（Query parser）：用于检查查询是否合法</li>
+<li>查询重写器（Query rewriter）：用于预优化查询</li>
+<li>查询优化器（Query optimizer）：用于优化查询</li>
+<li>查询执行器（Query executor）：用于编译和执行查询</li>
+</ul>
+<p>数据管理器：</p>
+<ul>
+<li>事务管理器（Transaction manager）：用于处理事务</li>
+<li>缓存管理器（Cache manager）：数据被使用之前置于内存，或者数据写入磁盘之前置于内存</li>
+<li>数据访问管理器（Data access manager）：访问磁盘中的数据</li>
+</ul>
+<h2 id="统计"><a href="#统计" class="headerlink" title="统计"></a>统计</h2><p>数据库收集数据信息，比如：</p>
+<ul>
+<li>表中行和页的数量</li>
+<li>表中每个列中的：<br>  唯一值<br>  数据长度（最小，最大，平均）<br>  数据范围（最小，最大，平均）</li>
+<li>表的索引信息</li>
+</ul>
+<p>这些统计信息会帮助优化器估计查询所需的磁盘 I/O、CPU、和内存使用</p>
+<h2 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h2><p>所有的现代数据库都在用基于成本的优化（即CBO）来优化查询。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/19/Android/view/RecyclerView/RecyclerView嵌套在ScrollView中/" rel="next" title="RecyclerView嵌套在ScrollView中">
+                <i class="fa fa-chevron-left"></i> RecyclerView嵌套在ScrollView中
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/25/Android/view/自定义View/自定义View-方法流程/" rel="prev" title="自定义View-方法流程">
+                自定义View-方法流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#O-1-vs-O-n-2"><span class="nav-number">1.1.</span> <span class="nav-text">O(1) vs O(n^2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合并排序"><span class="nav-number">1.2.</span> <span class="nav-text">合并排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合并"><span class="nav-number">1.2.1.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拆分"><span class="nav-number">1.2.2.</span> <span class="nav-text">拆分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排序阶段"><span class="nav-number">1.2.3.</span> <span class="nav-text">排序阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阵列，树和哈希表"><span class="nav-number">1.3.</span> <span class="nav-text">阵列，树和哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#阵列"><span class="nav-number">1.3.1.</span> <span class="nav-text">阵列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#树和数据库索引"><span class="nav-number">1.3.2.</span> <span class="nav-text">树和数据库索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#B-树索引"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">B+树索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希表"><span class="nav-number">1.3.3.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阵列-vs-哈希表"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">阵列 vs 哈希表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全局概览"><span class="nav-number">2.</span> <span class="nav-text">全局概览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#统计"><span class="nav-number">2.1.</span> <span class="nav-text">统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询优化器"><span class="nav-number">2.2.</span> <span class="nav-text">查询优化器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

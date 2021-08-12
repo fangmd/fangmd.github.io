@@ -1,0 +1,881 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="打包,Gradle,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Gradle多渠道打包##　友盟多渠道打包转载http://stormzhang.com/ Manifest.xml&amp;lt;meta-data     android:name=&amp;quot;UMENG_CHANNEL&amp;quot;     android:value=&amp;quot;Channel_ID&amp;quot; /&amp;gt;">
+<meta name="keywords" content="打包,Gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle多渠道打包">
+<meta property="og:url" content="http://yoursite.com/2016/03/10/Android/gradle/多渠道打包/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Gradle多渠道打包##　友盟多渠道打包转载http://stormzhang.com/ Manifest.xml&amp;lt;meta-data     android:name=&amp;quot;UMENG_CHANNEL&amp;quot;     android:value=&amp;quot;Channel_ID&amp;quot; /&amp;gt;">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://wt-prj.oss.aliyuncs.com/4f36e28f07b64baf92be0a7d519a8689/f242793b-c6b0-4598-9022-9cab6ee9e4ed.png">
+<meta property="og:image" content="https://wt-prj.oss.aliyuncs.com/4f36e28f07b64baf92be0a7d519a8689/5e2e3478-2050-4dd2-8e8b-080ba03c3f1e.png">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.248Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle多渠道打包">
+<meta name="twitter:description" content="Gradle多渠道打包##　友盟多渠道打包转载http://stormzhang.com/ Manifest.xml&amp;lt;meta-data     android:name=&amp;quot;UMENG_CHANNEL&amp;quot;     android:value=&amp;quot;Channel_ID&amp;quot; /&amp;gt;">
+<meta name="twitter:image" content="https://wt-prj.oss.aliyuncs.com/4f36e28f07b64baf92be0a7d519a8689/f242793b-c6b0-4598-9022-9cab6ee9e4ed.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/10/Android/gradle/多渠道打包/">
+
+
+
+
+
+  <title>Gradle多渠道打包 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/10/Android/gradle/多渠道打包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Gradle多渠道打包</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-10T21:38:14+08:00">
+                2016-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/program/" itemprop="url" rel="index">
+                    <span itemprop="name">program</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Gradle多渠道打包"><a href="#Gradle多渠道打包" class="headerlink" title="Gradle多渠道打包"></a>Gradle多渠道打包</h1><p>##　友盟多渠道打包<br>转载<a href="http://stormzhang.com/" target="_blank" rel="noopener">http://stormzhang.com/</a></p>
+<h3 id="Manifest-xml"><a href="#Manifest-xml" class="headerlink" title="Manifest.xml"></a>Manifest.xml</h3><pre><code>&lt;meta-data
+    android:name=&quot;UMENG_CHANNEL&quot;
+    android:value=&quot;Channel_ID&quot; /&gt;
+</code></pre><a id="more"></a>
+<h3 id="0-在AndroidManifest-xml里配置PlaceHolder"><a href="#0-在AndroidManifest-xml里配置PlaceHolder" class="headerlink" title="0 在AndroidManifest.xml里配置PlaceHolder"></a>0 在AndroidManifest.xml里配置PlaceHolder</h3><pre><code>&lt;meta-data
+    android:name=&quot;UMENG_CHANNEL&quot;
+    android:value=&quot;${UMENG_CHANNEL_VALUE}&quot; /&gt;
+</code></pre><h3 id="1-在build-gradle设置productFlavors"><a href="#1-在build-gradle设置productFlavors" class="headerlink" title="1 在build.gradle设置productFlavors"></a>1 在build.gradle设置productFlavors</h3><pre><code>android {
+    productFlavors {
+        xiaomi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: &quot;xiaomi&quot;]
+        }
+        _360 {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: &quot;_360&quot;]
+        }
+        baidu {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: &quot;baidu&quot;]
+        }
+        wandoujia {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: &quot;wandoujia&quot;]
+        }
+    }
+}
+</code></pre><p>或者批量修改</p>
+<pre><code>android {
+    productFlavors {
+        xiaomi {}
+        _360 {}
+        baidu {}
+        wandoujia {}
+    }
+
+    productFlavors.all {
+        flavor -&gt; flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+}
+</code></pre><p>解释：productFlavors 类似于一个产品的不同特性的配置[2]. productFlavors.all 是一个遍历，每一个 productFlavors 中的值，其中productFlavors 的每一个值都有一个 name ，就是类似 wandoujia 这样的字符，每次循环的时候会替换掉 AndroidManifext.xml 中的${ONEAPMTESTCHANNEL}。</p>
+<h3 id="2-执行-gradlew-assembleRelease"><a href="#2-执行-gradlew-assembleRelease" class="headerlink" title="2 执行 ./gradlew assembleRelease"></a>2 执行 ./gradlew assembleRelease</h3><p>打开命令行定位到 project 目录，执行</p>
+<pre><code>gradlew assembleRelease
+</code></pre><h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>不出意外的话 bulid-&gt;outputs-&gt;apk 下面会有各个渠道的包，如下图</p>
+<p><img src="https://wt-prj.oss.aliyuncs.com/4f36e28f07b64baf92be0a7d519a8689/f242793b-c6b0-4598-9022-9cab6ee9e4ed.png" alt></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li>productFlavors 定义的时候里面的类似 wandoujia，不能是数字开头，不能是关键字 test 等，因为你要意识到你在写 gradle 脚本，要符合 groovy 语法。如下面的就不合法</li>
+</ol>
+<p><img src="https://wt-prj.oss.aliyuncs.com/4f36e28f07b64baf92be0a7d519a8689/5e2e3478-2050-4dd2-8e8b-080ba03c3f1e.png" alt></p>
+<ol start="2">
+<li>flavor.manifestPlaceholders = [ONEAPMTESTCHANNEL: name]中的ONEAPMTESTCHANNEL 一定要和 AndroidManifext.xml 定义的一致。</li>
+</ol>
+<h2 id="assemble结合Build-Variants来创建task"><a href="#assemble结合Build-Variants来创建task" class="headerlink" title="assemble结合Build Variants来创建task"></a>assemble结合Build Variants来创建task</h2><p>上一篇博客介绍了 assemble 这个命令，会结合 Build Type 创建自己的task，如:</p>
+<p>./gradlew assembleDebug</p>
+<p>./gradlew assembleRelease</p>
+<p>除此之外 assemble 还能和 Product Flavor 结合创建新的任务，其实 assemble 是和 Build Variants 一起结合使用的，而 Build Variants = Build Type + Product Flavor ， 举个例子大家就明白了：</p>
+<p>如果我们想打包wandoujia渠道的release版本，执行如下命令就好了：</p>
+<p>./gradlew assembleWandoujiaRelease<br>如果我们只打wandoujia渠道版本，则：</p>
+<p>./gradlew assembleWandoujia<br>此命令会生成wandoujia渠道的Release和Debug版本</p>
+<p>同理我想打全部Release版本：</p>
+<p>./gradlew assembleRelease<br>这条命令会把Product Flavor下的所有渠道的Release版本都打出来。</p>
+<p>总之，assemble 命令创建task有如下用法：</p>
+<p><strong>assemble</strong>： 允许直接构建一个Variant版本，例如assembleFlavor1Debug。</p>
+<p><strong>assemble</strong>： 允许构建指定Build Type的所有APK，例如assembleDebug将会构建Flavor1Debug和Flavor2Debug两个Variant版本。</p>
+<p><strong>assemble</strong>： 允许构建指定flavor的所有APK，例如assembleFlavor1将会构建Flavor1Debug和Flavor1Release两个Variant版本。</p>
+<h2 id="一个gradle脚本例子"><a href="#一个gradle脚本例子" class="headerlink" title="一个gradle脚本例子"></a>一个gradle脚本例子</h2><pre><code>apply plugin: &apos;com.android.application&apos;
+
+def releaseTime() {
+    return new Date().format(&quot;yyyy-MM-dd&quot;, TimeZone.getTimeZone(&quot;UTC&quot;))
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion &apos;21.1.2&apos;
+
+    defaultConfig {
+        applicationId &quot;com.boohee.*&quot;
+        minSdkVersion 14
+        targetSdkVersion 21
+        versionCode 1
+        versionName &quot;1.0&quot;
+
+        // dex突破65535的限制
+        multiDexEnabled true
+        // 默认是umeng的渠道
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: &quot;umeng&quot;]
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            // No debug config
+        }
+
+        release {
+            storeFile file(&quot;../yourapp.keystore&quot;)
+            storePassword &quot;your password&quot;
+            keyAlias &quot;your alias&quot;
+            keyPassword &quot;your password&quot;
+        }
+    }
+
+    buildTypes {
+        debug {
+            // 显示Log
+            buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;true&quot;
+
+            versionNameSuffix &quot;-debug&quot;
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            // 不显示Log
+            buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;false&quot;
+
+            minifyEnabled true
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant -&gt;
+                variant.outputs.each { output -&gt;
+                    def outputFile = output.outputFile
+                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
+                        // 输出apk名称为boohee_v1.0_2015-01-15_wandoujia.apk
+                        def fileName = &quot;boohee_v${defaultConfig.versionName}_${releaseTime()}_${variant.productFlavors[0].name}.apk&quot;
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+    }
+
+    // 友盟多渠道打包
+    productFlavors {
+        wandoujia {}
+        _360 {}
+        baidu {}
+        xiaomi {}
+        tencent {}
+        taobao {}
+        ...
+    }
+
+    productFlavors.all { flavor -&gt;
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+}
+
+dependencies {
+    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])
+    compile &apos;com.android.support:support-v4:21.0.3&apos;
+    compile &apos;com.jakewharton:butterknife:6.0.0&apos;
+    ...
+}
+</code></pre><h2 id="gradle-新"><a href="#gradle-新" class="headerlink" title="gradle 新"></a>gradle 新</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">    // 如果嫌上面写法麻烦,也可以这样简写,加上一个批量处理即可.</span><br><span class="line">    flavorDimensions &quot;default&quot;</span><br><span class="line">    productFlavors &#123;</span><br><span class="line">        _91 &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        wandoujia &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        xiaomi &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        _360shoufa &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        anzhi &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        baidushoufa &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">        huaweishoufa &#123; dimension &quot;default&quot; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //批量处理</span><br><span class="line">    productFlavors.all &#123;</span><br><span class="line">        flavor -&gt;</span><br><span class="line">            def channel = name.startsWith(&quot;_&quot;) ? name.substring(1) : name</span><br><span class="line">            flavor.manifestPlaceholders = [MTA_CHANNEL_VALUE: channel]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 修改 文件名</span><br><span class="line">    android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">        variant.outputs.all &#123; output -&gt;</span><br><span class="line">//            def outputFile = output.outputFile</span><br><span class="line">            if (variant.buildType.name.equals(&apos;release&apos;)) &#123;</span><br><span class="line">                //可自定义自己想要生成的格式</span><br><span class="line">                def channel = variant.productFlavors[0].name.startsWith(&quot;_&quot;) ? variant.productFlavors[0].name.substring(1) : variant.productFlavors[0].name</span><br><span class="line">                def fileName = &quot;v$&#123;defaultConfig.versionName&#125;_$&#123;releaseTime()&#125;_$&#123;channel&#125;.apk&quot;</span><br><span class="line">                outputFileName = fileName</span><br><span class="line">//                output.outputFile = new File(outputFile.parent, fileName)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a href="http://news.oneapm.com/tag/android/" target="_blank" rel="noopener">http://news.oneapm.com/tag/android/</a></li>
+<li><a href="http://stormzhang.com/" target="_blank" rel="noopener">http://stormzhang.com/</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/打包/" rel="tag"># 打包</a>
+          
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/09/ReadNote/数据结构视频笔记/" rel="next" title="数据结构视频笔记">
+                <i class="fa fa-chevron-left"></i> 数据结构视频笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/13/Android/view/ListView/ListView分页/" rel="prev" title="ListView分页加载数据">
+                ListView分页加载数据 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Gradle多渠道打包"><span class="nav-number">1.</span> <span class="nav-text">Gradle多渠道打包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Manifest-xml"><span class="nav-number">1.0.1.</span> <span class="nav-text">Manifest.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0-在AndroidManifest-xml里配置PlaceHolder"><span class="nav-number">1.0.2.</span> <span class="nav-text">0 在AndroidManifest.xml里配置PlaceHolder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-在build-gradle设置productFlavors"><span class="nav-number">1.0.3.</span> <span class="nav-text">1 在build.gradle设置productFlavors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-执行-gradlew-assembleRelease"><span class="nav-number">1.0.4.</span> <span class="nav-text">2 执行 ./gradlew assembleRelease</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果"><span class="nav-number">1.0.5.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">1.0.6.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assemble结合Build-Variants来创建task"><span class="nav-number">1.1.</span> <span class="nav-text">assemble结合Build Variants来创建task</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个gradle脚本例子"><span class="nav-number">1.2.</span> <span class="nav-text">一个gradle脚本例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gradle-新"><span class="nav-number">1.3.</span> <span class="nav-text">gradle 新</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

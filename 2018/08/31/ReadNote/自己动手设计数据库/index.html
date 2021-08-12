@@ -1,0 +1,849 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="数据库,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="第 1 章 关系数据库早期数据库模型层次数据库模型类似公司组织架构。 父表可以与多个子表相连，子表子能有一个父表。 字表存储一个数据都必须与父表关联。 多对多情况下会产生冗余数据 网状数据库模型解决层次数据库出现的一些问题。 关系数据库模型关系模型将关系分为 一对一，一对多，多对多。 两个表之间的关系通过匹配一个共享字段的值来隐形建立。 检索数据结构化查询语言 SQL 关系型数据库的优势 内置多层">
+<meta name="keywords" content="数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己动手设计数据库">
+<meta property="og:url" content="http://yoursite.com/2018/08/31/ReadNote/自己动手设计数据库/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="第 1 章 关系数据库早期数据库模型层次数据库模型类似公司组织架构。 父表可以与多个子表相连，子表子能有一个父表。 字表存储一个数据都必须与父表关联。 多对多情况下会产生冗余数据 网状数据库模型解决层次数据库出现的一些问题。 关系数据库模型关系模型将关系分为 一对一，一对多，多对多。 两个表之间的关系通过匹配一个共享字段的值来隐形建立。 检索数据结构化查询语言 SQL 关系型数据库的优势 内置多层">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.341Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自己动手设计数据库">
+<meta name="twitter:description" content="第 1 章 关系数据库早期数据库模型层次数据库模型类似公司组织架构。 父表可以与多个子表相连，子表子能有一个父表。 字表存储一个数据都必须与父表关联。 多对多情况下会产生冗余数据 网状数据库模型解决层次数据库出现的一些问题。 关系数据库模型关系模型将关系分为 一对一，一对多，多对多。 两个表之间的关系通过匹配一个共享字段的值来隐形建立。 检索数据结构化查询语言 SQL 关系型数据库的优势 内置多层">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/31/ReadNote/自己动手设计数据库/">
+
+
+
+
+
+  <title>自己动手设计数据库 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/31/ReadNote/自己动手设计数据库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自己动手设计数据库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-31T13:18:12+08:00">
+                2018-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="第-1-章-关系数据库"><a href="#第-1-章-关系数据库" class="headerlink" title="第 1 章 关系数据库"></a>第 1 章 关系数据库</h1><h2 id="早期数据库模型"><a href="#早期数据库模型" class="headerlink" title="早期数据库模型"></a>早期数据库模型</h2><h3 id="层次数据库模型"><a href="#层次数据库模型" class="headerlink" title="层次数据库模型"></a>层次数据库模型</h3><p>类似公司组织架构。</p>
+<p>父表可以与多个子表相连，子表子能有一个父表。</p>
+<p>字表存储一个数据都必须与父表关联。</p>
+<p>多对多情况下会产生冗余数据</p>
+<h3 id="网状数据库模型"><a href="#网状数据库模型" class="headerlink" title="网状数据库模型"></a>网状数据库模型</h3><p>解决层次数据库出现的一些问题。</p>
+<h2 id="关系数据库模型"><a href="#关系数据库模型" class="headerlink" title="关系数据库模型"></a>关系数据库模型</h2><p>关系模型将关系分为 一对一，一对多，多对多。</p>
+<p>两个表之间的关系通过匹配一个共享字段的值来隐形建立。</p>
+<h3 id="检索数据"><a href="#检索数据" class="headerlink" title="检索数据"></a>检索数据</h3><p>结构化查询语言 SQL</p>
+<h3 id="关系型数据库的优势"><a href="#关系型数据库的优势" class="headerlink" title="关系型数据库的优势"></a>关系型数据库的优势</h3><ol>
+<li>内置多层次完整性</li>
+<li>数据在逻辑和物理上都独立与数据库</li>
+<li>确保数据一致性和准确性</li>
+<li>简便的数据检索</li>
+</ol>
+<h2 id="关系数据库管理系统"><a href="#关系数据库管理系统" class="headerlink" title="关系数据库管理系统"></a>关系数据库管理系统</h2><p>RDBMS， 一种应用程序，可以用来创建，维护，修改以及操作关系数据库。</p>
+<h1 id="第-2-章-设计目标"><a href="#第-2-章-设计目标" class="headerlink" title="第 2 章 设计目标"></a>第 2 章 设计目标</h1><h2 id="为什么要关注数据库设计"><a href="#为什么要关注数据库设计" class="headerlink" title="为什么要关注数据库设计"></a>为什么要关注数据库设计</h2><p>数据库设计对于数据库中数据的一致性，完整性和准确性至关重要。</p>
+<h2 id="优秀设计的目标"><a href="#优秀设计的目标" class="headerlink" title="优秀设计的目标"></a>优秀设计的目标</h2><ul>
+<li>数据库应支持设定的和即时的信息检索</li>
+<li>正确且高效的构建表</li>
+<li>数据完整性落实到字段，表以及关系层次</li>
+<li>数据库支持与组织相关的业务规则</li>
+<li>数据库适应未来发展</li>
+</ul>
+<h2 id="优秀设计好处"><a href="#优秀设计好处" class="headerlink" title="优秀设计好处"></a>优秀设计好处</h2><ul>
+<li>数据库结构易于修改和维护</li>
+<li>数据易于修改</li>
+<li>信息易于检索</li>
+<li>终端用户应用易于开发和创建</li>
+</ul>
+<h2 id="数据库设计方法"><a href="#数据库设计方法" class="headerlink" title="数据库设计方法"></a>数据库设计方法</h2><h3 id="传统设计方法"><a href="#传统设计方法" class="headerlink" title="传统设计方法"></a>传统设计方法</h3><p>需求分析，数据建模，规范化</p>
+<p>数据建模阶段，每个表都需要指定一个 主键，通过 外键 建立关系。</p>
+<p>规范化：将大表分解成小表的过程，减少冗余数据和重复数据。</p>
+<h2 id="规范化"><a href="#规范化" class="headerlink" title="规范化"></a>规范化</h2><p>传统规范化方法并不好用</p>
+<h1 id="第-3-章-术语"><a href="#第-3-章-术语" class="headerlink" title="第 3 章 术语"></a>第 3 章 术语</h1><h2 id="术语为何重要"><a href="#术语为何重要" class="headerlink" title="术语为何重要"></a>术语为何重要</h2><ol>
+<li>用于表达和定义关系数据库模型的特殊思想和概念</li>
+<li>用于表达和定义数据库设计过程本身</li>
+<li>用于讨论关系数据库或 RDBMS</li>
+</ol>
+<h2 id="关于值的术语"><a href="#关于值的术语" class="headerlink" title="关于值的术语"></a>关于值的术语</h2><p>数据：data，无意义</p>
+<p>信息：由 数据 组成，有意义</p>
+<p>存储的是数据，检索的是信息。</p>
+<p>空值（null）：缺失值，未知值</p>
+<h2 id="关于结构的术语"><a href="#关于结构的术语" class="headerlink" title="关于结构的术语"></a>关于结构的术语</h2><p><strong>表</strong></p>
+<ul>
+<li>每个表包含至少一个称为主键的字段</li>
+</ul>
+<p>数据表： 存储数据的表称为</p>
+<p>验证表（查找表）：存储专门用于实现数据完整性的数据，属于静态表。</p>
+<p><strong>字段（属性）</strong></p>
+<ul>
+<li>数据库中最小结构</li>
+</ul>
+<ol>
+<li>复合字段：包含两个或以上不同项</li>
+<li>多值字段：包含多个相同类型的值</li>
+<li>计算字段</li>
+</ol>
+<p><strong>记录（元组）</strong></p>
+<p><strong>视图</strong>：一个虚表，由数据库中一个或多个表的字段组成，组成视图的表称为基表。</p>
+<p>为什么称为虚表：因为视图只是从基表中获取数据，而不存储数据。</p>
+<p>视图的重要：</p>
+<ol>
+<li>可用于同时处理多个表中的数据。</li>
+<li>可用以防止某些用户查看或操作单个表或一组表中特定字段。</li>
+<li>可用于实现数据完整性。</li>
+</ol>
+<p><strong>键</strong></p>
+<p>主键是整个表中最为重要的键：</p>
+<ul>
+<li>主键值在整个数据库中表识某一特定记录</li>
+<li>主键字段在整个数据库中表识给定的某个表</li>
+<li>主键实现表层次的完整性，与数据库中其他表建立关系。</li>
+</ul>
+<p>将一个表中的主键作为另一个表的外键，实现两个表的连接。</p>
+<h2 id="关于关系的术语"><a href="#关于关系的术语" class="headerlink" title="关于关系的术语"></a>关于关系的术语</h2><p><strong>关系</strong></p>
+<p>表和表之间联系产生的方式：使用主键和外键，借助第三个表（联系表，关联表）。</p>
+<p><strong>关系类型</strong></p>
+<ul>
+<li>一对一关系</li>
+<li>一对多关系</li>
+<li>多对多关系：需要联系表实现关联</li>
+</ul>
+<p><strong>参与的类型</strong></p>
+<p>一个表插入数据时，另一个表是否必须更新。</p>
+<ul>
+<li>强制的</li>
+<li>可选的</li>
+</ul>
+<p><strong>参与度</strong></p>
+<p>作用：</p>
+<ol>
+<li>确定某一特定表中必须与关联表中的单一记录相关联的最好记录条数</li>
+<li>确定某一特定表中被允许与关联表中单一记录相关联的最多纪录条数</li>
+</ol>
+<h2 id="关于完整性的术语"><a href="#关于完整性的术语" class="headerlink" title="关于完整性的术语"></a>关于完整性的术语</h2><p><strong>字段说明</strong></p>
+<ul>
+<li>一般元素：字段名称，描述，父表</li>
+<li>物理元素</li>
+<li>逻辑元素</li>
+</ul>
+<p><strong>数据完整性</strong></p>
+<p>数据库中数据的有效性，一致性和准确性。</p>
+<ol>
+<li>表层次完整性：确保表中无重复数据，记录标识唯一不为空值</li>
+<li>字段级完整性：每个字段的结构健全，每个字段的值有效</li>
+<li>关系层次完整性：表之间的关系健全。</li>
+<li>业务规则</li>
+</ol>
+<h1 id="第-4-章-概念性概述"><a href="#第-4-章-概念性概述" class="headerlink" title="第 4 章 概念性概述"></a>第 4 章 概念性概述</h1><h2 id="完成设计过程的重要性"><a href="#完成设计过程的重要性" class="headerlink" title="完成设计过程的重要性"></a>完成设计过程的重要性</h2><p>数据库中结构完整性和数据完整性的水平与贯彻设计过程的程度成正比。</p>
+<h2 id="明确宗旨和任务目标"><a href="#明确宗旨和任务目标" class="headerlink" title="明确宗旨和任务目标"></a>明确宗旨和任务目标</h2><h2 id="分析现有数据库"><a href="#分析现有数据库" class="headerlink" title="分析现有数据库"></a>分析现有数据库</h2><h2 id="创建数据结构"><a href="#创建数据结构" class="headerlink" title="创建数据结构"></a>创建数据结构</h2><p>定义表和字段，建立键，以及为每个字段定义字段说明。</p>
+<h2 id="确定和建立表关系"><a href="#确定和建立表关系" class="headerlink" title="确定和建立表关系"></a>确定和建立表关系</h2><h2 id="确定和定义业务规则"><a href="#确定和定义业务规则" class="headerlink" title="确定和定义业务规则"></a>确定和定义业务规则</h2><p>确定数据库各方面的限制，建立业务规则，以及定义和实现验证表。</p>
+<h2 id="确定和定义视图"><a href="#确定和定义视图" class="headerlink" title="确定和定义视图"></a>确定和定义视图</h2><p>了解用户如何使用各自的数据，确定数据库中红需要建立的视图类型。</p>
+<h2 id="审核数据完整性"><a href="#审核数据完整性" class="headerlink" title="审核数据完整性"></a>审核数据完整性</h2><ol>
+<li>审核每个表，确保其符合正确设计的标准</li>
+<li>审核和检查每个字段的字段说明</li>
+<li>检查每种关系的有效性，确认关系类型，以及确定关系中每个表的参与特征。</li>
+<li>审核之前确定的业务规则并确认数据库各方面的限制</li>
+</ol>
+<h1 id="第-5-章-大幕开启"><a href="#第-5-章-大幕开启" class="headerlink" title="第 5 章 大幕开启"></a>第 5 章 大幕开启</h1><h1 id="第-6-章-分析现有数据库"><a href="#第-6-章-分析现有数据库" class="headerlink" title="第 6 章 分析现有数据库"></a>第 6 章 分析现有数据库</h1><h1 id="第-7-章-建立表结构"><a href="#第-7-章-建立表结构" class="headerlink" title="第 7 章 建立表结构"></a>第 7 章 建立表结构</h1><h1 id="第-8-章-键"><a href="#第-8-章-键" class="headerlink" title="第 8 章 键"></a>第 8 章 键</h1><p>键类型：</p>
+<ol>
+<li>候选键</li>
+<li>主键</li>
+<li>外键</li>
+<li>非键</li>
+</ol>
+<h1 id="第-9-章-字段说明"><a href="#第-9-章-字段说明" class="headerlink" title="第 9 章 字段说明"></a>第 9 章 字段说明</h1><p>字段说明重要的原因：</p>
+<ol>
+<li>字段说明有助于建立和执行字段级完整性</li>
+<li>未每个字段定义字段说明能提升整体数据完整性</li>
+<li>定义字段说明能获得对数据的性质和用途的完整认识</li>
+<li>字段说明构成数据库的“数据字典”</li>
+</ol>
+<h1 id="第-10-章-表关系"><a href="#第-10-章-表关系" class="headerlink" title="第 10 章 表关系"></a>第 10 章 表关系</h1><p>关系是关系数据库的重要组成部分：</p>
+<ol>
+<li>对于存在逻辑联系的两个表，可在两表之间建立连接</li>
+<li>有助于进一步改进表结构和将冗余数据减少至最少</li>
+<li>这种机制能实现同时多个表中提取数据</li>
+</ol>
+<p>自联结关系：表内部记录之间的关系</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/20/Android/架构/官方架构组件/Android Architecture Components关键点/" rel="next" title="Android Architecture Components 关键点">
+                <i class="fa fa-chevron-left"></i> Android Architecture Components 关键点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/01/flutter/官方文档/04.Animations in Flutter/" rel="prev" title="Animations in Flutter">
+                Animations in Flutter <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第-1-章-关系数据库"><span class="nav-number">1.</span> <span class="nav-text">第 1 章 关系数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#早期数据库模型"><span class="nav-number">1.1.</span> <span class="nav-text">早期数据库模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#层次数据库模型"><span class="nav-number">1.1.1.</span> <span class="nav-text">层次数据库模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网状数据库模型"><span class="nav-number">1.1.2.</span> <span class="nav-text">网状数据库模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关系数据库模型"><span class="nav-number">1.2.</span> <span class="nav-text">关系数据库模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检索数据"><span class="nav-number">1.2.1.</span> <span class="nav-text">检索数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系型数据库的优势"><span class="nav-number">1.2.2.</span> <span class="nav-text">关系型数据库的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关系数据库管理系统"><span class="nav-number">1.3.</span> <span class="nav-text">关系数据库管理系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-2-章-设计目标"><span class="nav-number">2.</span> <span class="nav-text">第 2 章 设计目标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要关注数据库设计"><span class="nav-number">2.1.</span> <span class="nav-text">为什么要关注数据库设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优秀设计的目标"><span class="nav-number">2.2.</span> <span class="nav-text">优秀设计的目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优秀设计好处"><span class="nav-number">2.3.</span> <span class="nav-text">优秀设计好处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库设计方法"><span class="nav-number">2.4.</span> <span class="nav-text">数据库设计方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传统设计方法"><span class="nav-number">2.4.1.</span> <span class="nav-text">传统设计方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规范化"><span class="nav-number">2.5.</span> <span class="nav-text">规范化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-3-章-术语"><span class="nav-number">3.</span> <span class="nav-text">第 3 章 术语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#术语为何重要"><span class="nav-number">3.1.</span> <span class="nav-text">术语为何重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于值的术语"><span class="nav-number">3.2.</span> <span class="nav-text">关于值的术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于结构的术语"><span class="nav-number">3.3.</span> <span class="nav-text">关于结构的术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于关系的术语"><span class="nav-number">3.4.</span> <span class="nav-text">关于关系的术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于完整性的术语"><span class="nav-number">3.5.</span> <span class="nav-text">关于完整性的术语</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-4-章-概念性概述"><span class="nav-number">4.</span> <span class="nav-text">第 4 章 概念性概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#完成设计过程的重要性"><span class="nav-number">4.1.</span> <span class="nav-text">完成设计过程的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#明确宗旨和任务目标"><span class="nav-number">4.2.</span> <span class="nav-text">明确宗旨和任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析现有数据库"><span class="nav-number">4.3.</span> <span class="nav-text">分析现有数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据结构"><span class="nav-number">4.4.</span> <span class="nav-text">创建数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定和建立表关系"><span class="nav-number">4.5.</span> <span class="nav-text">确定和建立表关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定和定义业务规则"><span class="nav-number">4.6.</span> <span class="nav-text">确定和定义业务规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定和定义视图"><span class="nav-number">4.7.</span> <span class="nav-text">确定和定义视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#审核数据完整性"><span class="nav-number">4.8.</span> <span class="nav-text">审核数据完整性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-5-章-大幕开启"><span class="nav-number">5.</span> <span class="nav-text">第 5 章 大幕开启</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-6-章-分析现有数据库"><span class="nav-number">6.</span> <span class="nav-text">第 6 章 分析现有数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-7-章-建立表结构"><span class="nav-number">7.</span> <span class="nav-text">第 7 章 建立表结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-8-章-键"><span class="nav-number">8.</span> <span class="nav-text">第 8 章 键</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-9-章-字段说明"><span class="nav-number">9.</span> <span class="nav-text">第 9 章 字段说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第-10-章-表关系"><span class="nav-number">10.</span> <span class="nav-text">第 10 章 表关系</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

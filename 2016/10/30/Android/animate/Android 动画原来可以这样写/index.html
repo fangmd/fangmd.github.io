@@ -1,0 +1,1243 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,Animation,Transition,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="关键类 android.transition.TransitionManager android.transition.Transition 抽象类 TransitionSet AutoTransition   ChangeBounds Visibility 抽象类 Fade Explode （ design 包中无适配） Slide （ design 包中无适配）   TextScale Cha">
+<meta name="keywords" content="Android,Animation,Transition">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 动画原来可以这样写">
+<meta property="og:url" content="http://yoursite.com/2016/10/30/Android/animate/Android 动画原来可以这样写/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="关键类 android.transition.TransitionManager android.transition.Transition 抽象类 TransitionSet AutoTransition   ChangeBounds Visibility 抽象类 Fade Explode （ design 包中无适配） Slide （ design 包中无适配）   TextScale Cha">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_default.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_fade.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_slide.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_scale.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_set.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_recolor.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_rotate.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_change_text.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_transition_name.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_explode.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_path_motion.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_target.gif">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.232Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 动画原来可以这样写">
+<meta name="twitter:description" content="关键类 android.transition.TransitionManager android.transition.Transition 抽象类 TransitionSet AutoTransition   ChangeBounds Visibility 抽象类 Fade Explode （ design 包中无适配） Slide （ design 包中无适配）   TextScale Cha">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_default.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/30/Android/animate/Android 动画原来可以这样写/">
+
+
+
+
+
+  <title>Android 动画原来可以这样写 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/30/Android/animate/Android 动画原来可以这样写/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 动画原来可以这样写</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-30T13:18:12+08:00">
+                2016-10-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="关键类"><a href="#关键类" class="headerlink" title="关键类"></a>关键类</h1><ul>
+<li>android.transition.TransitionManager</li>
+<li>android.transition.Transition 抽象类<ul>
+<li>TransitionSet<ul>
+<li>AutoTransition</li>
+</ul>
+</li>
+<li>ChangeBounds</li>
+<li>Visibility 抽象类<ul>
+<li>Fade</li>
+<li>Explode （ design 包中无适配）</li>
+<li>Slide （ design 包中无适配）</li>
+</ul>
+</li>
+<li>TextScale</li>
+<li>ChangeClipBounds （ design 包中无适配）</li>
+<li>ChangeImageTransform （ design 包中无适配）</li>
+<li>ChangeScroll （ design 包中无适配）</li>
+<li>ChangeTransform （ design 包中无适配）</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Visibility 抽象类的子类：Fade， Explode， Slide 动画作用于 View 的 Visibility 属性改变的时候。</p>
+<h1 id="适配"><a href="#适配" class="headerlink" title="适配"></a>适配</h1><p>对应的适配包在design<code>com.android.support:design:x.x.x</code>包中</p>
+<pre><code>compile &apos;com.android.support:design:25.0.0&apos;
+</code></pre><p><strong>更好的适配方案：</strong> (使用的时候注意导包 <code>com.transitionseverywhere.xxx</code>)</p>
+<pre><code>compile &quot;com.andkulikov:transitionseverywhere:1.6.9&quot;
+</code></pre><!--more-->
+<h1 id="上代码"><a href="#上代码" class="headerlink" title="上代码"></a>上代码</h1><blockquote>
+<p>下面的例子 使用适配包 compile “com.andkulikov:transitionseverywhere:1.6.9” 测试系统 Android4.1</p>
+</blockquote>
+<h2 id="默认效果"><a href="#默认效果" class="headerlink" title="默认效果"></a>默认效果</h2><h3 id="布局关键代码："><a href="#布局关键代码：" class="headerlink" title="布局关键代码："></a>布局关键代码：</h3><pre><code>&lt;LinearLayout
+    android:id=&quot;@+id/ll_container_one&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:gravity=&quot;center&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btn_one&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Fad&quot;/&gt;
+
+    &lt;TextView
+        android:id=&quot;@+id/tv_one&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginTop=&quot;16dp&quot;
+        android:text=&quot;Transitions are awesome!&quot;
+        android:visibility=&quot;gone&quot;/&gt;
+
+&lt;/LinearLayout&gt;
+</code></pre><h3 id="Activity中代码："><a href="#Activity中代码：" class="headerlink" title="Activity中代码："></a><code>Activity</code>中代码：</h3><pre><code>final LinearLayout transitionsContainer = (LinearLayout) findViewById(R.id.ll_container_one);
+final TextView text = (TextView) findViewById(R.id.tv_one);
+final Button button = (Button) findViewById(R.id.btn_one);
+
+button.setOnClickListener(v -&gt; {
+    TransitionManager.beginDelayedTransition(transitionsContainer);
+
+    if (text.getVisibility() == View.VISIBLE) {
+        text.setVisibility(View.GONE);
+    } else {
+        text.setVisibility(View.VISIBLE);
+    }
+});
+</code></pre><h3 id="最终效果："><a href="#最终效果：" class="headerlink" title="最终效果："></a>最终效果：</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_default.gif" alt="默认效果"></p>
+<h3 id="代码解释"><a href="#代码解释" class="headerlink" title="代码解释"></a>代码解释</h3><p>TransitionManager 中的 beginDelayedTransition 方法：</p>
+<pre><code>public static void beginDelayedTransition(final ViewGroup sceneRoot){...}
+public static void beginDelayedTransition(final ViewGroup sceneRoot, Transition transition) {...}
+</code></pre><ol>
+<li>方法一：效果如上面的默认效果</li>
+<li>方法二：参数用于定制动画效果， 参数为 Transition 的子类，常用的有：Fade, ChangeBounds, Slide,</li>
+</ol>
+<p><strong>动画其他参数设置：</strong> 设置动画时间，设置动画加速度，设置动画延时</p>
+<pre><code>transition.setDuration(300);
+transition.setInterpolator(new FastOutSlowInInterpolator());
+transition.setStartDelay(200);
+</code></pre><h2 id="Fade-淡出淡入"><a href="#Fade-淡出淡入" class="headerlink" title="Fade 淡出淡入"></a>Fade 淡出淡入</h2><h3 id="布局如上-更改Activity中代码："><a href="#布局如上-更改Activity中代码：" class="headerlink" title="布局如上 更改Activity中代码："></a>布局如上 更改<code>Activity</code>中代码：</h3><pre><code>final LinearLayout transitionsContainer = (LinearLayout) findViewById(R.id.ll_container_one);
+final TextView text = (TextView) findViewById(R.id.tv_one);
+final Button button = (Button) findViewById(R.id.btn_one);
+
+button.setOnClickListener(v -&gt; {
+    Fade fade = new Fade();
+    TransitionManager.beginDelayedTransition(transitionsContainer， fade);
+
+    if (text.getVisibility() == View.VISIBLE) {
+        text.setVisibility(View.GONE);
+    } else {
+        text.setVisibility(View.VISIBLE);
+    }
+});
+</code></pre><h3 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_fade.gif" alt="Fade效果"></p>
+<h2 id="Slide-移动"><a href="#Slide-移动" class="headerlink" title="Slide 移动"></a>Slide 移动</h2><h3 id="布局如上-更改Activity中代码：-1"><a href="#布局如上-更改Activity中代码：-1" class="headerlink" title="布局如上 更改Activity中代码："></a>布局如上 更改<code>Activity</code>中代码：</h3><pre><code>final LinearLayout transitionsContainer = (LinearLayout) findViewById(R.id.ll_container_one);
+final TextView text = (TextView) findViewById(R.id.tv_one);
+final Button button = (Button) findViewById(R.id.btn_one);
+
+button.setOnClickListener(v -&gt; {
+    // Slide slide = new Slide();
+    Slide slide = new Slide(Gravity.RIGHT);
+    TransitionManager.beginDelayedTransition(transitionsContainer, slide);
+
+    if (text.getVisibility() == View.VISIBLE) {
+        text.setVisibility(View.GONE);
+    } else {
+        text.setVisibility(View.VISIBLE);
+    }
+});
+</code></pre><h3 id="最终效果-1"><a href="#最终效果-1" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_slide.gif" alt="Slide"></p>
+<h3 id="Slide-构造方法"><a href="#Slide-构造方法" class="headerlink" title="Slide 构造方法"></a>Slide 构造方法</h3><pre><code>/**
+ * Constructor using the default {@link Gravity#BOTTOM}
+ * slide edge direction.
+ */
+public Slide() {
+    setSlideEdge(Gravity.BOTTOM);
+}
+</code></pre><p>设置滑出方向：</p>
+<pre><code>/**
+ * Constructor using the provided slide edge direction.
+ */
+public Slide(@GravityFlag int slideEdge) {
+    setSlideEdge(slideEdge);
+}
+</code></pre><h2 id="Scale-缩放"><a href="#Scale-缩放" class="headerlink" title="Scale 缩放"></a>Scale 缩放</h2><h3 id="布局如上-更改Activity中代码：-2"><a href="#布局如上-更改Activity中代码：-2" class="headerlink" title="布局如上 更改Activity中代码："></a>布局如上 更改<code>Activity</code>中代码：</h3><pre><code>final LinearLayout transitionsContainer = (LinearLayout) findViewById(R.id.ll_container_one);
+final TextView text = (TextView) findViewById(R.id.tv_one);
+final Button button = (Button) findViewById(R.id.btn_one);
+
+button.setOnClickListener(v -&gt; {
+    // Scale scale = new Scale();
+    Scale scale = new Scale(0.7f);
+    TransitionManager.beginDelayedTransition(transitionsContainer, scale);
+
+    if (text.getVisibility() == View.VISIBLE) {
+        text.setVisibility(View.GONE);
+    } else {
+        text.setVisibility(View.VISIBLE);
+    }
+});
+</code></pre><h3 id="最终效果-2"><a href="#最终效果-2" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transitin_scale.gif" alt="Scale"></p>
+<h3 id="Scale-构造方法"><a href="#Scale-构造方法" class="headerlink" title="Scale 构造方法"></a>Scale 构造方法</h3><pre><code>public Scale() {
+}
+
+/**
+ * @param disappearedScale Value of scale on start of appearing or in finish of disappearing.
+ *                         Default value is 0. Can be useful for mixing some Visibility
+ *                         transitions, for example Scale and Fade
+ */
+public Scale(float disappearedScale) {
+    setDisappearedScale(disappearedScale);
+}
+</code></pre><p>参数设置了缩放起始值或者最终值。</p>
+<h2 id="TransitionSet-动画集合"><a href="#TransitionSet-动画集合" class="headerlink" title="TransitionSet 动画集合"></a>TransitionSet 动画集合</h2><pre><code>final LinearLayout transitionsContainer = (LinearLayout) findViewById(R.id.ll_container_one);
+final TextView text = (TextView) findViewById(R.id.tv_one);
+final Button button = (Button) findViewById(R.id.btn_one);
+
+button.setOnClickListener(v -&gt; {
+
+    TransitionSet set = new TransitionSet()
+            .addTransition(new Scale(0.7f))
+            .addTransition(new Fade())
+            .setInterpolator(visible ? new LinearOutSlowInInterpolator() :
+                    new FastOutLinearInInterpolator());
+
+    TransitionManager.beginDelayedTransition(transitionsContainer, set);
+
+    if (text.getVisibility() == View.VISIBLE) {
+        text.setVisibility(View.GONE);
+    } else {
+        text.setVisibility(View.VISIBLE);
+    }
+});
+</code></pre><h3 id="最终效果-3"><a href="#最终效果-3" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_set.gif" alt="TransitionSet"></p>
+<h2 id="Recolor-颜色渐变"><a href="#Recolor-颜色渐变" class="headerlink" title="Recolor 颜色渐变"></a>Recolor 颜色渐变</h2><p>空间的背景色或者文字颜色改变的动画</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><pre><code>&lt;LinearLayout
+    android:id=&quot;@+id/ll_container_recolor&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:gravity=&quot;center&quot;
+    android:orientation=&quot;vertical&quot;
+    android:visibility=&quot;visible&quot;&gt;
+
+
+    &lt;Button
+        android:id=&quot;@+id/btn_recolor&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Recolor&quot;/&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btn_normal&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:text=&quot;Normal&quot;
+        android:visibility=&quot;visible&quot;/&gt;
+
+&lt;/LinearLayout&gt;
+</code></pre><h3 id="Activity-代码"><a href="#Activity-代码" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h3><pre><code>final ViewGroup transitionsContainerRecolor = (ViewGroup) findViewById(R.id.ll_container_recolor);
+final Button btnRecolor = (Button) findViewById(R.id.btn_recolor);
+final Button btnNormal = (Button) findViewById(R.id.btn_normal);
+
+int green = getResources().getColor(R.color.green);
+int white = getResources().getColor(R.color.white);
+int grey = getResources().getColor(R.color.grey);
+
+btnRecolor.setOnClickListener(v -&gt; {
+    TransitionManager.beginDelayedTransition(transitionsContainerRecolor, new Recolor());
+//            btnRecolor.setBackgroundColor(visible ? green : white); // 无动画效果
+    btnRecolor.setTextColor(visible ? white : grey);
+//            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN) {
+//                btnRecolor.setBackground(new ColorDrawable(visible ? green : white));
+//            } else {
+    btnRecolor.setBackgroundDrawable(new ColorDrawable(visible ? green : white));
+//            }
+    visible = !visible;
+});
+
+btnNormal.setOnClickListener(v -&gt; {
+    btnNormal.setBackgroundColor(visible ? green : white);
+    btnNormal.setTextColor(visible ? white : green);
+    visible = !visible;
+});
+</code></pre><p><strong>注意：</strong> <code>btnRecolor.setBackgroundColor(visible ? green : white); // 无动画效果</code> 通过 <code>setBackgroundColor</code> 背景色时没有动画效果，可以使用 <code>setBackground</code>, <code>setBackgroundDrawable</code></p>
+<h3 id="最终效果-4"><a href="#最终效果-4" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_recolor.gif" alt="ReColor"></p>
+<h2 id="Rotate-旋转"><a href="#Rotate-旋转" class="headerlink" title="Rotate 旋转"></a>Rotate 旋转</h2><h3 id="布局-1"><a href="#布局-1" class="headerlink" title="布局"></a>布局</h3><pre><code>&lt;LinearLayout
+    android:id=&quot;@+id/ll_container_rotate&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:gravity=&quot;center&quot;
+    android:orientation=&quot;vertical&quot;
+    android:visibility=&quot;visible&quot;&gt;
+
+
+    &lt;Button
+        android:id=&quot;@+id/btn_rotate&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Rotate&quot;/&gt;
+
+    &lt;ImageView
+        android:id=&quot;@+id/iv_rotate&quot;
+        android:layout_width=&quot;40dp&quot;
+        android:layout_height=&quot;40dp&quot;
+        android:layout_marginTop=&quot;10dp&quot;
+        android:src=&quot;@drawable/ic_clear_black_24dp&quot;
+        android:visibility=&quot;visible&quot;/&gt;
+
+&lt;/LinearLayout&gt;
+</code></pre><h3 id="Activity-代码-1"><a href="#Activity-代码-1" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h3><pre><code>final ViewGroup transitionsContainerRotate = (ViewGroup) findViewById(R.id.ll_container_rotate);
+final Button btnRotate = (Button) findViewById(R.id.btn_rotate);
+ImageView ivRotate = (ImageView) findViewById(R.id.iv_rotate);
+
+btnRotate.setOnClickListener(v -&gt; {
+    TransitionManager.beginDelayedTransition(transitionsContainerRotate, new Rotate());
+    ivRotate.setRotation(isRotated ? 0 : 135);
+    isRotated = !isRotated;
+});
+</code></pre><h3 id="最终效果-5"><a href="#最终效果-5" class="headerlink" title="最终效果"></a>最终效果</h3><p> <img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_rotate.gif" alt="Rotate"></p>
+<h2 id="ChangeText-文字改变时动画"><a href="#ChangeText-文字改变时动画" class="headerlink" title="ChangeText 文字改变时动画"></a>ChangeText 文字改变时动画</h2><h3 id="布局-2"><a href="#布局-2" class="headerlink" title="布局"></a>布局</h3><pre><code>&lt;LinearLayout
+    android:id=&quot;@+id/ll_container_change_text&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:gravity=&quot;center&quot;
+    android:orientation=&quot;vertical&quot;
+    android:visibility=&quot;visible&quot;&gt;
+
+    &lt;Button
+        android:id=&quot;@+id/btn_change_text&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;ChangeText&quot;/&gt;
+
+    &lt;TextView
+        android:id=&quot;@+id/tv_text&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_marginTop=&quot;16dp&quot;
+        android:text=&quot;Transitions are awesome!&quot;
+        android:visibility=&quot;visible&quot;/&gt;
+
+&lt;/LinearLayout&gt;
+</code></pre><h3 id="Activity-代码-2"><a href="#Activity-代码-2" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h3><pre><code>final LinearLayout transitionsContainerChangeText = (LinearLayout) findViewById(R.id.ll_container_change_text);
+final TextView tvText = (TextView) findViewById(R.id.tv_text);
+final Button btnChangeText = (Button) findViewById(R.id.btn_change_text);
+String secText = &quot; Second Text&quot;;
+String firstText = &quot;First Text&quot;;
+
+btnChangeText.setOnClickListener(v -&gt; {
+    TransitionManager.beginDelayedTransition(transitionsContainerChangeText,
+            new ChangeText().setChangeBehavior(ChangeText.CHANGE_BEHAVIOR_OUT_IN));
+
+    tvText.setText(isFirstText ? secText : firstText);
+    isFirstText = !isFirstText;
+
+});
+</code></pre><h3 id="最终效果-6"><a href="#最终效果-6" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_change_text.gif" alt="ChangeText"></p>
+<h2 id="TransitionName-制作-打乱动画"><a href="#TransitionName-制作-打乱动画" class="headerlink" title="TransitionName 制作 打乱动画"></a>TransitionName 制作 打乱动画</h2><p>使用场景：</p>
+<ol>
+<li>需要动态生成 ViewGroup 的子 View ， 并且子 View 内容需要更新时</li>
+<li>需要制作随机时</li>
+</ol>
+<h3 id="布局-3"><a href="#布局-3" class="headerlink" title="布局"></a>布局</h3><p><strong>注意：</strong>这里把 Button 移到了 LinearLayout 的外面，原因是一会创建子 View 的时候会先删除所有子 View（Button 也会被删除）。</p>
+<pre><code>&lt;Button
+    android:id=&quot;@+id/btn_transition_name&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;打乱&quot;/&gt;
+
+
+&lt;LinearLayout
+    android:id=&quot;@+id/ll_container_transition_name&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:gravity=&quot;center&quot;
+    android:orientation=&quot;vertical&quot;
+    android:visibility=&quot;visible&quot;&gt;
+</code></pre><h3 id="Activity-代码-3"><a href="#Activity-代码-3" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h3><pre><code>// TransitionName 做打乱动画
+final LinearLayout transitionsContainerTransitionName = (LinearLayout) findViewById(R.id.ll_container_transition_name);
+final Button btnTransitionName = (Button) findViewById(R.id.btn_transition_name);
+
+LayoutInflater inflater = LayoutInflater.from(this);
+ArrayList&lt;String&gt; titles = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; 4; i++) {
+    titles.add(String.format(Locale.CHINA, &quot;Item %d&quot;, i));
+}
+createViews(inflater, transitionsContainerTransitionName, titles);
+
+btnTransitionName.setOnClickListener(v -&gt; {
+    TransitionManager.beginDelayedTransition(transitionsContainerTransitionName, new ChangeBounds());
+    Collections.shuffle(titles);
+    createViews(inflater, transitionsContainerTransitionName, titles);
+});
+
+// 独立的方法
+// In createViews we should provide transition name for every view.
+private static void createViews(LayoutInflater inflater, ViewGroup layout, List&lt;String&gt; titles) {
+    layout.removeAllViews();
+    for (String title : titles) {
+        TextView textView = (TextView) inflater.inflate(R.layout.text_view, layout, false);
+        textView.setText(title);
+        TransitionManager.setTransitionName(textView, title);
+        layout.addView(textView);
+    }
+}
+</code></pre><h3 id="最终效果-7"><a href="#最终效果-7" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_transition_name.gif" alt="TransitionName"></p>
+<h2 id="Explode-and-Propagation-爆炸和传播"><a href="#Explode-and-Propagation-爆炸和传播" class="headerlink" title="Explode and Propagation 爆炸和传播"></a>Explode and Propagation 爆炸和传播</h2><p>爆炸效果，和移动过渡动画比较相似，不过子 View 的移动方向是由其所在的位置决定的。子 View 的移动方向需要通过计算得到（通过 <code>setEpicenterCallback</code> 方法）</p>
+<h3 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h3><p>这个例子使用 RecyclerView 和 GridLayoutManager 做基本布局，点击里面的 item 让其消失。</p>
+<pre><code>public void onClick(View clickedView) {
+    // save rect of view in screen coordinates
+    final Rect viewRect = new Rect();
+    clickedView.getGlobalVisibleRect(viewRect);
+
+    // create Explode transition with epicenter
+    Transition explode = new Explode()
+        .setEpicenterCallback(new Transition.EpicenterCallback() {
+            @Override
+            public Rect onGetEpicenter(Transition transition) {
+                return viewRect;
+            }
+        });
+    explode.setDuration(1000);
+    TransitionManager.beginDelayedTransition(recyclerView, explode);
+
+    // remove all views from Recycler View
+    recyclerView.setAdapter(null);
+}
+</code></pre><h3 id="最终效果-8"><a href="#最终效果-8" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_explode.gif" alt="Exlode"></p>
+<h2 id="ChangeImageTransform"><a href="#ChangeImageTransform" class="headerlink" title="ChangeImageTransform"></a>ChangeImageTransform</h2><h2 id="Path-Curved-motion-路径过渡动画"><a href="#Path-Curved-motion-路径过渡动画" class="headerlink" title="Path (Curved) motion 路径过渡动画"></a>Path (Curved) motion 路径过渡动画</h2><p>所有的过渡动画都需要两个值：起始值和结束值</p>
+<p>比如：通过 ChangeBounds 来改变 view 的位置，通过 setPathMotion 来提供路径</p>
+<h3 id="布局代码"><a href="#布局代码" class="headerlink" title="布局代码"></a>布局代码</h3><pre><code>&lt;FrameLayout
+    android:id=&quot;@+id/fl_container_path_motion&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+
+
+    &lt;Button
+        android:id=&quot;@+id/btn_path_motion&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Path Motion&quot;/&gt;
+
+
+&lt;/FrameLayout&gt;
+</code></pre><h3 id="Activity-代码-4"><a href="#Activity-代码-4" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h3><pre><code>// path motion 路径过渡动画
+final FrameLayout transitionsContainerPathMotion = (FrameLayout) findViewById(R.id.fl_container_path_motion);
+Button btnPathMotion = (Button) findViewById(R.id.btn_path_motion);
+
+btnPathMotion.setOnClickListener(v -&gt; {
+
+    TransitionManager.beginDelayedTransition(transitionsContainerPathMotion,
+            new ChangeBounds().setPathMotion(new ArcMotion()).setDuration(500));
+
+    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) btnPathMotion.getLayoutParams();
+    params.gravity = isReturnAnimation ? (Gravity.LEFT | Gravity.TOP) :
+            (Gravity.BOTTOM | Gravity.RIGHT);
+    btnPathMotion.setLayoutParams(params);
+    isReturnAnimation = !isReturnAnimation;
+
+});
+</code></pre><p>这里通过 LayoutParams 来控制 Button 在其父控件中的位置。</p>
+<h3 id="最终效果-9"><a href="#最终效果-9" class="headerlink" title="最终效果"></a>最终效果</h3><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_path_motion.gif" alt="Path Motion"></p>
+<h2 id="Targets-设置动画的目标对象"><a href="#Targets-设置动画的目标对象" class="headerlink" title="Targets 设置动画的目标对象"></a>Targets 设置动画的目标对象</h2><h3 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h3><p>定义动画：</p>
+<pre><code>TransitionManager.beginDelayedTransition( viewGroup, transition);
+</code></pre><p>默认情况下，这里的 transition 动画会作用于 viewGroup 中的所有子 View</p>
+<p>当我们需要在一个 <code>ViewGroup</code> 中定义多个动画，作用于不同的子 <code>View</code> 该如何做？</p>
+<h3 id="比如-让一个-TextView-移动，-另一个-TextView-淡出"><a href="#比如-让一个-TextView-移动，-另一个-TextView-淡出" class="headerlink" title="比如 让一个 TextView 移动， 另一个 TextView 淡出"></a>比如 让一个 TextView 移动， 另一个 TextView 淡出</h3><h4 id="布局-4"><a href="#布局-4" class="headerlink" title="布局"></a>布局</h4><pre><code>&lt;LinearLayout
+           android:id=&quot;@+id/ll_container_target&quot;
+           android:layout_width=&quot;wrap_content&quot;
+           android:layout_height=&quot;wrap_content&quot;
+           android:gravity=&quot;center&quot;
+           android:orientation=&quot;vertical&quot;
+           android:visibility=&quot;visible&quot;&gt;
+
+           &lt;Button
+               android:id=&quot;@+id/btn_target&quot;
+               android:layout_width=&quot;wrap_content&quot;
+               android:layout_height=&quot;wrap_content&quot;
+               android:text=&quot;Target&quot;/&gt;
+
+           &lt;TextView
+               android:id=&quot;@+id/tv_target_fade&quot;
+               android:layout_width=&quot;wrap_content&quot;
+               android:layout_height=&quot;wrap_content&quot;
+               android:layout_marginTop=&quot;16dp&quot;
+               android:text=&quot;Transitions are awesome fade!&quot;
+               android:visibility=&quot;visible&quot;/&gt;
+
+           &lt;TextView
+               android:id=&quot;@+id/tv_target_slide&quot;
+               android:layout_width=&quot;wrap_content&quot;
+               android:layout_height=&quot;wrap_content&quot;
+               android:layout_marginTop=&quot;16dp&quot;
+               android:text=&quot;Transitions are awesome slide!&quot;
+               android:visibility=&quot;visible&quot;/&gt;
+
+       &lt;/LinearLayout&gt;
+</code></pre><h4 id="Activity-代码-5"><a href="#Activity-代码-5" class="headerlink" title="Activity 代码"></a><code>Activity</code> 代码</h4><pre><code>// Targets 设置动画的目标对象
+ final LinearLayout transitionsContainerTarget = (LinearLayout) findViewById(R.id.ll_container_target);
+ final Button btnTarget = (Button) findViewById(R.id.btn_target);
+ final TextView tvFade = (TextView) findViewById(R.id.tv_target_fade);
+ final TextView tvSlide = (TextView) findViewById(R.id.tv_target_slide);
+
+
+ btnTarget.setOnClickListener(v -&gt; {
+     Slide slide = new Slide(Gravity.RIGHT);
+     slide.excludeTarget(tvFade, true);
+
+     Fade fade = new Fade();
+     fade.excludeTarget(tvSlide, true);
+
+     TransitionSet transitionSet = new TransitionSet()
+             .addTransition(slide)
+             .addTransition(fade);
+
+     TransitionManager.beginDelayedTransition(transitionsContainerTarget, transitionSet);
+
+     if (tvFade.getVisibility() == View.VISIBLE) {
+         tvFade.setVisibility(View.GONE);
+         tvSlide.setVisibility(View.GONE);
+     } else {
+         tvFade.setVisibility(View.VISIBLE);
+         tvSlide.setVisibility(View.VISIBLE);
+     }
+
+ });
+</code></pre><h4 id="最终效果-10"><a href="#最终效果-10" class="headerlink" title="最终效果"></a>最终效果</h4><p><img src="https://raw.githubusercontent.com/fangmd/markdownphoto/master/src/animation_transition_target.gif" alt="Target处理"></p>
+<h3 id="transition-其他有关-target-方法"><a href="#transition-其他有关-target-方法" class="headerlink" title="transition 其他有关 target 方法"></a>transition 其他有关 target 方法</h3><p>Methods to add target:</p>
+<ul>
+<li>addTarget(View target) — view itself</li>
+<li>addTarget(int targetViewId) — id of view</li>
+<li>addTarget(String targetName) — do you remember about method TransitionManager.setTransitionName?</li>
+<li>addTarget(Class targetType) — for example android.widget.TextView.class</li>
+</ul>
+<p>To remove target:</p>
+<ul>
+<li>removeTarget(View target)</li>
+<li>removeTarget(int targetId)</li>
+<li>removeTarget(String targetName)</li>
+<li>removeTarget(Class target)</li>
+</ul>
+<p>To exclude some views:</p>
+<ul>
+<li>excludeTarget(View target, boolean exclude)</li>
+<li>excludeTarget(int targetId, boolean exclude)</li>
+<li>excludeTarget(Class type, boolean exclude)</li>
+<li>excludeTarget(Class type, boolean exclude)</li>
+</ul>
+<p>And for excluding all children of some ViewGroup:</p>
+<ul>
+<li>excludeChildren(View target, boolean exclude)</li>
+<li>excludeChildren(int targetId, boolean exclude)</li>
+<li>excludeChildren(Class type, boolean exclude)</li>
+</ul>
+<h2 id="使用-xml-创建-Transition"><a href="#使用-xml-创建-Transition" class="headerlink" title="使用 xml 创建 Transition"></a>使用 xml 创建 Transition</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;transitionSet xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+              app:transitionOrdering=&quot;together&quot;
+              app:duration=&quot;400&quot;&gt;
+    &lt;changeBounds/&gt;
+    &lt;changeImageTransform/&gt;
+    &lt;fade
+       app:fadingMode=&quot;fade_in&quot;
+       app:startDelay=&quot;200&quot;&gt;
+        &lt;targets&gt;
+            &lt;target app:targetId=&quot;@id/transition_title&quot;/&gt;
+        &lt;/targets&gt;
+    &lt;/fade&gt;
+&lt;/transitionSet&gt;
+</code></pre><p>使用</p>
+<pre><code>TransitionInflater.from(getContext()).inflateTransition(R.anim.my_the_best_transition);
+</code></pre><h2 id="Activity-and-Fragment-transitions"><a href="#Activity-and-Fragment-transitions" class="headerlink" title="Activity and Fragment transitions"></a>Activity and Fragment transitions</h2><h2 id="Custom-Transitions"><a href="#Custom-Transitions" class="headerlink" title="Custom Transitions"></a>Custom Transitions</h2><p>上面所有代码在：<a href="https://github.com/fangmd/Animation/tree/master" target="_blank" rel="noopener">github</a></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://medium.com/@andkulikov/animate-all-the-things-transitions-in-android-914af5477d50#.oe9uzkhcq" target="_blank" rel="noopener">Animate all the things. Transitions in Android</a></li>
+<li><a href="https://github.com/andkulikov/Transitions-Everywhere" target="_blank" rel="noopener">原作者github</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+            <a href="/tags/Transition/" rel="tag"># Transition</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/23/Python/crawler/Crawler Beautiful Soup 4/" rel="next" title="Crawler Beautiful Soup 4 文档阅读记录">
+                <i class="fa fa-chevron-left"></i> Crawler Beautiful Soup 4 文档阅读记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/03/Android/数据存储/SharedPreferences/" rel="prev" title="数据存储 - SharedPreferences">
+                数据存储 - SharedPreferences <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关键类"><span class="nav-number">1.</span> <span class="nav-text">关键类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.1.</span> <span class="nav-text">介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#适配"><span class="nav-number">2.</span> <span class="nav-text">适配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#上代码"><span class="nav-number">3.</span> <span class="nav-text">上代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#默认效果"><span class="nav-number">3.1.</span> <span class="nav-text">默认效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局关键代码："><span class="nav-number">3.1.1.</span> <span class="nav-text">布局关键代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity中代码："><span class="nav-number">3.1.2.</span> <span class="nav-text">Activity中代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果："><span class="nav-number">3.1.3.</span> <span class="nav-text">最终效果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码解释"><span class="nav-number">3.1.4.</span> <span class="nav-text">代码解释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fade-淡出淡入"><span class="nav-number">3.2.</span> <span class="nav-text">Fade 淡出淡入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局如上-更改Activity中代码："><span class="nav-number">3.2.1.</span> <span class="nav-text">布局如上 更改Activity中代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果"><span class="nav-number">3.2.2.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Slide-移动"><span class="nav-number">3.3.</span> <span class="nav-text">Slide 移动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局如上-更改Activity中代码：-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">布局如上 更改Activity中代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">最终效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Slide-构造方法"><span class="nav-number">3.3.3.</span> <span class="nav-text">Slide 构造方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scale-缩放"><span class="nav-number">3.4.</span> <span class="nav-text">Scale 缩放</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局如上-更改Activity中代码：-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">布局如上 更改Activity中代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-2"><span class="nav-number">3.4.2.</span> <span class="nav-text">最终效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scale-构造方法"><span class="nav-number">3.4.3.</span> <span class="nav-text">Scale 构造方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TransitionSet-动画集合"><span class="nav-number">3.5.</span> <span class="nav-text">TransitionSet 动画集合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-3"><span class="nav-number">3.5.1.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recolor-颜色渐变"><span class="nav-number">3.6.</span> <span class="nav-text">Recolor 颜色渐变</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局"><span class="nav-number">3.6.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-代码"><span class="nav-number">3.6.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-4"><span class="nav-number">3.6.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rotate-旋转"><span class="nav-number">3.7.</span> <span class="nav-text">Rotate 旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局-1"><span class="nav-number">3.7.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-代码-1"><span class="nav-number">3.7.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-5"><span class="nav-number">3.7.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChangeText-文字改变时动画"><span class="nav-number">3.8.</span> <span class="nav-text">ChangeText 文字改变时动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局-2"><span class="nav-number">3.8.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-代码-2"><span class="nav-number">3.8.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-6"><span class="nav-number">3.8.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TransitionName-制作-打乱动画"><span class="nav-number">3.9.</span> <span class="nav-text">TransitionName 制作 打乱动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局-3"><span class="nav-number">3.9.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-代码-3"><span class="nav-number">3.9.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-7"><span class="nav-number">3.9.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Explode-and-Propagation-爆炸和传播"><span class="nav-number">3.10.</span> <span class="nav-text">Explode and Propagation 爆炸和传播</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关键代码"><span class="nav-number">3.10.1.</span> <span class="nav-text">关键代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-8"><span class="nav-number">3.10.2.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChangeImageTransform"><span class="nav-number">3.11.</span> <span class="nav-text">ChangeImageTransform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Path-Curved-motion-路径过渡动画"><span class="nav-number">3.12.</span> <span class="nav-text">Path (Curved) motion 路径过渡动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局代码"><span class="nav-number">3.12.1.</span> <span class="nav-text">布局代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity-代码-4"><span class="nav-number">3.12.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果-9"><span class="nav-number">3.12.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Targets-设置动画的目标对象"><span class="nav-number">3.13.</span> <span class="nav-text">Targets 设置动画的目标对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小总结"><span class="nav-number">3.13.1.</span> <span class="nav-text">小总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比如-让一个-TextView-移动，-另一个-TextView-淡出"><span class="nav-number">3.13.2.</span> <span class="nav-text">比如 让一个 TextView 移动， 另一个 TextView 淡出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#布局-4"><span class="nav-number">3.13.2.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity-代码-5"><span class="nav-number">3.13.2.2.</span> <span class="nav-text">Activity 代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最终效果-10"><span class="nav-number">3.13.2.3.</span> <span class="nav-text">最终效果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transition-其他有关-target-方法"><span class="nav-number">3.13.3.</span> <span class="nav-text">transition 其他有关 target 方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-xml-创建-Transition"><span class="nav-number">3.14.</span> <span class="nav-text">使用 xml 创建 Transition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-and-Fragment-transitions"><span class="nav-number">3.15.</span> <span class="nav-text">Activity and Fragment transitions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Transitions"><span class="nav-number">3.16.</span> <span class="nav-text">Custom Transitions</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="自定义View,View,文字,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="绘制文字方法一 常用Canvas 调用下面的方法 1public void drawText(@NonNull String text, float x, float y, @NonNull Paint paint)  参数1: 需要绘制的文本 参数2: 绘制的文本起始 x 坐标 参数3: 绘制的文本起始 y 坐标 文字的 baseline Y 坐标  关于 BaseLine:  获取文字的宽度方">
+<meta name="keywords" content="自定义View,View,文字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义View -- 绘制文字">
+<meta property="og:url" content="http://yoursite.com/2016/03/30/Android/view/自定义View/自定义View-绘制文字/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="绘制文字方法一 常用Canvas 调用下面的方法 1public void drawText(@NonNull String text, float x, float y, @NonNull Paint paint)  参数1: 需要绘制的文本 参数2: 绘制的文本起始 x 坐标 参数3: 绘制的文本起始 y 坐标 文字的 baseline Y 坐标  关于 BaseLine:  获取文字的宽度方">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20140402150646718?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGFueWluZ2ppZTMyNw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义View -- 绘制文字">
+<meta name="twitter:description" content="绘制文字方法一 常用Canvas 调用下面的方法 1public void drawText(@NonNull String text, float x, float y, @NonNull Paint paint)  参数1: 需要绘制的文本 参数2: 绘制的文本起始 x 坐标 参数3: 绘制的文本起始 y 坐标 文字的 baseline Y 坐标  关于 BaseLine:  获取文字的宽度方">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20140402150646718?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGFueWluZ2ppZTMyNw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/30/Android/view/自定义View/自定义View-绘制文字/">
+
+
+
+
+
+  <title>自定义View -- 绘制文字 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/30/Android/view/自定义View/自定义View-绘制文字/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自定义View -- 绘制文字</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-30T09:23:14+08:00">
+                2016-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="绘制文字"><a href="#绘制文字" class="headerlink" title="绘制文字"></a>绘制文字</h1><h2 id="方法一-常用"><a href="#方法一-常用" class="headerlink" title="方法一 常用"></a>方法一 常用</h2><p>Canvas 调用下面的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">drawText</span><span class="params">(@NonNull String text, <span class="keyword">float</span> x, <span class="keyword">float</span> y, @NonNull Paint paint)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数1: 需要绘制的文本</li>
+<li>参数2: 绘制的文本起始 x 坐标</li>
+<li>参数3: 绘制的文本起始 y 坐标 文字的 baseline Y 坐标</li>
+</ul>
+<p>关于 BaseLine:</p>
+<p><img src="http://img.blog.csdn.net/20140402150646718?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGFueWluZ2ppZTMyNw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="http://img.blog.csdn.net/20140402150646718?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGFueWluZ2ppZTMyNw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"></p>
+<h1 id="获取文字的宽度"><a href="#获取文字的宽度" class="headerlink" title="获取文字的宽度"></a>获取文字的宽度</h1><p>方式一：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> text  绘制的文字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> paint 画笔</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 文字的宽度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextWidth</span><span class="params">(String text, Paint paint)</span> </span>&#123;</span><br><span class="line">    Rect bounds = <span class="keyword">new</span> Rect();</span><br><span class="line">    paint.getTextBounds(text, <span class="number">0</span>, text.length(), bounds);</span><br><span class="line">    <span class="keyword">int</span> width = bounds.left + bounds.width();</span><br><span class="line">    <span class="keyword">return</span> width;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方式二：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> text  绘制的文字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> paint 画笔</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 文字的宽度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextWidth2</span><span class="params">(String text, Paint paint)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((<span class="keyword">int</span>) paint.measureText(text));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="获取文字的高度"><a href="#获取文字的高度" class="headerlink" title="获取文字的高度"></a>获取文字的高度</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> text  绘制的文字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> paint 画笔</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 文字的高度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTextHeight</span><span class="params">(String text, Paint paint)</span> </span>&#123;</span><br><span class="line">    Rect bounds = <span class="keyword">new</span> Rect();</span><br><span class="line">    paint.getTextBounds(text, <span class="number">0</span>, text.length(), bounds);</span><br><span class="line">    <span class="keyword">int</span> height = bounds.bottom + bounds.height();</span><br><span class="line">    <span class="keyword">return</span> height;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-mPaint.ascent() + mPaint.descent()</span><br></pre></td></tr></table></figure>
+<h1 id="文字的度量，参数获取-Paint-FontMetrics"><a href="#文字的度量，参数获取-Paint-FontMetrics" class="headerlink" title="文字的度量，参数获取 Paint.FontMetrics"></a>文字的度量，参数获取 Paint.FontMetrics</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setStyle(Paint.Style.STROKE);</span><br><span class="line">canvas.drawRect(<span class="number">100</span>, <span class="number">100</span>, <span class="number">700</span>, <span class="number">300</span>, mPaint);</span><br><span class="line">mPaint.setTextSize(<span class="number">100</span>);    <span class="comment">// 必须设置大小才能得到五条线的值</span></span><br><span class="line">Paint.FontMetrics metrics = mPaint.getFontMetrics(); <span class="comment">// 基线</span></span><br><span class="line"><span class="keyword">float</span> top = metrics.top;</span><br><span class="line"><span class="keyword">float</span> ascent = metrics.ascent; <span class="comment">// 五条线</span></span><br><span class="line"><span class="keyword">float</span> leading = metrics.leading;</span><br><span class="line"><span class="keyword">float</span> descent = metrics.descent;</span><br><span class="line"><span class="keyword">float</span> bottom = metrics.bottom; <span class="comment">// 最低底边的线</span></span><br><span class="line">Log.d(TAG, <span class="string">"top="</span> + top + <span class="string">"ascent="</span> + ascent + <span class="string">"leading="</span> + leading + <span class="string">"descent="</span> + descent + <span class="string">"bottom="</span> + bottom);</span><br><span class="line">canvas.drawText(<span class="string">"测试文字"</span>, <span class="number">100</span>, <span class="number">300</span>, mPaint);  <span class="comment">// 文字的基线 baseline    top,ascent,leading,descent,bottom</span></span><br></pre></td></tr></table></figure>
+<p>或者:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> ascent = mPaint.ascent();</span><br><span class="line"><span class="keyword">float</span> descent = mPaint.descent();</span><br><span class="line"><span class="keyword">float</span> textHeight = -ascent + descent;</span><br></pre></td></tr></table></figure>
+<h1 id="文本绘制水平居中"><a href="#文本绘制水平居中" class="headerlink" title="文本绘制水平居中"></a>文本绘制水平居中</h1><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s</span><br><span class="line"># x</span><br></pre></td></tr></table></figure>
+<h1 id="文本垂直居中"><a href="#文本垂直居中" class="headerlink" title="文本垂直居中"></a>文本垂直居中</h1><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();</span><br><span class="line"><span class="keyword">float</span> y = getHeight() / <span class="number">2</span> + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"># y</span><br></pre></td></tr></table></figure>
+<h1 id="Paint-中和绘制文本相关的方法"><a href="#Paint-中和绘制文本相关的方法" class="headerlink" title="Paint 中和绘制文本相关的方法"></a>Paint 中和绘制文本相关的方法</h1><ul>
+<li><code>mTextPaint.setStrikeThruText(true);</code> ：设置文本删除线</li>
+<li><code>setTextSize(float f)</code></li>
+<li><code>setUnderlineText(booelan b)</code>: 设置下滑线</li>
+</ul>
+<h1 id="绘制透明文字"><a href="#绘制透明文字" class="headerlink" title="绘制透明文字"></a>绘制透明文字</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setAlpha(((<span class="keyword">int</span>) (<span class="number">255</span> * progress)));</span><br><span class="line">canvas.drawText(String.valueOf(number), <span class="number">0</span>, y + (ascent*(progress)), mPaint);</span><br></pre></td></tr></table></figure>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="文字交替动画"><a href="#文字交替动画" class="headerlink" title="文字交替动画"></a>文字交替动画</h2><pre><code class="java"><span class="keyword">float</span> ascent = mPaint.ascent();
+<span class="keyword">float</span> descent = mPaint.descent();
+
+Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
+<span class="keyword">float</span> y = getHeight() / <span class="number">2</span> + (Math.abs(fontMetrics.ascent) - fontMetrics.descent) / <span class="number">2</span>;
+
+mPaint.setAlpha(((<span class="keyword">int</span>) (<span class="number">255</span> * progress)));
+canvas.drawText(String.valueOf(oldNumber), <span class="number">0</span>, y - (ascent*(<span class="number">1</span>-progress)), mPaint);
+mPaint.setAlpha(((<span class="keyword">int</span>) (<span class="number">255</span> * (<span class="number">1</span> - progress))));
+canvas.drawText(String.valueOf(number), <span class="number">0</span>, y + (ascent*(progress)), mPaint);
+</code></pre>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/自定义View/" rel="tag"># 自定义View</a>
+          
+            <a href="/tags/View/" rel="tag"># View</a>
+          
+            <a href="/tags/文字/" rel="tag"># 文字</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/30/Android/screanadapter/机型适配/" rel="next" title="机型适配">
+                <i class="fa fa-chevron-left"></i> 机型适配
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/31/Android/UI/图片宽高适配问题/" rel="prev" title="图片宽高适配">
+                图片宽高适配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#绘制文字"><span class="nav-number">1.</span> <span class="nav-text">绘制文字</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法一-常用"><span class="nav-number">1.1.</span> <span class="nav-text">方法一 常用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取文字的宽度"><span class="nav-number">2.</span> <span class="nav-text">获取文字的宽度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取文字的高度"><span class="nav-number">3.</span> <span class="nav-text">获取文字的高度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文字的度量，参数获取-Paint-FontMetrics"><span class="nav-number">4.</span> <span class="nav-text">文字的度量，参数获取 Paint.FontMetrics</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文本绘制水平居中"><span class="nav-number">5.</span> <span class="nav-text">文本绘制水平居中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文本垂直居中"><span class="nav-number">6.</span> <span class="nav-text">文本垂直居中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Paint-中和绘制文本相关的方法"><span class="nav-number">7.</span> <span class="nav-text">Paint 中和绘制文本相关的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#绘制透明文字"><span class="nav-number">8.</span> <span class="nav-text">绘制透明文字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">9.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文字交替动画"><span class="nav-number">9.1.</span> <span class="nav-text">文字交替动画</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

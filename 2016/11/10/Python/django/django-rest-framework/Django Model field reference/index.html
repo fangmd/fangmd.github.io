@@ -1,0 +1,751 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Django,Models,Field,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Field optionsnullField.null 如果 True django 会用 NULL 存储空值。默认 False.  If True, Django will store empty values as NULL in the database. Default is False.  If you want to accept null values with BooleanFie">
+<meta name="keywords" content="Django,Models,Field">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Model Field reference">
+<meta property="og:url" content="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Field optionsnullField.null 如果 True django 会用 NULL 存储空值。默认 False.  If True, Django will store empty values as NULL in the database. Default is False.  If you want to accept null values with BooleanFie">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.318Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django Model Field reference">
+<meta name="twitter:description" content="Field optionsnullField.null 如果 True django 会用 NULL 存储空值。默认 False.  If True, Django will store empty values as NULL in the database. Default is False.  If you want to accept null values with BooleanFie">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
+
+
+
+
+
+  <title>Django Model Field reference | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/Python/django/django-rest-framework/Django Model field reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Django Model Field reference</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-10T13:18:12+08:00">
+                2016-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Field-options"><a href="#Field-options" class="headerlink" title="Field options"></a>Field options</h1><h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p><code>Field.null</code></p>
+<p>如果 True django 会用 NULL 存储空值。默认 False.</p>
+<blockquote>
+<p>If True, Django will store empty values as NULL in the database. Default is False.</p>
+</blockquote>
+<p>If you want to accept null values with BooleanField, use NullBooleanField instead.</p>
+<a id="more"></a>
+<h2 id="blank"><a href="#blank" class="headerlink" title="blank"></a>blank</h2><p><code>Field.blank</code></p>
+<p>参数是否能够为空。 True：表示可以为空，默认 False</p>
+<blockquote>
+<p>If True, the field is allowed to be blank. Default is False.</p>
+</blockquote>
+<h2 id="choices"><a href="#choices" class="headerlink" title="choices"></a>choices</h2><p><code>Field.choices</code></p>
+<h1 id="Field-types"><a href="#Field-types" class="headerlink" title="Field types"></a>Field types</h1><h2 id="AutoField"><a href="#AutoField" class="headerlink" title="AutoField"></a>AutoField</h2><h2 id="BigIntegerField"><a href="#BigIntegerField" class="headerlink" title="BigIntegerField"></a>BigIntegerField</h2><h2 id="BinaryField"><a href="#BinaryField" class="headerlink" title="BinaryField"></a>BinaryField</h2><h2 id="BooleanField"><a href="#BooleanField" class="headerlink" title="BooleanField"></a>BooleanField</h2><h2 id="CharField"><a href="#CharField" class="headerlink" title="CharField"></a>CharField</h2><h2 id="CommaSeparatedIntegerField"><a href="#CommaSeparatedIntegerField" class="headerlink" title="CommaSeparatedIntegerField"></a>CommaSeparatedIntegerField</h2><h2 id="DateField"><a href="#DateField" class="headerlink" title="DateField"></a>DateField</h2><p>时间，代表 python 中的<code>datetime.date</code>实例</p>
+<p>特殊参数：</p>
+<ol>
+<li>DateField.auto_now ： 自动设置时间，在创建的时候值会更新</li>
+<li>DateField.auto_now_add ：设置时间在对象更新的时候也更新</li>
+</ol>
+<p>上面两个参数其中一个设置为 True，同时会设置<code>editable=False</code>,<code>blank=True</code></p>
+<h2 id="DateTimeField"><a href="#DateTimeField" class="headerlink" title="DateTimeField"></a>DateTimeField</h2><p>对应 Python 中的 <code>datetime.datetime</code> 对象</p>
+<p>参数和 <code>DateField</code> 一致</p>
+<h2 id="TextField"><a href="#TextField" class="headerlink" title="TextField"></a>TextField</h2><p>长字符串使用</p>
+<p>对应 html 的输入控件 <code>Textarea</code></p>
+<p>如果设置了 <code>max_length</code> 参数，这个值会反映到 <code>Textarea</code> 上，但是在数据库层面上不会被检查。</p>
+<h2 id="CharField-1"><a href="#CharField-1" class="headerlink" title="CharField"></a>CharField</h2><p>短字符串使用</p>
+<blockquote>
+<p>A string field, for small- to large-sized strings.</p>
+</blockquote>
+<p>对应 html 的输入控件 <code>TextInput</code></p>
+<p>特殊属性：</p>
+<ol>
+<li>CharField.max_length</li>
+</ol>
+<ul>
+<li><a href="https://docs.djangoproject.com/en/1.9/ref/models/fields/" target="_blank" rel="noopener">https://docs.djangoproject.com/en/1.9/ref/models/fields/</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/Models/" rel="tag"># Models</a>
+          
+            <a href="/tags/Field/" rel="tag"># Field</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" rel="next" title="django-rest-framework 提高">
+                <i class="fa fa-chevron-left"></i> django-rest-framework 提高
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/10/Python/django/django-rest-framework/2.django-rest-framework -- Views/" rel="prev" title="django-rest-framework -- Views">
+                django-rest-framework -- Views <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Field-options"><span class="nav-number">1.</span> <span class="nav-text">Field options</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.1.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blank"><span class="nav-number">1.2.</span> <span class="nav-text">blank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#choices"><span class="nav-number">1.3.</span> <span class="nav-text">choices</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Field-types"><span class="nav-number">2.</span> <span class="nav-text">Field types</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoField"><span class="nav-number">2.1.</span> <span class="nav-text">AutoField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BigIntegerField"><span class="nav-number">2.2.</span> <span class="nav-text">BigIntegerField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BinaryField"><span class="nav-number">2.3.</span> <span class="nav-text">BinaryField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BooleanField"><span class="nav-number">2.4.</span> <span class="nav-text">BooleanField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CharField"><span class="nav-number">2.5.</span> <span class="nav-text">CharField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CommaSeparatedIntegerField"><span class="nav-number">2.6.</span> <span class="nav-text">CommaSeparatedIntegerField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DateField"><span class="nav-number">2.7.</span> <span class="nav-text">DateField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DateTimeField"><span class="nav-number">2.8.</span> <span class="nav-text">DateTimeField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TextField"><span class="nav-number">2.9.</span> <span class="nav-text">TextField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CharField-1"><span class="nav-number">2.10.</span> <span class="nav-text">CharField</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

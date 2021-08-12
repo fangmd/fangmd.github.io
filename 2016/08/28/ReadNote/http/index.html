@@ -1,0 +1,775 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="HTTP,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="原文：http://www.kancloud.cn/kancloud/tealeaf-http/43832 背景HTTP 解释：  规则系统，协议 把应用程序和超文本文档之间的传输联系起来 是机器之间彼此沟通的协议，或者说消息格式 遵循一个简单的模型：请求－－响应  历史：  1991年 HTTP／0.9 1992年 HTTP／1.0 1995年 HTTP／1.1  请求包">
+<meta name="keywords" content="HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP">
+<meta property="og:url" content="http://yoursite.com/2016/08/28/ReadNote/http/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="原文：http://www.kancloud.cn/kancloud/tealeaf-http/43832 背景HTTP 解释：  规则系统，协议 把应用程序和超文本文档之间的传输联系起来 是机器之间彼此沟通的协议，或者说消息格式 遵循一个简单的模型：请求－－响应  历史：  1991年 HTTP／0.9 1992年 HTTP／1.0 1995年 HTTP／1.1  请求包">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/680540-e04227416a611216.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.335Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP">
+<meta name="twitter:description" content="原文：http://www.kancloud.cn/kancloud/tealeaf-http/43832 背景HTTP 解释：  规则系统，协议 把应用程序和超文本文档之间的传输联系起来 是机器之间彼此沟通的协议，或者说消息格式 遵循一个简单的模型：请求－－响应  历史：  1991年 HTTP／0.9 1992年 HTTP／1.0 1995年 HTTP／1.1  请求包">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/680540-e04227416a611216.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/28/ReadNote/http/">
+
+
+
+
+
+  <title>HTTP | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/28/ReadNote/http/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-28T13:18:12+08:00">
+                2016-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ReadNote/" itemprop="url" rel="index">
+                    <span itemprop="name">ReadNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文：<a href="http://www.kancloud.cn/kancloud/tealeaf-http/43832" target="_blank" rel="noopener">http://www.kancloud.cn/kancloud/tealeaf-http/43832</a></p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>HTTP 解释：</p>
+<ol>
+<li>规则系统，协议</li>
+<li>把应用程序和超文本文档之间的传输联系起来</li>
+<li>是机器之间彼此沟通的协议，或者说消息格式</li>
+<li>遵循一个简单的模型：请求－－响应</li>
+</ol>
+<p>历史：</p>
+<ol>
+<li>1991年 HTTP／0.9</li>
+<li>1992年 HTTP／1.0</li>
+<li>1995年 HTTP／1.1</li>
+</ol>
+<h2 id="请求包"><a href="#请求包" class="headerlink" title="请求包"></a>请求包</h2><p><img src="http://upload-images.jianshu.io/upload_images/680540-e04227416a611216.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="请求包"></p>
+<a id="more"></a>
+<h3 id="无状态"><a href="#无状态" class="headerlink" title="无状态"></a>无状态</h3><p>HTTP是无状态的，服务器不需要在每次请求之间保留状态信息，每次请求都是独立的</p>
+<h2 id="什么是URL"><a href="#什么是URL" class="headerlink" title="什么是URL"></a>什么是URL</h2><p>Uniform Resource Locator 统一资源标识符</p>
+<h3 id="URL-组成部分"><a href="#URL-组成部分" class="headerlink" title="URL 组成部分"></a>URL 组成部分</h3><ul>
+<li><code>http</code>：url的模式scheme，还有ftp，mailto，git</li>
+<li><code>www.example.com</code>:资源路径或者主机，告诉客户端资源的确切位置</li>
+<li><code>/home/</code>url路径，代表客户端在请求什么样的本地资源（对于服务器来说）</li>
+</ul>
+<p>80端口默认用于正常的HTTP请求</p>
+<h3 id="查询字符串／参数"><a href="#查询字符串／参数" class="headerlink" title="查询字符串／参数"></a>查询字符串／参数</h3><pre><code>http://www.example.com?search=ruby&amp;results=10
+</code></pre><h2 id="查询字符串-描述"><a href="#查询字符串-描述" class="headerlink" title="|查询字符串|描述|"></a>|查询字符串|描述|</h2><p>|？|保留字，标识查询字符串的开始|<br>|search＝ruby|参数的键值对|<br>|&amp;|保留字，给需要查询字符串添加参数|</p>
+<p>限制：</p>
+<ol>
+<li>查询字符串有最大长度。所以，如果你大量的数据需要传输，还是不要用查询字符串的好。</li>
+<li>查询字符串中使用的键/值对儿是显示在 URL 上的。所以，不推荐用查询字符串传输敏感信息比如用户名或密码。</li>
+<li>查询字符串中无法使用空格和特殊字符比如&amp;。它们必须用 URL 编码代替，我们接下来会讨论这个。</li>
+</ol>
+<h3 id="URL-编码"><a href="#URL-编码" class="headerlink" title="URL 编码"></a>URL 编码</h3><p>URL在设计的时候默认只接受ASCLL码</p>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="HTTP请求报文"><a href="#HTTP请求报文" class="headerlink" title="HTTP请求报文"></a>HTTP请求报文</h3><h4 id="请求行-Request-Line"><a href="#请求行-Request-Line" class="headerlink" title="请求行 Request Line"></a>请求行 Request Line</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /entry/57bbdeb4df0eea005c630f45/view HTTP/1.1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Method</li>
+<li>url</li>
+<li>version</li>
+</ul>
+<h4 id="请求头"><a href="#请求头" class="headerlink" title="请求头"></a>请求头</h4><p>key: value</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Cookie</span><br><span class="line">User-Agent</span><br><span class="line">Content-Type</span><br></pre></td></tr></table></figure>
+<h4 id="请求体"><a href="#请求体" class="headerlink" title="请求体"></a>请求体</h4><p>在 Post 请求的时候才有</p>
+<blockquote>
+<p>请求体和请求行之前用空行分割</p>
+</blockquote>
+<h3 id="发起一个请求"><a href="#发起一个请求" class="headerlink" title="发起一个请求"></a>发起一个请求</h3><p>http工具推荐：chrome插件：postman，</p>
+<p>使用http工具发起请求，查看返回的数据RAW</p>
+<h2 id="处理响应"><a href="#处理响应" class="headerlink" title="处理响应"></a>处理响应</h2><h3 id="响应行"><a href="#响应行" class="headerlink" title="响应行"></a>响应行</h3><p>Http版本 状态码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200OK</span><br></pre></td></tr></table></figure>
+<h3 id="头部"><a href="#头部" class="headerlink" title="头部"></a>头部</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Location: 指定响应的路径，与状态码302配合使用</span><br><span class="line">Server</span><br><span class="line">Last-Modified: 最后修改时间</span><br><span class="line">Set-Cookie</span><br><span class="line">Content-Disposition: 游览器以下载方式解析正文，attachment,filename=xx.zip</span><br></pre></td></tr></table></figure>
+<h3 id="消息正文"><a href="#消息正文" class="headerlink" title="消息正文"></a>消息正文</h3><blockquote>
+<p>消息正文和头部用空行分割</p>
+</blockquote>
+<p>如果是网页请求：返回的就是 html 文本</p>
+<h2 id="有状态的WEB应用"><a href="#有状态的WEB应用" class="headerlink" title="有状态的WEB应用"></a>有状态的WEB应用</h2><ul>
+<li>session会话</li>
+<li>Cookies</li>
+<li>异步javascript调用（AJAX）</li>
+</ul>
+<h3 id="session"><a href="#session" class="headerlink" title="session"></a>session</h3><p>服务器在发送响应数据的时候带一个唯一令牌token，之后客户端在发起请求的时候都把token加在后面</p>
+<h3 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h3><p>存储在游览器里包含会话信息的小文件。</p>
+<h3 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h3><h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p><code>https://</code><br>通过 HTTPS 发送的请求和响应在发送前都会被加密。这意味着如果一个恶意的黑客监听 HTTP 通信，他得到的信息都是加密的和无用的。</p>
+<p>TLS加密协议</p>
+<h3 id="同源策略-Same-origin-policy"><a href="#同源策略-Same-origin-policy" class="headerlink" title="同源策略 Same-origin policy"></a>同源策略 Same-origin policy</h3>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HTTP/" rel="tag"># HTTP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/28/Android/优化/01.找出界面卡顿的原因--BlockCanary/" rel="next" title="找出Android界面卡顿的原因－－ BlockCanary">
+                <i class="fa fa-chevron-left"></i> 找出Android界面卡顿的原因－－ BlockCanary
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/04/Python/language/Regular_Expression/" rel="prev" title="Regular Expression">
+                Regular Expression <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求包"><span class="nav-number">2.</span> <span class="nav-text">请求包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无状态"><span class="nav-number">2.1.</span> <span class="nav-text">无状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是URL"><span class="nav-number">3.</span> <span class="nav-text">什么是URL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#URL-组成部分"><span class="nav-number">3.1.</span> <span class="nav-text">URL 组成部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询字符串／参数"><span class="nav-number">3.2.</span> <span class="nav-text">查询字符串／参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询字符串-描述"><span class="nav-number">4.</span> <span class="nav-text">|查询字符串|描述|</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#URL-编码"><span class="nav-number">4.1.</span> <span class="nav-text">URL 编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP"><span class="nav-number">5.</span> <span class="nav-text">HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP请求报文"><span class="nav-number">5.1.</span> <span class="nav-text">HTTP请求报文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#请求行-Request-Line"><span class="nav-number">5.1.1.</span> <span class="nav-text">请求行 Request Line</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求头"><span class="nav-number">5.1.2.</span> <span class="nav-text">请求头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求体"><span class="nav-number">5.1.3.</span> <span class="nav-text">请求体</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发起一个请求"><span class="nav-number">5.2.</span> <span class="nav-text">发起一个请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理响应"><span class="nav-number">6.</span> <span class="nav-text">处理响应</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#响应行"><span class="nav-number">6.1.</span> <span class="nav-text">响应行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#头部"><span class="nav-number">6.2.</span> <span class="nav-text">头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息正文"><span class="nav-number">6.3.</span> <span class="nav-text">消息正文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有状态的WEB应用"><span class="nav-number">7.</span> <span class="nav-text">有状态的WEB应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#session"><span class="nav-number">7.1.</span> <span class="nav-text">session</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookies"><span class="nav-number">7.2.</span> <span class="nav-text">Cookies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AJAX"><span class="nav-number">7.3.</span> <span class="nav-text">AJAX</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全性"><span class="nav-number">8.</span> <span class="nav-text">安全性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS"><span class="nav-number">8.1.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同源策略-Same-origin-policy"><span class="nav-number">8.2.</span> <span class="nav-text">同源策略 Same-origin policy</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,读书笔记,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="高效App框架设计与重构重构，也未眠重新规划Android项目结构目前自己项目的目录结构：  data module net widgets util br service permission  目的：  每个文件只有一个单独类，不要有嵌套 讲Activity按照模块拆分，可以迅速定位到具体页面  需要改进的地方： bean －－》 Entity 为Activity定义新的生命周期单一职责：一个">
+<meta name="keywords" content="Android,读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App 研发录">
+<meta property="og:url" content="http://yoursite.com/2016/08/07/ReadNote/App研发录/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="高效App框架设计与重构重构，也未眠重新规划Android项目结构目前自己项目的目录结构：  data module net widgets util br service permission  目的：  每个文件只有一个单独类，不要有嵌套 讲Activity按照模块拆分，可以迅速定位到具体页面  需要改进的地方： bean －－》 Entity 为Activity定义新的生命周期单一职责：一个">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.332Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="App 研发录">
+<meta name="twitter:description" content="高效App框架设计与重构重构，也未眠重新规划Android项目结构目前自己项目的目录结构：  data module net widgets util br service permission  目的：  每个文件只有一个单独类，不要有嵌套 讲Activity按照模块拆分，可以迅速定位到具体页面  需要改进的地方： bean －－》 Entity 为Activity定义新的生命周期单一职责：一个">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/07/ReadNote/App研发录/">
+
+
+
+
+
+  <title>App 研发录 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/07/ReadNote/App研发录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">App 研发录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-07T13:18:12+08:00">
+                2016-08-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="高效App框架设计与重构"><a href="#高效App框架设计与重构" class="headerlink" title="高效App框架设计与重构"></a>高效App框架设计与重构</h1><h2 id="重构，也未眠"><a href="#重构，也未眠" class="headerlink" title="重构，也未眠"></a>重构，也未眠</h2><h3 id="重新规划Android项目结构"><a href="#重新规划Android项目结构" class="headerlink" title="重新规划Android项目结构"></a>重新规划Android项目结构</h3><p>目前自己项目的目录结构：</p>
+<ul>
+<li>data</li>
+<li>module</li>
+<li>net</li>
+<li>widgets</li>
+<li>util</li>
+<li>br</li>
+<li>service</li>
+<li>permission</li>
+</ul>
+<p>目的：</p>
+<ul>
+<li>每个文件只有一个单独类，不要有嵌套</li>
+<li>讲Activity按照模块拆分，可以迅速定位到具体页面</li>
+</ul>
+<p>需要改进的地方：</p>
+<pre><code>bean －－》 Entity
+</code></pre><h3 id="为Activity定义新的生命周期"><a href="#为Activity定义新的生命周期" class="headerlink" title="为Activity定义新的生命周期"></a>为Activity定义新的生命周期</h3><p>单一职责：一个类或者一个方法，只做一件事。</p>
+<p>书中推荐：</p>
+<pre><code>onCreate() 拆分出三个方法：
+initVariables();
+initViews(savedInstanceState);
+loadData();
+</code></pre><h3 id="统一事件编程模型"><a href="#统一事件编程模型" class="headerlink" title="统一事件编程模型"></a>统一事件编程模型</h3><p>书中推荐在写点击事件的时候使用内部类。</p>
+<p>个人推荐使用Butterknife实现点击事件</p>
+<h3 id="实体化编程"><a href="#实体化编程" class="headerlink" title="实体化编程"></a>实体化编程</h3><h4 id="在网络请求中使用实体"><a href="#在网络请求中使用实体" class="headerlink" title="在网络请求中使用实体"></a>在网络请求中使用实体</h4><p>书中举了一个反例：讲网络请求返回的数据包装程JSONObject／JSONArray，在项目中直接使用，需要跨Activity传递数据时还将对象封装成全局的。</p>
+<p>书中推荐：使用自定义class将网络数据进行转化。配合GSON</p>
+<p>需要避免混淆：</p>
+<pre><code>-keepattributes Signature // 不混淆泛型
+-keepattributes *Annotation* // 不混淆注解
+</code></pre><h4 id="实体生成器"><a href="#实体生成器" class="headerlink" title="实体生成器"></a>实体生成器</h4><p>推荐一个插件：GsonFormat,利用json数据快速生成实体类</p>
+<h4 id="在页面跳转中使用实体类"><a href="#在页面跳转中使用实体类" class="headerlink" title="在页面跳转中使用实体类"></a>在页面跳转中使用实体类</h4><ol>
+<li><p>方法一：对象全全局化</p>
+<blockquote>
+<p>书中使用的是使用自定义的一个全局对象来引用实体类对象，app切换到后台的时候，如果内存不足，全局变量就会被回收不推荐使用。<br> 目前如果App需要有全局参数或者变量，推荐使用自定义的Application对象来引用</p>
+</blockquote>
+</li>
+<li><p>方法二：Intent传值</p>
+<p> 需要对象实现序列化<br> 推荐一个序列化插件：Android Parcelable code generator</p>
+</li>
+</ol>
+<h3 id="Adapter-模版"><a href="#Adapter-模版" class="headerlink" title="Adapter 模版"></a>Adapter 模版</h3><h3 id="类型安全转换函数"><a href="#类型安全转换函数" class="headerlink" title="类型安全转换函数"></a>类型安全转换函数</h3><p>常出现的错误：</p>
+<ol>
+<li><p>Object类型对象,对其直接使用字符串操作函数toString，如果为null就会奔溃</p>
+<pre><code>int result = Integer.valueOf(obj.toString());
+</code></pre><p> 解决方法：编写一个类型安全转换函数convertToInt：</p>
+<pre><code>public final static int convertToInt(Object value, int defaultValue){
+    if(value==null || &quot;&quot;.equals(valur.toString().trim())){
+        return defaultValue;
+    }
+    try{
+        return Integer.valueOf(value.toString());
+    } catch (Exception e){
+        try{
+            return Double.valueOf(value.toString()).intValue();
+        } catch (Exception e1){
+            return defaultValue;
+        }
+    }
+}
+</code></pre><p> 最后使用：</p>
+<pre><code>int result = Utils.convertToInt(obj, 0);
+</code></pre><p> Utils类中还需要自定义其他的类型转换安全函数。</p>
+</li>
+<li><p>如果长度不够，substring函数时就会奔溃</p>
+<p> 加<code>try..catch</code>处理<br> 不同数据不同处理：1. 不需要加工的数据：数据为空，或者长度符合要求，直接显示。 2. 对于重要数据：比如金额不能为空，应该弹出窗口提示用户</p>
+</li>
+</ol>
+<h2 id="Android-网络底层框架设计"><a href="#Android-网络底层框架设计" class="headerlink" title="Android 网络底层框架设计"></a>Android 网络底层框架设计</h2><h2 id="Android-经典场景设计"><a href="#Android-经典场景设计" class="headerlink" title="Android 经典场景设计"></a>Android 经典场景设计</h2><h3 id="App-图片缓存设计"><a href="#App-图片缓存设计" class="headerlink" title="App 图片缓存设计"></a>App 图片缓存设计</h3><p>书中介绍了ImageLoader,Fresco</p>
+<p>本人使用的是Glide</p>
+<h3 id="对网络流量进行优化"><a href="#对网络流量进行优化" class="headerlink" title="对网络流量进行优化"></a>对网络流量进行优化</h3><h4 id="通信层面优化"><a href="#通信层面优化" class="headerlink" title="通信层面优化"></a>通信层面优化</h4><ol>
+<li>接口返回的数据压缩：gzip</li>
+<li>新的数据传输协议 ProtoBuffer</li>
+<li>避免频繁发起请求，能一次请求完的就尽量一次解决</li>
+<li>TCP长连接，提高访问速度</li>
+<li><strong>建立取消网络请求机制</strong></li>
+<li>增加重试机制：为get请求建立重试，不要为post请求建立重试</li>
+</ol>
+<h4 id="图片策略优化"><a href="#图片策略优化" class="headerlink" title="图片策略优化"></a>图片策略优化</h4><ol>
+<li><p>确保下载的图片，符合ImageView控件的大小</p>
+<p> 在请求中设置需要的width，height</p>
+</li>
+<li><p>低流量模式</p>
+<p> 请求中quality</p>
+</li>
+<li><p>极速模式</p>
+</li>
+</ol>
+<h3 id="城市列表的设计"><a href="#城市列表的设计" class="headerlink" title="城市列表的设计"></a>城市列表的设计</h3><p>P61</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/29/ReadNote/设计模式/包装模式/设计模式之蝉-门面模式/" rel="next" title="设计模式之蝉 - 门面模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之蝉 - 门面模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/07/program/RESTful/" rel="prev" title="RESTful">
+                RESTful <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高效App框架设计与重构"><span class="nav-number">1.</span> <span class="nav-text">高效App框架设计与重构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构，也未眠"><span class="nav-number">1.1.</span> <span class="nav-text">重构，也未眠</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重新规划Android项目结构"><span class="nav-number">1.1.1.</span> <span class="nav-text">重新规划Android项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为Activity定义新的生命周期"><span class="nav-number">1.1.2.</span> <span class="nav-text">为Activity定义新的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统一事件编程模型"><span class="nav-number">1.1.3.</span> <span class="nav-text">统一事件编程模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实体化编程"><span class="nav-number">1.1.4.</span> <span class="nav-text">实体化编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在网络请求中使用实体"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">在网络请求中使用实体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实体生成器"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">实体生成器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在页面跳转中使用实体类"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">在页面跳转中使用实体类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adapter-模版"><span class="nav-number">1.1.5.</span> <span class="nav-text">Adapter 模版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型安全转换函数"><span class="nav-number">1.1.6.</span> <span class="nav-text">类型安全转换函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-网络底层框架设计"><span class="nav-number">1.2.</span> <span class="nav-text">Android 网络底层框架设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-经典场景设计"><span class="nav-number">1.3.</span> <span class="nav-text">Android 经典场景设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#App-图片缓存设计"><span class="nav-number">1.3.1.</span> <span class="nav-text">App 图片缓存设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对网络流量进行优化"><span class="nav-number">1.3.2.</span> <span class="nav-text">对网络流量进行优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通信层面优化"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">通信层面优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图片策略优化"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">图片策略优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#城市列表的设计"><span class="nav-number">1.3.3.</span> <span class="nav-text">城市列表的设计</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

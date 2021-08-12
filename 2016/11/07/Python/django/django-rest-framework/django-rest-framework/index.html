@@ -1,0 +1,1326 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Django,django-rest-framework,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Tutorial 1: Serialization 序列化安装基本环境pip install django pip install djangorestframework pip install pygments  # We&amp;apos;ll be using this for the code highlighting 开始 创建测试环境创建一个 django 工程 django-admin.py">
+<meta name="keywords" content="Django,django-rest-framework">
+<meta property="og:type" content="article">
+<meta property="og:title" content="django-rest-framework 官方文档记录">
+<meta property="og:url" content="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Tutorial 1: Serialization 序列化安装基本环境pip install django pip install djangorestframework pip install pygments  # We&amp;apos;ll be using this for the code highlighting 开始 创建测试环境创建一个 django 工程 django-admin.py">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.318Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="django-rest-framework 官方文档记录">
+<meta name="twitter:description" content="Tutorial 1: Serialization 序列化安装基本环境pip install django pip install djangorestframework pip install pygments  # We&amp;apos;ll be using this for the code highlighting 开始 创建测试环境创建一个 django 工程 django-admin.py">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/">
+
+
+
+
+
+  <title>django-rest-framework 官方文档记录 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/07/Python/django/django-rest-framework/django-rest-framework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">django-rest-framework 官方文档记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-07T13:18:12+08:00">
+                2016-11-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Tutorial-1-Serialization-序列化"><a href="#Tutorial-1-Serialization-序列化" class="headerlink" title="Tutorial 1: Serialization 序列化"></a>Tutorial 1: Serialization 序列化</h1><h2 id="安装基本环境"><a href="#安装基本环境" class="headerlink" title="安装基本环境"></a>安装基本环境</h2><pre><code>pip install django
+pip install djangorestframework
+pip install pygments  # We&apos;ll be using this for the code highlighting
+</code></pre><h2 id="开始-创建测试环境"><a href="#开始-创建测试环境" class="headerlink" title="开始 创建测试环境"></a>开始 创建测试环境</h2><p>创建一个 django 工程</p>
+<pre><code>django-admin.py startproject tutorial
+</code></pre><p>在工程中创建一个 app</p>
+<pre><code>python manage.py startapp snippets
+</code></pre><a id="more"></a>
+<p>在 <code>tutorial/settings.py</code> 文件中修改：声明 app （自己创建的 app 和 rest_framework）</p>
+<pre><code>INSTALLED_APPS = (
+    ...
+    &apos;rest_framework&apos;,
+    &apos;snippets.apps.SnippetsConfig&apos;,
+)
+</code></pre><h2 id="创建-Model-模块"><a href="#创建-Model-模块" class="headerlink" title="创建 Model 模块"></a>创建 Model 模块</h2><p>修改 <code>snippets/models.py</code> 文件：</p>
+<pre><code>from django.db import models
+from pygments.lexers import get_all_lexers
+from pygments.styles import get_all_styles
+
+LEXERS = [item for item in get_all_lexers() if item[1]]
+LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
+STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
+
+
+class Snippet(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, blank=True, default=&apos;&apos;)
+    code = models.TextField()
+    linenos = models.BooleanField(default=False)
+    language = models.CharField(choices=LANGUAGE_CHOICES, default=&apos;python&apos;, max_length=100)
+    style = models.CharField(choices=STYLE_CHOICES, default=&apos;friendly&apos;, max_length=100)
+
+    class Meta:
+        ordering = (&apos;created&apos;,)
+</code></pre><p>将创建的 Model 建立相应的 db 表，更新数据库：</p>
+<pre><code>python manage.py makemigrations snippets
+python manage.py migrate
+</code></pre><h2 id="Creating-a-Serializer-class-创建序列化器类"><a href="#Creating-a-Serializer-class-创建序列化器类" class="headerlink" title="Creating a Serializer class 创建序列化器类"></a>Creating a Serializer class 创建序列化器类</h2><p><code>snippets</code> app 目录下创建 <code>serializers.py</code>:</p>
+<pre><code>from rest_framework import serializers
+from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+
+
+class SnippetSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    title = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    code = serializers.CharField(style={&apos;base_template&apos;: &apos;textarea.html&apos;})
+    linenos = serializers.BooleanField(required=False)
+    language = serializers.ChoiceField(choices=LANGUAGE_CHOICES, default=&apos;python&apos;)
+    style = serializers.ChoiceField(choices=STYLE_CHOICES, default=&apos;friendly&apos;)
+
+    def create(self, validated_data):
+        &quot;&quot;&quot;
+        Create and return a new `Snippet` instance, given the validated data.
+        &quot;&quot;&quot;
+        return Snippet.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        &quot;&quot;&quot;
+        Update and return an existing `Snippet` instance, given the validated data.
+        &quot;&quot;&quot;
+        instance.title = validated_data.get(&apos;title&apos;, instance.title)
+        instance.code = validated_data.get(&apos;code&apos;, instance.code)
+        instance.linenos = validated_data.get(&apos;linenos&apos;, instance.linenos)
+        instance.language = validated_data.get(&apos;language&apos;, instance.language)
+        instance.style = validated_data.get(&apos;style&apos;, instance.style)
+        instance.save()
+        return instance
+</code></pre><h2 id="Working-with-Serializers-使用-序列化器类"><a href="#Working-with-Serializers-使用-序列化器类" class="headerlink" title="Working with Serializers 使用 序列化器类"></a>Working with Serializers 使用 序列化器类</h2><p>开启 shell<br>    python manage.py shell</p>
+<p>创建 model 对象，保存到数据库中：</p>
+<pre><code>from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+
+snippet = Snippet(code=&apos;foo = &quot;bar&quot;\n&apos;)
+snippet.save()
+
+snippet = Snippet(code=&apos;print &quot;hello, world&quot;\n&apos;)
+snippet.save()
+</code></pre><p>序列化对象：将 model 对象转化为 python 基本数据类型</p>
+<pre><code>serializer = SnippetSerializer(snippet)
+serializer.data
+# {&apos;title&apos;: &apos;&apos;, &apos;id&apos;: 3, &apos;code&apos;: &apos;create by new\n&apos;, &apos;style&apos;: &apos;friendly&apos;, &apos;language&apos;: &apos;python&apos;, &apos;linenos&apos;: False}
+</code></pre><p>将 python 基本数据，渲染成 json</p>
+<pre><code>content = JSONRenderer().render(serializer.data)
+content
+# b&apos;{&quot;id&quot;:3,&quot;title&quot;:&quot;&quot;,&quot;code&quot;:&quot;create by new\\n&quot;,&quot;linenos&quot;:false,&quot;language&quot;:&quot;python&quot;,&quot;style&quot;:&quot;friendly&quot;}&apos;
+</code></pre><p>反序列化 json-》object</p>
+<pre><code>from django.utils.six import BytesIO
+
+stream = BytesIO(content)
+data = JSONParser().parse(stream)
+</code></pre><p>将一个反序列化出来的 object 存到数据库中：</p>
+<pre><code>serializer = SnippetSerializer(data=data) # data 是 json-&gt;object 转化出来的 object
+serializer.is_valid()
+# True
+serializer.validated_data
+# OrderedDict([(&apos;title&apos;, &apos;&apos;), (&apos;code&apos;, &apos;print &quot;hello, world&quot;\n&apos;), (&apos;linenos&apos;, False), (&apos;language&apos;, &apos;python&apos;), (&apos;style&apos;, &apos;friendly&apos;)])
+serializer.save()
+# &lt;Snippet: Snippet object&gt;
+</code></pre><p>查询一组数据：</p>
+<pre><code>serializer = SnippetSerializer(Snippet.objects.all(), many=True)
+serializer.data
+# [OrderedDict([(&apos;id&apos;, 1), (&apos;title&apos;, u&apos;&apos;), (&apos;code&apos;, u&apos;foo = &quot;bar&quot;\n&apos;), (&apos;linenos&apos;, False), (&apos;langua......
+</code></pre><h2 id="Using-ModelSerializers-使用-模型序列化"><a href="#Using-ModelSerializers-使用-模型序列化" class="headerlink" title="Using ModelSerializers 使用 模型序列化"></a>Using ModelSerializers 使用 模型序列化</h2><p>将原来的 <code>snippets/serializers.py</code> 文件内容替换为：</p>
+<pre><code>from rest_framework import serializers
+from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = (&apos;id&apos;, &apos;title&apos;, &apos;code&apos;, &apos;linenos&apos;, &apos;language&apos;, &apos;style&apos;)
+</code></pre><p>使用这个的一个好处是，可以直接看到 serializer 实例的 属性 by printing its representation：</p>
+<pre><code>python manage.py shell
+
+
+from snippets.serializers import SnippetSerializer
+serializer = SnippetSerializer()
+print(repr(serializer))
+# SnippetSerializer():
+#    id = IntegerField(label=&apos;ID&apos;, read_only=True)
+#    title = CharField(allow_blank=True, max_length=100, required=False)
+#    code = CharField(style={&apos;base_template&apos;: &apos;textarea.html&apos;})
+#    linenos = BooleanField(required=False)
+#    language = ChoiceField(choices=[(&apos;Clipper&apos;, &apos;FoxPro&apos;), (&apos;Cucumber&apos;, &apos;Gherkin&apos;), (&apos;RobotFramework&apos;, &apos;RobotFramework&apos;), (&apos;abap&apos;, &apos;ABAP&apos;), (&apos;ada&apos;, &apos;Ada&apos;)...
+#    style = ChoiceField(choices=[(&apos;autumn&apos;, &apos;autumn&apos;), (&apos;borland&apos;, &apos;borland&apos;), (&apos;bw&apos;, &apos;bw&apos;), (&apos;colorful&apos;, &apos;colorful&apos;)...
+</code></pre><p>需要注意的是 ModelSerializer 类没有做什么特殊的处理，他只是一个 Serializer 类的简化：</p>
+<ol>
+<li>An automatically determined set of fields.</li>
+<li>Simple default implementations for the create() and update() methods.</li>
+</ol>
+<h2 id="Writing-regular-Django-views-using-our-Serializer-使用我们定义的-可序列化对象编写正常的-django-View"><a href="#Writing-regular-Django-views-using-our-Serializer-使用我们定义的-可序列化对象编写正常的-django-View" class="headerlink" title="Writing regular Django views using our Serializer 使用我们定义的 可序列化对象编写正常的 django View"></a>Writing regular Django views using our Serializer 使用我们定义的 可序列化对象编写正常的 django View</h2><p>下面的例子不使用 rest-framework 的特性，按照 django 的方法来建立 view</p>
+<p>创建一个 HttpResponse 的子类，用来将 data-》 json</p>
+<p><code>snippets/views.py</code>:</p>
+<pre><code>from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+
+class JSONResponse(HttpResponse):
+    &quot;&quot;&quot;
+    An HttpResponse that renders its content into JSON.
+    &quot;&quot;&quot;
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs[&apos;content_type&apos;] = &apos;application/json&apos;
+        super(JSONResponse, self).__init__(content, **kwargs)
+</code></pre><p>api: 获取已存在的 snippets ，或者创建新的 snippets</p>
+<pre><code>@csrf_exempt
+def snippet_list(request):
+    &quot;&quot;&quot;
+    List all code snippets, or create a new snippet.
+    &quot;&quot;&quot;
+    if request.method == &apos;GET&apos;:
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return JSONResponse(serializer.data)
+
+    elif request.method == &apos;POST&apos;:
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data, status=201)
+        return JSONResponse(serializer.errors, status=400)
+</code></pre><p><code>csrf_exempt</code> 表示 POST 不需要 CSRF token，通常我们不会这样做，rest-framework 中对于这个有更好的解决方案，这里只是一个简单的例子。</p>
+<p>api：获取一个独立的 snippets，用于 retrieve, update or delete</p>
+<pre><code>@csrf_exempt
+def snippet_detail(request, pk):
+    &quot;&quot;&quot;
+    Retrieve, update or delete a code snippet.
+    &quot;&quot;&quot;
+    try:
+        snippet = Snippet.objects.get(pk=pk)
+    except Snippet.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == &apos;GET&apos;:
+        serializer = SnippetSerializer(snippet)
+        return JSONResponse(serializer.data)
+
+    elif request.method == &apos;PUT&apos;:
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(snippet, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status=400)
+
+    elif request.method == &apos;DELETE&apos;:
+        snippet.delete()
+        return HttpResponse(status=204)
+</code></pre><p>声明上面的 view <code>snippets/urls.py</code>： ( wire these views up)</p>
+<pre><code>from django.conf.urls import url
+from snippets import views
+
+urlpatterns = [
+    url(r&apos;^snippets/$&apos;, views.snippet_list),
+    url(r&apos;^snippets/(?P&lt;pk&gt;[0-9]+)/$&apos;, views.snippet_detail),
+]
+</code></pre><p>声明 url (wire up the root urlconf) <code>tutorial/urls.py</code>:</p>
+<pre><code>from django.conf.urls import url, include
+
+urlpatterns = [
+    url(r&apos;^&apos;, include(&apos;snippets.urls&apos;)),
+]
+</code></pre><h1 id="Tutorial-2-Requests-and-Responses-请求和回复"><a href="#Tutorial-2-Requests-and-Responses-请求和回复" class="headerlink" title="Tutorial 2: Requests and Responses 请求和回复"></a>Tutorial 2: Requests and Responses 请求和回复</h1><h2 id="Request-objects"><a href="#Request-objects" class="headerlink" title="Request objects"></a>Request objects</h2><p>rest-framework 采用 Request 对象，它继承自 HttpRequest，提供了更加灵活的请求解析</p>
+<p>其核心是属性： request.data</p>
+<pre><code>request.POST  # Only handles form data.  Only works for &apos;POST&apos; method.
+request.data # Handles arbitrary data.  Works for &apos;POST&apos;, &apos;PUT&apos; and &apos;PATCH&apos; methods.
+</code></pre><h2 id="Response-objects"><a href="#Response-objects" class="headerlink" title="Response objects"></a>Response objects</h2><pre><code>return Response(data)  # Renders to content type as requested by the client.
+</code></pre><h2 id="Status-codes"><a href="#Status-codes" class="headerlink" title="Status codes"></a>Status codes</h2><p><code>status</code> module 提供了请求code, 比如：HTTP_400_BAD_REQUEST</p>
+<p>这样比直接使用 数字code 要更加易懂</p>
+<h2 id="Wrapping-API-views-包装-API-视图"><a href="#Wrapping-API-views-包装-API-视图" class="headerlink" title="Wrapping API views 包装 API 视图"></a>Wrapping API views 包装 API 视图</h2><p>两种包装方式：</p>
+<ol>
+<li><code>@api_view</code> 修饰方法视图</li>
+<li><code>APIView</code> 包装以类为视图的api</li>
+</ol>
+<p>包装提供了一些新的特性，比如</p>
+<ol>
+<li>确认视图接收了 Request 实例， 修改 Response 。</li>
+<li>返回 405 Method Not Allowed</li>
+<li>捕获 ParseError</li>
+</ol>
+<h2 id="Pulling-it-all-together-使用上面介绍的-rest-framework-的特性编写程序"><a href="#Pulling-it-all-together-使用上面介绍的-rest-framework-的特性编写程序" class="headerlink" title="Pulling it all together 使用上面介绍的 rest-framework 的特性编写程序"></a>Pulling it all together 使用上面介绍的 rest-framework 的特性编写程序</h2><p>修改 <code>snippets/views.py</code>: 1. 去除 JSONResponse 2. 修改 view</p>
+<pre><code>from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+
+
+@api_view([&apos;GET&apos;, &apos;POST&apos;])
+def snippet_list(request):
+    &quot;&quot;&quot;
+    List all snippets, or create a new snippet.
+    &quot;&quot;&quot;
+    if request.method == &apos;GET&apos;:
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    elif request.method == &apos;POST&apos;:
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view([&apos;GET&apos;, &apos;PUT&apos;, &apos;DELETE&apos;])
+def snippet_detail(request, pk):
+    &quot;&quot;&quot;
+    Retrieve, update or delete a snippet instance.
+    &quot;&quot;&quot;
+    try:
+        snippet = Snippet.objects.get(pk=pk)
+    except Snippet.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == &apos;GET&apos;:
+        serializer = SnippetSerializer(snippet)
+        return Response(serializer.data)
+
+    elif request.method == &apos;PUT&apos;:
+        serializer = SnippetSerializer(snippet, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == &apos;DELETE&apos;:
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+</code></pre><p>优点：</p>
+<ol>
+<li>代码更加简洁</li>
+<li>使用 HTTP_400_BAD_REQUEST 而不是 400</li>
+</ol>
+<h2 id="Adding-optional-format-suffixes-to-our-URLs-给-url-添加后缀"><a href="#Adding-optional-format-suffixes-to-our-URLs-给-url-添加后缀" class="headerlink" title="Adding optional format suffixes to our URLs 给 url 添加后缀"></a>Adding optional format suffixes to our URLs 给 url 添加后缀</h2><p>修改 view：添加 format 参数</p>
+<pre><code>def snippet_list(request, format=None):
+def snippet_detail(request, pk, format=None):
+</code></pre><p>修改 <code>urls.py</code></p>
+<pre><code>urlpatterns = format_suffix_patterns(urlpatterns)
+</code></pre><p>发起请求回去不同的数据格式：</p>
+<ol>
+<li><p>设置请求头</p>
+<pre><code>Accept:application/json  # Request JSON
+Accept:text/html         # Request HTML
+</code></pre></li>
+<li><p>使用 url 后缀</p>
+<pre><code>http http://127.0.0.1:8000/snippets.json  # JSON suffix
+http http://127.0.0.1:8000/snippets.api   # Browsable API suffix
+</code></pre></li>
+</ol>
+<h1 id="Tutorial-3-Class-based-Views-类视图"><a href="#Tutorial-3-Class-based-Views-类视图" class="headerlink" title="Tutorial 3: Class-based Views 类视图"></a>Tutorial 3: Class-based Views 类视图</h1><h2 id="Rewriting-our-API-using-class-based-views-重写-view"><a href="#Rewriting-our-API-using-class-based-views-重写-view" class="headerlink" title="Rewriting our API using class-based views 重写 view"></a>Rewriting our API using class-based views 重写 view</h2><p><code>views.py</code>:</p>
+<pre><code>from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+
+class SnippetList(APIView):
+    &quot;&quot;&quot;
+    List all snippets, or create a new snippet.
+    &quot;&quot;&quot;
+    def get(self, request, format=None):
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SnippetDetail(APIView):
+    &quot;&quot;&quot;
+    Retrieve, update or delete a snippet instance.
+    &quot;&quot;&quot;
+    def get_object(self, pk):
+        try:
+            return Snippet.objects.get(pk=pk)
+        except Snippet.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        serializer = SnippetSerializer(snippet)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        serializer = SnippetSerializer(snippet, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+</code></pre><p>修改 <code>urls.py</code> :</p>
+<pre><code>from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
+from snippets import views
+
+urlpatterns = [
+    url(r&apos;^snippets/$&apos;, views.SnippetList.as_view()),
+    url(r&apos;^snippets/(?P&lt;pk&gt;[0-9]+)/$&apos;, views.SnippetDetail.as_view()),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
+</code></pre><h2 id="Using-mixins"><a href="#Using-mixins" class="headerlink" title="Using mixins"></a>Using mixins</h2><p>使用类视图好处：</p>
+<ol>
+<li>可复用</li>
+<li>create/retrieve/update/delete 操作在 rest-framework 中都有相应的封装类</li>
+</ol>
+<p>修改 <code>views.py</code>:</p>
+<pre><code>from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework import mixins
+from rest_framework import generics
+
+class SnippetList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class SnippetDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+</code></pre><p>添加了基本类：GenericAPIView</p>
+<p>mixins 方法扩展类： ListModelMixin，CreateModelMixin，UpdateModelMixin，DestroyModelMixin，RetrieveModelMixin</p>
+<h2 id="Using-generic-class-based-views-使用-generic-基本类"><a href="#Using-generic-class-based-views-使用-generic-基本类" class="headerlink" title="Using generic class-based views  使用 generic 基本类"></a>Using generic class-based views  使用 generic 基本类</h2><p>使用 mixin 类能够简化很多代码，但是可以做到更加简洁，使用包含了 mixin 功能的 generic 类</p>
+<p>修改 <code>views.py</code>:</p>
+<pre><code>from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework import generics
+
+
+class SnippetList(generics.ListCreateAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+</code></pre><h1 id="Tutorial-4-Authentication-amp-Permissions-认证和权限"><a href="#Tutorial-4-Authentication-amp-Permissions-认证和权限" class="headerlink" title="Tutorial 4: Authentication &amp; Permissions 认证和权限"></a>Tutorial 4: Authentication &amp; Permissions 认证和权限</h1><p>目的：</p>
+<ol>
+<li>Code snippets are always associated with a creator.</li>
+<li>Only authenticated users may create snippets.</li>
+<li>Only the creator of a snippet may update or delete it.</li>
+<li>Unauthenticated requests should have full read-only access.</li>
+</ol>
+<h2 id="Adding-information-to-our-model-修改-model"><a href="#Adding-information-to-our-model-修改-model" class="headerlink" title="Adding information to our model 修改 model"></a>Adding information to our model 修改 model</h2><p>修改 <code>Snippet/models.py</code>： 添加两个属性</p>
+<pre><code>owner = models.ForeignKey(&apos;auth.User&apos;, related_name=&apos;snippets&apos;, on_delete=models.CASCADE)
+highlighted = models.TextField()
+</code></pre><p>添加 保存方法：</p>
+<pre><code>from pygments.lexers import get_lexer_by_name
+from pygments.formatters.html import HtmlFormatter
+from pygments import highlight
+
+def save(self, *args, **kwargs):
+    &quot;&quot;&quot;
+    Use the `pygments` library to create a highlighted HTML
+    representation of the code snippet.
+    &quot;&quot;&quot;
+    lexer = get_lexer_by_name(self.language)
+    linenos = self.linenos and &apos;table&apos; or False
+    options = self.title and {&apos;title&apos;: self.title} or {}
+    formatter = HtmlFormatter(style=self.style, linenos=linenos,
+                              full=True, **options)
+    self.highlighted = highlight(self.code, lexer, formatter)
+    super(Snippet, self).save(*args, **kwargs)
+</code></pre><p>修改完数据后更新数据库：这里更新是直接删除旧的数据库，创建新的数据库</p>
+<pre><code>rm -f tmp.db db.sqlite3
+rm -r snippets/migrations
+python manage.py makemigrations snippets
+python manage.py migrate
+</code></pre><p>创建用户：</p>
+<pre><code>python manage.py createsuperuser
+</code></pre><h2 id="Adding-endpoints-for-our-User-models-添加用户控制入口"><a href="#Adding-endpoints-for-our-User-models-添加用户控制入口" class="headerlink" title="Adding endpoints for our User models 添加用户控制入口"></a>Adding endpoints for our User models 添加用户控制入口</h2><p><code>serializers.py</code>: 添加 User 序列化器</p>
+<pre><code>from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+
+    class Meta:
+        model = User
+        fields = (&apos;id&apos;, &apos;username&apos;, &apos;snippets&apos;)
+</code></pre><p>添加 User 对应的 View，修改 <code>views.py</code>:</p>
+<pre><code>from django.contrib.auth.models import User
+from snippets.serializers import UserSerializer
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+</code></pre><p>添加 url <code>urls.py</code>：</p>
+<pre><code>url(r&apos;^users/$&apos;, views.UserList.as_view()),
+url(r&apos;^users/(?P&lt;pk&gt;[0-9]+)/$&apos;, views.UserDetail.as_view()),
+</code></pre><h2 id="Associating-Snippets-with-Users-关联-Snippets-和-users"><a href="#Associating-Snippets-with-Users-关联-Snippets-和-users" class="headerlink" title="Associating Snippets with Users 关联 Snippets 和 users"></a>Associating Snippets with Users 关联 Snippets 和 users</h2><p>修改 <code>views.py</code> 中的 <code>SnippetList</code> 类：重写下面的方法，让</p>
+<pre><code>def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
+</code></pre><h2 id="Updating-our-serializer-更新-序列化器"><a href="#Updating-our-serializer-更新-序列化器" class="headerlink" title="Updating our serializer 更新 序列化器"></a>Updating our serializer 更新 序列化器</h2><p>上面的代码将 Snippets 和创建它的 user 关联在一起，下面修改 序列化器：添加 field</p>
+<pre><code>owner = serializers.ReadOnlyField(source=&apos;owner.username&apos;)
+</code></pre><h2 id="Adding-required-permissions-to-views-添加请求权限到-views"><a href="#Adding-required-permissions-to-views-添加请求权限到-views" class="headerlink" title="Adding required permissions to views 添加请求权限到 views"></a>Adding required permissions to views 添加请求权限到 views</h2><p>rest-framework 中有很多权限类用于限制哪些用户可以请求views，下面我们只用 IsAuthenticatedOrReadOnly 来设置权限</p>
+<p>在 <code>views.py</code> 中添加 SnippetList ，SnippetDetail 类属性</p>
+<pre><code>from rest_framework import permissions
+
+permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+</code></pre><h2 id="Adding-login-to-the-Browsable-API-添加游览器登入api"><a href="#Adding-login-to-the-Browsable-API-添加游览器登入api" class="headerlink" title="Adding login to the Browsable API 添加游览器登入api"></a>Adding login to the Browsable API 添加游览器登入api</h2><p>修改 <code>urls.py</code> 添加 登入视图url：</p>
+<pre><code>urlpatterns += [
+    url(r&apos;^api-auth/&apos;, include(&apos;rest_framework.urls&apos;,
+                               namespace=&apos;rest_framework&apos;)),
+]
+</code></pre><h2 id="Object-level-permissions-对象级别的权限"><a href="#Object-level-permissions-对象级别的权限" class="headerlink" title="Object level permissions 对象级别的权限"></a>Object level permissions 对象级别的权限</h2><p>下面设置权限： 创建 Snippets 的用户才能修改这个 Snippets</p>
+<p>创建 <code>snippets/permissions.py</code>: 添加自定义的权限类</p>
+<pre><code>from rest_framework import permissions
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    &quot;&quot;&quot;
+    Custom permission to only allow owners of an object to edit it.
+    &quot;&quot;&quot;
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we&apos;ll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions are only allowed to the owner of the snippet.
+        return obj.owner == request.user
+</code></pre><p>将权限添加到 SnippetDetail 中 <code>views.py</code>:</p>
+<pre><code>from snippets.permissions import IsOwnerOrReadOnly
+
+permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                      IsOwnerOrReadOnly,)
+</code></pre><p>Now, if you open a browser again, you find that the ‘DELETE’ and ‘PUT’ actions only appear on a snippet instance endpoint if you’re logged in as the same user that created the code snippet.</p>
+<h2 id="Authenticating-with-the-API-认证api"><a href="#Authenticating-with-the-API-认证api" class="headerlink" title="Authenticating with the API 认证api"></a>Authenticating with the API 认证api</h2><p>目前位置我们还没有设置任何 authentication classes ，和权限有关的类，所以目前这个工程的默认认证类是：SessionAuthentication，BasicAuthentication</p>
+<p>可以在请求时设置 Basic Auth： 用户名：密码 访问api</p>
+<h1 id="Tutorial-5-Relationships-amp-Hyperlinked-APIs-关系和超链接-APIs"><a href="#Tutorial-5-Relationships-amp-Hyperlinked-APIs-关系和超链接-APIs" class="headerlink" title="Tutorial 5: Relationships &amp; Hyperlinked APIs 关系和超链接 APIs"></a>Tutorial 5: Relationships &amp; Hyperlinked APIs 关系和超链接 APIs</h1><h2 id="Creating-an-endpoint-for-the-root-of-our-API-为接口创建一个入口"><a href="#Creating-an-endpoint-for-the-root-of-our-API-为接口创建一个入口" class="headerlink" title="Creating an endpoint for the root of our API 为接口创建一个入口"></a>Creating an endpoint for the root of our API 为接口创建一个入口</h2><p>添加下面代码：<code>snippets/views.py</code></p>
+<pre><code>from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+
+@api_view([&apos;GET&apos;])
+def api_root(request, format=None):
+    return Response({
+        &apos;users&apos;: reverse(&apos;user-list&apos;, request=request, format=format),
+        &apos;snippets&apos;: reverse(&apos;snippet-list&apos;, request=request, format=format)
+    })
+</code></pre><p>上面代码</p>
+<ol>
+<li>使用了 rest-framework 提供的 <code>reverse</code> 方法来转化url</li>
+<li>其对应的 URL 模版，我们会在后面的代码中看到 <code>snippets/urls.py</code></li>
+</ol>
+<h2 id="Creating-an-endpoint-for-the-highlighted-snippets"><a href="#Creating-an-endpoint-for-the-highlighted-snippets" class="headerlink" title="Creating an endpoint for the highlighted snippets"></a>Creating an endpoint for the highlighted snippets</h2><p>添加 <code>snippets/views.py</code>:</p>
+<pre><code>from rest_framework import renderers
+from rest_framework.response import Response
+
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = (renderers.StaticHTMLRenderer,)
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+</code></pre><p>添加 <code>snippets/urls.py</code>:</p>
+<pre><code>url(r&apos;^$&apos;, views.api_root),
+url(r&apos;^snippets/(?P&lt;pk&gt;[0-9]+)/highlight/$&apos;, views.SnippetHighlight.as_view()),
+</code></pre><h2 id="Hyperlinking-our-API-为-api-创建超级链接"><a href="#Hyperlinking-our-API-为-api-创建超级链接" class="headerlink" title="Hyperlinking our API 为 api 创建超级链接"></a>Hyperlinking our API 为 api 创建超级链接</h2><p>处理 实体类 之间的关系有很多种方式：</p>
+<ol>
+<li>使用主键</li>
+<li>Using hyperlinking between entities. 使用超级链接</li>
+<li>Using a unique identifying slug field on the related entity.</li>
+<li>Using the default string representation of the related entity.</li>
+<li>Nesting the related entity inside the parent representation.</li>
+<li>Some other custom representation.</li>
+</ol>
+<p>下面使用超级链接的方式来处理。</p>
+<p>修改 序列化器（serializers） 继承 HyperlinkedModelSerializer</p>
+<p>HyperlinkedModelSerializer 和 ModelSerializer 的区别：</p>
+<ol>
+<li>It does not include the id field by default. 默认不包含 id</li>
+<li>It includes a url field, using HyperlinkedIdentityField。 包含了 url 属性</li>
+<li>Relationships use HyperlinkedRelatedField, instead of PrimaryKeyRelatedField。 关系维护使用 HyperlinkedRelatedField</li>
+</ol>
+<p>修改 <code>snippets/serializers.py</code>:</p>
+<pre><code>class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source=&apos;owner.username&apos;)
+    highlight = serializers.HyperlinkedIdentityField(view_name=&apos;snippet-highlight&apos;, format=&apos;html&apos;)
+
+    class Meta:
+        model = Snippet
+        fields = (&apos;url&apos;, &apos;id&apos;, &apos;highlight&apos;, &apos;owner&apos;,
+                  &apos;title&apos;, &apos;code&apos;, &apos;linenos&apos;, &apos;language&apos;, &apos;style&apos;)
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    snippets = serializers.HyperlinkedRelatedField(many=True, view_name=&apos;snippet-detail&apos;, read_only=True)
+
+    class Meta:
+        model = User
+        fields = (&apos;url&apos;, &apos;id&apos;, &apos;username&apos;, &apos;snippets&apos;)
+</code></pre><h2 id="Making-sure-our-URL-patterns-are-named-确保-url-中定义了参数-name"><a href="#Making-sure-our-URL-patterns-are-named-确保-url-中定义了参数-name" class="headerlink" title="Making sure our URL patterns are named 确保 url 中定义了参数 name"></a>Making sure our URL patterns are named 确保 url 中定义了参数 name</h2><p><code>snippets/urls.py</code>:</p>
+<pre><code>from django.conf.urls import url, include
+from rest_framework.urlpatterns import format_suffix_patterns
+from snippets import views
+
+# API endpoints
+urlpatterns = format_suffix_patterns([
+    url(r&apos;^$&apos;, views.api_root),
+    url(r&apos;^snippets/$&apos;,
+        views.SnippetList.as_view(),
+        name=&apos;snippet-list&apos;),
+    url(r&apos;^snippets/(?P&lt;pk&gt;[0-9]+)/$&apos;,
+        views.SnippetDetail.as_view(),
+        name=&apos;snippet-detail&apos;),
+    url(r&apos;^snippets/(?P&lt;pk&gt;[0-9]+)/highlight/$&apos;,
+        views.SnippetHighlight.as_view(),
+        name=&apos;snippet-highlight&apos;),
+    url(r&apos;^users/$&apos;,
+        views.UserList.as_view(),
+        name=&apos;user-list&apos;),
+    url(r&apos;^users/(?P&lt;pk&gt;[0-9]+)/$&apos;,
+        views.UserDetail.as_view(),
+        name=&apos;user-detail&apos;)
+])
+
+# Login and logout views for the browsable API
+urlpatterns += [
+    url(r&apos;^api-auth/&apos;, include(&apos;rest_framework.urls&apos;,
+                               namespace=&apos;rest_framework&apos;)),
+]
+</code></pre><h2 id="Adding-pagination-添加分页"><a href="#Adding-pagination-添加分页" class="headerlink" title="Adding pagination 添加分页"></a>Adding pagination 添加分页</h2><p><code>tutorial/settings.py</code> :</p>
+<pre><code>REST_FRAMEWORK = {
+    &apos;PAGE_SIZE&apos;: 10
+}
+</code></pre><h1 id="Tutorial-6-ViewSets-amp-Routers"><a href="#Tutorial-6-ViewSets-amp-Routers" class="headerlink" title="Tutorial 6: ViewSets &amp; Routers"></a>Tutorial 6: ViewSets &amp; Routers</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/django-rest-framework/" rel="tag"># django-rest-framework</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/07/linux/terminal设置代理/" rel="next" title="Terminal 设置代理">
+                <i class="fa fa-chevron-left"></i> Terminal 设置代理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/07/Python/django/django-rest-framework/django-rest-framework 提高/" rel="prev" title="django-rest-framework 提高">
+                django-rest-framework 提高 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-1-Serialization-序列化"><span class="nav-number">1.</span> <span class="nav-text">Tutorial 1: Serialization 序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装基本环境"><span class="nav-number">1.1.</span> <span class="nav-text">安装基本环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始-创建测试环境"><span class="nav-number">1.2.</span> <span class="nav-text">开始 创建测试环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-Model-模块"><span class="nav-number">1.3.</span> <span class="nav-text">创建 Model 模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-a-Serializer-class-创建序列化器类"><span class="nav-number">1.4.</span> <span class="nav-text">Creating a Serializer class 创建序列化器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Working-with-Serializers-使用-序列化器类"><span class="nav-number">1.5.</span> <span class="nav-text">Working with Serializers 使用 序列化器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-ModelSerializers-使用-模型序列化"><span class="nav-number">1.6.</span> <span class="nav-text">Using ModelSerializers 使用 模型序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Writing-regular-Django-views-using-our-Serializer-使用我们定义的-可序列化对象编写正常的-django-View"><span class="nav-number">1.7.</span> <span class="nav-text">Writing regular Django views using our Serializer 使用我们定义的 可序列化对象编写正常的 django View</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-2-Requests-and-Responses-请求和回复"><span class="nav-number">2.</span> <span class="nav-text">Tutorial 2: Requests and Responses 请求和回复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Request-objects"><span class="nav-number">2.1.</span> <span class="nav-text">Request objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Response-objects"><span class="nav-number">2.2.</span> <span class="nav-text">Response objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Status-codes"><span class="nav-number">2.3.</span> <span class="nav-text">Status codes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wrapping-API-views-包装-API-视图"><span class="nav-number">2.4.</span> <span class="nav-text">Wrapping API views 包装 API 视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pulling-it-all-together-使用上面介绍的-rest-framework-的特性编写程序"><span class="nav-number">2.5.</span> <span class="nav-text">Pulling it all together 使用上面介绍的 rest-framework 的特性编写程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-optional-format-suffixes-to-our-URLs-给-url-添加后缀"><span class="nav-number">2.6.</span> <span class="nav-text">Adding optional format suffixes to our URLs 给 url 添加后缀</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-3-Class-based-Views-类视图"><span class="nav-number">3.</span> <span class="nav-text">Tutorial 3: Class-based Views 类视图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Rewriting-our-API-using-class-based-views-重写-view"><span class="nav-number">3.1.</span> <span class="nav-text">Rewriting our API using class-based views 重写 view</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-mixins"><span class="nav-number">3.2.</span> <span class="nav-text">Using mixins</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-generic-class-based-views-使用-generic-基本类"><span class="nav-number">3.3.</span> <span class="nav-text">Using generic class-based views  使用 generic 基本类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-4-Authentication-amp-Permissions-认证和权限"><span class="nav-number">4.</span> <span class="nav-text">Tutorial 4: Authentication &amp; Permissions 认证和权限</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-information-to-our-model-修改-model"><span class="nav-number">4.1.</span> <span class="nav-text">Adding information to our model 修改 model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-endpoints-for-our-User-models-添加用户控制入口"><span class="nav-number">4.2.</span> <span class="nav-text">Adding endpoints for our User models 添加用户控制入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Associating-Snippets-with-Users-关联-Snippets-和-users"><span class="nav-number">4.3.</span> <span class="nav-text">Associating Snippets with Users 关联 Snippets 和 users</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Updating-our-serializer-更新-序列化器"><span class="nav-number">4.4.</span> <span class="nav-text">Updating our serializer 更新 序列化器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-required-permissions-to-views-添加请求权限到-views"><span class="nav-number">4.5.</span> <span class="nav-text">Adding required permissions to views 添加请求权限到 views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-login-to-the-Browsable-API-添加游览器登入api"><span class="nav-number">4.6.</span> <span class="nav-text">Adding login to the Browsable API 添加游览器登入api</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-level-permissions-对象级别的权限"><span class="nav-number">4.7.</span> <span class="nav-text">Object level permissions 对象级别的权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authenticating-with-the-API-认证api"><span class="nav-number">4.8.</span> <span class="nav-text">Authenticating with the API 认证api</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-5-Relationships-amp-Hyperlinked-APIs-关系和超链接-APIs"><span class="nav-number">5.</span> <span class="nav-text">Tutorial 5: Relationships &amp; Hyperlinked APIs 关系和超链接 APIs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-an-endpoint-for-the-root-of-our-API-为接口创建一个入口"><span class="nav-number">5.1.</span> <span class="nav-text">Creating an endpoint for the root of our API 为接口创建一个入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Creating-an-endpoint-for-the-highlighted-snippets"><span class="nav-number">5.2.</span> <span class="nav-text">Creating an endpoint for the highlighted snippets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hyperlinking-our-API-为-api-创建超级链接"><span class="nav-number">5.3.</span> <span class="nav-text">Hyperlinking our API 为 api 创建超级链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Making-sure-our-URL-patterns-are-named-确保-url-中定义了参数-name"><span class="nav-number">5.4.</span> <span class="nav-text">Making sure our URL patterns are named 确保 url 中定义了参数 name</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Adding-pagination-添加分页"><span class="nav-number">5.5.</span> <span class="nav-text">Adding pagination 添加分页</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tutorial-6-ViewSets-amp-Routers"><span class="nav-number">6.</span> <span class="nav-text">Tutorial 6: ViewSets &amp; Routers</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

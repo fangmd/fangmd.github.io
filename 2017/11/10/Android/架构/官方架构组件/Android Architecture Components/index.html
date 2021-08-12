@@ -1,0 +1,911 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android 架构,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Guide to App Architecture 这个 guide 写给那些想要构建好的架构的 Android 开发者 Common problems faced by app developersyou should not store any app data or state in your app components Commom architectural principles 注意">
+<meta name="keywords" content="Android 架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Architecture Components 官方文档学习记录">
+<meta property="og:url" content="http://yoursite.com/2017/11/10/Android/架构/官方架构组件/Android Architecture Components/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Guide to App Architecture 这个 guide 写给那些想要构建好的架构的 Android 开发者 Common problems faced by app developersyou should not store any app data or state in your app components Commom architectural principles 注意">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://developer.android.com/topic/libraries/architecture/guide.html#common_architectural_principles">
+<meta property="og:image" content="http://yoursite.com/2017/11/10/Android/架构/官方架构组件/Android%20Architecture%20Components/Android官方架构图">
+<meta property="og:image" content="https://developer.android.com/images/topic/libraries/architecture/viewmodel-lifecycle.png">
+<meta property="og:image" content="https://developer.android.com/images/topic/libraries/architecture/paging-threading.gif">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Architecture Components 官方文档学习记录">
+<meta name="twitter:description" content="Guide to App Architecture 这个 guide 写给那些想要构建好的架构的 Android 开发者 Common problems faced by app developersyou should not store any app data or state in your app components Commom architectural principles 注意">
+<meta name="twitter:image" content="https://developer.android.com/topic/libraries/architecture/guide.html#common_architectural_principles">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/10/Android/架构/官方架构组件/Android Architecture Components/">
+
+
+
+
+
+  <title>Android Architecture Components 官方文档学习记录 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/10/Android/架构/官方架构组件/Android Architecture Components/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android Architecture Components 官方文档学习记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-10T12:18:12+08:00">
+                2017-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Guide-to-App-Architecture"><a href="#Guide-to-App-Architecture" class="headerlink" title="Guide to App Architecture"></a>Guide to App Architecture</h1><p><img src="https://developer.android.com/topic/libraries/architecture/guide.html#common_architectural_principles" alt="官方文档地址"></p>
+<p>这个 guide 写给那些想要构建好的架构的 Android 开发者</p>
+<h2 id="Common-problems-faced-by-app-developers"><a href="#Common-problems-faced-by-app-developers" class="headerlink" title="Common problems faced by app developers"></a>Common problems faced by app developers</h2><p>you should not store any app data or state in your app components</p>
+<h2 id="Commom-architectural-principles"><a href="#Commom-architectural-principles" class="headerlink" title="Commom architectural principles"></a>Commom architectural principles</h2><ol>
+<li>注意在 App 中分离代码（业务逻辑代码和UI代码分离）</li>
+</ol>
+<p>所有和 UI 无关的代码不应该出现在 Activity 和 Fragment 中。</p>
+<p>保持 Activity 和 Fragment 整洁干净，以避免生命周期倒致相关的问题。</p>
+<ol start="2">
+<li>让 model 来驱动 UI（drive your UI from a model）</li>
+</ol>
+<p>Model 是组件，用于存储应用使用到的数据，它独立于 View 和 Android 应用的相关组件</p>
+<p>保证 UI 代码中不处理业务逻辑</p>
+<h2 id="Recommended-app-architecture"><a href="#Recommended-app-architecture" class="headerlink" title="Recommended app architecture"></a>Recommended app architecture</h2><p>下面是使用例子讲解 如何使用 Architecture Components 来创建 Android 架构。</p>
+<h3 id="创建-UI-界面-（Building-the-user-interface）"><a href="#创建-UI-界面-（Building-the-user-interface）" class="headerlink" title="创建 UI 界面 （Building the user interface）"></a>创建 UI 界面 （Building the user interface）</h3><p>ViewModel: 为提供 UI 界面的数据的组件，它和 View 相互不知道（隔离）</p>
+<p>例子涉及的三个文件:</p>
+<ul>
+<li><code>UserProfileViewModel.class</code></li>
+<li><code>user_profile.xml</code></li>
+<li><code>UserProfileFragment.java</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserprofileViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String userId;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LiveData&lt;User&gt; user;</span><br><span class="line">    <span class="comment">//private User user;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String userId)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userId = userId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserProfileFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String UID_KEY = <span class="string">"uid"</span>;</span><br><span class="line">    <span class="keyword">private</span> UserProfileViewModel viewModel;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onActivityCreated</span><span class="params">(@Nullable Bundle savedInstanceState)</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onActivityCreated(savedInstanceState);</span><br><span class="line">        String userId = getArguments().getString(UID_KEY);</span><br><span class="line">        viewModel = ViewModelProviders.of(<span class="keyword">this</span>).get(UserProfileViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        viewModel.init(userId);</span><br><span class="line">        viewModel.getUser().observe(<span class="keyword">this</span>, user -&gt; &#123;</span><br><span class="line">            <span class="comment">// update UI</span></span><br><span class="line"></span><br><span class="line">        &#125;);        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater,</span></span></span><br><span class="line"><span class="function"><span class="params">                @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> inflater.inflate(R.layout.user_profile, container, <span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面引入 LiveData, 让 ViewModel 中的数据可以加载到 Fragment 中。</p>
+<p><code>LiveData</code>: 实现一个观察者模式。让 ViewModel 中数据加载完成后触发 Fragment 更新UI。</p>
+<p>LiveData 可以使用 RxJava 代替，但是 LiveData 有个优点就是不需要 取消订阅，LiveData 会在 Fragment 销毁的时候 解除关联。</p>
+<p>另外：ViewModel 的生命周期是独立于 Fragment 的 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html#the_lifecycle_of_a_viewmodel" target="_blank" rel="noopener">The lifecycle of a ViewModel</a></p>
+<h3 id="Fetching-data"><a href="#Fetching-data" class="headerlink" title="Fetching data"></a>Fetching data</h3><p>ViewModel 如何获取数据</p>
+<p>使用 Repository 组件代理数据的获取</p>
+<p>Webservice 是通过 Retrofit 实现的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Webservice webservice;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(<span class="keyword">int</span> userId)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// This is not an optimal implementation, we'll fix it below</span></span><br><span class="line">        <span class="keyword">final</span> MutableLiveData&lt;User&gt; data = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line">        webservice.getUser(userId).enqueue(<span class="keyword">new</span> Callback&lt;User&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;User&gt; call, Response&lt;User&gt; response)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// error case is left out for brevity</span></span><br><span class="line">                data.setValue(response.body());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样做将 数据获取 和 数据持有类 隔离。数据持有类不需要知道数据是如何获取的。</p>
+<h4 id="managing-dependencies-between-components"><a href="#managing-dependencies-between-components" class="headerlink" title="managing dependencies between components:"></a>managing dependencies between components:</h4><p>UserRepository 依赖 Webservice, 如果通过构造方法的方式创建 Webservice 对象的化就需要知道它类中的构造方法结构。并且 UserRepository 不是唯一一个需要 Webservice 的类。如果没有需要 Webservice 的类都通过构造方法创建这个对象，就会导致代码重复。</p>
+<p>两种方法解决这个问题：</p>
+<ol>
+<li>依赖注入（Dependency Injection）: 使用 Dagger2 实现，推荐使用</li>
+<li>Service LocatorL： 比 DI 简单</li>
+</ol>
+<h3 id="Connection-ViewModel-and-the-repository"><a href="#Connection-ViewModel-and-the-repository" class="headerlink" title="Connection ViewModel and the repository"></a>Connection ViewModel and the repository</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserProfileViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> LiveData&lt;User&gt; user;</span><br><span class="line">    <span class="keyword">private</span> UserRepository userRepo;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span> <span class="comment">// UserRepository parameter is provided by Dagger 2</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserProfileViewModel</span><span class="params">(UserRepository userRepo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userRepo = userRepo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.user != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// ViewModel is created per Fragment so</span></span><br><span class="line">            <span class="comment">// we know the userId won't change</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        user = userRepo.getUser(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Caching-data"><a href="#Caching-data" class="headerlink" title="Caching data"></a>Caching data</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Singleton</span>  <span class="comment">// informs Dagger that this class should be constructed once</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Webservice webservice;</span><br><span class="line">    <span class="comment">// simple in memory cache, details omitted for brevity</span></span><br><span class="line">    <span class="keyword">private</span> UserCache userCache;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        LiveData&lt;User&gt; cached = userCache.get(userId);</span><br><span class="line">        <span class="keyword">if</span> (cached != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> cached;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> MutableLiveData&lt;User&gt; data = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line">        userCache.put(userId, data);</span><br><span class="line">        <span class="comment">// this is still suboptimal but better than before.</span></span><br><span class="line">        <span class="comment">// a complete implementation must also handle the error cases.</span></span><br><span class="line">        webservice.getUser(userId).enqueue(<span class="keyword">new</span> Callback&lt;User&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;User&gt; call, Response&lt;User&gt; response)</span> </span>&#123;</span><br><span class="line">                data.setValue(response.body());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>UserCache 是一个自定义的类，统一保存缓存。</p>
+<h3 id="数据可持续化-Persisting-data"><a href="#数据可持续化-Persisting-data" class="headerlink" title="数据可持续化 Persisting data"></a>数据可持续化 Persisting data</h3><p>Room：一个数据库框架</p>
+<p>基本使用代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">  <span class="meta">@PrimaryKey</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">  <span class="keyword">private</span> String name;</span><br><span class="line">  <span class="keyword">private</span> String lastName;</span><br><span class="line">  <span class="comment">// getters and setters for fields</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Dao</span>  <span class="comment">// data access object (DAO).</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Insert</span>(onConflict = REPLACE)</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">save</span><span class="params">(User user)</span></span>;</span><br><span class="line">    <span class="meta">@Query</span>(<span class="string">"SELECT * FROM user WHERE id = :userId"</span>)</span><br><span class="line">    <span class="function">LiveData&lt;User&gt; <span class="title">load</span><span class="params">(String userId)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Database</span>(entities = &#123;User<span class="class">.<span class="keyword">class</span>&#125;, <span class="title">version</span> </span>= <span class="number">1</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">userDao</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Database</span>(entities = &#123;User<span class="class">.<span class="keyword">class</span>&#125;, <span class="title">version</span> </span>= <span class="number">1</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">userDao</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于上面 <code>load</code> 方法返回的是 <code>LiveData</code> 所以数据库中如果数据变化，会马上反应在 UI 上。</p>
+<p>在 UserRepository 中使用 Room：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Singleton</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserRepository</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Webservice webservice;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> UserDao userDao;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Executor executor;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserRepository</span><span class="params">(Webservice webservice, UserDao userDao, Executor executor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.webservice = webservice;</span><br><span class="line">        <span class="keyword">this</span>.userDao = userDao;</span><br><span class="line">        <span class="keyword">this</span>.executor = executor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(String userId)</span> </span>&#123;</span><br><span class="line">        refreshUser(userId);</span><br><span class="line">        <span class="comment">// return a LiveData directly from the database.</span></span><br><span class="line">        <span class="keyword">return</span> userDao.load(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">refreshUser</span><span class="params">(<span class="keyword">final</span> String userId)</span> </span>&#123;</span><br><span class="line">        executor.execute(() -&gt; &#123;</span><br><span class="line">            <span class="comment">// running in a background thread</span></span><br><span class="line">            <span class="comment">// check if user was fetched recently</span></span><br><span class="line">            <span class="keyword">boolean</span> userExists = userDao.hasUser(FRESH_TIMEOUT);</span><br><span class="line">            <span class="keyword">if</span> (!userExists) &#123;</span><br><span class="line">                <span class="comment">// refresh the data</span></span><br><span class="line">                Response response = webservice.getUser(userId).execute();</span><br><span class="line">                <span class="comment">// TODO check for error etc.</span></span><br><span class="line">                <span class="comment">// Update the database.The LiveData will automatically refresh so</span></span><br><span class="line">                <span class="comment">// we don't need to do anything else here besides updating the database</span></span><br><span class="line">                userDao.save(response.body());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上面的改变，我们可以注意到数据源变了，但是 ViewModel 和 UI界面 （UserProfileViewModel or UserProfileFragment）的代码一点没动。</p>
+<p>而且这样做通过一个 fake UserRepository 可以方便测试 UserProfileViewModle</p>
+<p>有时候我们需要获取最新的数据，有时候可以使用旧的数据，下面由两种方法处理这种情况：</p>
+<ol>
+<li>改变 getUser 方法，让它每次获取都直接从网络中获取最新数据</li>
+<li>提供一个新的方法直接获取网络数据，在需要的时候调用，比如 用户执行下拉刷新的时候。</li>
+</ol>
+<h4 id="Single-source-of-truth"><a href="#Single-source-of-truth" class="headerlink" title="Single source of truth"></a>Single source of truth</h4><h3 id="Testing"><a href="#Testing" class="headerlink" title="Testing"></a>Testing</h3><ul>
+<li>User Interface &amp; Interactions: 使用 Espresso 测试 UI，</li>
+<li>ViewModel: 使用 JUnit 测试</li>
+<li>UserRepository: 使用 JUnit 测试</li>
+<li>UserDao: using instrumentation tests</li>
+<li>Webservice: MockWebServer</li>
+<li>Testing Artifacts</li>
+</ul>
+<h3 id="The-final-architecture"><a href="#The-final-architecture" class="headerlink" title="The final architecture"></a>The final architecture</h3><p><img src="Android官方架构图" alt="Android Architecture 架构图"></p>
+<h2 id="Guiding-principles"><a href="#Guiding-principles" class="headerlink" title="Guiding principles"></a>Guiding principles</h2><h2 id="Addendum-exposing-network-status"><a href="#Addendum-exposing-network-status" class="headerlink" title="Addendum: exposing network status"></a>Addendum: exposing network status</h2><h1 id="添加官方架构组件到项目中-Adding-Components-to-your-Project"><a href="#添加官方架构组件到项目中-Adding-Components-to-your-Project" class="headerlink" title="添加官方架构组件到项目中 Adding Components to your Project"></a>添加官方架构组件到项目中 Adding Components to your Project</h1><p>添加源：<code>build.gradle</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">        maven &#123; url &apos;https://maven.google.com&apos; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>详细：<a href="https://developer.android.com/topic/libraries/architecture/adding-components.html" target="_blank" rel="noopener">https://developer.android.com/topic/libraries/architecture/adding-components.html</a></p>
+<ol>
+<li>Lifecycles</li>
+<li>LiveData, ViewModel</li>
+<li>Room</li>
+<li>Paging</li>
+</ol>
+<h1 id="使用-Lifecycles-组件捕获生命周期-Handling-Lifecycles-with-Lifecycle-Aware-Components"><a href="#使用-Lifecycles-组件捕获生命周期-Handling-Lifecycles-with-Lifecycle-Aware-Components" class="headerlink" title="使用 Lifecycles 组件捕获生命周期 Handling Lifecycles with Lifecycle-Aware Components"></a>使用 Lifecycles 组件捕获生命周期 Handling Lifecycles with Lifecycle-Aware Components</h1><p>下面是一个简单的例子，将 Activity 生命周期引导到另一个类中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyLocationListener</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyLocationListener</span><span class="params">(Context context, Callback callback)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// connect to system location service</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// disconnect from system location service</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyLocationListener myLocationListener;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(...)</span> </span>&#123;</span><br><span class="line">        myLocationListener = <span class="keyword">new</span> MyLocationListener(<span class="keyword">this</span>, (location) -&gt; &#123;</span><br><span class="line">            <span class="comment">// update UI</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStart();</span><br><span class="line">        myLocationListener.start();</span><br><span class="line">        <span class="comment">// manage other components that need to respond</span></span><br><span class="line">        <span class="comment">// to the activity lifecycle</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStop();</span><br><span class="line">        myLocationListener.stop();</span><br><span class="line">        <span class="comment">// manage other components that need to respond</span></span><br><span class="line">        <span class="comment">// to the activity lifecycle</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码的缺点：</p>
+<ol>
+<li>在 UI 复杂的时候会有很多 接口回调 方法去更新 UI</li>
+<li>无法保证 MyLocationListener 组件在 Activity stop 的时候已经启动</li>
+</ol>
+<p><code>android.arch.lifecycle</code> 包中提供了实现方面功能的类</p>
+<h2 id="Lifecycle"><a href="#Lifecycle" class="headerlink" title="Lifecycle"></a>Lifecycle</h2><p>Lifecycle 是一个类，它持有了 activity 和 fragment 的生命周期，并且允许其他类去 监听 生命周期状态。</p>
+<p>Lifecycle 使用两个枚举来跟踪生命周期的状态：</p>
+<ol>
+<li>Event：生命周期改变事件</li>
+<li>State: 组件当前的状态</li>
+</ol>
+<p><img src alt="Lifecycle-map"></p>
+<p>生命周期的观察者，需要实现 LifecycleObserver 接口，通过给方法添加注解的方式定义方法所监听生命周期Event.</p>
+<p>简单例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyObserver</span> <span class="keyword">implements</span> <span class="title">LifecycleObserver</span> </span>&#123;</span><br><span class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_RESUME)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connectListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_PAUSE)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">disconnectListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myLifecycleOwner.getLifecycle().addObserver(<span class="keyword">new</span> MyObserver());</span><br></pre></td></tr></table></figure>
+<p>myLifecycleOwner 是一个实现了 LifecycleOwner 接口的类，也是被观察生命周期的对象。</p>
+<h2 id="LifecycleOwner"><a href="#LifecycleOwner" class="headerlink" title="LifecycleOwner"></a>LifecycleOwner</h2><h3 id="Implementing-a-custom-LifecycleOwner"><a href="#Implementing-a-custom-LifecycleOwner" class="headerlink" title="Implementing a custom LifecycleOwner"></a>Implementing a custom LifecycleOwner</h3><p>Fragments and Activities in Support Library 26.1.0 and later already implement the LifecycleOwner interface.</p>
+<p>Support Library 26.1.0 中的 Activity 和 Fragment 已经主动实现了 LifecycleOwner 接口，但是如果你需要自己实现的话可以通过下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">LifecycleOwner</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> LifecycleRegistry mLifecycleRegistry;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        mLifecycleRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.CREATED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStart();</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.STARTED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Lifecycle <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mLifecycleRegistry;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Best-pratices-for-lifecycle-aware-components"><a href="#Best-pratices-for-lifecycle-aware-components" class="headerlink" title="Best pratices for lifecycle-aware components"></a>Best pratices for lifecycle-aware components</h2><p>Keep your UI controllers (activities and fragments) as lean as possible. They should not try to acquire their own data; instead, use a ViewModel to do that, and observe a LiveData object to reflect the changes back to the views.</p>
+<ol>
+<li>保证 UI类（activity , fragment）干净，不要在这里写数据获取的代码，应该使用 ViewModel 来获取数据，使用 LiveData 对象更新 UI界面。</li>
+<li>Try to write data-driven UIs where your UI controller’s responsibility is to update the views as data changes, or notify user actions back to the ViewModel.</li>
+<li>Put your data logic in your ViewModel class. ViewModel should serve as the connector between your UI controller and the rest of your app. Be careful though, it isn’t ViewModel’s responsibility to fetch data (for example, from a network). Instead, ViewModel should call the appropriate component to fetch the data, then provide the result back to the UI controller.</li>
+<li>Use Data Binding to maintain a clean interface between your views and the UI controller. This allows you to make your views more declarative and minimize the update code you need to write in your activities and fragments. If you prefer to do this in the Java programming language, use a library like Butter Knife to avoid boilerplate code and have a better abstraction.</li>
+<li>If your UI is complex, consider creating a presenter class to handle UI modifications. This might be a laborious task, but it can make your UI components easier to test.</li>
+<li>Avoid referencing a View or Activity context in your ViewModel. If the ViewModel outlives the activity (in case of configuration changes), your activity leaks and isn’t properly disposed by the garbage collector.</li>
+</ol>
+<h2 id="Use-cases-for-lifecycle-aware-components"><a href="#Use-cases-for-lifecycle-aware-components" class="headerlink" title="Use cases for lifecycle-aware components"></a>Use cases for lifecycle-aware components</h2><ol>
+<li>Switching between coarse and fine-grained location updates. </li>
+<li>Stopping and starting video buffering. </li>
+<li>Starting and stopping network connectivity. </li>
+<li>Pausing and resuming animated drawables. </li>
+</ol>
+<h2 id="Handling-on-stop-events"><a href="#Handling-on-stop-events" class="headerlink" title="Handling on stop events"></a>Handling on stop events</h2><h1 id="LiveData"><a href="#LiveData" class="headerlink" title="LiveData"></a>LiveData</h1><p>LiveData: 一个可以被观察的数据持有类。不想普通的可被观察类，它具有绑定生命周期的特性。</p>
+<h2 id="The-advantages-of-using-LiveData"><a href="#The-advantages-of-using-LiveData" class="headerlink" title="The advantages of using LiveData"></a>The advantages of using LiveData</h2><ul>
+<li>可以确保你的 UI界面 符合数据 state</li>
+<li>不会造成内存泄漏</li>
+<li>在 Activity stop 的时候不会奔溃</li>
+<li>不需要手动处理生命周期</li>
+<li>可以自动更新最新数据</li>
+<li>Proper configuration changes</li>
+<li>可以实现资源共享</li>
+</ul>
+<h2 id="Work-with-LiveData-objects"><a href="#Work-with-LiveData-objects" class="headerlink" title="Work with LiveData objects"></a>Work with LiveData objects</h2><h3 id="Create-LiveData-objects"><a href="#Create-LiveData-objects" class="headerlink" title="Create LiveData objects"></a>Create LiveData objects</h3><p>LiveData 对象通常会作为 ViewModel 的成员变量。</p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NameViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a LiveData with a String</span></span><br><span class="line"><span class="keyword">private</span> MutableLiveData&lt;String&gt; mCurrentName;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MutableLiveData&lt;String&gt; <span class="title">getCurrentName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mCurrentName == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mCurrentName = <span class="keyword">new</span> MutableLiveData&lt;String&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mCurrentName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Rest of the ViewModel...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Observe-LiveData-objects"><a href="#Observe-LiveData-objects" class="headerlink" title="Observe LiveData objects"></a>Observe LiveData objects</h3><p>通常在 <code>onCreate</code> 方法中写 观察LiveData 的相关代码，原因：</p>
+<ol>
+<li>减轻 <code>onResume()</code> 方法的负担</li>
+<li>确保数据尽量早的显示</li>
+</ol>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NameActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> NameViewModel mModel;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Other code to setup the activity...</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the ViewModel.</span></span><br><span class="line">        mModel = ViewModelProviders.of(<span class="keyword">this</span>).get(NameViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create the observer which updates the UI.</span></span><br><span class="line">        <span class="keyword">final</span> Observer&lt;String&gt; nameObserver = <span class="keyword">new</span> Observer&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">(@Nullable <span class="keyword">final</span> String newName)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// Update the UI, in this case, a TextView.</span></span><br><span class="line">                mNameTextView.setText(newName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.</span></span><br><span class="line">        mModel.getCurrentName().observe(<span class="keyword">this</span>, nameObserver);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 LiveData 中的数据变化的时候 nameObserver 的中的方法就会触发。</p>
+<p><code>mModel.getCurrentName().observe(this, nameObserver);</code>, 第一个参数让 LiveData 和 Activity 的生命周期关联，之后就不需要担心内存泄漏的问题了。</p>
+<h3 id="Update-LiveData-objects"><a href="#Update-LiveData-objects" class="headerlink" title="Update LiveData objects"></a>Update LiveData objects</h3><p>user <code>setValue(T)</code>, <code>postValue(T)</code> change LiveData.</p>
+<blockquote>
+<p>setValue method must be called from main thread, but postValue can be called from worker thread.</p>
+</blockquote>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mButton.setOnClickListener(<span class="keyword">new</span> OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        String anotherName = <span class="string">"John Doe"</span>;</span><br><span class="line">        mModel.getCurrentName().setValue(anotherName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Use-LiveData-with-Room"><a href="#Use-LiveData-with-Room" class="headerlink" title="Use LiveData with Room"></a>Use LiveData with Room</h3><h2 id="Extend-LiveData"><a href="#Extend-LiveData" class="headerlink" title="Extend LiveData"></a>Extend LiveData</h2><p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockLiveData</span> <span class="keyword">extends</span> <span class="title">LiveData</span>&lt;<span class="title">BigDecimal</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> StockManager mStockManager;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SimplePriceListener mListener = <span class="keyword">new</span> SimplePriceListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPriceChanged</span><span class="params">(BigDecimal price)</span> </span>&#123;</span><br><span class="line">            setValue(price);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StockLiveData</span><span class="params">(String symbol)</span> </span>&#123;</span><br><span class="line">        mStockManager = <span class="keyword">new</span> StockManager(symbol);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mStockManager.requestPriceUpdates(mListener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onInactive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mStockManager.removeUpdates(mListener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让多个 activity 和 Fragment， services 共享 LiveData：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockLiveData</span> <span class="keyword">extends</span> <span class="title">LiveData</span>&lt;<span class="title">BigDecimal</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StockLiveData sInstance;</span><br><span class="line">    <span class="keyword">private</span> StockManager mStockManager;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SimplePriceListener mListener = <span class="keyword">new</span> SimplePriceListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPriceChanged</span><span class="params">(BigDecimal price)</span> </span>&#123;</span><br><span class="line">            setValue(price);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@MainThread</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StockLiveData <span class="title">get</span><span class="params">(String symbol)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            sInstance = <span class="keyword">new</span> StockLiveData(symbol);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StockLiveData</span><span class="params">(String symbol)</span> </span>&#123;</span><br><span class="line">        mStockManager = <span class="keyword">new</span> StockManager(symbol);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mStockManager.requestPriceUpdates(mListener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onInactive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mStockManager.removeUpdates(mListener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用上面这个共享的 LiveData</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onActivityCreated</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        StockLiveData.get(getActivity()).observe(<span class="keyword">this</span>, price -&gt; &#123;</span><br><span class="line">            <span class="comment">// Update the UI.</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Transform-LiveData"><a href="#Transform-LiveData" class="headerlink" title="Transform LiveData"></a>Transform LiveData</h2><ul>
+<li>map 操作符，改变 Observer 获取的数据：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LiveData&lt;User&gt; userLiveData = ...;</span><br><span class="line">LiveData&lt;String&gt; userName = Transformations.map(userLiveData, user -&gt; &#123;</span><br><span class="line">    user.name + <span class="string">" "</span> + user.lastName</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>switchMap，改变 LiveData对象 并返回 LiveData 对象（不会创建新的 LiveData）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> LiveData&lt;User&gt; <span class="title">getUser</span><span class="params">(String id)</span> </span>&#123;</span><br><span class="line">  ...;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">LiveData&lt;String&gt; userId = ...;</span><br><span class="line">LiveData&lt;User&gt; user = Transformations.switchMap(userId, id -&gt; getUser(i));</span><br></pre></td></tr></table></figure>
+<p>Transform 的一个妙用：</p>
+<p>错误案例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PostalCodeRepository repository;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyViewModel</span><span class="params">(PostalCodeRepository repository)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.repository = repository;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> LiveData&lt;String&gt; <span class="title">getPostalCode</span><span class="params">(String address)</span> </span>&#123;</span><br><span class="line">       <span class="comment">// DON'T DO THIS</span></span><br><span class="line">       <span class="keyword">return</span> repository.getPostCode(address);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码 <code>getPostalCode</code> 方法每次调用的时候就会创建新的 LiveData，UI 组件就需要重新和新的 LiveData 进行绑定。</p>
+<p>正确做法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PostalCodeRepository repository;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MutableLiveData&lt;String&gt; addressInput = <span class="keyword">new</span> MutableLiveData();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> LiveData&lt;String&gt; postalCode =</span><br><span class="line">            Transformations.switchMap(addressInput, (address) -&gt; &#123;</span><br><span class="line">                <span class="keyword">return</span> repository.getPostCode(address);</span><br><span class="line">             &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">MyViewModel</span><span class="params">(PostalCodeRepository repository)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.repository = repository;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setInput</span><span class="params">(String address)</span> </span>&#123;</span><br><span class="line">      addressInput.setValue(address);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Create-new-transformations"><a href="#Create-new-transformations" class="headerlink" title="Create new transformations"></a>Create new transformations</h3><h2 id="Merge-multiple-LiveData-sources"><a href="#Merge-multiple-LiveData-sources" class="headerlink" title="Merge multiple LiveData sources"></a>Merge multiple LiveData sources</h2><h1 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h1><p>ViewModel 类的设计用于存储和管理与 UI 有关的数据。在界面参数变化比如屏幕旋转的时候数据不会消失。</p>
+<p>对于一些简单的数据可以使用 <code>onSaveInstanceState()</code> 方法存储和恢复数据。</p>
+<h2 id="Implements-a-ViewModel"><a href="#Implements-a-ViewModel" class="headerlink" title="Implements a ViewModel"></a>Implements a ViewModel</h2><p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MutableLiveData&lt;List&lt;User&gt;&gt; users;</span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;User&gt;&gt; getUsers() &#123;</span><br><span class="line">        <span class="keyword">if</span> (users == <span class="keyword">null</span>) &#123;</span><br><span class="line">            users = <span class="keyword">new</span> MutableLiveData&lt;List&lt;Users&gt;&gt;();</span><br><span class="line">            loadUsers();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> users;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">loadUsers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Do an asyncronous operation to fetch users.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Create a ViewModel the first time the system calls an activity's onCreate() method.</span></span><br><span class="line">        <span class="comment">// Re-created activities receive the same MyViewModel instance created by the first activity.</span></span><br><span class="line"></span><br><span class="line">        MyViewModel model = ViewModelProviders.of(<span class="keyword">this</span>).get(MyViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        model.getUsers().observe(<span class="keyword">this</span>, users -&gt; &#123;</span><br><span class="line">            <span class="comment">// update UI</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="The-lifecycle-of-a-ViewModel"><a href="#The-lifecycle-of-a-ViewModel" class="headerlink" title="The lifecycle of a ViewModel"></a>The lifecycle of a ViewModel</h2><p><img src="https://developer.android.com/images/topic/libraries/architecture/viewmodel-lifecycle.png" alt="ViewModel lifecycle"></p>
+<h2 id="Share-data-between-fragments"><a href="#Share-data-between-fragments" class="headerlink" title="Share data between fragments"></a>Share data between fragments</h2><p>Activity 中有多个 Fragment 的时候通过共享 ViewModel 实现交互：</p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SharedViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MutableLiveData&lt;Item&gt; selected = <span class="keyword">new</span> MutableLiveData&lt;Item&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">select</span><span class="params">(Item item)</span> </span>&#123;</span><br><span class="line">        selected.setValue(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LiveData&lt;Item&gt; <span class="title">getSelected</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> selected;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MasterFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> SharedViewModel model;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        model = ViewModelProviders.of(getActivity()).get(SharedViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        itemSelector.setOnClickListener(item -&gt; &#123;</span><br><span class="line">            model.select(item);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DetailFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        model.getSelected().observe(<span class="keyword">this</span>, &#123; item -&gt;</span><br><span class="line">           <span class="comment">// Update the UI.</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Replacing-Loaders-with-ViewModel"><a href="#Replacing-Loaders-with-ViewModel" class="headerlink" title="Replacing Loaders with ViewModel"></a>Replacing Loaders with ViewModel</h2><h1 id="Saving-UI-States"><a href="#Saving-UI-States" class="headerlink" title="Saving UI States"></a>Saving UI States</h1><p>保存 UI 状态是提升用户体验的重要环节。</p>
+<p>不管是用户 旋转屏幕还是重启应用。</p>
+<blockquote>
+<p>TODO: Demo: 屏幕旋转导致的数据丢失？ editText 是否会丢失，</p>
+</blockquote>
+<h2 id="Managing-simpler-cases-OnSavaInstanceState"><a href="#Managing-simpler-cases-OnSavaInstanceState" class="headerlink" title="Managing simpler cases: OnSavaInstanceState()"></a>Managing simpler cases: OnSavaInstanceState()</h2><p>onSaveInstanceState() 方法在下面两种情况下会调用：</p>
+<ol>
+<li>当应用在后台的时候，由于内存不足系统杀死应用进程</li>
+<li>参数改变：屏幕旋转。。。</li>
+</ol>
+<h2 id="Managing-more-complex-states-divide-and-conquer"><a href="#Managing-more-complex-states-divide-and-conquer" class="headerlink" title="Managing more complex states: divide and conquer"></a>Managing more complex states: divide and conquer</h2><h2 id="Restoring-complex-states-reassembling-the-pieces"><a href="#Restoring-complex-states-reassembling-the-pieces" class="headerlink" title="Restoring complex states: reassembling the pieces"></a>Restoring complex states: reassembling the pieces</h2><h1 id="Room-Persistence-Library"><a href="#Room-Persistence-Library" class="headerlink" title="Room Persistence Library"></a>Room Persistence Library</h1><h1 id="Paging-Library"><a href="#Paging-Library" class="headerlink" title="Paging Library"></a>Paging Library</h1><p>这个库用于应用从一个数据源不断的家在数据。（比如从数据库中加载大量数据的时候）</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>一些应用有大量的数据，但是只需要加载和现实其中的一部分。</p>
+<p>虽然现有的Android API允许在内容中进行分页，但它们带来了明显的限制和缺陷：</p>
+<ol>
+<li>CursorAdapter: 缺点是在主线程中执行数据库操作</li>
+<li>AsyncListUtil</li>
+</ol>
+<h2 id="Classes"><a href="#Classes" class="headerlink" title="Classes"></a>Classes</h2><ul>
+<li><p>DataSource</p>
+</li>
+<li><p>PagedList</p>
+</li>
+<li><p>PagedListAdapter</p>
+</li>
+<li><p>LivePagedListProvider</p>
+</li>
+</ul>
+<p><img src="https://developer.android.com/images/topic/libraries/architecture/paging-threading.gif" alt="工作流程"></p>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Dao</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Query</span>(<span class="string">"SELECT * FROM user ORDER BY lastName ASC"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> LivePagedListProvider&lt;Integer, User&gt; <span class="title">usersByLastName</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> LiveData&lt;PagedList&lt;User&gt;&gt; usersList;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyViewModel</span><span class="params">(UserDao userDao)</span> </span>&#123;</span><br><span class="line">        usersList = userDao.usersByLastName().create(</span><br><span class="line">                <span class="comment">/* initial load position */</span> <span class="number">0</span>,</span><br><span class="line">                <span class="keyword">new</span> PagedList.Config.Builder()</span><br><span class="line">                        .setPageSize(<span class="number">50</span>)</span><br><span class="line">                        .setPrefetchDistance(<span class="number">50</span>)</span><br><span class="line">                        .build());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedState);</span><br><span class="line">        MyViewModel viewModel = ViewModelProviders.of(<span class="keyword">this</span>).get(MyViewModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        RecyclerView recyclerView = findViewById(R.id.user_list);</span><br><span class="line">        UserAdapter&lt;User&gt; adapter = <span class="keyword">new</span> UserAdapter();</span><br><span class="line">        viewModel.usersList.observe(<span class="keyword">this</span>, pagedList -&gt; adapter.setList(pagedList));</span><br><span class="line">        recyclerView.setAdapter(adapter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserAdapter</span> <span class="keyword">extends</span> <span class="title">PagedListAdapter</span>&lt;<span class="title">User</span>, <span class="title">UserViewHolder</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(DIFF_CALLBACK);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(UserViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        User user = getItem(position);</span><br><span class="line">        <span class="keyword">if</span> (user != <span class="keyword">null</span>) &#123;</span><br><span class="line">            holder.bindTo(user);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Null defines a placeholder item - PagedListAdapter will automatically invalidate</span></span><br><span class="line">            <span class="comment">// this row when the actual object is loaded from the database</span></span><br><span class="line">            holder.clear();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> DiffCallback&lt;User&gt; DIFF_CALLBACK = <span class="keyword">new</span> DiffCallback&lt;User&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areItemsTheSame</span><span class="params">(@NonNull User oldUser, @NonNull User newUser)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// User properties may have changed if reloaded from the DB, but ID is fixed</span></span><br><span class="line">            <span class="keyword">return</span> oldUser.getId() == newUser.getId();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">areContentsTheSame</span><span class="params">(@NonNull User oldUser, @NonNull User newUser)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">NOTE:</span> if you use equals, your object must properly override Object#equals()</span></span><br><span class="line">            <span class="comment">// Incorrectly returning false here will result in too many animations.</span></span><br><span class="line">            <span class="keyword">return</span> oldUser.equals(newUser);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android-架构/" rel="tag"># Android 架构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/07/Android/gradle/gradle知识点/" rel="next" title="Gradle知识点">
+                <i class="fa fa-chevron-left"></i> Gradle知识点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/24/macos/Mac/" rel="prev" title="Mac 技巧">
+                Mac 技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Guide-to-App-Architecture"><span class="nav-number">1.</span> <span class="nav-text">Guide to App Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-problems-faced-by-app-developers"><span class="nav-number">1.1.</span> <span class="nav-text">Common problems faced by app developers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Commom-architectural-principles"><span class="nav-number">1.2.</span> <span class="nav-text">Commom architectural principles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recommended-app-architecture"><span class="nav-number">1.3.</span> <span class="nav-text">Recommended app architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-UI-界面-（Building-the-user-interface）"><span class="nav-number">1.3.1.</span> <span class="nav-text">创建 UI 界面 （Building the user interface）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fetching-data"><span class="nav-number">1.3.2.</span> <span class="nav-text">Fetching data</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#managing-dependencies-between-components"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">managing dependencies between components:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Connection-ViewModel-and-the-repository"><span class="nav-number">1.3.3.</span> <span class="nav-text">Connection ViewModel and the repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Caching-data"><span class="nav-number">1.3.4.</span> <span class="nav-text">Caching data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据可持续化-Persisting-data"><span class="nav-number">1.3.5.</span> <span class="nav-text">数据可持续化 Persisting data</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Single-source-of-truth"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">Single source of truth</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Testing"><span class="nav-number">1.3.6.</span> <span class="nav-text">Testing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-final-architecture"><span class="nav-number">1.3.7.</span> <span class="nav-text">The final architecture</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Guiding-principles"><span class="nav-number">1.4.</span> <span class="nav-text">Guiding principles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Addendum-exposing-network-status"><span class="nav-number">1.5.</span> <span class="nav-text">Addendum: exposing network status</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加官方架构组件到项目中-Adding-Components-to-your-Project"><span class="nav-number">2.</span> <span class="nav-text">添加官方架构组件到项目中 Adding Components to your Project</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用-Lifecycles-组件捕获生命周期-Handling-Lifecycles-with-Lifecycle-Aware-Components"><span class="nav-number">3.</span> <span class="nav-text">使用 Lifecycles 组件捕获生命周期 Handling Lifecycles with Lifecycle-Aware Components</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lifecycle"><span class="nav-number">3.1.</span> <span class="nav-text">Lifecycle</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LifecycleOwner"><span class="nav-number">3.2.</span> <span class="nav-text">LifecycleOwner</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Implementing-a-custom-LifecycleOwner"><span class="nav-number">3.2.1.</span> <span class="nav-text">Implementing a custom LifecycleOwner</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Best-pratices-for-lifecycle-aware-components"><span class="nav-number">3.3.</span> <span class="nav-text">Best pratices for lifecycle-aware components</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Use-cases-for-lifecycle-aware-components"><span class="nav-number">3.4.</span> <span class="nav-text">Use cases for lifecycle-aware components</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handling-on-stop-events"><span class="nav-number">3.5.</span> <span class="nav-text">Handling on stop events</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LiveData"><span class="nav-number">4.</span> <span class="nav-text">LiveData</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-advantages-of-using-LiveData"><span class="nav-number">4.1.</span> <span class="nav-text">The advantages of using LiveData</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Work-with-LiveData-objects"><span class="nav-number">4.2.</span> <span class="nav-text">Work with LiveData objects</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-LiveData-objects"><span class="nav-number">4.2.1.</span> <span class="nav-text">Create LiveData objects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observe-LiveData-objects"><span class="nav-number">4.2.2.</span> <span class="nav-text">Observe LiveData objects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update-LiveData-objects"><span class="nav-number">4.2.3.</span> <span class="nav-text">Update LiveData objects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-LiveData-with-Room"><span class="nav-number">4.2.4.</span> <span class="nav-text">Use LiveData with Room</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extend-LiveData"><span class="nav-number">4.3.</span> <span class="nav-text">Extend LiveData</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transform-LiveData"><span class="nav-number">4.4.</span> <span class="nav-text">Transform LiveData</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-new-transformations"><span class="nav-number">4.4.1.</span> <span class="nav-text">Create new transformations</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Merge-multiple-LiveData-sources"><span class="nav-number">4.5.</span> <span class="nav-text">Merge multiple LiveData sources</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewModel"><span class="nav-number">5.</span> <span class="nav-text">ViewModel</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Implements-a-ViewModel"><span class="nav-number">5.1.</span> <span class="nav-text">Implements a ViewModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-lifecycle-of-a-ViewModel"><span class="nav-number">5.2.</span> <span class="nav-text">The lifecycle of a ViewModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Share-data-between-fragments"><span class="nav-number">5.3.</span> <span class="nav-text">Share data between fragments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Replacing-Loaders-with-ViewModel"><span class="nav-number">5.4.</span> <span class="nav-text">Replacing Loaders with ViewModel</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Saving-UI-States"><span class="nav-number">6.</span> <span class="nav-text">Saving UI States</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Managing-simpler-cases-OnSavaInstanceState"><span class="nav-number">6.1.</span> <span class="nav-text">Managing simpler cases: OnSavaInstanceState()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Managing-more-complex-states-divide-and-conquer"><span class="nav-number">6.2.</span> <span class="nav-text">Managing more complex states: divide and conquer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Restoring-complex-states-reassembling-the-pieces"><span class="nav-number">6.3.</span> <span class="nav-text">Restoring complex states: reassembling the pieces</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Room-Persistence-Library"><span class="nav-number">7.</span> <span class="nav-text">Room Persistence Library</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Paging-Library"><span class="nav-number">8.</span> <span class="nav-text">Paging Library</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">8.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Classes"><span class="nav-number">8.2.</span> <span class="nav-text">Classes</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,937 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Django,Models,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。 基本：  每个Models都是django.db.models.Model的子类 模型的每个属性都代表了数据库中的一个字段 django提供了一套自动生成的用于访问数据库中api  Models基本创建from django.db import models  class Person(models.">
+<meta name="keywords" content="Django,Models">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Models">
+<meta property="og:url" content="http://yoursite.com/2016/10/03/Python/django/offical-doc/Django_Models/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。 基本：  每个Models都是django.db.models.Model的子类 模型的每个属性都代表了数据库中的一个字段 django提供了一套自动生成的用于访问数据库中api  Models基本创建from django.db import models  class Person(models.">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.326Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django Models">
+<meta name="twitter:description" content="模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。 基本：  每个Models都是django.db.models.Model的子类 模型的每个属性都代表了数据库中的一个字段 django提供了一套自动生成的用于访问数据库中api  Models基本创建from django.db import models  class Person(models.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/03/Python/django/offical-doc/Django_Models/">
+
+
+
+
+
+  <title>Django Models | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/03/Python/django/offical-doc/Django_Models/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Django Models</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-10-03T13:18:12+08:00">
+                2016-10-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>模型是数据的表现形式，包含了存储数据必要的字段和行为。通常一个Models对应数据库中的一张表。</p>
+<p>基本：</p>
+<ol>
+<li>每个Models都是<code>django.db.models.Model</code>的子类</li>
+<li>模型的每个属性都代表了数据库中的一个字段</li>
+<li>django提供了一套自动生成的用于访问数据库中api</li>
+</ol>
+<h1 id="Models基本创建"><a href="#Models基本创建" class="headerlink" title="Models基本创建"></a>Models基本创建</h1><pre><code>from django.db import models
+
+class Person(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+</code></pre><p>这里的每个属性都对应数据库中的一个字段，默认会创建一个id。</p>
+<p>创建上面的Models的sql：</p>
+<pre><code>CREATE TABLE myapp_person (
+    &quot;id&quot; serial NOT NULL PRIMARY KEY,
+    &quot;first_name&quot; varchar(30) NOT NULL,
+    &quot;last_name&quot; varchar(30) NOT NULL
+);
+</code></pre><h1 id="使用Models"><a href="#使用Models" class="headerlink" title="使用Models"></a>使用Models</h1><p>在使用前要告诉django你定义了这些models，需要在<code>INSTANCE_APP</code>中注册Models所在的app，然后执行：</p>
+<pre><code>python3 manage.py makemigrations
+</code></pre><p>生成sql脚本</p>
+<pre><code>python3 manage.py migrate
+</code></pre><a id="more"></a>
+<h1 id="Fields-字段"><a href="#Fields-字段" class="headerlink" title="Fields 字段"></a>Fields 字段</h1><p>注意：模型的属性名不能与模型的api冲突，比如：<code>save</code>,<code>clean</code>,<code>delete</code></p>
+<p>由 model 类的属性决定</p>
+<h1 id="Fields-Type"><a href="#Fields-Type" class="headerlink" title="Fields Type"></a>Fields Type</h1><p>模型中的每个字段都是<code>Field</code>子类的某个实例，django根据字段的类型确定一下信息：</p>
+<ol>
+<li>数据库创建时候字段的数据类型（INTEGE,TEXT,VARCHAR）</li>
+<li>HTML表单的渲染（e.g. <input type="text">, <select>)）</select></li>
+<li>数据最低限度的验证</li>
+</ol>
+<h1 id="Fields-options"><a href="#Fields-options" class="headerlink" title="Fields options"></a>Fields options</h1><p>每个字段都有很多可选的参数</p>
+<ul>
+<li><code>null=True</code>:表示数据库会将用null存储数据空值，默认是false</li>
+<li><code>blank=True</code>:表示该字段可以不填，默认是false</li>
+<li><p><code>choices=[iterable]</code>：参数是一个二元组组成的可迭代对象，如果设置了这个选项，默认的表当是一个选择框而不是文本框。元组中的第一个元素是存储在数据库中的值，第二个元素是显示给用户的值（可以使用<code>get_Foo_display()</code>方法获取）。</p>
+<pre><code>from django.db import models
+
+class Person(models.Model):
+    SHIRT_SIZES = (
+        (&apos;S&apos;, &apos;Small&apos;),
+        (&apos;M&apos;, &apos;Medium&apos;),
+        (&apos;L&apos;, &apos;Large&apos;),
+    )
+    name = models.CharField(max_length=60)
+    shirt_size = models.CharField(max_length=1, choices=SHIRT_SIZES)
+</code></pre></li>
+</ul>
+<pre><code>&gt;&gt;&gt; p = Person(name=&quot;Fred Flintstone&quot;, shirt_size=&quot;L&quot;)
+&gt;&gt;&gt; p.save()
+&gt;&gt;&gt; p.shirt_size
+&apos;L&apos;
+&gt;&gt;&gt; p.get_shirt_size_display()
+&apos;Large&apos;
+</code></pre><ul>
+<li><code>default=[.]</code>：值可以是一个具体的值也可以是一个可调用的方法对象。</li>
+<li><code>help_text=[&#39;。&#39;]</code>:提示内容</li>
+<li><p><code>primary_key=[Boolean]</code>:if True,表示这个属性是Model的主键，如果没有设置这个，django会为model创建一个默认的<code>IntegerField</code>作为主键。</p>
+<p>  The primary key field is read-only. If you change the value of the primary key on an existing object and then save it, a new object will be created alongside the old one.</p>
+</li>
+<li><p><code>unique=[Boolean]</code>:if True，表示该字段唯一</p>
+</li>
+</ul>
+<h2 id="Automatic-primary-key-Fields"><a href="#Automatic-primary-key-Fields" class="headerlink" title="Automatic primary key Fields"></a>Automatic primary key Fields</h2><p>默认django为所有的models指定 主键：</p>
+<pre><code>id = models.AutoField(primary_key=True)
+</code></pre><h2 id="Verbose-field-name-字段的自述"><a href="#Verbose-field-name-字段的自述" class="headerlink" title="Verbose field name 字段的自述"></a>Verbose field name 字段的自述</h2><p> 除了<code>ForeignKey</code>, <code>ManyToManyField</code> and <code>OneToOneField</code>,其他所有的字段都有一个属性：a verbose name</p>
+<p> eg：</p>
+<pre><code>first_name = models.CharField(&quot;person&apos;s first name&quot;, max_length=30)
+</code></pre><p><code>ForeignKey</code>, <code>ManyToManyField</code> and <code>OneToOneField</code>都要求第一个参数是模型的类，所以必须指定键：</p>
+<pre><code>poll = models.ForeignKey(
+    Poll,
+    on_delete=models.CASCADE,
+    verbose_name=&quot;the related poll&quot;,
+)
+sites = models.ManyToManyField(Site, verbose_name=&quot;list of sites&quot;)
+place = models.OneToOneField(
+    Place,
+    on_delete=models.CASCADE,
+    verbose_name=&quot;related place&quot;,
+)
+</code></pre><h1 id="RelationShips"><a href="#RelationShips" class="headerlink" title="RelationShips"></a>RelationShips</h1><h2 id="Many-to-one-RelationShips"><a href="#Many-to-one-RelationShips" class="headerlink" title="Many to one RelationShips"></a>Many to one RelationShips</h2><p><code>django.db.models.ForeignKey</code></p>
+<p><code>ForeignKey</code>需要一个位置参数，与本model相管理的model class</p>
+<p>eg:</p>
+<pre><code>from django.db import models
+
+class Manufacturer(models.Model):
+    # ...
+    pass
+
+class Car(models.Model):
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+    # ...
+</code></pre><p>支持递归关系</p>
+<h2 id="many-to-many-RelationShips"><a href="#many-to-many-RelationShips" class="headerlink" title="many to many RelationShips"></a>many to many RelationShips</h2><p>ManyToManyField requires a positional argument: the class to which the model is related.</p>
+<pre><code>from django.db import models
+
+class Topping(models.Model):
+    # ...
+    pass
+
+class Pizza(models.Model):
+    # ...
+    toppings = models.ManyToManyField(Topping)
+</code></pre><p>支持递归关系</p>
+<h2 id="Extra-fields-on-many-to-many-relationships-多对多的其他参数"><a href="#Extra-fields-on-many-to-many-relationships-多对多的其他参数" class="headerlink" title="Extra fields on many-to-many relationships 多对多的其他参数"></a>Extra fields on many-to-many relationships 多对多的其他参数</h2><p>需要将数据关联到两个模型的关系上。</p>
+<p><code>through</code>指向中介模型</p>
+<p>下面是一个音乐小组实例：</p>
+<pre><code>from django.db import models
+
+class Person(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.name
+
+class Group(models.Model):
+    name = models.CharField(max_length=128)
+    members = models.ManyToManyField(Person, through=&apos;Membership&apos;)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.name
+
+class Membership(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    date_joined = models.DateField()
+    invite_reason = models.CharField(max_length=64)
+</code></pre><p>。。。</p>
+<h2 id="one-to-one-RelationShips"><a href="#one-to-one-RelationShips" class="headerlink" title="one to one RelationShips"></a>one to one RelationShips</h2><h2 id="Models-across-files"><a href="#Models-across-files" class="headerlink" title="Models across files"></a>Models across files</h2><pre><code>from django.db import models
+from geography.models import ZipCode
+
+class Restaurant(models.Model):
+# ...
+zip_code = models.ForeignKey(
+    ZipCode,
+    on_delete=models.SET_NULL,
+    blank=True,
+    null=True,
+)
+</code></pre><h2 id="Field-name-restrictions-字段名限制"><a href="#Field-name-restrictions-字段名限制" class="headerlink" title="Field name restrictions 字段名限制"></a>Field name restrictions 字段名限制</h2><ol>
+<li>不能是python的保留字段</li>
+<li>名称中的不允许有连续下滑线</li>
+</ol>
+<h2 id="Custom-field-types"><a href="#Custom-field-types" class="headerlink" title="Custom field types"></a>Custom field types</h2><h1 id="Meta-options"><a href="#Meta-options" class="headerlink" title="Meta options"></a>Meta options</h1><ul>
+<li>abstract: true 表示抽象类</li>
+<li><p>app_label：</p>
+<pre><code>app_label = &apos;myapp&apos;
+</code></pre><p>  如果一个 model 在 app 之外创建的，就需要指定其相应的 app。</p>
+</li>
+<li>base_manager_name</li>
+<li><p>db_table:</p>
+<pre><code>db_table = &apos;music_album&apos;
+</code></pre><p>  指定表名</p>
+</li>
+<li><p>db_tablespace</p>
+</li>
+<li><p>ordering:</p>
+<p>  default: - 表示降序</p>
+<pre><code>ordering = [&apos;-order_date&apos;]
+</code></pre><p>  设置按多个字段排序：</p>
+<pre><code>ordering = [&apos;-pub_date&apos;, &apos;author&apos;]
+</code></pre></li>
+</ul>
+<h1 id="Model-attributes"><a href="#Model-attributes" class="headerlink" title="Model attributes"></a>Model attributes</h1><h1 id="Model-methods"><a href="#Model-methods" class="headerlink" title="Model methods"></a>Model methods</h1><h3 id="str-Python-3"><a href="#str-Python-3" class="headerlink" title="str() (Python 3)"></a><strong>str</strong>() (Python 3)</h3><p>A Python “magic method” that returns a unicode “representation” of any object.</p>
+<p>返回model的表现方式</p>
+<h3 id="get-absolute-url"><a href="#get-absolute-url" class="headerlink" title="get_absolute_url()"></a>get_absolute_url()</h3><h2 id="Overriding-predefined-model-methods"><a href="#Overriding-predefined-model-methods" class="headerlink" title="Overriding predefined model methods"></a>Overriding predefined model methods</h2><p>覆盖一些预定义的方法：</p>
+<p>比如save：</p>
+<pre><code>from django.db import models
+
+class Blog(models.Model):
+    name = models.CharField(max_length=100)
+    tagline = models.TextField()
+
+    def save(self, *args, **kwargs):
+        do_something()
+        super(Blog, self).save(*args, **kwargs) # Call the &quot;real&quot; save() method.
+        do_something_else()
+
+
+from django.db import models
+
+class Blog(models.Model):
+    name = models.CharField(max_length=100)
+    tagline = models.TextField()
+
+    def save(self, *args, **kwargs):
+        if self.name == &quot;Yoko Ono&apos;s blog&quot;:
+            return # Yoko shall never have her own blog!
+        else:
+            super(Blog, self).save(*args, **kwargs) # Call the &quot;real&quot; save() method.
+</code></pre><h2 id="executing-custom-sql"><a href="#executing-custom-sql" class="headerlink" title="executing custom sql"></a>executing custom sql</h2><h1 id="Model-inheritance"><a href="#Model-inheritance" class="headerlink" title="Model inheritance"></a>Model inheritance</h1><p>有3种情况的继承：</p>
+<ol>
+<li>只希望父类持有多个子类必须的属性，父类不需要实例化，可以使用 抽象基类</li>
+<li>继承一个已经存在的模型，并且希望建立新的数据库表，使用 多表继承  Multi-table inheritance</li>
+<li>只想改变模型的方法，不改变属性，可以使用 代理模型</li>
+</ol>
+<h2 id="Abstract-base-class"><a href="#Abstract-base-class" class="headerlink" title="Abstract base class"></a>Abstract base class</h2><p>创建一个抽象的父类：（创建一个内部class，并指定属性abstract为ture）</p>
+<pre><code>from django.db import models
+
+class CommonInfo(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.PositiveIntegerField()
+
+    class Meta:
+        abstract = True
+
+class Student(CommonInfo):
+    home_group = models.CharField(max_length=5)
+</code></pre><p><code>CommonInfo</code>是一个抽象类，它不会创建数据库表也不会被实例化。它的不同的子类还是会创建各自的数据库表。</p>
+<h3 id="Meta-Inheritance"><a href="#Meta-Inheritance" class="headerlink" title="Meta Inheritance"></a>Meta Inheritance</h3><p>内部类 <code>Meta</code>也可以被继承和覆盖：</p>
+<pre><code>from django.db import models
+
+class CommonInfo(models.Model):
+    # ...
+    class Meta:
+        abstract = True
+        ordering = [&apos;name&apos;]
+
+class Student(CommonInfo):
+    # ...
+    class Meta(CommonInfo.Meta):
+        db_table = &apos;student_info&apos;
+</code></pre><p>对于继承抽象类的类，django会自动将继承的内部类<code>Meta</code>中的属性<code>abstract = False</code>，如果需要将子类也变成抽象类，需要用户自己重写子类<code>Meta</code></p>
+<p>如果<code>Meta</code>设置了抽象属性，一些其他的属性会失效，比如<code>db_table</code>属性</p>
+<h3 id="Be-careful-with-related-name-and-related-query-name"><a href="#Be-careful-with-related-name-and-related-query-name" class="headerlink" title="Be careful with related_name and related_query_name"></a>Be careful with related_name and related_query_name</h3>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/Models/" rel="tag"># Models</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/03/Python/django/offical-doc/Django_Views_URLCongs/" rel="next" title="Django Views URLconfs">
+                <i class="fa fa-chevron-left"></i> Django Views URLconfs
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/03/Python/django/offical-doc/Django Views Built-in Views/" rel="prev" title="Django Views Built-in Views">
+                Django Views Built-in Views <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Models基本创建"><span class="nav-number">1.</span> <span class="nav-text">Models基本创建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用Models"><span class="nav-number">2.</span> <span class="nav-text">使用Models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fields-字段"><span class="nav-number">3.</span> <span class="nav-text">Fields 字段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fields-Type"><span class="nav-number">4.</span> <span class="nav-text">Fields Type</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fields-options"><span class="nav-number">5.</span> <span class="nav-text">Fields options</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Automatic-primary-key-Fields"><span class="nav-number">5.1.</span> <span class="nav-text">Automatic primary key Fields</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Verbose-field-name-字段的自述"><span class="nav-number">5.2.</span> <span class="nav-text">Verbose field name 字段的自述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RelationShips"><span class="nav-number">6.</span> <span class="nav-text">RelationShips</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Many-to-one-RelationShips"><span class="nav-number">6.1.</span> <span class="nav-text">Many to one RelationShips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#many-to-many-RelationShips"><span class="nav-number">6.2.</span> <span class="nav-text">many to many RelationShips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extra-fields-on-many-to-many-relationships-多对多的其他参数"><span class="nav-number">6.3.</span> <span class="nav-text">Extra fields on many-to-many relationships 多对多的其他参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#one-to-one-RelationShips"><span class="nav-number">6.4.</span> <span class="nav-text">one to one RelationShips</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Models-across-files"><span class="nav-number">6.5.</span> <span class="nav-text">Models across files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Field-name-restrictions-字段名限制"><span class="nav-number">6.6.</span> <span class="nav-text">Field name restrictions 字段名限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-field-types"><span class="nav-number">6.7.</span> <span class="nav-text">Custom field types</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Meta-options"><span class="nav-number">7.</span> <span class="nav-text">Meta options</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Model-attributes"><span class="nav-number">8.</span> <span class="nav-text">Model attributes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Model-methods"><span class="nav-number">9.</span> <span class="nav-text">Model methods</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#str-Python-3"><span class="nav-number">9.0.1.</span> <span class="nav-text">str() (Python 3)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get-absolute-url"><span class="nav-number">9.0.2.</span> <span class="nav-text">get_absolute_url()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overriding-predefined-model-methods"><span class="nav-number">9.1.</span> <span class="nav-text">Overriding predefined model methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#executing-custom-sql"><span class="nav-number">9.2.</span> <span class="nav-text">executing custom sql</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Model-inheritance"><span class="nav-number">10.</span> <span class="nav-text">Model inheritance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract-base-class"><span class="nav-number">10.1.</span> <span class="nav-text">Abstract base class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Meta-Inheritance"><span class="nav-number">10.1.1.</span> <span class="nav-text">Meta Inheritance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Be-careful-with-related-name-and-related-query-name"><span class="nav-number">10.1.2.</span> <span class="nav-text">Be careful with related_name and related_query_name</span></a></li></ol></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

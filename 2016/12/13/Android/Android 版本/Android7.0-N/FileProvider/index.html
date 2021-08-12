@@ -1,0 +1,794 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android7.0,FileProvider,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="FileProviderFileProvider 继承自 ContentProvider ,它会创建一个格式为 content:// 的 Uri 而不是 file:///。 内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity">
+<meta name="keywords" content="Android7.0,FileProvider">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FileProvider">
+<meta property="og:url" content="http://yoursite.com/2016/12/13/Android/Android 版本/Android7.0-N/FileProvider/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="FileProviderFileProvider 继承自 ContentProvider ,它会创建一个格式为 content:// 的 Uri 而不是 file:///。 内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.209Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FileProvider">
+<meta name="twitter:description" content="FileProviderFileProvider 继承自 ContentProvider ,它会创建一个格式为 content:// 的 Uri 而不是 file:///。 内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/13/Android/Android 版本/Android7.0-N/FileProvider/">
+
+
+
+
+
+  <title>FileProvider | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/13/Android/Android 版本/Android7.0-N/FileProvider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">FileProvider</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-13T22:38:14+08:00">
+                2016-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h1><p>FileProvider 继承自 ContentProvider ,它会创建一个格式为 <code>content://</code> 的 Uri 而不是 <code>file:///</code>。</p>
+<p>内容的 URI 允许我们读写它所指向的文件。当我们要将一个包含 URI 的 Intent 传递到另一个 APP 的时候，可以通过设置 Intent.setFlags() 来添加权限，这个权限的有效期是接收方 Activity 或者 Service 的生命周期。</p>
+<h2 id="Defining-a-FileProvider"><a href="#Defining-a-FileProvider" class="headerlink" title="Defining a FileProvider"></a>Defining a FileProvider</h2><p>不需要继承 FileProvider 直接在 AndroidManifest 中注册就可以：</p>
+<pre><code>&lt;manifest&gt;
+    ...
+    &lt;application&gt;
+        ...
+        &lt;provider
+            android:name=&quot;android.support.v4.content.FileProvider&quot;
+            android:authorities=&quot;com.mydomain.fileprovider&quot;
+            android:exported=&quot;false&quot;
+            android:grantUriPermissions=&quot;true&quot;&gt;
+            ...
+        &lt;/provider&gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre><p>如果要做从写里面的方法，也可以继承他，然后注册。</p>
+<a id="more"></a>
+<h2 id="Specifying-Available-Files"><a href="#Specifying-Available-Files" class="headerlink" title="Specifying Available Files"></a>Specifying Available Files</h2><p>FileProvider 只会生成指向预先指定的目录的 content URI.</p>
+<p>定义目录：</p>
+<pre><code>&lt;paths xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;files-path name=&quot;my_images&quot; path=&quot;images/&quot;/&gt;
+    ...
+&lt;/paths&gt;
+</code></pre><p><code>paths</code> 包含一个以上的下列子标签：</p>
+<ul>
+<li><code>file-path</code>:可以通过 <code>Context.getFileDir()</code> 获取地址</li>
+<li><code>cache-path</code>:可以通过 <code>Context.getCacheDir()</code> 获取地址</li>
+<li><code>external-path</code>:可以通过 <code>Environment.getExternalStorageDirectory()</code> 获取地址</li>
+<li><code>external-files-path</code>:可以通过 <code>Context.getExternalFilesDir(String)</code> 获取地址</li>
+<li><code>external-cache-path</code>:可以通过 <code>Context.getExternalCacheDir()</code> 获取地址</li>
+</ul>
+<p>把 <code>path</code> 标签写入到 xml 文件，比如<code>res/xml/file_paths.xml</code>,在 AndroidManifest 中定义 <code>meta-data</code>：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.mydomain.fileprovider&quot;
+    android:exported=&quot;false&quot;
+    android:grantUriPermissions=&quot;true&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><h2 id="Generating-the-Content-URI-for-a-File"><a href="#Generating-the-Content-URI-for-a-File" class="headerlink" title="Generating the Content URI for a File"></a>Generating the Content URI for a File</h2><pre><code>File imagePath = new File(Context.getFilesDir(), &quot;images&quot;);
+File newFile = new File(imagePath, &quot;default_image.jpg&quot;);
+Uri contentUri = FileProvider.getUriForFile(getContext(), &quot;com.mydomain.fileprovider&quot;, newFile);
+//content://com.mydomain.fileprovider/my_images/default_image.jpg.
+</code></pre><h1 id="调用系统相机方法"><a href="#调用系统相机方法" class="headerlink" title="调用系统相机方法"></a>调用系统相机方法</h1><h2 id="添加-FileProvider"><a href="#添加-FileProvider" class="headerlink" title="添加 FileProvider"></a>添加 FileProvider</h2><p>AndroidManifest：</p>
+<pre><code>&lt;provider
+    android:name=&quot;android.support.v4.content.FileProvider&quot;
+    android:authorities=&quot;com.waytone.normal&quot;
+    android:grantUriPermissions=&quot;true&quot;
+    android:exported=&quot;false&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/file_paths&quot; /&gt;
+&lt;/provider&gt;
+</code></pre><p>res/xml/file_paths.xml:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;paths&gt;
+        &lt;external-path path=&quot;&quot; name=&quot;camera_photos&quot; /&gt;
+    &lt;/paths&gt;
+&lt;/resources&gt;
+</code></pre><p>Activity:</p>
+<pre><code>@Override
+public void getPhotoFromSysCamera(long photoName) {
+    Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    String photoFilePath = FileUtils.getPhotoFilePath(photoName);
+    File file = new File(photoFilePath);
+    if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+    Uri imageUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file);//通过FileProvider创建一个content类型的Uri
+    openCameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+    Logger.d(&quot;图片文件存储在：&quot; + photoFilePath);
+    openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+    startActivityForResult(openCameraIntent, REQUEST_CODE_TAKE_PHOTO_FROM_CAMERA);
+}
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/support/v4/content/FileProvider.html" target="_blank" rel="noopener">官方API</a></li>
+<li><a href="https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en" target="_blank" rel="noopener">https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android7-0/" rel="tag"># Android7.0</a>
+          
+            <a href="/tags/FileProvider/" rel="tag"># FileProvider</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/13/Python/django/offical-doc/Django-Forms-API/" rel="next" title="Django Forms - API">
+                <i class="fa fa-chevron-left"></i> Django Forms - API
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/14/Python/django/offical-doc/Django-Forms-Built-in widgets/" rel="prev" title="Django Forms - Built-in Widgets">
+                Django Forms - Built-in Widgets <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FileProvider"><span class="nav-number">1.</span> <span class="nav-text">FileProvider</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Defining-a-FileProvider"><span class="nav-number">1.1.</span> <span class="nav-text">Defining a FileProvider</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specifying-Available-Files"><span class="nav-number">1.2.</span> <span class="nav-text">Specifying Available Files</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generating-the-Content-URI-for-a-File"><span class="nav-number">1.3.</span> <span class="nav-text">Generating the Content URI for a File</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#调用系统相机方法"><span class="nav-number">2.</span> <span class="nav-text">调用系统相机方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-FileProvider"><span class="nav-number">2.1.</span> <span class="nav-text">添加 FileProvider</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

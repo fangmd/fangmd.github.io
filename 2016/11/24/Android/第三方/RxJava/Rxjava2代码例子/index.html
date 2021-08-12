@@ -1,0 +1,1154 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Rxjava2,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Backpressure 背压背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。 简单的说：发射数据太快，观察者来不及处理。 强调两点：  背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。 背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件">
+<meta name="keywords" content="Rxjava2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rxjava2 代码例子">
+<meta property="og:url" content="http://yoursite.com/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Backpressure 背压背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。 简单的说：发射数据太快，观察者来不及处理。 强调两点：  背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。 背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rxjava2 代码例子">
+<meta name="twitter:description" content="Backpressure 背压背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。 简单的说：发射数据太快，观察者来不及处理。 强调两点：  背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。 背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/">
+
+
+
+
+
+  <title>Rxjava2 代码例子 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/24/Android/第三方/RxJava/Rxjava2代码例子/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rxjava2 代码例子</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-24T13:18:12+08:00">
+                2016-11-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Backpressure-背压"><a href="#Backpressure-背压" class="headerlink" title="Backpressure 背压"></a>Backpressure 背压</h1><p>背压是指在异步场景中，被观察者发送事件速度远快于观察者的处理速度的情况下，一种告诉上游的被观察者降低发送速度的策略。</p>
+<p>简单的说：发射数据太快，观察者来不及处理。</p>
+<p>强调两点：</p>
+<ol>
+<li>背压策略的一个前提是异步环境，也就是说，被观察者和观察者处在不同的线程环境中。</li>
+<li>背压（Backpressure）并不是一个像 flatMap 一样可以在程序中直接使用的操作符，他只是一种控制事件流速的策略。</li>
+</ol>
+<p>使用 Flowable 处理背压</p>
+<h1 id="使用的基本流"><a href="#使用的基本流" class="headerlink" title="使用的基本流"></a>使用的基本流</h1><ol>
+<li>创建 Observable：被观察者</li>
+<li>创建 Observer：观察者</li>
+<li>订阅事件 subscribe：Observable 和 Observer 通过 subscribe() 方法实现订阅关系</li>
+</ol>
+<h1 id="SimpleExample"><a href="#SimpleExample" class="headerlink" title="SimpleExample"></a>SimpleExample</h1><pre><code>Observable.just(&quot;observable&quot;)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer&lt;String&gt;() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // Disposable 对象用于取消订阅
+            }
+
+            @Override
+            public void onNext(String value) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+</code></pre><p>使用 <code>Disposable</code> 对象取消订阅：</p>
+<pre><code>if (!d.isDisposed()) {
+    d.dispose();
+}
+</code></pre><blockquote>
+<p>注意: 调用dispose()并不会导致上游不再继续发送事件, 上游会继续发送剩余的事件.</p>
+</blockquote>
+<h1 id="Map-操作符"><a href="#Map-操作符" class="headerlink" title="Map 操作符"></a>Map 操作符</h1><p>将被观察者发射的数据转化后发射给观察者。</p>
+<pre><code>Observable&lt;List&lt;ApiUser&gt;&gt; observable = Observable.create(new ObservableOnSubscribe&lt;List&lt;ApiUser&gt;&gt;() {
+    @Override
+    public void subscribe(ObservableEmitter&lt;List&lt;ApiUser&gt;&gt; e) throws Exception {
+        // 代码判断是否订阅被取消了
+        if (!e.isDisposed()) {
+            e.onNext(Utils.getApiUserList());
+            e.onComplete();
+        }
+    }
+});
+
+Observer&lt;List&lt;User&gt;&gt; observer = new Observer&lt;List&lt;User&gt;&gt;() {
+    @Override
+    public void onSubscribe(Disposable d) {
+
+    }
+
+    @Override
+    public void onNext(List&lt;User&gt; value) {
+
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+};
+
+Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt; mapper = new Function&lt;List&lt;ApiUser&gt;, List&lt;User&gt;&gt;() {
+    @Override
+    public List&lt;User&gt; apply(List&lt;ApiUser&gt; apiUsers) throws Exception {
+        return Utils.convertApiUserListToUserList(apiUsers);
+    }
+};
+
+observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .map(mapper)
+        .subscribe(observer);
+</code></pre><h2 id="ObservableEmitter-发射器"><a href="#ObservableEmitter-发射器" class="headerlink" title="ObservableEmitter 发射器"></a>ObservableEmitter 发射器</h2><p>RxJava2 中使用发射器向观察者发送数据。</p>
+<p>继承自 <code>Emitter</code></p>
+<pre><code>public interface ObservableEmitter&lt;T&gt; extends Emitter&lt;T&gt; {
+
+    void setDisposable(Disposable d);
+    void setCancellable(Cancellable c);
+    boolean isDisposed();
+    ObservableEmitter&lt;T&gt; serialize();
+
+}
+</code></pre><p>发射方法在 <code>Emitter</code>:</p>
+<pre><code>void onNext(T value);
+void onError(Throwable error);
+void onComplete();
+</code></pre><p>一些发射规则：</p>
+<ol>
+<li>可以发送无限个 onNext, Observer 也可以接收无限个 onNext.</li>
+<li>当发送了一个onComplete后继续发送 onNext, 而 Observable 收到 onComplete 事件之后将不再继续接收事件.</li>
+<li>当发送了一个onError后继续发送 onNext, 而 Observable 收到 onError 事件之后将不再继续接收事件.</li>
+<li>可以不发送onComplete或onError.</li>
+<li>最为关键的是onComplete和onError必须唯一并且互斥, 即不能发多个onComplete, 也不能发多个onError, 也不能先发一个onComplete, 然后再发一个onError, 反之亦然</li>
+</ol>
+<h1 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h1><blockquote>
+<p>flatMap并不保证事件的顺序</p>
+</blockquote>
+<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><p>解决嵌套请求</p>
+<pre><code>api.register(new RegisterRequest())            //发起注册请求
+    .subscribeOn(Schedulers.io())               //在IO线程进行网络请求
+    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求注册结果
+    .doOnNext(new Consumer&lt;RegisterResponse&gt;() {
+        @Override
+        public void accept(RegisterResponse registerResponse) throws Exception {
+            //先根据注册的响应结果去做一些操作
+        }
+    })
+    .observeOn(Schedulers.io())                 //回到IO线程去发起登录请求
+    .flatMap(new Function&lt;RegisterResponse, ObservableSource&lt;LoginResponse&gt;&gt;() {
+        @Override
+        public ObservableSource&lt;LoginResponse&gt; apply(RegisterResponse registerResponse) throws Exception {
+            return api.login(new LoginRequest());
+        }
+    })
+    .observeOn(AndroidSchedulers.mainThread())  //回到主线程去处理请求登录的结果
+    .subscribe(new Consumer&lt;LoginResponse&gt;() {
+        @Override
+        public void accept(LoginResponse loginResponse) throws Exception {
+            Toast.makeText(MainActivity.this, &quot;登录成功&quot;, Toast.LENGTH_SHORT).show();
+        }
+    }, new Consumer&lt;Throwable&gt;() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Toast.makeText(MainActivity.this, &quot;登录失败&quot;, Toast.LENGTH_SHORT).show();
+        }
+    });
+</code></pre><h1 id="concatMap"><a href="#concatMap" class="headerlink" title="concatMap"></a>concatMap</h1><p>和 flatMap 一样，不过可以保证事件的顺序</p>
+<h1 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h1><p>合并两个 Observerable</p>
+<h2 id="实例，将连个请求的数据合并"><a href="#实例，将连个请求的数据合并" class="headerlink" title="实例，将连个请求的数据合并"></a>实例，将连个请求的数据合并</h2><pre><code>Observable&lt;UserBaseInfoResponse&gt; observable1 =                                            
+        api.getUserBaseInfo(new UserBaseInfoRequest()).subscribeOn(Schedulers.io());      
+
+Observable&lt;UserExtraInfoResponse&gt; observable2 =                                           
+        api.getUserExtraInfo(new UserExtraInfoRequest()).subscribeOn(Schedulers.io());    
+
+Observable.zip(observable1, observable2,                                                  
+        new BiFunction&lt;UserBaseInfoResponse, UserExtraInfoResponse, UserInfo&gt;() {         
+            @Override                                                                     
+            public UserInfo apply(UserBaseInfoResponse baseInfo,                          
+                                  UserExtraInfoResponse extraInfo) throws Exception {     
+                return new UserInfo(baseInfo, extraInfo);                                 
+            }                                                                             
+        }).observeOn(AndroidSchedulers.mainThread())                                      
+        .subscribe(new Consumer&lt;UserInfo&gt;() {                                             
+            @Override                                                                     
+            public void accept(UserInfo userInfo) throws Exception {                      
+                //do something;                                                           
+            }                                                                             
+        });
+</code></pre><h1 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h1><h1 id="Disposable-防止内存泄露"><a href="#Disposable-防止内存泄露" class="headerlink" title="Disposable 防止内存泄露"></a>Disposable 防止内存泄露</h1><p>需要用到的对象： <code>CompositeDisposable</code></p>
+<p>使用：</p>
+<pre><code>private final CompositeDisposable disposables = new CompositeDisposable();
+
+public void mine() {
+    Observable&lt;String&gt; observable = Observable.create(new ObservableOnSubscribe&lt;String&gt;() {
+        @Override
+        public void subscribe(ObservableEmitter&lt;String&gt; e) throws Exception {
+            if (e.isDisposed()) return;
+            SystemClock.sleep(2000);
+            e.onNext(&quot;next&quot;);
+            e.onComplete();
+        }
+    });
+
+    DisposableObserver&lt;String&gt; observer = new DisposableObserver&lt;String&gt;() {
+        @Override
+        public void onNext(String value) {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
+
+    observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(observer);  //  从源码看  subscribeWith 和 subscribe 没有区别，除了返回值：subscribeWith 会返回 observer 本身，这里也可以使用 subscribe
+
+    disposables.add(observer);
+
+
+}
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    disposables.clear(); // do not send event after activity has been destroyed
+}
+</code></pre><h2 id="可以利用这个封装一个防止泄露的框架"><a href="#可以利用这个封装一个防止泄露的框架" class="headerlink" title="可以利用这个封装一个防止泄露的框架"></a>可以利用这个封装一个防止泄露的框架</h2><p>BasePresenter:</p>
+<pre><code>public abstract class BasePresenter {
+
+    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    public void unSubscribe() {
+        mCompositeDisposable.clear();
+    }
+
+
+    public void register(Disposable disposable) {
+        mCompositeDisposable.add(disposable);
+    }
+
+
+}
+</code></pre><p>SimplePresenter extends BasePresenter:</p>
+<pre><code>public class SimplePresenter extends BasePresenter {
+    private static final String TAG = SimplePresenter.class.getSimpleName();
+
+
+    //.....
+
+    public void startWork() {
+
+        DisposableObserver&lt;Long&gt; observer = new DisposableObserver&lt;Long&gt;() {
+            @Override
+            public void onNext(Long value) {
+                Log.d(TAG, &quot;onNext: &quot;);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        Observable.interval(2000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
+        register(observer);
+
+    }
+
+}
+</code></pre><p><strong>注意：</strong>在使用 RxJava 做异步操作的时候，调用 <code>register(observer);</code> 注册 observer 到 CompositeDisposable 中统一管理。</p>
+<p>Activity/Fragment:</p>
+<pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mSimplePresenter.unSubscribe();
+}
+</code></pre><p>尽量在使用 functions 包下的简化接口时要谨慎，因为他们不具备异常处理方法，可以使用类似下面的封装简化代码：</p>
+<pre><code>public abstract class BaseDisposableObserver&lt;T&gt; extends DisposableObserver&lt;T&gt; {
+
+    private static final String TAG = BaseDisposableObserver.class.getSimpleName();
+
+    @Override
+    public void onError(Throwable e) {
+        Log.e(TAG, &quot;onError: &quot; + e.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+}
+</code></pre><p>使用：</p>
+<pre><code>BaseDisposableObserver&lt;Long&gt; baseDisposableObserver = new BaseDisposableObserver&lt;Long&gt;() {
+    @Override
+    public void onNext(Long value) {
+        Log.d(TAG, &quot;onNext: &quot;);
+    }
+};
+
+//.... 对于不需要处理的异常让其父类捕获，需要就重写 onError 方法即可
+.subscribe(baseDisposableObserver);
+</code></pre><h1 id="take"><a href="#take" class="headerlink" title="take"></a>take</h1><p>设置 Observable 能够发射（ onNext ）的最大消息数，超过的不会被接收到</p>
+<pre><code>observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .take(3)
+        .subscribe(observer);
+</code></pre><h1 id="timer-延时操作"><a href="#timer-延时操作" class="headerlink" title="timer 延时操作"></a>timer 延时操作</h1><pre><code>Observable&lt;Long&gt; observable = Observable.timer(2, TimeUnit.SECONDS);
+</code></pre><h1 id="interval-循环执行"><a href="#interval-循环执行" class="headerlink" title="interval 循环执行"></a>interval 循环执行</h1><pre><code>Observable.interval(0, 2, TimeUnit.SECONDS)
+</code></pre><h1 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h1><p>将所有的发送数据进行处理，返回一个统一的数据。</p>
+<pre><code>Observable.just(1, 2, 3, 4).reduce(new BiFunction&lt;Integer, Integer, Integer&gt;() {
+    @Override
+    public Integer apply(Integer t1, Integer t2) {
+        return t1 + t2;
+    }
+}).subscribe(getObserver());
+
+//结果：10
+</code></pre><h1 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h1><pre><code>Observable&lt;List&lt;String&gt;&gt; buffered = Observable.just(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;).buffer(3, 1);
+
+// 3 means,  it takes max of three from its start index and create list
+// 1 means, it jumps one step every time
+// so the it gives the following list
+// 1 - one, two, three
+// 2 - two, three, four
+// 3 - three, four, five
+// 4 - four, five
+// 5 - five
+
+buffered.subscribe(getObserver());
+</code></pre><h1 id="filter-过滤"><a href="#filter-过滤" class="headerlink" title="filter 过滤"></a>filter 过滤</h1><pre><code>Observable.just(1, 2, 3, 4, 5, 6)
+        .filter(new Predicate&lt;Integer&gt;() {
+            @Override
+            public boolean test(Integer integer) throws Exception {
+                return integer % 2 == 0;
+            }
+        })
+        .subscribe(getObserver());
+</code></pre><h1 id="skip-跳过"><a href="#skip-跳过" class="headerlink" title="skip 跳过"></a>skip 跳过</h1><p>设置跳过发射的数据的个数</p>
+<pre><code>getObservable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .skip(2)
+        .subscribe(getObserver());
+</code></pre><h1 id="replay-重复发射"><a href="#replay-重复发射" class="headerlink" title="replay 重复发射"></a>replay 重复发射</h1><h1 id="repeat-重复"><a href="#repeat-重复" class="headerlink" title="repeat 重复"></a>repeat 重复</h1><p>在接收到 onComplete 事件后触发</p>
+<h2 id="repeatWhen"><a href="#repeatWhen" class="headerlink" title="repeatWhen"></a>repeatWhen</h2><h1 id="retry-重复"><a href="#retry-重复" class="headerlink" title="retry 重复"></a>retry 重复</h1><p>参数 times：表示重试次数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Observable&lt;T&gt; <span class="title">retry</span><span class="params">(<span class="keyword">long</span> times)</span> </span>&#123;</span><br></pre></td></tr></table></figure></p>
+<p>接收到.onError()事件后触发重订阅</p>
+<h2 id="retryWhen"><a href="#retryWhen" class="headerlink" title="retryWhen"></a>retryWhen</h2><h3 id="retryWhen-操作符实现错误重试机制"><a href="#retryWhen-操作符实现错误重试机制" class="headerlink" title="retryWhen 操作符实现错误重试机制"></a>retryWhen 操作符实现错误重试机制</h3><p>RetryWithDelay:</p>
+<pre><code>public class RetryWithDelay implements Function&lt;Flowable&lt;Throwable&gt;, Publisher&lt;?&gt;&gt; {
+
+    private final int maxRetries;
+    private final int retryDelayMillis;
+    private int retryCount;
+
+    public RetryWithDelay(int maxRetries, int retryDelayMillis) {
+        this.maxRetries = maxRetries;
+        this.retryDelayMillis = retryDelayMillis;
+    }
+
+
+    @Override
+    public Publisher&lt;?&gt; apply(Flowable&lt;Throwable&gt; throwableFlowable) throws Exception {
+        Flowable&lt;Throwable&gt; delay = throwableFlowable.delay(retryDelayMillis, TimeUnit.MILLISECONDS);
+        return delay;
+    }
+}
+</code></pre><p>usage:</p>
+<pre><code>mDisposable = Flowable.create(new LongConnectFlowableOnSubscribe(), BackpressureStrategy.BUFFER)
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .retryWhen(new RetryWithDelay(3, 3000))
+          .repeat()
+          .subscribe(new Consumer&lt;String&gt;() {
+              @Override
+              public void accept(String s) throws Exception {
+                  dealMsg(s);
+              }
+          }, throwable -&gt; {
+              LoggerUtils.e(throwable.getMessage());
+          });
+</code></pre><h1 id="concat-将多个被观察者顺序执行"><a href="#concat-将多个被观察者顺序执行" class="headerlink" title="concat 将多个被观察者顺序执行"></a>concat 将多个被观察者顺序执行</h1><pre><code>Observable.concat(aObservable, bObservable)
+                .subscribe(getObserver());
+
+// aObservable 发射完数据后，bObservable发射数据
+</code></pre><h1 id="merge-结合多个被观察者"><a href="#merge-结合多个被观察者" class="headerlink" title="merge 结合多个被观察者"></a>merge 结合多个被观察者</h1><p>和concat比无序，接收到的数据可能是穿插的</p>
+<pre><code>Observable.merge(aObservable, bObservable)
+        .subscribe(getObserver());
+</code></pre><h1 id="defer-延迟"><a href="#defer-延迟" class="headerlink" title="defer 延迟"></a>defer 延迟</h1><pre><code>Observable.defer(new Callable&lt;ObservableSource&lt;? extends String&gt;&gt;() {
+            @Override
+            public ObservableSource&lt;? extends String&gt; call() throws Exception {
+                return Observable.just(brand);
+            }
+        });
+
+// 通过上面创建的 Observable
+
+//....修改 brand 有效
+
+brandDeferObservable
+            .subscribe(getObserver()); // 获取到的数据是修改后的 brand
+</code></pre><h1 id="distinct-保证发射的数据不重复"><a href="#distinct-保证发射的数据不重复" class="headerlink" title="distinct 保证发射的数据不重复"></a>distinct 保证发射的数据不重复</h1><pre><code>getObservable().distinct() .subscribe(getObserver());
+</code></pre><h1 id="last-最后的数据"><a href="#last-最后的数据" class="headerlink" title="last 最后的数据"></a>last 最后的数据</h1><p>观察者只会收到被观察者最后发射的数据，可以设置默认值</p>
+<pre><code>getObservable().last(&quot;A1&quot;) // the default item (&quot;A1&quot;) to emit if the source ObservableSource is empty
+         .subscribe(getObserver());
+</code></pre><h1 id="sample"><a href="#sample" class="headerlink" title="sample"></a>sample</h1><p>每隔 [时间] 发送里时间点最近那个事件，</p>
+<h2 id="Obserable-基本类型"><a href="#Obserable-基本类型" class="headerlink" title="Obserable 基本类型"></a>Obserable 基本类型</h2><h2 id="Observable"><a href="#Observable" class="headerlink" title="Observable"></a>Observable</h2><h2 id="Maybe"><a href="#Maybe" class="headerlink" title="Maybe"></a>Maybe</h2><h2 id="Single-发送一个消息"><a href="#Single-发送一个消息" class="headerlink" title="Single 发送一个消息"></a>Single 发送一个消息</h2><pre><code>Single.just(&quot;Amit&quot;)...
+</code></pre><h2 id="CompletableObserver"><a href="#CompletableObserver" class="headerlink" title="CompletableObserver"></a>CompletableObserver</h2><pre><code>Completable completable = Completable.create(new CompletableOnSubscribe() {
+    @Override
+    public void subscribe(CompletableEmitter e) throws Exception {
+        //
+    }
+});
+</code></pre><p><code>CompletableEmitter</code> 只能发射结束事件和异常事件 <code>onComplete</code>,<code>onError</code></p>
+<p>用于执行单任务</p>
+<h2 id="Flowable"><a href="#Flowable" class="headerlink" title="Flowable"></a>Flowable</h2><p>在RxJava1.x中背压控制是由Observable完成的，而在RxJava2.x中将其独立了出来，取名为Flowable。</p>
+<p>通过Flowable我们可以自定义背压处理策略</p>
+<pre><code>Flowable.create(new FlowableOnSubscribe&lt;Integer&gt;() {
+
+          @Override
+          public void subscribe(FlowableEmitter&lt;Integer&gt; e) throws Exception {
+
+              for(int i=0;i&lt;10000;i++){
+                  e.onNext(i);
+              }
+              e.onComplete();
+          }
+      }, FlowableEmitter.BackpressureMode.ERROR) //指定背压处理策略，抛出异常
+              .subscribeOn(Schedulers.computation())
+              .observeOn(Schedulers.newThread())
+              .subscribe(new Consumer&lt;Integer&gt;() {
+                  @Override
+                  public void accept(Integer integer) throws Exception {
+                      Log.d(&quot;JG&quot;, integer.toString());
+                      Thread.sleep(1000);
+                  }
+              }, new Consumer&lt;Throwable&gt;() {
+                  @Override
+                  public void accept(Throwable throwable) throws Exception {
+                      Log.d(&quot;JG&quot;,throwable.toString());
+                  }
+              });
+</code></pre><p>或者：</p>
+<pre><code>Flowable.range(1,10000)
+               .onBackpressureDrop()
+               .subscribe(integer -&gt; Log.d(&quot;JG&quot;,integer.toString()));
+</code></pre><p>参考：</p>
+<ul>
+<li><a href="https://github.com/amitshekhariitbhu/RxJava2-Android-Samples" target="_blank" rel="noopener">Rxjava2代码例子</a></li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0907/6604.html" target="_blank" rel="noopener">Rxjava2和Rxjava1的不同点</a></li>
+<li><a href="http://gold.xitu.io/post/582d413c8ac24700619cceed" target="_blank" rel="noopener">背压</a></li>
+<li><a href="https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc" target="_blank" rel="noopener">https://gold.xitu.io/post/5848d96761ff4b0058c9d3dc</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Rxjava2/" rel="tag"># Rxjava2</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/21/java/Listenner&Filter/" rel="next" title="Listener&Filter">
+                <i class="fa fa-chevron-left"></i> Listener&Filter
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/27/Android/features/clear_data/" rel="prev" title="Android clean data in Application">
+                Android clean data in Application <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Backpressure-背压"><span class="nav-number">1.</span> <span class="nav-text">Backpressure 背压</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用的基本流"><span class="nav-number">2.</span> <span class="nav-text">使用的基本流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SimpleExample"><span class="nav-number">3.</span> <span class="nav-text">SimpleExample</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Map-操作符"><span class="nav-number">4.</span> <span class="nav-text">Map 操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ObservableEmitter-发射器"><span class="nav-number">4.1.</span> <span class="nav-text">ObservableEmitter 发射器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#flatMap"><span class="nav-number">5.</span> <span class="nav-text">flatMap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用例子"><span class="nav-number">5.1.</span> <span class="nav-text">使用例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#concatMap"><span class="nav-number">6.</span> <span class="nav-text">concatMap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zip"><span class="nav-number">7.</span> <span class="nav-text">zip</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实例，将连个请求的数据合并"><span class="nav-number">7.1.</span> <span class="nav-text">实例，将连个请求的数据合并</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#defer"><span class="nav-number">8.</span> <span class="nav-text">defer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Disposable-防止内存泄露"><span class="nav-number">9.</span> <span class="nav-text">Disposable 防止内存泄露</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可以利用这个封装一个防止泄露的框架"><span class="nav-number">9.1.</span> <span class="nav-text">可以利用这个封装一个防止泄露的框架</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#take"><span class="nav-number">10.</span> <span class="nav-text">take</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#timer-延时操作"><span class="nav-number">11.</span> <span class="nav-text">timer 延时操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interval-循环执行"><span class="nav-number">12.</span> <span class="nav-text">interval 循环执行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reduce"><span class="nav-number">13.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#buffer"><span class="nav-number">14.</span> <span class="nav-text">buffer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#filter-过滤"><span class="nav-number">15.</span> <span class="nav-text">filter 过滤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#skip-跳过"><span class="nav-number">16.</span> <span class="nav-text">skip 跳过</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replay-重复发射"><span class="nav-number">17.</span> <span class="nav-text">replay 重复发射</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#repeat-重复"><span class="nav-number">18.</span> <span class="nav-text">repeat 重复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#repeatWhen"><span class="nav-number">18.1.</span> <span class="nav-text">repeatWhen</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#retry-重复"><span class="nav-number">19.</span> <span class="nav-text">retry 重复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#retryWhen"><span class="nav-number">19.1.</span> <span class="nav-text">retryWhen</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#retryWhen-操作符实现错误重试机制"><span class="nav-number">19.1.1.</span> <span class="nav-text">retryWhen 操作符实现错误重试机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#concat-将多个被观察者顺序执行"><span class="nav-number">20.</span> <span class="nav-text">concat 将多个被观察者顺序执行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#merge-结合多个被观察者"><span class="nav-number">21.</span> <span class="nav-text">merge 结合多个被观察者</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#defer-延迟"><span class="nav-number">22.</span> <span class="nav-text">defer 延迟</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#distinct-保证发射的数据不重复"><span class="nav-number">23.</span> <span class="nav-text">distinct 保证发射的数据不重复</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#last-最后的数据"><span class="nav-number">24.</span> <span class="nav-text">last 最后的数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sample"><span class="nav-number">25.</span> <span class="nav-text">sample</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Obserable-基本类型"><span class="nav-number">25.1.</span> <span class="nav-text">Obserable 基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Observable"><span class="nav-number">25.2.</span> <span class="nav-text">Observable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maybe"><span class="nav-number">25.3.</span> <span class="nav-text">Maybe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Single-发送一个消息"><span class="nav-number">25.4.</span> <span class="nav-text">Single 发送一个消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableObserver"><span class="nav-number">25.5.</span> <span class="nav-text">CompletableObserver</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flowable"><span class="nav-number">25.6.</span> <span class="nav-text">Flowable</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

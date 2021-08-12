@@ -1,0 +1,837 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="命名规范各层命名规范Service/Dao 层  获取单个对象 getXXX 获取多个对象 listXXX 获取统计值的方法 countXXX 插入的方法 saveXXX/insertXXX 删除的方法 removeXXX/deleteXXX 修改的方法 updateXXX  领域模型命名规范  数据对象：xxxDO, xxx为数据表名 数据传输对象：xxxDTO, xxx 为业务领域相关的名称">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里巴巴Java开发手册阅读记录">
+<meta property="og:url" content="http://yoursite.com/2019/02/22/ReadNote/阿里巴巴Java开发手册记录/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="命名规范各层命名规范Service/Dao 层  获取单个对象 getXXX 获取多个对象 listXXX 获取统计值的方法 countXXX 插入的方法 saveXXX/insertXXX 删除的方法 removeXXX/deleteXXX 修改的方法 updateXXX  领域模型命名规范  数据对象：xxxDO, xxx为数据表名 数据传输对象：xxxDTO, xxx 为业务领域相关的名称">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.364Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里巴巴Java开发手册阅读记录">
+<meta name="twitter:description" content="命名规范各层命名规范Service/Dao 层  获取单个对象 getXXX 获取多个对象 listXXX 获取统计值的方法 countXXX 插入的方法 saveXXX/insertXXX 删除的方法 removeXXX/deleteXXX 修改的方法 updateXXX  领域模型命名规范  数据对象：xxxDO, xxx为数据表名 数据传输对象：xxxDTO, xxx 为业务领域相关的名称">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/22/ReadNote/阿里巴巴Java开发手册记录/">
+
+
+
+
+
+  <title>阿里巴巴Java开发手册阅读记录 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/22/ReadNote/阿里巴巴Java开发手册记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">阿里巴巴Java开发手册阅读记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-22T21:38:14+08:00">
+                2019-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h1><h2 id="各层命名规范"><a href="#各层命名规范" class="headerlink" title="各层命名规范"></a>各层命名规范</h2><p>Service/Dao 层</p>
+<ol>
+<li>获取单个对象 getXXX</li>
+<li>获取多个对象 listXXX</li>
+<li>获取统计值的方法 countXXX</li>
+<li>插入的方法 saveXXX/insertXXX</li>
+<li>删除的方法 removeXXX/deleteXXX</li>
+<li>修改的方法 updateXXX</li>
+</ol>
+<p>领域模型命名规范</p>
+<ol>
+<li>数据对象：xxxDO, xxx为数据表名</li>
+<li>数据传输对象：xxxDTO, xxx 为业务领域相关的名称</li>
+<li>展示对象: xxxVO, xxx 一般为网页名称</li>
+<li>POJO 是 DO/DTO/BO/VO 的统称，禁止命名成 xxxPOJO</li>
+</ol>
+<h1 id="常量相关"><a href="#常量相关" class="headerlink" title="常量相关"></a>常量相关</h1><ol>
+<li>不要使用一个常量类维护所有常量，要按照常量功能进行归类，分开维护</li>
+</ol>
+<h1 id="代码格式"><a href="#代码格式" class="headerlink" title="代码格式"></a>代码格式</h1><ol>
+<li>使用 4空格 缩进(或在 ide 中设置 tab=4space 并且勾选 Use tab character/insert spaces for tabs);</li>
+<li>注释的双斜线与注释内容中加一个空格</li>
+</ol>
+<h1 id="OOP-规约"><a href="#OOP-规约" class="headerlink" title="OOP 规约"></a>OOP 规约</h1><ol>
+<li>函数过时使用 <code>@Deprecated</code> 修饰，并说明采用的新函数</li>
+<li>不使用过时的类</li>
+<li>构造函数中禁止加入任何业务逻辑，如果有初始化逻辑，请放在 init 方法中</li>
+<li>POJO 类必须写 toString 方法，在方法抛出异常的时候可以直接调用 toString 方法打印其属性值</li>
+<li>类方法顺序：共有方法或保护方法 &gt; 私有方法 &gt; getter/setter</li>
+<li>慎用 Object 的 clone 方法来拷贝对象.</li>
+</ol>
+<h1 id="集合处理"><a href="#集合处理" class="headerlink" title="集合处理"></a>集合处理</h1><ol>
+<li>关于 hashCode, equals 处理<ol>
+<li>只要重写 equals, 必须重写 hashCode</li>
+<li>Set 存储不重复的对象，根据 hashCode, equals 判断，Set 存储的对象必须重写这两个方法</li>
+<li>如果自定义对象作为 Map 的 key, 必须重写 hashCode, equals。</li>
+<li>String 类重写了 hashCode, equals， 所有可以作为 key 使用</li>
+</ol>
+</li>
+<li>不要在 foreach 循环里面操作元素的 remove/add 操作，可以使用 Iterator 方式操作，如果是并发还需要加对象锁</li>
+<li>使用 entrySet 遍历 Map 类集合，不要使用 keySet 方式</li>
+<li>Map 中哪些可以为 null<ol>
+<li>Hashtable: 不能为 null, 线程安全</li>
+<li>ConcurrentHashMap: 不能为 null, 锁分段技术</li>
+<li>TreeMap: Value 可以为null, 线程不安全</li>
+<li>HashMap: Key, Value 可以为 null, 线程不安全</li>
+</ol>
+</li>
+</ol>
+<h1 id="并发处理"><a href="#并发处理" class="headerlink" title="并发处理"></a>并发处理</h1><ol>
+<li>创建线程和线程池时指定有意义的线程名称</li>
+<li>线程资源必须通过线程池提供</li>
+<li>线程池使用 ThreadPoolExecutor 方式创建</li>
+<li>对多个资源，数据库表，对象同时加锁时，需要保持一致的加锁顺序，否值可能造成死锁</li>
+<li>并发修改同一记录时，避免更新丢失，需要加锁。在应用层加锁或者在缓存加锁，或者在数据层使用乐观锁，使用 version 作为数据更新依据</li>
+<li>在并发场景下，通过使用双重检查锁(double-checked locking)实现延迟初始化的优化问题隐患</li>
+<li>volatile 解决多线程内存不可见问题。</li>
+</ol>
+<h1 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h1><ol>
+<li>switch 必须包含 default 语句</li>
+<li>高并发场景下，避免使用 == 作为中断或退出的条件，容易击穿(比如直接到-1)</li>
+<li>表达异常的分支时，不使用 else，而是使用 if return.</li>
+<li>循环体内语句要考量性能，比如在循环体外补货异常</li>
+<li>不需要参数校验的情况<ol>
+<li>底层调用频率高的方法，比如 dao, service 层通常不需要参数过滤，因为在上层已经做了参数校验</li>
+<li>被声明 private 被自己调用的方法，如果可以确认参数合法可以不用校验</li>
+</ol>
+</li>
+</ol>
+<h1 id="注释规约"><a href="#注释规约" class="headerlink" title="注释规约"></a>注释规约</h1><ol>
+<li>所有类必须添加创建者和创建日期</li>
+<li>所有枚举类字段必须有注释</li>
+</ol>
+<h1 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h1><ol>
+<li>NPE 防止<ol>
+<li>数据库查询结果可能为 null</li>
+<li>集合里的元素即使是 isNotEmpty, 取出的数据也可能是 null</li>
+<li>远程调用返回的对象，一律要求 null 判断</li>
+<li>Session 中获取的数据，null 判断</li>
+</ol>
+</li>
+<li>应用中不能直接使用日志系统(Log4j, Logback)中的API, 应该依赖使用日志框架 SLF4J 中的, 使用门面模式的日志框架，有利于维护各个类的日志处理方式统一</li>
+<li>日志文件至少保存 15 天</li>
+<li>谨慎记录日志。生产环境禁止输出 debug 的日志；有选择输出 info 日志。</li>
+<li>可以使用 warn 日志级别记录用户输入参数错误的情况，方便查找</li>
+</ol>
+<h1 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h1><ol>
+<li>单元测试代码遵守 BCDE 原则<ol>
+<li>B: Border, 边界值测试，包括循环边界，特殊值，特殊时间点，数据顺序</li>
+<li>C: Correct, 正确的输入，并得到预期的结果</li>
+<li>D: Design, 与设计文档相结合，来编写单元测试</li>
+<li>E: Error, 强制错误信息输入(如：非法数据，异常流程，非业务允许输入等)，并得到预期的结果</li>
+</ol>
+</li>
+<li>和数据库相关的单元测试，设置自动回滚机制</li>
+</ol>
+<h1 id="安全规约"><a href="#安全规约" class="headerlink" title="安全规约"></a>安全规约</h1><ol>
+<li>用户敏感数据禁止直接展示(比如手机号脱敏处理)</li>
+<li>用户输入的 SQL 参数严格使用参数绑定，防止 SQL 注入</li>
+<li>用户请求传入的任何参数都必须做有效性验证：使用正则验证客户端的输入</li>
+<li>表单，AJAX 提交必须执行 CSRF 安全验证</li>
+<li>发帖，评论，发送即时消息等用户生成内容的场景必须实现防刷，文本内容违禁词过滤等风控策略</li>
+</ol>
+<h1 id="MySQL-数据库"><a href="#MySQL-数据库" class="headerlink" title="MySQL 数据库"></a>MySQL 数据库</h1><ol>
+<li>表示 是否 的字段，命名：is_xxx, 数据类型 unsigned tinyint(1 是，0 否)</li>
+<li>表名不使用复数名词</li>
+<li>主键索引：pk_xxx; 唯一索引 uk_xxx; 普通索引 idx_xxx</li>
+<li>小数类型为 decimal, 禁止使用 float, double</li>
+<li>表必备字段：id, gmt_create, gmt_modified(数据类型 datetime, 表示创建时间和更新时间)</li>
+<li>表名：业务名称_表作用</li>
+<li>单表行数超过 500w，或者容量超过 2gb，才推荐进行分库分表</li>
+</ol>
+<h2 id="索引规约"><a href="#索引规约" class="headerlink" title="索引规约"></a>索引规约</h2><p>跳过<br>。。。。</p>
+<h2 id="SQL-语句"><a href="#SQL-语句" class="headerlink" title="SQL 语句"></a>SQL 语句</h2><ol>
+<li>不要使用 count(列名|常量) 代替 count(*)</li>
+<li>count(distinct col) 计算该列除 NULL 之外的不重复行数</li>
+<li>使用 ISNULL() 判断是否是 NULL 值</li>
+<li>在代码中写分页查询逻辑的时，若 count 为 0 应直接返回</li>
+</ol>
+<h1 id="应用分层"><a href="#应用分层" class="headerlink" title="应用分层"></a>应用分层</h1><ol>
+<li>DO(Data Object): 此对象与数据库表结果一一对应，通过 DAO 层向上传输数据源对象</li>
+<li>DTO(Data Transfer Object): 数据传输对象，Service 或 Manager 向外传输的对象</li>
+<li>BO(Bussiness Object): 业务对象，由 Service 层输出的封装业务逻辑的对象</li>
+<li>AO(Application Object): 应用对象，在 Web 层与 Service 层之间抽象的复用对象模型</li>
+<li>VO(View Object): 显示层对象，通常是 Web 向模版渲染引擎层传输的对象</li>
+<li>Query: 数据查询对象，各层接收上层的查询请求。注意超过2个参数的查询封装，禁止使用 Map 类来传输</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/17/java/tips/动态代理处理网址字符集问题/" rel="next" title="全局异常处理">
+                <i class="fa fa-chevron-left"></i> 全局异常处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/27/前端/vue/Vue知识点合集/" rel="prev" title="Vue知识点合集">
+                Vue知识点合集 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#命名规范"><span class="nav-number">1.</span> <span class="nav-text">命名规范</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#各层命名规范"><span class="nav-number">1.1.</span> <span class="nav-text">各层命名规范</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常量相关"><span class="nav-number">2.</span> <span class="nav-text">常量相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码格式"><span class="nav-number">3.</span> <span class="nav-text">代码格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OOP-规约"><span class="nav-number">4.</span> <span class="nav-text">OOP 规约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合处理"><span class="nav-number">5.</span> <span class="nav-text">集合处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#并发处理"><span class="nav-number">6.</span> <span class="nav-text">并发处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#控制语句"><span class="nav-number">7.</span> <span class="nav-text">控制语句</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注释规约"><span class="nav-number">8.</span> <span class="nav-text">注释规约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异常"><span class="nav-number">9.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单元测试"><span class="nav-number">10.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全规约"><span class="nav-number">11.</span> <span class="nav-text">安全规约</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL-数据库"><span class="nav-number">12.</span> <span class="nav-text">MySQL 数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引规约"><span class="nav-number">12.1.</span> <span class="nav-text">索引规约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-语句"><span class="nav-number">12.2.</span> <span class="nav-text">SQL 语句</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用分层"><span class="nav-number">13.</span> <span class="nav-text">应用分层</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

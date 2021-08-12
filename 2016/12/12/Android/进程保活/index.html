@@ -1,0 +1,856 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="进程保活,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="原文地址：http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8 进程保活包括两个层面：  提高进程的优先级，降低其被杀死的概率 在进程被杀死后，进行拉活  进程的优先级进程重要性分 5 级：  前台进程(Foreground process) 可见进程(Visible process) 服务进程(Service process) 后台进程(Backgro">
+<meta name="keywords" content="进程保活">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程保活">
+<meta property="og:url" content="http://yoursite.com/2016/12/12/Android/进程保活/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="原文地址：http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8 进程保活包括两个层面：  提高进程的优先级，降低其被杀死的概率 在进程被杀死后，进行拉活  进程的优先级进程重要性分 5 级：  前台进程(Foreground process) 可见进程(Visible process) 服务进程(Service process) 后台进程(Backgro">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.309Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程保活">
+<meta name="twitter:description" content="原文地址：http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8 进程保活包括两个层面：  提高进程的优先级，降低其被杀死的概率 在进程被杀死后，进行拉活  进程的优先级进程重要性分 5 级：  前台进程(Foreground process) 可见进程(Visible process) 服务进程(Service process) 后台进程(Backgro">
+<meta name="twitter:image" content="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/12/Android/进程保活/">
+
+
+
+
+
+  <title>进程保活 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/Android/进程保活/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">进程保活</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-12T21:38:14+08:00">
+                2016-12-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文地址：<a href="http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8" target="_blank" rel="noopener">http://dev.qq.com/topic/57ac4a0ea374c75371c08ce8</a></p>
+<p>进程保活包括两个层面：</p>
+<ol>
+<li>提高进程的优先级，降低其被杀死的概率</li>
+<li>在进程被杀死后，进行拉活</li>
+</ol>
+<h1 id="进程的优先级"><a href="#进程的优先级" class="headerlink" title="进程的优先级"></a>进程的优先级</h1><p>进程重要性分 5 级：</p>
+<ol>
+<li>前台进程(Foreground process)</li>
+<li>可见进程(Visible process)</li>
+<li>服务进程(Service process)</li>
+<li>后台进程(Background process)</li>
+<li>空进程(Empty process)</li>
+</ol>
+<h2 id="Foreground-process"><a href="#Foreground-process" class="headerlink" title="Foreground process"></a>Foreground process</h2><p>只有在内存不足的时候才会被回收</p>
+<p>实现前台进程的情况：</p>
+<ul>
+<li>拥有用户正在交互的 Activity（已调用 onResume()）</li>
+<li>拥有某个 Service，后者绑定到用户正在交互的 Activity</li>
+<li>拥有正在“前台”运行的 Service（服务已调用 startForeground()）</li>
+<li>拥有正执行一个生命周期回调的 Service（onCreate()、onStart() 或 onDestroy()）</li>
+<li>拥有正执行其 onReceive() 方法的 BroadcastReceiver</li>
+</ul>
+<a id="more"></a>
+<h2 id="Visible-process"><a href="#Visible-process" class="headerlink" title="Visible process"></a>Visible process</h2><ul>
+<li>拥有不在前台、但仍对用户可见的 Activity（已调用 onPause()）。</li>
+<li>拥有绑定到可见（或前台）Activity 的 Service</li>
+</ul>
+<h2 id="Service-process"><a href="#Service-process" class="headerlink" title="Service process"></a>Service process</h2><ul>
+<li>正在运行 startService() 方法启动的服务，且不属于上述两个更高类别进程的进程。</li>
+</ul>
+<h2 id="Background-process"><a href="#Background-process" class="headerlink" title="Background process"></a>Background process</h2><p>后台进程对用户体验没有直接影响，系统可能直接随时终止它。</p>
+<ul>
+<li>对用户不可见的 Activity 的进程（已调用 Activity的onStop() 方法）</li>
+</ul>
+<h2 id="Empty-process"><a href="#Empty-process" class="headerlink" title="Empty process"></a>Empty process</h2><p>保留这种进程的的唯一目的是用作缓存，以缩短下次在其中运行组件所需的启动时间。</p>
+<h1 id="Android-进程回收策略"><a href="#Android-进程回收策略" class="headerlink" title="Android 进程回收策略"></a>Android 进程回收策略</h1><p>Android 中对于内存的回收，主要依靠 Lowmemorykiller 来完成，是一种根据 OOM_ADJ 阈值级别触发相应力度的内存回收的机制。</p>
+<p><img src="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg" alt="http://oa5504rxk.bkt.clouddn.com/week7_Android_baohuo/2.jpg"></p>
+<h1 id="提升进程优先级的方案"><a href="#提升进程优先级的方案" class="headerlink" title="提升进程优先级的方案"></a>提升进程优先级的方案</h1><h2 id="利用-Activity-提升权限"><a href="#利用-Activity-提升权限" class="headerlink" title="利用 Activity 提升权限"></a>利用 Activity 提升权限</h2><h3 id="方案设计思路"><a href="#方案设计思路" class="headerlink" title="方案设计思路"></a>方案设计思路</h3><p>监控手机锁屏／解锁事件，在屏幕锁屏时启动1个像素的 Activity，在用户解锁时将 Activity 销毁掉。（该 Activity 需设计成用户无感知）</p>
+<p>通过这个方案可以让进程优先级在屏幕锁屏时由4提升为最高优先级1.</p>
+<h3 id="方案适用范围"><a href="#方案适用范围" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p><strong>适用场景：</strong> 本方案主要解决第三方应用及系统管理工具在检测到锁屏事件后一段时间（一般为5分钟以内）内会杀死后台进程，已达到省电的目的问题。</p>
+<p><strong>适用版本：</strong> 适用于所有的 Android 版本。</p>
+<h3 id="方案具体实现"><a href="#方案具体实现" class="headerlink" title="方案具体实现"></a>方案具体实现</h3><p>定义一个大小为 1像素的 Activity：</p>
+<pre><code>// onCreate:
+
+Window window = getWindow();
+window.setGravity(Gravity.LEFT | Gravity.TOP);
+WindowManager.LayoutParams params = window.getAttributes();
+params.x = 0;
+params.y = 0;
+params.height = 1;
+params.width = 1;
+window.setAttributes(params);
+</code></pre><p>AndroidManifest 中设置下面的属性，防止 Activity 在 RecentTask 中显示：</p>
+<pre><code>android:excludeFromRecents=&quot;true&quot;
+android:exported=&quot;false&quot;
+android:finishOnTaskLaunch=&quot;false&quot;
+android:theme=&quot;@style/LiveActivityStyle&quot;
+</code></pre><p>最后，控制 Activity 为透明：</p>
+<pre><code>&lt;style name=&quot;LiveActivityStyle&quot;&gt;
+    &lt;item name=&quot;android:windowBackground&quot;&gt;@android:color/transparent&lt;/item&gt;
+    &lt;item name=&quot;android:windowBackground&quot;&gt;@null&lt;/item&gt;
+    &lt;item name=&quot;android:windowIsTranslucent&quot;&gt;true&lt;/item&gt;
+
+&lt;/style&gt;
+</code></pre><p>Activity 启动和销毁时机控制：</p>
+<pre><code>// onReceive 在广播内
+if(action.equals(Intent.ACTION_SCREEN_OFF)){
+    KeepLiveManager.getInstance().startKeepLiveActivity();
+} else if(action.equals(Intent.ACTION_USER_PRESENT)){
+    KeepLiveManager.getInstance.finishKeepLiveActivity();
+}
+KeepLiveManager.getInstance().startKeepServiceLive();
+</code></pre><h2 id="利用-Notification-提升权限"><a href="#利用-Notification-提升权限" class="headerlink" title="利用 Notification 提升权限"></a>利用 Notification 提升权限</h2><h3 id="方案设计思路-1"><a href="#方案设计思路-1" class="headerlink" title="方案设计思路"></a>方案设计思路</h3><p>Android 中 Service 的优先级为4，通过 setForeground 接口可以将后台 Service 设置为前台 Service，使进程的优先级由4提升为2，从而使进程的优先级仅仅低于用户当前正在交互的进程，与可见进程优先级一致，使进程被杀死的概率大大降低。</p>
+<h3 id="方案实现挑战"><a href="#方案实现挑战" class="headerlink" title="方案实现挑战"></a>方案实现挑战</h3><p>从 Android2.3 开始调用 setForeground 将后台 Service 设置为后台 Service 时，必须在系统的通知栏发送一条通知，也就是前台 Service 与一条可见的通知时绑定在一起的。</p>
+<p>对于不需要常驻通知栏的应用来说，方案虽好，但却是用户感知的，无法直接使用。</p>
+<h3 id="方案挑战应对措施"><a href="#方案挑战应对措施" class="headerlink" title="方案挑战应对措施"></a>方案挑战应对措施</h3><p>通过实现一个内部 Service，在 LiveService 和其内部 Service 中同时发送具有相同 ID 的 Notification，然后将内部 Service 结束掉。随着内部 Service 的结束，Notification 将会消失，但系统优先级依然保持为2。</p>
+<h3 id="方案使用范围"><a href="#方案使用范围" class="headerlink" title="方案使用范围"></a>方案使用范围</h3><p>Android 所有版本</p>
+<h3 id="方案具体实现-1"><a href="#方案具体实现-1" class="headerlink" title="方案具体实现"></a>方案具体实现</h3><p>KeepLiveService：</p>
+<pre><code>//InnerService onStartCommand
+KeepLiveManager.getInstance().setForeground(mKeepLiveService, this);
+</code></pre><p>KeepLiveManager:</p>
+<pre><code>public void setForeeground(final Service keepLiveService, fianl Service innerService){
+
+    if(keepLiveService != null){
+        if(Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.JELLY_BEAN_MR2){
+            keepLiveService.startForeground(foregroundPushId, new Notification());
+        } else{
+            keepLiveService.startForeground(foregroundPushId, new Notification());
+            if(innerService != null){
+                innerService.startForeground(foregroundPushId, new Notification());
+                innerService.stopSelf();
+            }
+        }
+    }
+}
+</code></pre><h1 id="进程死后拉活方案"><a href="#进程死后拉活方案" class="headerlink" title="进程死后拉活方案"></a>进程死后拉活方案</h1><h2 id="利用系统广播拉活"><a href="#利用系统广播拉活" class="headerlink" title="利用系统广播拉活"></a>利用系统广播拉活</h2><h3 id="常用于拉活的广播"><a href="#常用于拉活的广播" class="headerlink" title="常用于拉活的广播"></a>常用于拉活的广播</h3><ul>
+<li>开机</li>
+<li>网络变化</li>
+<li>文件挂载</li>
+<li>屏幕亮灭</li>
+<li>屏幕解锁</li>
+<li>应用安装卸载</li>
+</ul>
+<h3 id="方案适用范围-1"><a href="#方案适用范围-1" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>使用于全部 Android 平台，但是由如下缺点：</p>
+<ol>
+<li>广播接收管理器被管理软件，系统软件通过“自启管理”等功能禁用的场景无法接收广播，从而无法自启</li>
+<li>系统广播事件不可控，只能保证发生事件时拉活进程，但是无法保证进程挂掉后立即拉活</li>
+</ol>
+<p>因此这个方案主要作为备用手段</p>
+<h3 id="利用第三方应用广播拉活"><a href="#利用第三方应用广播拉活" class="headerlink" title="利用第三方应用广播拉活"></a>利用第三方应用广播拉活</h3><h4 id="方案设计思路-2"><a href="#方案设计思路-2" class="headerlink" title="方案设计思路"></a>方案设计思路</h4><p>思路和接收系统广播类似，不过是接收第三方 Top 应用的广播</p>
+<p>通过反编译第三方 Top 应用：比如 QQ，微信，支付宝，淘宝，友盟，百度，高德等</p>
+<h4 id="方案适用范围-2"><a href="#方案适用范围-2" class="headerlink" title="方案适用范围"></a>方案适用范围</h4><p>困难点：</p>
+<ol>
+<li>反编译分析困难</li>
+<li>第三方的应用广播会改变</li>
+</ol>
+<h2 id="利用系统-Service-机制拉活"><a href="#利用系统-Service-机制拉活" class="headerlink" title="利用系统 Service 机制拉活"></a>利用系统 Service 机制拉活</h2><h3 id="方案设计思想"><a href="#方案设计思想" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>将 Service 设置为 START_STICKY</p>
+<pre><code>// onStartCommand
+return Service.START_STICKY;
+</code></pre><h3 id="方案适用范围-3"><a href="#方案适用范围-3" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>有两种情况无法拉活：</p>
+<ol>
+<li>Service 第一次被异常杀死后会在5秒内重启，第二次被杀死会在10秒内重启，第三次会在20秒内重启，一旦在短时间内 Service 被杀死达到5次，则系统不再拉起。</li>
+<li>进程被取得 Root 权限的管理工具或系统工具通过 forestop 停止掉，无法重启。</li>
+</ol>
+<h2 id="利用Native进程拉活"><a href="#利用Native进程拉活" class="headerlink" title="利用Native进程拉活"></a>利用Native进程拉活</h2><h3 id="方案设计思想-1"><a href="#方案设计思想-1" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p><strong>主要思想：</strong>利用 Linux 中的 fork 机制创建 Native 进程，在 Native 进程中监控主进程的存活，当主进程挂掉后，在 Native 进程中立即对主进程进行拉活。</p>
+<p><strong>原理：</strong>在 Android 中所有进程和系统组件的生命周期受 ActivityManagerService 的统一管理。而且，通过 Linux 的 fork 机制创建的进程为纯 Linux 进程，其生命周期不受 Android 的管理。</p>
+<p>。。。。</p>
+<h3 id="方案适用范围-4"><a href="#方案适用范围-4" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>适用于 Android5.0 以下版本手机</p>
+<h2 id="利用-JobScheduler-机制拉活"><a href="#利用-JobScheduler-机制拉活" class="headerlink" title="利用 JobScheduler 机制拉活"></a>利用 JobScheduler 机制拉活</h2><h3 id="方案设计思想-2"><a href="#方案设计思想-2" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>Android5.0 以后系统对 Native 进程等加强了管理，Native 拉活方式失效。系统在 Android5.0 以上版本提供了 JobScheduler 接口，系统会定时调用该进程以使应用进行一些逻辑操作。</p>
+<h3 id="方案适用范围-5"><a href="#方案适用范围-5" class="headerlink" title="方案适用范围"></a>方案适用范围</h3><p>该方案主要适用于 Android5.0 以上版本手机。</p>
+<p>该方案在 Android5.0 以上版本中不受 forcestop 影响，被强制停止的应用依然可以被拉活，在 Android5.0 以上版本拉活效果非常好。</p>
+<p>仅在小米手机可能会出现有时无法拉活的问题。</p>
+<h2 id="利用账号同步机制拉活"><a href="#利用账号同步机制拉活" class="headerlink" title="利用账号同步机制拉活"></a>利用账号同步机制拉活</h2><h3 id="方案设计思想-3"><a href="#方案设计思想-3" class="headerlink" title="方案设计思想"></a>方案设计思想</h3><p>Android 系统的账号同步机制会定期同步账号进行，该方案目的在于利用同步机制进行进程的拉活。</p>
+<p>。。。。</p>
+<h1 id="其他有效拉活方案"><a href="#其他有效拉活方案" class="headerlink" title="其他有效拉活方案"></a>其他有效拉活方案</h1><ol>
+<li>利用系统通知管理权限进行拉活</li>
+<li>利用辅助功能拉活，将应用加入厂商或管理软件白名单。</li>
+</ol>
+<p>应用内 Push 通道：</p>
+<ol>
+<li>国外版应用：接入 Google 的 GCM。</li>
+<li>国内版应用：根据终端不同，在小米手机（包括 MIUI）接入小米推送、华为手机接入华为推送；其他手机可以考虑接入腾讯信鸽或极光推送与小米推送做 A/B Test。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/进程保活/" rel="tag"># 进程保活</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/12/Android/后台任务/" rel="next" title="后台任务">
+                <i class="fa fa-chevron-left"></i> 后台任务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/13/Python/django/offical-doc/Django-Forms-Overview/" rel="prev" title="Django Forms - Overview">
+                Django Forms - Overview <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程的优先级"><span class="nav-number">1.</span> <span class="nav-text">进程的优先级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Foreground-process"><span class="nav-number">1.1.</span> <span class="nav-text">Foreground process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visible-process"><span class="nav-number">1.2.</span> <span class="nav-text">Visible process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-process"><span class="nav-number">1.3.</span> <span class="nav-text">Service process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Background-process"><span class="nav-number">1.4.</span> <span class="nav-text">Background process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Empty-process"><span class="nav-number">1.5.</span> <span class="nav-text">Empty process</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-进程回收策略"><span class="nav-number">2.</span> <span class="nav-text">Android 进程回收策略</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#提升进程优先级的方案"><span class="nav-number">3.</span> <span class="nav-text">提升进程优先级的方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用-Activity-提升权限"><span class="nav-number">3.1.</span> <span class="nav-text">利用 Activity 提升权限</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思路"><span class="nav-number">3.1.1.</span> <span class="nav-text">方案设计思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案适用范围"><span class="nav-number">3.1.2.</span> <span class="nav-text">方案适用范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案具体实现"><span class="nav-number">3.1.3.</span> <span class="nav-text">方案具体实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用-Notification-提升权限"><span class="nav-number">3.2.</span> <span class="nav-text">利用 Notification 提升权限</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思路-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">方案设计思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案实现挑战"><span class="nav-number">3.2.2.</span> <span class="nav-text">方案实现挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案挑战应对措施"><span class="nav-number">3.2.3.</span> <span class="nav-text">方案挑战应对措施</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案使用范围"><span class="nav-number">3.2.4.</span> <span class="nav-text">方案使用范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案具体实现-1"><span class="nav-number">3.2.5.</span> <span class="nav-text">方案具体实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进程死后拉活方案"><span class="nav-number">4.</span> <span class="nav-text">进程死后拉活方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用系统广播拉活"><span class="nav-number">4.1.</span> <span class="nav-text">利用系统广播拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用于拉活的广播"><span class="nav-number">4.1.1.</span> <span class="nav-text">常用于拉活的广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案适用范围-1"><span class="nav-number">4.1.2.</span> <span class="nav-text">方案适用范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用第三方应用广播拉活"><span class="nav-number">4.1.3.</span> <span class="nav-text">利用第三方应用广播拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方案设计思路-2"><span class="nav-number">4.1.3.1.</span> <span class="nav-text">方案设计思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方案适用范围-2"><span class="nav-number">4.1.3.2.</span> <span class="nav-text">方案适用范围</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用系统-Service-机制拉活"><span class="nav-number">4.2.</span> <span class="nav-text">利用系统 Service 机制拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思想"><span class="nav-number">4.2.1.</span> <span class="nav-text">方案设计思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案适用范围-3"><span class="nav-number">4.2.2.</span> <span class="nav-text">方案适用范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用Native进程拉活"><span class="nav-number">4.3.</span> <span class="nav-text">利用Native进程拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思想-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">方案设计思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案适用范围-4"><span class="nav-number">4.3.2.</span> <span class="nav-text">方案适用范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用-JobScheduler-机制拉活"><span class="nav-number">4.4.</span> <span class="nav-text">利用 JobScheduler 机制拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思想-2"><span class="nav-number">4.4.1.</span> <span class="nav-text">方案设计思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案适用范围-5"><span class="nav-number">4.4.2.</span> <span class="nav-text">方案适用范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用账号同步机制拉活"><span class="nav-number">4.5.</span> <span class="nav-text">利用账号同步机制拉活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案设计思想-3"><span class="nav-number">4.5.1.</span> <span class="nav-text">方案设计思想</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他有效拉活方案"><span class="nav-number">5.</span> <span class="nav-text">其他有效拉活方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

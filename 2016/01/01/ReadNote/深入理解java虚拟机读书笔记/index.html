@@ -1,0 +1,931 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="android,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="《深入理解java虚拟机》读书笔记第一章概述java的优点；认清java运行的本质； Java技术体系Sun官方定义的Java技术体系包括了：  Java程序设计语言 各种硬件平台上的Java虚拟机 Class文件格式 Java API类库 来自商业机构和开源社区的第三方类库">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解java虚拟机">
+<meta property="og:url" content="http://yoursite.com/2016/01/01/ReadNote/深入理解java虚拟机读书笔记/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="《深入理解java虚拟机》读书笔记第一章概述java的优点；认清java运行的本质； Java技术体系Sun官方定义的Java技术体系包括了：  Java程序设计语言 各种硬件平台上的Java虚拟机 Class文件格式 Java API类库 来自商业机构和开源社区的第三方类库">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://i.imgur.com/42vUHjU.png">
+<meta property="og:image" content="http://i.imgur.com/yOpNzLV.png">
+<meta property="og:image" content="http://i.imgur.com/W4siylj.png">
+<meta property="og:image" content="http://i.imgur.com/UrkPbho.png">
+<meta property="og:image" content="http://i.imgur.com/wznLK4p.png">
+<meta property="og:image" content="http://i.imgur.com/TC1FIKk.png">
+<meta property="og:image" content="http://i.imgur.com/7xH3eRt.png">
+<meta property="og:image" content="http://i.imgur.com/7Mdq7FS.png">
+<meta property="og:image" content="http://i.imgur.com/M7QPczJ.png">
+<meta property="og:image" content="http://i.imgur.com/CACfgqV.png">
+<meta property="og:image" content="http://i.imgur.com/N6gUeZF.png">
+<meta property="og:image" content="http://i.imgur.com/f5SNYsw.png">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.339Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解java虚拟机">
+<meta name="twitter:description" content="《深入理解java虚拟机》读书笔记第一章概述java的优点；认清java运行的本质； Java技术体系Sun官方定义的Java技术体系包括了：  Java程序设计语言 各种硬件平台上的Java虚拟机 Class文件格式 Java API类库 来自商业机构和开源社区的第三方类库">
+<meta name="twitter:image" content="http://i.imgur.com/42vUHjU.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/01/01/ReadNote/深入理解java虚拟机读书笔记/">
+
+
+
+
+
+  <title>深入理解java虚拟机 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/01/ReadNote/深入理解java虚拟机读书笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入理解java虚拟机</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-01T21:38:14+08:00">
+                2016-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="《深入理解java虚拟机》读书笔记"><a href="#《深入理解java虚拟机》读书笔记" class="headerlink" title="《深入理解java虚拟机》读书笔记"></a>《深入理解java虚拟机》读书笔记</h1><h2 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>java的优点；认清java运行的本质；</p>
+<h3 id="Java技术体系"><a href="#Java技术体系" class="headerlink" title="Java技术体系"></a>Java技术体系</h3><p>Sun官方定义的Java技术体系包括了：</p>
+<ul>
+<li>Java程序设计语言</li>
+<li>各种硬件平台上的Java虚拟机</li>
+<li>Class文件格式</li>
+<li>Java API类库</li>
+<li>来自商业机构和开源社区的第三方类库</li>
+</ul>
+<a id="more"></a>
+<p><strong>JDK</strong>包括了：Java程序设计语言、Java虚拟机、Java API 类库</p>
+<p><strong>JRE</strong>包括了：Java API类库中的Java SE API子集和Java虚拟机</p>
+<p><strong>Java 技术体系</strong></p>
+<ul>
+<li>Java Card：支持一些Java小程序(Applets)运行在小内存设备上的平台</li>
+<li>Java ME：移动终端的平台</li>
+<li>Java SE：桌面级应用</li>
+<li>Java EE：支持使用多层架构的企业应用的Java平台</li>
+</ul>
+<h3 id="Java发展史"><a href="#Java发展史" class="headerlink" title="Java发展史"></a>Java发展史</h3><h3 id="展望Java技术的未来"><a href="#展望Java技术的未来" class="headerlink" title="展望Java技术的未来"></a>展望Java技术的未来</h3><ul>
+<li>模块化：</li>
+<li>混合语言：一个项目不同层次用不同的语言开发</li>
+<li>多核并行：关注并行编程的领域，JDK1.5中加入java.util.concurrent包实现了粗粒度的并发架构</li>
+<li>进一步丰富语法：JDK1.5中加入了：<strong>自动装箱</strong>、<strong>泛型</strong>、<strong>动态注解</strong>、<strong>枚举</strong>、<strong>可变长参数</strong>、<strong>遍历循环</strong>等语法特征。</li>
+<li>64位虚拟机<h3 id="实战：自己编译JDK"><a href="#实战：自己编译JDK" class="headerlink" title="实战：自己编译JDK"></a>实战：自己编译JDK</h3></li>
+</ul>
+<h3 id="自动内存管理机制"><a href="#自动内存管理机制" class="headerlink" title="自动内存管理机制"></a>自动内存管理机制</h3><h2 id="第二章-Java内存区域与内存溢出异常"><a href="#第二章-Java内存区域与内存溢出异常" class="headerlink" title="第二章 Java内存区域与内存溢出异常"></a>第二章 Java内存区域与内存溢出异常</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>Java程序的内存控制由虚拟机执行，不容易出现内存泄露和内存溢出问题，但一旦出现该问题，就很难排查。<br>C++内存分配管理由程序员管理。</p>
+<h3 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h3><p>Java虚拟机执行Java程序过程中会把它所管理的内存划分为若干不同的数据区域：</p>
+<ul>
+<li>方法区：</li>
+<li>虚拟机栈：</li>
+<li>本地方法栈</li>
+<li>堆：</li>
+<li>程序计数器<h4 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h4><blockquote>
+<p>是一块较小的内存空间。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>作用：</strong>可以看做是当前线程所执行的字节码文件的行号指示器。<strong>字节码解释器</strong>工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能就是靠这个计数器实现的。<br><strong>多线程</strong>切换也是通过计数器来恢复执行，个线程之间的计数器互补影响，独立存储，<strong>线程私有内存</strong></p>
+<h3 id="Java虚拟机栈Java-Virtual-Machine-Stacks"><a href="#Java虚拟机栈Java-Virtual-Machine-Stacks" class="headerlink" title="Java虚拟机栈Java Virtual Machine Stacks"></a>Java虚拟机栈Java Virtual Machine Stacks</h3><p><strong>线程私有</strong>，生命周期与线程相同。</p>
+<p>虚拟机栈描述Java方法执行的内存模型：每个方法被执行的时候都会创建一个栈帧（Stack Frame）用于存储<strong>局部变量表</strong>（大多数人称的栈）、<strong>操作栈</strong>、<strong>动态链接</strong>、<strong>方法出口</strong>等信息</p>
+<p>方法被调用直到执行完成的过程就对应一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<p><strong>局部变量表</strong>存放编译期可知的各种<strong>基本数据类型</strong>、<strong>对象引用</strong>、returnAddress类型**。</p>
+<p><strong>局部变量表</strong>所需的内存空间在编译期间完成分配，当进入一个方法时，这个方法需要在帧中分配多大的局部变量空间时完全确定的，在方法运行期间不会改变局部变量表的大小。</p>
+<blockquote>
+<p>注：64位长度的<code>long</code>和<code>double</code>类型站2个局部变量空间（Slot），其余的只站一个；</p>
+</blockquote>
+<p>本区域所有的<strong>异常</strong>：</p>
+<ul>
+<li><code>StackOverflowError</code>：线程请求的栈深度大于虚拟机所允许的深度。</li>
+<li><code>OutOfMemoryError</code>：虚拟机栈动态扩展时无法申请到足够的内存。</li>
+</ul>
+<h4 id="本地方法栈-Native-Method-Stacks"><a href="#本地方法栈-Native-Method-Stacks" class="headerlink" title="本地方法栈 Native Method Stacks"></a>本地方法栈 Native Method Stacks</h4><pre><code>与虚拟机栈所发挥的作用相似，不过是为虚拟机使用到的Native方法服务。有的虚拟机把本地方法栈和虚拟机栈合二为一，有两个异常。
+</code></pre><h4 id="Java堆-Java-Heap"><a href="#Java堆-Java-Heap" class="headerlink" title="Java堆 Java Heap"></a>Java堆 Java Heap</h4><blockquote>
+<p>是Java虚拟机所管理的内存中最大的一块。</p>
+</blockquote>
+<p>Java堆是被所有<strong>线程共享</strong>的一块内存区域，在虚拟机启动时创建。</p>
+<p><strong>作用：</strong>存放对象实例。所有的对象实例以及数组都要在堆上分配，但随着JIT编译期的发展与逃逸分析技术的逐渐成熟，，栈上的分配、标量替换优化技术将会导致一些微妙的变化发送，所有对象都分配在堆上也渐渐变得不是那么绝对了。</p>
+<p>Java堆是<strong>垃圾收集器</strong>管理的主要区域（GC堆Garbage Collected Heap）。</p>
+<p><strong>OutOfMemoryError</strong>异常：堆中没有内存完成实例分配，并且堆也无法再扩展时。</p>
+<h4 id="方法区-Method-Area"><a href="#方法区-Method-Area" class="headerlink" title="方法区 Method Area"></a>方法区 Method Area</h4><p><strong>线程共享</strong>的内存区域</p>
+<p><strong>作用：</strong>存储已被虚拟机加载的<strong>类信息</strong>、<strong>常量</strong>、<strong>静态变量</strong>、<strong>即时编译器编译后的代码</strong>等数据。</p>
+<p>Java虚拟机规范对这个区域的限制非常宽松，除了和堆一样不需要连续的内存和可以选择固定大小或者可扩展外，还可以选择不实现垃圾收集。<br>OutOfMemoryError</p>
+<h4 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h4><blockquote>
+<p>方法区的一部分。<br>用于存放编译期生成的各种字面量和符号引用。<br>OutOfMemoryError</p>
+</blockquote>
+<h4 id="直接内存-Direct-Memory"><a href="#直接内存-Direct-Memory" class="headerlink" title="直接内存 Direct Memory"></a>直接内存 Direct Memory</h4><blockquote>
+<p>不是虚拟机运行时数据区的一部分，但可能导致OutOfMemoryError</p>
+</blockquote>
+<h3 id="对象访问"><a href="#对象访问" class="headerlink" title="对象访问"></a>对象访问</h3><p><code>Object obj = new Object();</code></p>
+<p><code>Object obj</code>：反映到Java栈的本地变量表中，作为一个reference类型数据出现。</p>
+<p><code>new Object()</code>：反映到Java堆中，形成一块储存Object类型所有实例数据值（Instance Data，对象中各个实例字段的数据）的结构化内存，这块内存长度不固定。另外，Java堆中还必须包含能查找到此类数据（如对象类型、父类、实现的接口、方法等）的地址信息，这类数据存储在方法区中。</p>
+<p>Java堆中访问对象的方法：</p>
+<ul>
+<li>通过句柄访问对象：Java堆中划分出一块内存作为句柄池，reference中存储的就是对象的句柄地址，句柄中包含了对象实例数据和类型数据的具体地址。<img src="http://i.imgur.com/42vUHjU.png" alt></li>
+<li><p>直接指针访问方式，Java堆对象的布局中就必须考虑如何放置访问类型数据的相关信息，reference中直接存储的就是对象地址。<img src="http://i.imgur.com/yOpNzLV.png" alt></p>
+<h3 id="实战：OOM（OutOfMeremoryError）异常"><a href="#实战：OOM（OutOfMeremoryError）异常" class="headerlink" title="实战：OOM（OutOfMeremoryError）异常"></a>实战：OOM（OutOfMeremoryError）异常</h3><h2 id="第三章-垃圾手机器与内存分配策略"><a href="#第三章-垃圾手机器与内存分配策略" class="headerlink" title="第三章 垃圾手机器与内存分配策略"></a>第三章 垃圾手机器与内存分配策略</h2><h3 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h3><p>GC需要完成的三件事：</p>
+</li>
+<li><p>哪些内存需要回收？</p>
+</li>
+<li>什么时候回收？</li>
+<li><p>如何回收？</p>
+<pre><code>**小归纳：**程序计数器、虚拟机栈、本地方法栈三个区域随线程而生，随线程而灭；栈中的栈帧随方法的进入和退出而有条不紊地执行出栈和入栈操作。
+</code></pre><h2 id="对象已死？"><a href="#对象已死？" class="headerlink" title="对象已死？"></a>对象已死？</h2><h3 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h3><blockquote>
+<p><strong>如何判断是否存活</strong>：</p>
+<p>通常的方法：给对象中添加一个引用计数器，每当有一个地方引用它时，计数器值就加1，当引用失效时，计数器的值就减1；任何时刻计数器都为0的对象就不可能再被使用了。（<strong>计数算法内存管理</strong>）但很难解决对象之间的相互循环引用的问题。</p>
+<blockquote>
+<p>比如：<code>objA.instance = objB  objBinstance = objA</code>AB的计数器都不为0，但实际它们不可能被访问了。</p>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>Java中的方法：根搜索算法</p>
+</blockquote>
+<h3 id="根搜索算法-GC-Roots-Tracing"><a href="#根搜索算法-GC-Roots-Tracing" class="headerlink" title="根搜索算法 GC Roots Tracing"></a>根搜索算法 GC Roots Tracing</h3><p><strong>思路：</strong>通过一系列名为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为<strong>引用链（Reference Chain）</strong>，当一个对象没有任何引用链相连，则改对象为可回收对象。</p>
+<p><strong>Java中GC Roots的对象包括：</strong></p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中的引用对象</li>
+<li>方法区中的类静态属性引用的对象</li>
+<li>方法区中的常量引用的对象</li>
+<li>本地方法栈中JNI（即一般说的Native方法）的引用的对象</li>
+</ul>
+<h3 id="再谈引用"><a href="#再谈引用" class="headerlink" title="再谈引用"></a>再谈引用</h3><blockquote>
+<p>判断对象是否存活和<strong>引用</strong>有关</p>
+</blockquote>
+<blockquote>
+<p><strong>JDK1.2</strong>前引用的定义：如果reference 类型的数据中存储的数值代表的式另一块内存的起始地址，就称这块内存代表着一块引用。（不够有用）</p>
+</blockquote>
+<blockquote>
+<p><strong>JDK1.2后</strong>引用定义扩充：</p>
+<ul>
+<li>强引用（Stong Reference）：<code>Object obj = new Object()</code></li>
+<li>软引用（Soft Reference）：SoftReference类来实现，系统将发生内存溢出前，会把这类对象列进回收范围中并进行第二次回收。如果还是没有足够的内存才会报内存溢出异常。</li>
+<li>弱应用（Weak Reference）：这类对象只能生存到下一次垃圾收集发生前。（无论内存是否足够都会被回收）</li>
+<li>虚引用（Phantom Reference）：唯一作用：这个对象被回收时受到一个系统通知。PhantomReference</li>
+</ul>
+</blockquote>
+<h3 id="生存还是死亡？"><a href="#生存还是死亡？" class="headerlink" title="生存还是死亡？"></a>生存还是死亡？</h3><p><code>finalize()</code>方法，不建议使用。可以自救一次。</p>
+<h3 id="回收方法区"><a href="#回收方法区" class="headerlink" title="回收方法区"></a>回收方法区</h3><blockquote>
+<p>Java虚拟机规范中并不要求虚拟机在方法区实现垃圾收集，因为在方法区进行垃圾收集的性价比很低。</p>
+</blockquote>
+<p>永久代的垃圾收集主要回收两部分内容：</p>
+<ul>
+<li>废弃常量</li>
+<li>无用的类：3个条件：<ul>
+<li>该类所有的实例都已经被回收，也就是Java堆中不存在该类的任何实例。</li>
+<li>加载该类的ClassLoader已经被回收。</li>
+<li>该类对应的<code>java.lang.Class</code>对象没有在任何地方被引用，无法再任何地方用过反射访问该类的方法。</li>
+</ul>
+</li>
+</ul>
+<h2 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记 - 清除算法"></a>标记 - 清除算法</h3><p>算法分<strong>标记</strong>和<strong>清除</strong>两个阶段：</p>
+<ol>
+<li>标记所有需要回收的对象</li>
+<li>标记完成后统一回收标记的对象</li>
+</ol>
+<p>该算法的<strong>缺点</strong>：</p>
+<ol>
+<li>效率低</li>
+<li>空间问题：标记清除后会产生大量不连续的内存碎片，空间碎片太多会导致当程序需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一层垃圾收集动作。<br><img src="http://i.imgur.com/W4siylj.png" alt><h3 id="复制算法-Copying"><a href="#复制算法-Copying" class="headerlink" title="复制算法 Copying"></a>复制算法 Copying</h3><blockquote>
+<p><strong>提高效率</strong><br>将内存分为两大块：一块实时使用，内存回收后将这块的内存内容复制到另一块内存中储存。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p><strong>缺点</strong>将内存缩小为原来的一半</p>
+<p>(IB&lt;公司研究：内存空间划分不用1:1而是保存区小，实时运行区大)<br><img src="http://i.imgur.com/UrkPbho.png" alt></p>
+</blockquote>
+<h3 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记 - 整理算法"></a>标记 - 整理算法</h3><blockquote>
+<p>复制收集算法在对象存活率较高时要执行较多的复制操作，效率低，而且要浪费一半的内存空间。</p>
+</blockquote>
+<blockquote>
+<p>标记整理算法和标记清除算法类似：不过在清理前需要将标记的对象都移到内存的一端<img src="http://i.imgur.com/wznLK4p.png" alt></p>
+</blockquote>
+<h3 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h3><p><strong>商业虚拟机</strong>的垃圾收集都采用“分代收集”算法。<br><strong>特点：</strong>把Java堆分为新生代和老年代</p>
+<ol>
+<li>新生代：每次有大批的对象死去，使用<strong>复制算法</strong></li>
+<li>老年代：对象存活率高，使用<strong>标记 - 清理</strong>、<strong>标记 - 整理</strong><h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><blockquote>
+<p>收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现。</p>
+</blockquote>
+</li>
+</ol>
+<p>Java虚拟中堆垃圾收集器没有作任何规定，因此不同厂商、不同版本的虚拟机所提供的垃圾收集器可能有很大差别。<img src="http://i.imgur.com/TC1FIKk.png" alt></p>
+<h3 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h3><p>Serial收集器是最基本、历史最悠久的收集器，<strong>单线程</strong>收集器，在使用时必须停止所有的工作现场（Sun称这为<code>Stop the world</code>）<img src="http://i.imgur.com/7xH3eRt.png" alt></p>
+<p><strong>优点：</strong>简单高效。</p>
+<h3 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h3><blockquote>
+<p>新生代收集器</p>
+<p>就是Serial收集器的多线程版本，其他的原理与Serial一样。<br><img src="http://i.imgur.com/7Mdq7FS.png" alt></p>
+</blockquote>
+<h3 id="Parallel-Scanvenge收集器"><a href="#Parallel-Scanvenge收集器" class="headerlink" title="Parallel Scanvenge收集器"></a>Parallel Scanvenge收集器</h3><blockquote>
+<p>新生代收集器，使用<strong>复制算法</strong>、<strong>多线程</strong></p>
+</blockquote>
+<p><strong>特点：</strong>CMS等收集器关注的在于尽可能缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目的是达到一个可控制的<strong>吞吐量（ThroughPut）</strong>。<code>吞吐量 = 运行代码时间/（运行代码时间 + 垃圾收集时间）</code>吞吐量越短越适合用户交互程序，良好的响应速度能提升用户的体验。</p>
+<p>Parallel Scavenge收集器提供两个参数精确控制吞吐量：</p>
+<ol>
+<li><code>-XX:MaxGCPauseMillis</code>最大垃圾收集停顿时间参数</li>
+<li><code>-XX：GCTimeRatio</code>设置吞吐量大小的参数</li>
+</ol>
+<h3 id="Serial-Old-收集器"><a href="#Serial-Old-收集器" class="headerlink" title="Serial Old 收集器"></a>Serial Old 收集器</h3><h3 id="Parallel-Old-收集器"><a href="#Parallel-Old-收集器" class="headerlink" title="Parallel Old 收集器"></a>Parallel Old 收集器</h3><h3 id="CMS-收集器"><a href="#CMS-收集器" class="headerlink" title="CMS 收集器"></a>CMS 收集器</h3><h3 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h3><h3 id="垃圾收集器参数总结"><a href="#垃圾收集器参数总结" class="headerlink" title="垃圾收集器参数总结"></a>垃圾收集器参数总结</h3><h2 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h2><p>自动内存管理：</p>
+<ol>
+<li>给对象分配内存</li>
+<li>回收分配给对象的内存</li>
+</ol>
+<h3 id="对象优先在Eden分配"><a href="#对象优先在Eden分配" class="headerlink" title="对象优先在Eden分配"></a>对象优先在Eden分配</h3><h3 id="大对象直接进入老年代"><a href="#大对象直接进入老年代" class="headerlink" title="大对象直接进入老年代"></a>大对象直接进入老年代</h3><p><strong>大对象：</strong>需要大量连续内存空间的Java对象。如：很长的字符串，数组，经常出现大对象容易导致内存还有不少空间时就提前触发垃圾收集以获取足够的连续空间来安置它们。</p>
+<p>虚拟机中提供了一个：<code>-XX：PretenureSizeThreshold</code>参数，把大于这个值的对象直接分配到老年代中。<strong>目的</strong>避免在Eden区和两个Survivor区之间发生大量的内存拷贝（复习：新生代采用复制算法收集内存）</p>
+<h3 id="长期存活的对象将进入老年代"><a href="#长期存活的对象将进入老年代" class="headerlink" title="长期存活的对象将进入老年代"></a>长期存活的对象将进入老年代</h3><h3 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h3><p><strong>进入老年代要求</strong></p>
+<ul>
+<li>达到MaxTenuringThreshold</li>
+<li>在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于改年龄的对象。</li>
+</ul>
+<h3 id="空间分配担保"><a href="#空间分配担保" class="headerlink" title="空间分配担保"></a>空间分配担保</h3><h2 id="第四章-虚拟机性能监控与故障处理工具"><a href="#第四章-虚拟机性能监控与故障处理工具" class="headerlink" title="第四章 虚拟机性能监控与故障处理工具"></a>第四章 虚拟机性能监控与故障处理工具</h2><h2 id="第五章-调优案例分析与实战"><a href="#第五章-调优案例分析与实战" class="headerlink" title="第五章 调优案例分析与实战"></a>第五章 调优案例分析与实战</h2><h3 id="第六章-类文件结构"><a href="#第六章-类文件结构" class="headerlink" title="第六章 类文件结构"></a>第六章 类文件结构</h3><h2 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h2><p>Native Code ,代码编译的结果从本地机器码转变为字节码。</p>
+<h2 id="无关性的基石"><a href="#无关性的基石" class="headerlink" title="无关性的基石"></a>无关性的基石</h2><p>Java宣传口号<strong>一次编写，到处运行Write Once， Run Anywhere</strong></p>
+<p>实现<strong>语言无关性</strong>的基础：虚拟机和字节码存储格式，其他语言的程序代码也可以编译成Class文件，Class文件在虚拟机中运行。</p>
+<h2 id="Class类文件的结构"><a href="#Class类文件的结构" class="headerlink" title="Class类文件的结构"></a>Class类文件的结构</h2><p>解析Class文件的数据结构。</p>
+<p>Class文件是一组以8位字节为基础单位的二进制流，各个数据项目严格按照顺序紧凑排列在Class文件中，中间没有添加任何分隔符。当遇到需要占用8位以上空间的数据项时，则会按照高位在前的方式分割成若干个8位字节进行存储。</p>
+<p>Class文件：伪结构，由两种数据类型构成：<strong>无符号数</strong>、<strong>表</strong></p>
+<ul>
+<li>无符号数：u1、u2、u4、u8来分别代表相应字节数的无符号数，可以描述：数字、索引引用、数量值，或者按照UTF-8编码构成字符串值。</li>
+<li>表：由多个无符号数或其他表作为数据项构成的复合数据类型，所有表都以<code>_info</code>结尾。 表用于描述有层次关系的复合结构的数据，Class文件本质就是一张表。<h3 id="魔数与Class文件的版本"><a href="#魔数与Class文件的版本" class="headerlink" title="魔数与Class文件的版本"></a>魔数与Class文件的版本</h3><strong>魔数：</strong>每个Class文件的头4个字节。<strong>作用：</strong>确定这个文件是否是能被虚拟机接受的Class文件。（因为扩展名很容易被改变）Class魔数：<code>0xCAFEBABE</code>，魔术后面的4个字节储存的是Class的主版本号<strong>Major Version</strong>JDK1.7对应的版本号为：51.0</li>
+</ul>
+<hr>
+<h3 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h3><p>版本号之后是常量池入口，常量池是Class文件结构中与其他项目关联最多的数据类型，也是占用Class<strong>文件空间最大</strong>的数据项目之一，同时也是Class文件中<strong>第一个出现的表类型数据项目</strong>。</p>
+<p>常量池中的常量不固定，所以在入口处需要一个u2类型，代表常量池容量计数值（<strong>constant_pool_count</strong>）。注：这个计数从1开始。第项常量空出来表示：不引用任何一个常量池项目。<br><strong>常量池：</strong></p>
+<ul>
+<li>字面量（Literal）：如文本字符串、被声明为final的常量值。</li>
+<li>符号引用（Symbolic References）：类和接口的全限定名（Fully Qualified Name）、字段的名称和描述符（Descriptor）、方法的名称和描述符。<br><img src="http://i.imgur.com/M7QPczJ.png" alt><br><strong>常量池是最繁琐的数据：</strong>11中常量类型各自均有自己的结构，<img src="http://i.imgur.com/CACfgqV.png" alt><br><strong>tag</strong>：标志位；<strong>name_index</strong>索引值，指向常量池中的一个<code>CONSTANT_Utf8_info</code>类型的常量（类或者接口的全限定名）<img src="http://i.imgur.com/N6gUeZF.png" alt><br><strong>length值</strong>UTF-8编码的字符串长度的字节数，<br><img src="http://i.imgur.com/f5SNYsw.png" alt></li>
+</ul>
+<h3 id="访问标志"><a href="#访问标志" class="headerlink" title="访问标志"></a>访问标志</h3><h3 id="类索引、父类索引与接口索引集合"><a href="#类索引、父类索引与接口索引集合" class="headerlink" title="类索引、父类索引与接口索引集合"></a>类索引、父类索引与接口索引集合</h3><h3 id="字段表集合"><a href="#字段表集合" class="headerlink" title="字段表集合"></a>字段表集合</h3><h3 id="方法表集合"><a href="#方法表集合" class="headerlink" title="方法表集合"></a>方法表集合</h3><h3 id="属性表集合"><a href="#属性表集合" class="headerlink" title="属性表集合"></a>属性表集合</h3><h2 id="Class文件结构的发展"><a href="#Class文件结构的发展" class="headerlink" title="Class文件结构的发展"></a>Class文件结构的发展</h2>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/28/java/language/java_day/Day2/" rel="next" title="java -- day2">
+                <i class="fa fa-chevron-left"></i> java -- day2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/03/linux/linux/" rel="prev" title="Linux learn">
+                Linux learn <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#《深入理解java虚拟机》读书笔记"><span class="nav-number">1.</span> <span class="nav-text">《深入理解java虚拟机》读书笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一章"><span class="nav-number">1.1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java技术体系"><span class="nav-number">1.1.2.</span> <span class="nav-text">Java技术体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java发展史"><span class="nav-number">1.1.3.</span> <span class="nav-text">Java发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#展望Java技术的未来"><span class="nav-number">1.1.4.</span> <span class="nav-text">展望Java技术的未来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战：自己编译JDK"><span class="nav-number">1.1.5.</span> <span class="nav-text">实战：自己编译JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动内存管理机制"><span class="nav-number">1.1.6.</span> <span class="nav-text">自动内存管理机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-Java内存区域与内存溢出异常"><span class="nav-number">1.2.</span> <span class="nav-text">第二章 Java内存区域与内存溢出异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">1.2.2.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#程序计数器"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">程序计数器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java虚拟机栈Java-Virtual-Machine-Stacks"><span class="nav-number">1.2.3.</span> <span class="nav-text">Java虚拟机栈Java Virtual Machine Stacks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#本地方法栈-Native-Method-Stacks"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">本地方法栈 Native Method Stacks</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java堆-Java-Heap"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">Java堆 Java Heap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法区-Method-Area"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">方法区 Method Area</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时常量池"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">运行时常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直接内存-Direct-Memory"><span class="nav-number">1.2.3.5.</span> <span class="nav-text">直接内存 Direct Memory</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象访问"><span class="nav-number">1.2.4.</span> <span class="nav-text">对象访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战：OOM（OutOfMeremoryError）异常"><span class="nav-number">1.2.5.</span> <span class="nav-text">实战：OOM（OutOfMeremoryError）异常</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章-垃圾手机器与内存分配策略"><span class="nav-number">1.3.</span> <span class="nav-text">第三章 垃圾手机器与内存分配策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象已死？"><span class="nav-number">1.4.</span> <span class="nav-text">对象已死？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引用计数算法"><span class="nav-number">1.4.1.</span> <span class="nav-text">引用计数算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根搜索算法-GC-Roots-Tracing"><span class="nav-number">1.4.2.</span> <span class="nav-text">根搜索算法 GC Roots Tracing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再谈引用"><span class="nav-number">1.4.3.</span> <span class="nav-text">再谈引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生存还是死亡？"><span class="nav-number">1.4.4.</span> <span class="nav-text">生存还是死亡？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回收方法区"><span class="nav-number">1.4.5.</span> <span class="nav-text">回收方法区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾收集算法"><span class="nav-number">1.5.</span> <span class="nav-text">垃圾收集算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标记-清除算法"><span class="nav-number">1.5.1.</span> <span class="nav-text">标记 - 清除算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制算法-Copying"><span class="nav-number">1.5.2.</span> <span class="nav-text">复制算法 Copying</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标记-整理算法"><span class="nav-number">1.5.3.</span> <span class="nav-text">标记 - 整理算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分代收集算法"><span class="nav-number">1.5.4.</span> <span class="nav-text">分代收集算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾收集器"><span class="nav-number">1.6.</span> <span class="nav-text">垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serial收集器"><span class="nav-number">1.6.1.</span> <span class="nav-text">Serial收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ParNew收集器"><span class="nav-number">1.6.2.</span> <span class="nav-text">ParNew收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallel-Scanvenge收集器"><span class="nav-number">1.6.3.</span> <span class="nav-text">Parallel Scanvenge收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Serial-Old-收集器"><span class="nav-number">1.6.4.</span> <span class="nav-text">Serial Old 收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallel-Old-收集器"><span class="nav-number">1.6.5.</span> <span class="nav-text">Parallel Old 收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMS-收集器"><span class="nav-number">1.6.6.</span> <span class="nav-text">CMS 收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G1收集器"><span class="nav-number">1.6.7.</span> <span class="nav-text">G1收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器参数总结"><span class="nav-number">1.6.8.</span> <span class="nav-text">垃圾收集器参数总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存分配与回收策略"><span class="nav-number">1.7.</span> <span class="nav-text">内存分配与回收策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象优先在Eden分配"><span class="nav-number">1.7.1.</span> <span class="nav-text">对象优先在Eden分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大对象直接进入老年代"><span class="nav-number">1.7.2.</span> <span class="nav-text">大对象直接进入老年代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长期存活的对象将进入老年代"><span class="nav-number">1.7.3.</span> <span class="nav-text">长期存活的对象将进入老年代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动态对象年龄判定"><span class="nav-number">1.7.4.</span> <span class="nav-text">动态对象年龄判定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间分配担保"><span class="nav-number">1.7.5.</span> <span class="nav-text">空间分配担保</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章-虚拟机性能监控与故障处理工具"><span class="nav-number">1.8.</span> <span class="nav-text">第四章 虚拟机性能监控与故障处理工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章-调优案例分析与实战"><span class="nav-number">1.9.</span> <span class="nav-text">第五章 调优案例分析与实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第六章-类文件结构"><span class="nav-number">1.9.1.</span> <span class="nav-text">第六章 类文件结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概述-3"><span class="nav-number">1.10.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无关性的基石"><span class="nav-number">1.11.</span> <span class="nav-text">无关性的基石</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class类文件的结构"><span class="nav-number">1.12.</span> <span class="nav-text">Class类文件的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#魔数与Class文件的版本"><span class="nav-number">1.12.1.</span> <span class="nav-text">魔数与Class文件的版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量池"><span class="nav-number">1.12.2.</span> <span class="nav-text">常量池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问标志"><span class="nav-number">1.12.3.</span> <span class="nav-text">访问标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类索引、父类索引与接口索引集合"><span class="nav-number">1.12.4.</span> <span class="nav-text">类索引、父类索引与接口索引集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字段表集合"><span class="nav-number">1.12.5.</span> <span class="nav-text">字段表集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法表集合"><span class="nav-number">1.12.6.</span> <span class="nav-text">方法表集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性表集合"><span class="nav-number">1.12.7.</span> <span class="nav-text">属性表集合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class文件结构的发展"><span class="nav-number">1.13.</span> <span class="nav-text">Class文件结构的发展</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

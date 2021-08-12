@@ -1,0 +1,800 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="源码,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="项目地址：https://github.com/lzyzsd/JsBridge 项目作用: Android 与 js 交互方案。 与 原生 JS 交互方式比有什么优点目录结构和类介绍12345678- BridgeHandler- BridgeUtil- BridgeWebView- BridgeWebViewClient- CallBackFunction- DefaultHandle- Mes">
+<meta name="keywords" content="源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSBridge 原理">
+<meta property="og:url" content="http://yoursite.com/2018/08/20/看源码/JSBridge原理/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="项目地址：https://github.com/lzyzsd/JsBridge 项目作用: Android 与 js 交互方案。 与 原生 JS 交互方式比有什么优点目录结构和类介绍12345678- BridgeHandler- BridgeUtil- BridgeWebView- BridgeWebViewClient- CallBackFunction- DefaultHandle- Mes">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.443Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSBridge 原理">
+<meta name="twitter:description" content="项目地址：https://github.com/lzyzsd/JsBridge 项目作用: Android 与 js 交互方案。 与 原生 JS 交互方式比有什么优点目录结构和类介绍12345678- BridgeHandler- BridgeUtil- BridgeWebView- BridgeWebViewClient- CallBackFunction- DefaultHandle- Mes">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/20/看源码/JSBridge原理/">
+
+
+
+
+
+  <title>JSBridge 原理 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/20/看源码/JSBridge原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JSBridge 原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-20T09:38:14+08:00">
+                2018-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>项目地址：<a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="noopener">https://github.com/lzyzsd/JsBridge</a></p>
+<p>项目作用: Android 与 js 交互方案。</p>
+<h1 id="与-原生-JS-交互方式比有什么优点"><a href="#与-原生-JS-交互方式比有什么优点" class="headerlink" title="与 原生 JS 交互方式比有什么优点"></a>与 原生 JS 交互方式比有什么优点</h1><h1 id="目录结构和类介绍"><a href="#目录结构和类介绍" class="headerlink" title="目录结构和类介绍"></a>目录结构和类介绍</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- BridgeHandler</span><br><span class="line">- BridgeUtil</span><br><span class="line">- BridgeWebView</span><br><span class="line">- BridgeWebViewClient</span><br><span class="line">- CallBackFunction</span><br><span class="line">- DefaultHandle</span><br><span class="line">- Message</span><br><span class="line">- WebViewJavascriptBridge</span><br></pre></td></tr></table></figure>
+<h2 id="WebViewJavascriptBridge"><a href="#WebViewJavascriptBridge" class="headerlink" title="WebViewJavascriptBridge"></a>WebViewJavascriptBridge</h2><p>是一个接口，<code>BridgeWebView</code> 实现了 WebViewJavascriptBridge</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">WebViewJavascriptBridge</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data, CallBackFunction responseCallback)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个地方的代码感觉作者没有写好, BridgeWebView 中实际起作用的方法是 doSend</p>
+</blockquote>
+<h2 id="DefaultHandler-BridgeHandler"><a href="#DefaultHandler-BridgeHandler" class="headerlink" title="DefaultHandler, BridgeHandler"></a>DefaultHandler, BridgeHandler</h2><p>JS 调用原生方法的时候，Handler 接收来自 JS 传递的参数</p>
+<p>DefaultHandler： 在没有设置 Handler 的时候会触发。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BridgeHandler</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">(String data, CallBackFunction function)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CallBackFunction"><a href="#CallBackFunction" class="headerlink" title="CallBackFunction"></a>CallBackFunction</h2><p>回调函数。</p>
+<p>使用场景：在 app 方法被调起之后，app 可以通过这个方法 给JS传数据处理结果</p>
+<blockquote>
+<p>在 BridgeHandler 中使用</p>
+</blockquote>
+<h2 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h2><p>JS 与 Native 交互的信息封装类。</p>
+<p>包含了：</p>
+<ol>
+<li>callbackId：CallBackFunction id，通过这个 id 找到 CallBackFunction 函数</li>
+<li>data: Native 调用 JS 是传递的参数</li>
+<li>handlerName：暂时没有实际作用</li>
+<li>responseId: native call js 时，返回值通过 CallBackFunction 函数返回，通过 responseId 找到 CallBackFunction。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">成员变量：</span><br><span class="line">private String callbackId; //callbackId</span><br><span class="line">private String responseId; //responseId</span><br><span class="line">private String responseData; //responseData</span><br><span class="line">private String data; //data of message</span><br><span class="line">private String handlerName; //name of handler</span><br><span class="line"></span><br><span class="line">函数：</span><br><span class="line">getter/setter</span><br><span class="line">toJson</span><br><span class="line">toObject</span><br><span class="line">toArrayList</span><br></pre></td></tr></table></figure>
+<p>toJson: 将 Message 中的成员变量转化成 JSON 形式，使用场景：与 <code>javascript:WebViewJavascriptBridge._handleMessageFromNative(&#39;%s&#39;);</code> 拼接通过 <code>webView.loadUrl</code> 调用。</p>
+<p>toArrayList: 清理事件队列时使用，String -&gt; List<message>, 获取 JS 端所有的事件一个一个处理。</message></p>
+<h2 id="BridgeWebViewClient"><a href="#BridgeWebViewClient" class="headerlink" title="BridgeWebViewClient"></a>BridgeWebViewClient</h2><blockquote>
+<p>自定义WebViewClient必须要集成此类</p>
+</blockquote>
+<p><code>shouldOverrideUrlLoading</code>:</p>
+<p>JS 与 Native 交互是通过 URL拦截 方式实现的。</p>
+<p>在这里 JSBridge 会拦截属于自己需要处理的内容。</p>
+<p><code>onPageFinished</code>: </p>
+<p>向页面注入一段 JS 代码，内容在 <code>assets/WebViewJavascriptBridge.js</code> 中。</p>
+<p>处理 <code>startupMessage</code> 中存储的事件。</p>
+<h2 id="BridgeWebView"><a href="#BridgeWebView" class="headerlink" title="BridgeWebView"></a>BridgeWebView</h2><p>成员变量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, CallBackFunction&gt; responseCallbacks = <span class="keyword">new</span> HashMap&lt;String, CallBackFunction&gt;();</span><br><span class="line">Map&lt;String, BridgeHandler&gt; messageHandlers = <span class="keyword">new</span> HashMap&lt;String, BridgeHandler&gt;();</span><br><span class="line">BridgeHandler defaultHandler = <span class="keyword">new</span> DefaultHandler();</span><br></pre></td></tr></table></figure>
+<p>responseCallbacks： 存储 native call js 时，返回值 CallBackFunction 函数</p>
+<p>messageHandlers: 存储所有 Handlers, BridgeHandler, </p>
+<p>defaultHandler: 默认 Handler</p>
+<h1 id="调用流程"><a href="#调用流程" class="headerlink" title="调用流程"></a>调用流程</h1><h2 id="JS-Call-Native"><a href="#JS-Call-Native" class="headerlink" title="JS Call Native"></a>JS Call Native</h2><p>Native 端要注册一个方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">webView.registerHandler(&quot;methodName&quot;, (data, function) -&gt; &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        JSONObject jsonObject = new JSONObject(data);</span><br><span class="line">        jsCallBack.call(jsonObject.optString(&quot;tel&quot;));</span><br><span class="line">    &#125; catch (JSONException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>注册 Handler，参数2 BridgeHandler 存储在 <code>messageHandlers</code> 中, 参数1 表示调用唯一表示。</p>
+<p>JS 调用 Native 注册的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NativePageController(&apos;callFunc&apos;, &#123;&apos;tel&apos; : &apos;18888888888&apos;&#125;);</span><br></pre></td></tr></table></figure>
+<p>参数1 表示调用唯一表示，参数2 data 传递的数据。这些数据会转成 url 形式传递到native。</p>
+<p>JS 调用 Native 注册的方法后，<code>shouldOverrideUrlLoading</code> 最先获取到 url 数据，解析 url，发现属于 js 调用方法就会开始处理。 <code>flushMessageQueue</code> 处理所有 JS 端出发的事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">flushMessageQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() == Looper.getMainLooper().getThread()) &#123;</span><br><span class="line">        loadUrl(BridgeUtil.JS_FETCH_QUEUE_FROM_JAVA, <span class="keyword">new</span> CallBackFunction() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// deserializeMessage 反序列化消息</span></span><br><span class="line">                List&lt;Message&gt; list = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    list = Message.toArrayList(data);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (list == <span class="keyword">null</span> || list.size() == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                    Message m = list.get(i);</span><br><span class="line">                    String responseId = m.getResponseId();</span><br><span class="line">                    <span class="comment">// 是否是response  CallBackFunction</span></span><br><span class="line">                    <span class="keyword">if</span> (!TextUtils.isEmpty(responseId)) &#123;</span><br><span class="line">                        CallBackFunction function = responseCallbacks.get(responseId);</span><br><span class="line">                        String responseData = m.getResponseData();</span><br><span class="line">                        function.onCallBack(responseData);</span><br><span class="line">                        responseCallbacks.remove(responseId);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        CallBackFunction responseFunction = <span class="keyword">null</span>;</span><br><span class="line">                        <span class="comment">// if had callbackId 如果有回调Id</span></span><br><span class="line">                        <span class="keyword">final</span> String callbackId = m.getCallbackId();</span><br><span class="line">                        <span class="keyword">if</span> (!TextUtils.isEmpty(callbackId)) &#123;</span><br><span class="line">                            responseFunction = <span class="keyword">new</span> CallBackFunction() &#123;</span><br><span class="line">                                <span class="meta">@Override</span></span><br><span class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">                                    Message responseMsg = <span class="keyword">new</span> Message();</span><br><span class="line">                                    responseMsg.setResponseId(callbackId);</span><br><span class="line">                                    responseMsg.setResponseData(data);</span><br><span class="line">                                    queueMessage(responseMsg);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            responseFunction = <span class="keyword">new</span> CallBackFunction() &#123;</span><br><span class="line">                                <span class="meta">@Override</span></span><br><span class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">                                    <span class="comment">// do nothing</span></span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// BridgeHandler执行</span></span><br><span class="line">                        BridgeHandler handler;</span><br><span class="line">                        <span class="keyword">if</span> (!TextUtils.isEmpty(m.getHandlerName())) &#123;</span><br><span class="line">                            handler = messageHandlers.get(m.getHandlerName());</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            handler = defaultHandler;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (handler != <span class="keyword">null</span>)&#123;</span><br><span class="line">                            handler.handler(m.getData(), responseFunction);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>data -&gt; List<message>, 生成事件集合</message></li>
+<li>通过 函数表示 从 messageHandlers 中找到对应的 Handler，调用 Handler 开始处理数据</li>
+</ol>
+<blockquote>
+<p>js 端多次调用 native 时事件会以 json 形式存储在 js 端，等待 app 去获取所有事件，依次处理</p>
+</blockquote>
+<p>Native 处理事件后，通过如何返回参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Message responseMsg = new Message();</span><br><span class="line">responseMsg.setResponseId(callbackId);</span><br><span class="line">responseMsg.setResponseData(data);</span><br><span class="line">queueMessage(responseMsg);</span><br></pre></td></tr></table></figure>
+<h2 id="Native-Call-JS"><a href="#Native-Call-JS" class="headerlink" title="Native Call JS"></a>Native Call JS</h2><p>JS 端注册 Handler :</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NativePageController.registerHandler(<span class="string">"Name"</span>, (data)&#123;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>Native 端掉用 JS:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">webView.callHandler(<span class="string">"Name"</span>, <span class="string">"&#123;data...&#125;"</span>, <span class="keyword">new</span> CallBackFunction() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">                </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>调用 js 代码的时候：<code>doSend</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 保存message到消息队列</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> handlerName handlerName</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data data</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> responseCallback CallBackFunction</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSend</span><span class="params">(String handlerName, String data, CallBackFunction responseCallback)</span> </span>&#123;</span><br><span class="line">    Message m = <span class="keyword">new</span> Message();</span><br><span class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(data)) &#123;</span><br><span class="line">        m.setData(data);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (responseCallback != <span class="keyword">null</span>) &#123;</span><br><span class="line">        String callbackStr = String.format(BridgeUtil.CALLBACK_ID_FORMAT, ++uniqueId + (BridgeUtil.UNDERLINE_STR + SystemClock.currentThreadTimeMillis()));</span><br><span class="line">        responseCallbacks.put(callbackStr, responseCallback);</span><br><span class="line">        m.setCallbackId(callbackStr);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!TextUtils.isEmpty(handlerName)) &#123;</span><br><span class="line">        m.setHandlerName(handlerName);</span><br><span class="line">    &#125;</span><br><span class="line">    queueMessage(m);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>生成 Message 对象，</li>
+<li>responseCallbacks 中存储接收返回数据的 responseCallback</li>
+<li>开始处理, Message 生成 URL 调用。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 分发message 必须在主线程才分发成功</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> m Message</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message m)</span> </span>&#123;</span><br><span class="line">    String messageJson = m.toJson();</span><br><span class="line">    <span class="comment">//escape special characters for json string  为json字符串转义特殊字符</span></span><br><span class="line">    messageJson = messageJson.replaceAll(<span class="string">"(\\\\)([^utrn])"</span>, <span class="string">"\\\\\\\\$1$2"</span>);</span><br><span class="line">    messageJson = messageJson.replaceAll(<span class="string">"(?&lt;=[^\\\\])(\")"</span>, <span class="string">"\\\\\""</span>);</span><br><span class="line">    String javascriptCommand = String.format(BridgeUtil.JS_HANDLE_MESSAGE_FROM_JAVA, messageJson);</span><br><span class="line">    <span class="comment">// 必须要找主线程才会将数据传递出去 --- 划重点</span></span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() == Looper.getMainLooper().getThread()) &#123;</span><br><span class="line">        <span class="keyword">this</span>.loadUrl(javascriptCommand);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JS 端处理完成后，返回数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取到CallBackFunction data执行调用并且从数据集移除</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> url</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handlerReturnData</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">    String functionName = BridgeUtil.getFunctionFromReturnUrl(url);</span><br><span class="line">    CallBackFunction f = responseCallbacks.get(functionName);</span><br><span class="line">    String data = BridgeUtil.getDataFromReturnUrl(url);</span><br><span class="line">    <span class="keyword">if</span> (f != <span class="keyword">null</span>) &#123;</span><br><span class="line">        f.onCallBack(data);</span><br><span class="line">        responseCallbacks.remove(functionName);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>从 URL 获取 函数标示</li>
+<li>通过 标示从 <code>responseCallbacks</code> 中获取 CallBackFunction</li>
+<li>从 URL 获取 data</li>
+<li>CallBackFunction 调用并传 data 参数。</li>
+<li>移除 responseCallbacks 中对于的 CallBackFunction</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>JSBridge 的设计方式可以扩展到其他的跨平台（需要两个平台都能作为服务端）互调情况下。</p>
+<ol>
+<li>两个平台之间信息交互通过 JSON</li>
+<li>JSON 中包括：调用接口的唯一标示，data 数据，handler 名字（数据接收函数的唯一标示），接收返回数据函数的唯一标示。</li>
+<li>创建一个 Message 类存储 JSON 中的数据，方便处理</li>
+</ol>
+<p>数据结构：</p>
+<ol>
+<li>messageHandlers Map, Key 函数唯一标示，需要提前约定，调用的时候也需要</li>
+<li>responseCallbacks Map，key 是动态生成的唯一标示</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/01/react-native/读书笔记-ReactNative跨品台移动应用开发/" rel="next" title="读书笔记-ReactNative 跨平台移动应用开发">
+                <i class="fa fa-chevron-left"></i> 读书笔记-ReactNative 跨平台移动应用开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/20/Android/架构/官方架构组件/Android Architecture Components关键点/" rel="prev" title="Android Architecture Components 关键点">
+                Android Architecture Components 关键点 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#与-原生-JS-交互方式比有什么优点"><span class="nav-number">1.</span> <span class="nav-text">与 原生 JS 交互方式比有什么优点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#目录结构和类介绍"><span class="nav-number">2.</span> <span class="nav-text">目录结构和类介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WebViewJavascriptBridge"><span class="nav-number">2.1.</span> <span class="nav-text">WebViewJavascriptBridge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DefaultHandler-BridgeHandler"><span class="nav-number">2.2.</span> <span class="nav-text">DefaultHandler, BridgeHandler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CallBackFunction"><span class="nav-number">2.3.</span> <span class="nav-text">CallBackFunction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Message"><span class="nav-number">2.4.</span> <span class="nav-text">Message</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BridgeWebViewClient"><span class="nav-number">2.5.</span> <span class="nav-text">BridgeWebViewClient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BridgeWebView"><span class="nav-number">2.6.</span> <span class="nav-text">BridgeWebView</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#调用流程"><span class="nav-number">3.</span> <span class="nav-text">调用流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JS-Call-Native"><span class="nav-number">3.1.</span> <span class="nav-text">JS Call Native</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Native-Call-JS"><span class="nav-number">3.2.</span> <span class="nav-text">Native Call JS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

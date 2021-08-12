@@ -1,0 +1,816 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="React Native,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="第2章 状态机思维与状态机变量React 框架将所有的 UI 视为一个简单的状态机，那么任意一个 UI 场景就是状态机中的一种状态。  状态在 state 中保存， 状态机可以意指 state  在 React 中将状态机视为 “不可变的常量”。 不能使用类似 this.state.XXX = &amp;#39;xxxx&amp;#39; 这样的语句 减少 state 中的值在 state 中保存尽量少的值。 s">
+<meta name="keywords" content="React Native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="读书笔记-ReactNative 跨平台移动应用开发">
+<meta property="og:url" content="http://yoursite.com/2018/08/01/react-native/读书笔记-ReactNative跨品台移动应用开发/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="第2章 状态机思维与状态机变量React 框架将所有的 UI 视为一个简单的状态机，那么任意一个 UI 场景就是状态机中的一种状态。  状态在 state 中保存， 状态机可以意指 state  在 React 中将状态机视为 “不可变的常量”。 不能使用类似 this.state.XXX = &amp;#39;xxxx&amp;#39; 这样的语句 减少 state 中的值在 state 中保存尽量少的值。 s">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.432Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="读书笔记-ReactNative 跨平台移动应用开发">
+<meta name="twitter:description" content="第2章 状态机思维与状态机变量React 框架将所有的 UI 视为一个简单的状态机，那么任意一个 UI 场景就是状态机中的一种状态。  状态在 state 中保存， 状态机可以意指 state  在 React 中将状态机视为 “不可变的常量”。 不能使用类似 this.state.XXX = &amp;#39;xxxx&amp;#39; 这样的语句 减少 state 中的值在 state 中保存尽量少的值。 s">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/01/react-native/读书笔记-ReactNative跨品台移动应用开发/">
+
+
+
+
+
+  <title>读书笔记-ReactNative 跨平台移动应用开发 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/01/react-native/读书笔记-ReactNative跨品台移动应用开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">读书笔记-ReactNative 跨平台移动应用开发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-01T13:18:12+08:00">
+                2018-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="第2章-状态机思维与状态机变量"><a href="#第2章-状态机思维与状态机变量" class="headerlink" title="第2章 状态机思维与状态机变量"></a>第2章 状态机思维与状态机变量</h1><p>React 框架将所有的 UI 视为一个简单的状态机，那么任意一个 UI 场景就是状态机中的一种状态。</p>
+<blockquote>
+<p>状态在 state 中保存， 状态机可以意指 state</p>
+</blockquote>
+<p>在 React 中将状态机视为 “不可变的常量”。</p>
+<p>不能使用类似 <code>this.state.XXX = &#39;xxxx&#39;</code> 这样的语句</p>
+<h3 id="减少-state-中的值"><a href="#减少-state-中的值" class="headerlink" title="减少 state 中的值"></a>减少 state 中的值</h3><p>在 state 中保存尽量少的值。</p>
+<p>state 中值每次改动就会触发 UI 的重新绘制。</p>
+<h2 id="深入理解-UI-重新渲染的过程"><a href="#深入理解-UI-重新渲染的过程" class="headerlink" title="深入理解 UI 重新渲染的过程"></a>深入理解 UI 重新渲染的过程</h2><h3 id="合并-state-变量"><a href="#合并-state-变量" class="headerlink" title="合并 state 变量"></a>合并 state 变量</h3><p>React Native 使用 setState 函数合并状态机变量, setState 函数的原型是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setState(oldState, callback)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>setState 后状态如果没有改变，不会触发渲染</p>
+</blockquote>
+<h2 id="React-Native-组件的成员变量"><a href="#React-Native-组件的成员变量" class="headerlink" title="React Native 组件的成员变量"></a>React Native 组件的成员变量</h2><p>在构造函数中定义成员变量，可以保证成员变量初始化了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">this.myProp = &apos;test&apos;;</span><br><span class="line">this.myProp1 = true;</span><br></pre></td></tr></table></figure>
+<h2 id="静态变量和静态函数"><a href="#静态变量和静态函数" class="headerlink" title="静态变量和静态函数"></a>静态变量和静态函数</h2><p>用法与 Java 一致</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static myStatic = &apos;init&apos;;</span><br><span class="line">static myMethod()&#123;</span><br><span class="line">    //....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="组件回调函数的绑定"><a href="#组件回调函数的绑定" class="headerlink" title="组件回调函数的绑定"></a>组件回调函数的绑定</h2><p>绑定操作为了让回调函数正确解析出 this.</p>
+<p>如果回调函数使用了箭头函数来回调，则不需要绑定。</p>
+<p>回调函数 4 种写法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onChangeText = &#123;(newText) =&gt; this.updateNum(newText)&#125;; // 不需要 bind</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">updateNum = (newText) =&gt; &#123;</span><br><span class="line">    this.setState((state)=&gt;&#123;</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">onChangeText=&#123;this.updateNum&#125;; // 不需要 bind</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// bind</span><br><span class="line"></span><br><span class="line">onChangeText = &#123;this.updatePW&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onChangeText=&#123;this.updatePW.bind(this)&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="第五章-flex-布局，View-Image-与-可触摸组件"><a href="#第五章-flex-布局，View-Image-与-可触摸组件" class="headerlink" title="第五章 flex 布局，View, Image 与 可触摸组件"></a>第五章 flex 布局，View, Image 与 可触摸组件</h1><h2 id="Flex-布局"><a href="#Flex-布局" class="headerlink" title="Flex 布局"></a>Flex 布局</h2><h3 id="位置及宽，高相关样式键"><a href="#位置及宽，高相关样式键" class="headerlink" title="位置及宽，高相关样式键"></a>位置及宽，高相关样式键</h3><p>position: 默认 relative, absolute.</p>
+<p>absolute: 时使用 top, bottom, left, right 四个中的两个描述位置。表示相对父控件的位置（FrameLayout）</p>
+<p>relative: top, bottom, left, right 表示相对同级元素的位置。</p>
+<h3 id="决定子组件排列规则的键"><a href="#决定子组件排列规则的键" class="headerlink" title="决定子组件排列规则的键"></a>决定子组件排列规则的键</h3><p>flexDirection, flexwrap, justifyContent, alignItems</p>
+<h3 id="决定组建显示规则的键"><a href="#决定组建显示规则的键" class="headerlink" title="决定组建显示规则的键"></a>决定组建显示规则的键</h3><p>flex : 默认值 0 ，可以是 -1，0 任意值。</p>
+<p>flex 值非零时，会自动缩放填充父控件剩余的空间，弹性方向如果是列，组件的 height 可能半失效，弹性方向是行，组件的 width 会半失效。</p>
+<p>alignSelf: auto, flex-start, flex-end, cener, stretch. 在子控件中设置，作用是忽略父组件的 alignItems 值。</p>
+<h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><p>View 组件是 React Native 最基本的组件，所有的组件都继承了 View 组件的属性。</p>
+<ul>
+<li>backgroundColor</li>
+<li>opacity</li>
+<li>borderStyle</li>
+<li>borderColor</li>
+<li>borderRadius</li>
+</ul>
+<p>阴影效果：</p>
+<ul>
+<li>shadowColor</li>
+<li>shadowOffset</li>
+<li>shadowOpacity</li>
+<li>shadowRadius</li>
+<li>overflow: visible, hidden; 是否隐藏超出父控件的内容，只在 IOS 中有效</li>
+<li>elevation: Android 独有</li>
+</ul>
+<p>View 变形： 角度：deg,</p>
+<ul>
+<li>translate</li>
+<li>scale</li>
+<li>rotate</li>
+<li>skew</li>
+</ul>
+<h2 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h2><p>也可以加载需要认证信息的 图片。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let imageSource = &#123;</span><br><span class="line">    uri: &apos;http://.....&apos;</span><br><span class="line">    headers:&#123;</span><br><span class="line">        Authorization1: &apos;.....&apos;,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以使用 Image.prefetch 预加载图片</p>
+<h3 id="组件样式"><a href="#组件样式" class="headerlink" title="组件样式"></a>组件样式</h3><p>resizeMode: cover, contain, stretch, center, repeat</p>
+<h2 id="可触摸组件"><a href="#可触摸组件" class="headerlink" title="可触摸组件"></a>可触摸组件</h2><ul>
+<li>TouchableNativeFeedback</li>
+<li>TouchableWithoutFeedback</li>
+<li>TouchableHighlight</li>
+<li>TouchableOpacity</li>
+</ul>
+<h1 id="Text-TextInput"><a href="#Text-TextInput" class="headerlink" title="Text TextInput"></a>Text TextInput</h1><h2 id="Text"><a href="#Text" class="headerlink" title="Text"></a>Text</h2><p>居中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">justifyContent: &apos;center&apos;,</span><br><span class="line">alignItems: &apos;center&apos;,</span><br></pre></td></tr></table></figure>
+<h2 id="Keyboard"><a href="#Keyboard" class="headerlink" title="Keyboard"></a>Keyboard</h2><p>监听 Keyboard 状态，改变布局，防止界面被遮挡。</p>
+<h2 id="跨平台状态栏组件"><a href="#跨平台状态栏组件" class="headerlink" title="跨平台状态栏组件"></a>跨平台状态栏组件</h2><p>StatusBar</p>
+<h2 id="高度自增输入框"><a href="#高度自增输入框" class="headerlink" title="高度自增输入框"></a>高度自增输入框</h2><p>AutoExpandingTextInput</p>
+<h1 id="第七章-组件生命周期，数据存储及-React-Native-应用实现步骤"><a href="#第七章-组件生命周期，数据存储及-React-Native-应用实现步骤" class="headerlink" title="第七章 组件生命周期，数据存储及 React Native 应用实现步骤"></a>第七章 组件生命周期，数据存储及 React Native 应用实现步骤</h1><ul>
+<li>constructor</li>
+</ul>
+<p>初始化成员变量，初始化 state 值。</p>
+<ul>
+<li>componentWillMount</li>
+</ul>
+<p>在 render 之前执行，这个方法中调用 setState 不会马上触发渲染。</p>
+<p>在这里从本地读取数据</p>
+<ul>
+<li>componentDidMount</li>
+</ul>
+<p>render 之后执行，在这里执行网络请求代码</p>
+<ul>
+<li><p>componentWillReceiveProps</p>
+</li>
+<li><p>shouldComponentUpdate</p>
+</li>
+</ul>
+<p>判断是否需要渲染界面，在调用 setState 后执行。</p>
+<p>返回 true: 表示需要渲染， false: 表示不渲染。</p>
+<p>通过这个函数阻止不必要的重新渲染。</p>
+<ul>
+<li>componentWillUpdate</li>
+</ul>
+<p>在重新渲染之前执行，在这里为重新渲染做一些准备工作。</p>
+<ul>
+<li>componentDidUpdate</li>
+</ul>
+<p>重新渲染之后执行</p>
+<ul>
+<li>componentWillUnmount</li>
+</ul>
+<p>组件从界面卸载之前执行</p>
+<p>在这里释放资源，取消事件订阅</p>
+<h1 id="第十五章-选择器，位置想过和应用状态"><a href="#第十五章-选择器，位置想过和应用状态" class="headerlink" title="第十五章 选择器，位置想过和应用状态"></a>第十五章 选择器，位置想过和应用状态</h1><h2 id="AppState-API"><a href="#AppState-API" class="headerlink" title="AppState API"></a>AppState API</h2><p>通过 AppState Api 获取应用状态：是否在前台。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/React-Native/" rel="tag"># React Native</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/30/Android/第三方/RxJava/使用RxJava封装现有库/" rel="next" title="使用 RxJava 封装现有库">
+                <i class="fa fa-chevron-left"></i> 使用 RxJava 封装现有库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/20/看源码/JSBridge原理/" rel="prev" title="JSBridge 原理">
+                JSBridge 原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第2章-状态机思维与状态机变量"><span class="nav-number">1.</span> <span class="nav-text">第2章 状态机思维与状态机变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#减少-state-中的值"><span class="nav-number">1.0.1.</span> <span class="nav-text">减少 state 中的值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入理解-UI-重新渲染的过程"><span class="nav-number">1.1.</span> <span class="nav-text">深入理解 UI 重新渲染的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合并-state-变量"><span class="nav-number">1.1.1.</span> <span class="nav-text">合并 state 变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-组件的成员变量"><span class="nav-number">1.2.</span> <span class="nav-text">React Native 组件的成员变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态变量和静态函数"><span class="nav-number">1.3.</span> <span class="nav-text">静态变量和静态函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件回调函数的绑定"><span class="nav-number">1.4.</span> <span class="nav-text">组件回调函数的绑定</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#第五章-flex-布局，View-Image-与-可触摸组件"><span class="nav-number">2.</span> <span class="nav-text">第五章 flex 布局，View, Image 与 可触摸组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flex-布局"><span class="nav-number">2.1.</span> <span class="nav-text">Flex 布局</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#位置及宽，高相关样式键"><span class="nav-number">2.1.1.</span> <span class="nav-text">位置及宽，高相关样式键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决定子组件排列规则的键"><span class="nav-number">2.1.2.</span> <span class="nav-text">决定子组件排列规则的键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决定组建显示规则的键"><span class="nav-number">2.1.3.</span> <span class="nav-text">决定组建显示规则的键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View"><span class="nav-number">2.2.</span> <span class="nav-text">View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image"><span class="nav-number">2.3.</span> <span class="nav-text">Image</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#组件样式"><span class="nav-number">2.3.1.</span> <span class="nav-text">组件样式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可触摸组件"><span class="nav-number">2.4.</span> <span class="nav-text">可触摸组件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Text-TextInput"><span class="nav-number">3.</span> <span class="nav-text">Text TextInput</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Text"><span class="nav-number">3.1.</span> <span class="nav-text">Text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keyboard"><span class="nav-number">3.2.</span> <span class="nav-text">Keyboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨平台状态栏组件"><span class="nav-number">3.3.</span> <span class="nav-text">跨平台状态栏组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高度自增输入框"><span class="nav-number">3.4.</span> <span class="nav-text">高度自增输入框</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第七章-组件生命周期，数据存储及-React-Native-应用实现步骤"><span class="nav-number">4.</span> <span class="nav-text">第七章 组件生命周期，数据存储及 React Native 应用实现步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十五章-选择器，位置想过和应用状态"><span class="nav-number">5.</span> <span class="nav-text">第十五章 选择器，位置想过和应用状态</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AppState-API"><span class="nav-number">5.1.</span> <span class="nav-text">AppState API</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

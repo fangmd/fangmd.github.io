@@ -1,0 +1,822 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="java,day,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Day10异常机制异常的概念 程序在运行或者编译的时候出现的不正常的现象。      异常的分类Thorwsable:异常的根类，直接继承至Object 两个子类：  Error程序不能处理的jvm级别的异常。如：StackOverflowError Exception:程序能够捕获或者处理的异常。 RuntimeException：运行时异常：程序在运行过程中出现的异常 Checked：：程序在">
+<meta name="keywords" content="java,day">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java -- day10">
+<meta property="og:url" content="http://yoursite.com/2015/12/28/java/language/java_day/Day10总结/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Day10异常机制异常的概念 程序在运行或者编译的时候出现的不正常的现象。      异常的分类Thorwsable:异常的根类，直接继承至Object 两个子类：  Error程序不能处理的jvm级别的异常。如：StackOverflowError Exception:程序能够捕获或者处理的异常。 RuntimeException：运行时异常：程序在运行过程中出现的异常 Checked：：程序在">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.396Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java -- day10">
+<meta name="twitter:description" content="Day10异常机制异常的概念 程序在运行或者编译的时候出现的不正常的现象。      异常的分类Thorwsable:异常的根类，直接继承至Object 两个子类：  Error程序不能处理的jvm级别的异常。如：StackOverflowError Exception:程序能够捕获或者处理的异常。 RuntimeException：运行时异常：程序在运行过程中出现的异常 Checked：：程序在">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/12/28/java/language/java_day/Day10总结/">
+
+
+
+
+
+  <title>java -- day10 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/12/28/java/language/java_day/Day10总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java -- day10</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-28T21:18:12+08:00">
+                2015-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Day10"><a href="#Day10" class="headerlink" title="Day10"></a>Day10</h1><h2 id="异常机制"><a href="#异常机制" class="headerlink" title="异常机制"></a>异常机制</h2><h3 id="异常的概念"><a href="#异常的概念" class="headerlink" title="异常的概念"></a>异常的概念</h3><blockquote>
+<p>程序在运行或者编译的时候出现的不正常的现象。    </p>
+</blockquote>
+<h3 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类</h3><p>Thorwsable:异常的根类，直接继承至<code>Object</code></p>
+<p>两个子类：</p>
+<ol>
+<li><code>Error</code>程序不能处理的jvm级别的异常。如：<code>StackOverflowError</code></li>
+<li><code>Exception:</code>程序能够捕获或者处理的异常。<ol>
+<li><code>RuntimeException：</code>运行时异常：程序在运行过程中出现的异常</li>
+<li><code>Checked：</code>：程序在编译时的错误，且必须处理的异常。</li>
+</ol>
+</li>
+</ol>
+<p>常见的<code>RuntimeException</code>异常：</p>
+<ol>
+<li><code>ArithmeticException：</code>算术异常，例子：两个整数相除，除数为0；</li>
+<li><code>InputMismaticException:</code>输入不匹配异常，例子：<code>Scanner</code>扫描器对象试图从控制台获得一个与该对象取出的数据不吻合如：<code>input.next();</code></li>
+<li><code>NullPointerException:</code>空指针异常，例子：一个引用类型的实例为<code>null</code>，调用方法。如：<code>String str = null; boolean isTrue = str.equals(&quot;&quot;)</code>;</li>
+<li><code>ArrayIndexOutOfBoundsException:</code>数据下标越界异常，例子：访问数组中的元素，下标&gt;=数组的长度。</li>
+<li><code>NumberFormatException:</code>数据格式化异常，例子：将一个非数字的字符串转换成数据包装类型，如：<code>new Integer(&quot;abs&quot;)</code></li>
+<li><code>ClassCastException：</code>强制类型转换异常，例子：将一个父类的引用强制转换为没有继承关系的类型时；</li>
+</ol>
+<p>异常的特点</p>
+<ol>
+<li>若某行的代码在执行过程中抛出异常，那么后续的语句都不会执行；</li>
+<li>若异常已经被处理，那么后续的语句会继续执行；</li>
+</ol>
+<p>常见的<code>Checked</code>异常：</p>
+<ol>
+<li><code>ClassNotFoundException:</code>找不到类的异常，例子：通过<code>Class.forName(&quot;类的全限定名对应的字符串&quot;)</code>如：<code>Class.forName(&quot;a.b.bc.Dog&quot;);</code></li>
+<li><code>ParseaException:</code>日期解析异常，将一个与定制格式不匹配的日期字符串解析为Date类型对象；</li>
+<li><code>DataFormatException:</code></li>
+</ol>
+<p><strong>如何鉴别异常的类型：</strong></p>
+<ol>
+<li><code>RuntimeException:</code><ol>
+<li>编译能通过</li>
+<li>查看该异常类型的层次结构图，该异常直接或者间接继承与<code>RuntimeException</code></li>
+</ol>
+</li>
+<li><code>Checked：</code><ol>
+<li>若不处理，编译报错</li>
+<li>查看该异常的类型层次结构图<h3 id="异常的处理方式"><a href="#异常的处理方式" class="headerlink" title="异常的处理方式"></a>异常的处理方式</h3>①try{<br>//可能产生异常的代码<br>}catch(异常类型 e){//捕获<br>//处理措施（补救方案）<br>}</li>
+</ol>
+</li>
+</ol>
+<p>适用场景：可能出现异常的情形只有一个（很多–》捕获的异常类型是Exception,可以接收任意子类型异常对象），处理方式一样。</p>
+<p>②<em>**</em>使用得最外广泛</p>
+<pre><code>try{
+//可能产生异常的代码
+  }catch(异常类型1 e){//捕获
+  //处理措施（补救方案）
+  }catch(异常类型2 e){//捕获
+  //处理措施（补救方案）
+  }
+  ...
+  catch(异常类型n e){//捕获
+  //处理措施（补救方案）
+  }
+</code></pre><p><strong>注意点</strong>：</p>
+<p>1、若异常类型之间有继承关系，那么，子异常类型的捕获必须置于父类型异常之前。<br>2、若异常类型之间没有继承关系，那么，与顺序无关。</p>
+<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的。</p>
+<p>③<em>**</em>使用得最外广泛</p>
+<pre><code> try{
+//可能产生异常的代码
+  }catch(异常类型1 e){//捕获
+  //处理措施（补救方案）
+  }catch(异常类型2 e){//捕获
+  //处理措施（补救方案）
+  }
+  ...
+  catch(异常类型n e){//捕获
+  //处理措施（补救方案）
+  }finally{
+ //无论异常发生与否，都会执行的代码
+ //----&gt;在真实项目中，一般书写资源释放的语句（如：io的关闭）
+  }
+</code></pre><p>注意：<br>1、finally语句块一般都会执行，但是例外的情况：<br>  ①若jvm异常退出  System.exit(负数);<br>  ②jvm正常退出    System.exit(正常);<br>    –》无条件终结jvm的执行<br>2、fianlly语句块中对于之前书写的return 变量值是没有影响的。</p>
+<p>适用场景：异常较多，且每种类型的异常处理方式是不一样的,且要单独进行资源释放。（io流）</p>
+<p>④   </p>
+<pre><code> try{
+}finally{
+}
+</code></pre><p>使用场景：所有异常的处理，以及资源释放的语法都置于finally语句块中。    </p>
+<h5 id="抛出异常：throws和throw"><a href="#抛出异常：throws和throw" class="headerlink" title="抛出异常：throws和throw"></a>抛出异常：throws和throw</h5><ol>
+<li>throws：<ol>
+<li>使用在方法的声明部分，表示抛出本方法中可能产生的所有异常类型</li>
+<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常类型1，异常类型2.。。。{方法体}</li>
+<li>从设计者角度，在设计方法的时候若可能发生异常，而且处理的时机不成熟，就需要抛给能够处理的调用者，若该调用者处理的时机还不成熟，继续向上抛，直到能处理为止（到main中不能抛必须处理） 时机：若方法有参数，参数值从外部传入，此时就不成熟。</li>
+</ol>
+</li>
+<li>throw：<ol>
+<li>使用在方法同中，后接一个定制了异常信息的异常对象。</li>
+<li>语法：访问权限修饰符 返回值类型 方法名（形参列表） throws 异常对象所对应的异常{方法体 throw 异常对象；}</li>
+<li>语法  把 throws 去掉</li>
+<li>从设计者角度，设计throw是为了便于定制异常信息。</li>
+</ol>
+</li>
+</ol>
+<p>throw 和 throws 是否同时出现：不用。</p>
+<p>根据throw后异常对象所属的类型来确定。前提：方法体中处理异常的时机不成熟，而且，需要对异常信息进行人性化定制的场合。</p>
+<ol>
+<li>必须出现：throw后异常对象属于编译时异常</li>
+<li>不用出现，throw后异常对象属于运行时异常。<h4 id="自定义异常"><a href="#自定义异常" class="headerlink" title="自定义异常"></a>自定义异常</h4></li>
+</ol>
+<p>自定义异常:jdk中设计好的异常类型，不能满足现实的需求，定制的异常类型。</p>
+<p>自定义异常的书写方式：</p>
+<p>第一种：继承RuntimeException<br>   不需要立即进行处理的异常。 –》运行时时异常 </p>
+<p>第二种：继承Exception<br>   需要立即进行处理的异常，否则编译报错。 –》编译时异常 </p>
+<p>需求：家具厂生产桌子，桌子的半径若在范围[30.567,31.889]cm区间之内，就是<br>合格的产品，否则，就是残次品，次品需要返工的。模拟场景：木匠师傅搬着刚刚精心制作完成的桌子，去质检部检测，检查合格，师傅休息；不合格，让其返工，直到合格为止。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/day/" rel="tag"># day</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/28/java/language/java_day/Day09总结/" rel="next" title="java -- day9">
+                <i class="fa fa-chevron-left"></i> java -- day9
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/28/java/language/java_day/Day14总结/" rel="prev" title="Day14 总结">
+                Day14 总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Day10"><span class="nav-number">1.</span> <span class="nav-text">Day10</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常机制"><span class="nav-number">1.1.</span> <span class="nav-text">异常机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#异常的概念"><span class="nav-number">1.1.1.</span> <span class="nav-text">异常的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常的分类"><span class="nav-number">1.1.2.</span> <span class="nav-text">异常的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常的处理方式"><span class="nav-number">1.1.3.</span> <span class="nav-text">异常的处理方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#抛出异常：throws和throw"><span class="nav-number">1.1.3.0.1.</span> <span class="nav-text">抛出异常：throws和throw</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义异常"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">自定义异常</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

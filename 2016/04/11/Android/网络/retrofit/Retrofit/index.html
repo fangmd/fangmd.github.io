@@ -1,0 +1,965 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Retrofit,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Retrofit 介绍Retrofit框架是属于Square公司的一个开源框架； 官方简介：A type-safe rest client for Android and java 核心特点：使用接口和注解来描述http请求，减少编写的http请求代码，可读性和可维护性比较好。 核心技术点：1. java动态代理，就是动态生成接口实现类； 2. 反射 让用户创建接口，使用retrofit指定的规则">
+<meta name="keywords" content="Retrofit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Retrofit">
+<meta property="og:url" content="http://yoursite.com/2016/04/11/Android/网络/retrofit/Retrofit/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Retrofit 介绍Retrofit框架是属于Square公司的一个开源框架； 官方简介：A type-safe rest client for Android and java 核心特点：使用接口和注解来描述http请求，减少编写的http请求代码，可读性和可维护性比较好。 核心技术点：1. java动态代理，就是动态生成接口实现类； 2. 反射 让用户创建接口，使用retrofit指定的规则">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.305Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Retrofit">
+<meta name="twitter:description" content="Retrofit 介绍Retrofit框架是属于Square公司的一个开源框架； 官方简介：A type-safe rest client for Android and java 核心特点：使用接口和注解来描述http请求，减少编写的http请求代码，可读性和可维护性比较好。 核心技术点：1. java动态代理，就是动态生成接口实现类； 2. 反射 让用户创建接口，使用retrofit指定的规则">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/04/11/Android/网络/retrofit/Retrofit/">
+
+
+
+
+
+  <title>Retrofit | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/11/Android/网络/retrofit/Retrofit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Retrofit</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-04-11T11:38:14+08:00">
+                2016-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Retrofit-介绍"><a href="#Retrofit-介绍" class="headerlink" title="Retrofit 介绍"></a>Retrofit 介绍</h1><p>Retrofit框架是属于Square公司的一个开源框架；</p>
+<p>官方简介：A type-safe rest client for Android and java</p>
+<p>核心特点：使用接口和注解来描述http请求，减少编写的http请求代码，可读性和可维护性比较好。</p>
+<p>核心技术点：1. java动态代理，就是动态生成接口实现类； 2. 反射</p>
+<p>让用户创建接口，使用retrofit指定的规则进行网络访问，把接口传入retrofit；<br>retrofit对接口进行解析，最后进行实际的网络请求。</p>
+<p>retrofit所做的事就是简化了用户网络请求的代码</p>
+<p>不足：</p>
+<ol>
+<li>不支持显示上传和下载请求的进度，不支持端点续传</li>
+<li>不可以针对单个请求配置连接和超时时间</li>
+<li>不可以在接口中直接配置server和base url</li>
+<li>不支持客户端缓存</li>
+<li>拦截器不可以对请求进行控制，未附带请求信息，这样直接导致无法实现对请求的签名</li>
+</ol>
+<h1 id="Retrofit-使用"><a href="#Retrofit-使用" class="headerlink" title="Retrofit 使用"></a>Retrofit 使用</h1><p>官方：<a href="http://square.github.io/retrofit/" target="_blank" rel="noopener">http://square.github.io/retrofit/</a></p>
+<p>例子请求地址：<a href="http://www.tngou.net/api/lore/classify" target="_blank" rel="noopener">http://www.tngou.net/api/lore/classify</a></p>
+<h2 id="0-导包"><a href="#0-导包" class="headerlink" title="0 导包"></a>0 导包</h2><pre><code>compile &apos;com.squareup.retrofit2:retrofit:2.0.1&apos;
+</code></pre><a id="more"></a>
+<h2 id="1-创建一个接口"><a href="#1-创建一个接口" class="headerlink" title="1 创建一个接口"></a>1 创建一个接口</h2><pre><code>public interface Service {
+
+    //@GET(&quot;/portal.php&quot;)
+    //Call&lt;String&gt; getXML(@Query(&quot;mode&quot;) String mod);  // 请求到的数据类型,参数：key-value
+
+    @GET(&quot;/api/lore/classify&quot;)
+    Call&lt;Tngou&gt; getJson();
+}
+</code></pre><ul>
+<li><code>@Query(&quot;..&quot;)</code>请求的参数</li>
+<li><code>@GET(&quot;...&quot;)</code>，<code>@POST(&quot;...&quot;)</code>请求方式,请求服务器的文件的文件地址</li>
+<li><code>@Header({&quot;..................&quot;})</code>头请求</li>
+</ul>
+<h2 id="2-实体类"><a href="#2-实体类" class="headerlink" title="2 实体类"></a>2 实体类</h2><blockquote>
+<p>这里没有更改属性名但是加注解是为了防止代码混淆出错</p>
+</blockquote>
+<pre><code>public class Tngou {
+
+    @SerializedName(&quot;status&quot;)
+    private boolean status;
+    @SerializedName(&quot;tngou&quot;)
+    private List&lt;Item&gt; list;
+..getter/setter
+}
+
+public class Item {
+
+    @SerializedName(&quot;description&quot;)
+    private String description;
+    @SerializedName(&quot;id&quot;)
+    private int id;
+    @SerializedName(&quot;keywords&quot;)
+    private String keywords;
+    @SerializedName(&quot;name&quot;)
+    private String name;
+    @SerializedName(&quot;seq&quot;)
+    private int seq;
+    @SerializedName(&quot;title&quot;)
+    private String title;
+...getter/setter
+}
+</code></pre><h2 id="3-创建-Retrofit对象"><a href="#3-创建-Retrofit对象" class="headerlink" title="3 创建 Retrofit对象"></a>3 创建 Retrofit对象</h2><pre><code>Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl(&quot;http://www.tngou.net&quot;)
+    .addConverterFactory(GsonConverterFactory.create()) // retrofit 的转换器 需要导包
+    .build();
+</code></pre><p>retrofit的转换器可以自定义，也可以使用提供的转换器，使用提供的转换器需要另外导入包：</p>
+<blockquote>
+<p>直接导入这个包可以把它相关联的依赖包都导入(比如：retrofit基本包)</p>
+</blockquote>
+<pre><code>compile &apos;com.squareup.retrofit2:converter-gson:2.0.1&apos;
+</code></pre><h3 id="3-1-自定义转换器"><a href="#3-1-自定义转换器" class="headerlink" title="3.1 自定义转换器"></a>3.1 自定义转换器</h3><pre><code>.addConverterFactory(new Converter.Factory() {
+    @Override
+    public Converter&lt;ResponseBody, ?&gt; responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
+        if (type.equals(String.class)) {
+            return new Converter&lt;ResponseBody, String&gt;() {
+                @Override
+                public String convert(ResponseBody value) throws IOException {
+                    // 将数据转化需要的内容，string 如果是其他实体类，通过string解析让后返回
+                    return value.toString();
+                }
+            };
+        }
+        return super.responseBodyConverter(type, annotations, retrofit);
+    }
+})
+</code></pre><h2 id="4-Retrofit对象-连接创建的接口"><a href="#4-Retrofit对象-连接创建的接口" class="headerlink" title="4 Retrofit对象 连接创建的接口"></a>4 Retrofit对象 连接创建的接口</h2><pre><code>Service service = retrofit.create(Service.class);
+</code></pre><h2 id="5-执行接口中方法获得一个请求"><a href="#5-执行接口中方法获得一个请求" class="headerlink" title="5 执行接口中方法获得一个请求"></a>5 执行接口中方法获得一个请求</h2><pre><code>mJson = service.getJson();
+</code></pre><h2 id="6-开启请求"><a href="#6-开启请求" class="headerlink" title="6 开启请求"></a>6 开启请求</h2><ol>
+<li><p>同步</p>
+<pre><code>Response&lt;String&gt; execute = mCall.execute(); // 同步方法 不能在主线程中执行
+</code></pre></li>
+<li><p>异步</p>
+<pre><code>mJson.enqueue(new Callback&lt;Tngou&gt;() {
+    /**
+     * 在UI线程中
+     * @param call
+     * @param response
+     */
+    @Override
+    public void onResponse(Call&lt;Tngou&gt; call, Response&lt;Tngou&gt; response) {
+        Tngou tngou = response.body(); // body的类型由转换器和泛型决定
+    }
+
+    /**
+     * 在UI线程中
+     * @param call
+     * @param t
+     */
+    @Override
+    public void onFailure(Call&lt;Tngou&gt; call, Throwable t) {
+
+    }
+});
+</code></pre></li>
+</ol>
+<h2 id="7-结束"><a href="#7-结束" class="headerlink" title="7 结束"></a>7 结束</h2><pre><code>@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mJson.cancel();
+}
+</code></pre><h2 id="8-xml-解析"><a href="#8-xml-解析" class="headerlink" title="8 xml 解析"></a>8 xml 解析</h2><p>解析地址：<a href="http://www.inexus.co/portal.php?mod=rss&amp;catid=0" target="_blank" rel="noopener">http://www.inexus.co/portal.php?mod=rss&amp;catid=0</a></p>
+<h3 id="0-实体类"><a href="#0-实体类" class="headerlink" title="0 实体类"></a>0 实体类</h3><pre><code>@Root(name = &quot;item&quot;, strict = false)
+public class Item {
+
+    //Mon, 11 Apr 2016 03:15:00 +0000
+    private SimpleDateFormat sdfRes = new SimpleDateFormat(&quot;E, dd MMM yyyy HH:mm:ss Z&quot;, Locale.ENGLISH);
+    private SimpleDateFormat sdfTar = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;, Locale.CHINA);
+
+    @Element(name = &quot;title&quot;)
+    private String title;
+    @Element(name = &quot;link&quot;)
+    private String link;
+    @Element(name = &quot;description&quot;)
+    private String description;
+    @Element(name = &quot;category&quot;)
+    private String category;
+    @Element(name = &quot;author&quot;)
+    private String author;
+    @Element(name = &quot;pubDate&quot;)
+    private String pubDate;
+。。。getter、setter
+
+    public String getPubDate() {
+        try {
+            Date parse = sdfRes.parse(pubDate);
+            return sdfTar.format(parse);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return &quot;&quot;;
+    }
+}
+</code></pre><p>.</p>
+<pre><code>@Root(name = &quot;channel&quot;, strict = false) // ，严格检查
+public class Channel {
+
+    @Element(name = &quot;title&quot;)
+    @Path(&quot;channel&quot;)   // 设置结点位置
+    private String title;
+    @ElementList(name = &quot;item&quot;, type = Item.class, inline = true)
+    @Path(&quot;channel&quot;)
+    private List&lt;Item&gt; list;
+。。。getter、setter
+}
+</code></pre><h3 id="1-封装一个工具类将接口作为内部接口"><a href="#1-封装一个工具类将接口作为内部接口" class="headerlink" title="1 封装一个工具类将接口作为内部接口"></a>1 封装一个工具类将接口作为内部接口</h3><pre><code>public class NetworkUtil {
+    private static Service service;
+
+    static {
+        service =  new Retrofit.Builder()
+                .baseUrl(&quot;http://www.inexus.co/&quot;)
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build()
+                .create(Service.class);
+    }
+
+    public static Service getService() {
+        return service;
+    }
+
+    public interface Service {
+        @GET(&quot;/portal.php&quot;)
+        Call&lt;Channel&gt; getChannel(@Query(&quot;mod&quot;) String mod, @Query(&quot;catid&quot;) int catid);
+    }
+}
+</code></pre><h3 id="2-使用"><a href="#2-使用" class="headerlink" title="2 使用"></a>2 使用</h3><pre><code>NetworkUtil.getService().getChannel(&quot;rss&quot;, 0).enqueue(this);
+</code></pre><h2 id="如何获得string"><a href="#如何获得string" class="headerlink" title="如何获得string"></a>如何获得string</h2><pre><code>response.body().string()
+</code></pre><h1 id="Retrofit-debug-查看请求和返回结果的-raw"><a href="#Retrofit-debug-查看请求和返回结果的-raw" class="headerlink" title="Retrofit debug 查看请求和返回结果的 raw"></a>Retrofit debug 查看请求和返回结果的 raw</h1><p>添加依赖：</p>
+<pre><code>compile &apos;com.squareup.okhttp3:logging-interceptor:3.4.1&apos;
+</code></pre><p>使用：</p>
+<pre><code>HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+//手动创建一个OkHttpClient并设置超时时间
+OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+httpClientBuilder.addInterceptor(httpLoggingInterceptor);
+
+mRetrofit = new Retrofit.Builder()
+        .client(httpClientBuilder.build())
+        .baseUrl(AppConstants.API.BASE_URL)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
+
+mDjangoService = mRetrofit.create(DjangoService.class);
+</code></pre><h1 id="记一个-500-错误"><a href="#记一个-500-错误" class="headerlink" title="记一个 500 错误"></a>记一个 500 错误</h1><p>服务器端提示：</p>
+<pre><code>RuntimeError: You called this URL via POST, but the URL doesn&apos;t end in a slash and you have APPEND_SLASH set. Django can&apos;t redirect to the slash URL while maintaining POST data. Change your form to point to 10.0.2.2:8000/snippets/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[10/Nov/2016 03:04:18] &quot;POST /snippets HTTP/1.1&quot; 500 59659
+</code></pre><p>原因：retrofit post 请求必须以 反斜杠 结尾</p>
+<h1 id="添加-Authorization"><a href="#添加-Authorization" class="headerlink" title="添加 Authorization"></a>添加 Authorization</h1><p>基本 Authorization：</p>
+<pre><code>public class RequestInterceptor implements Interceptor {
+     @Override
+     public Response intercept(Chain chain) throws IOException {
+
+         String credentials = &quot;double&quot; + &quot;:&quot; + &quot;happy0224&quot;;
+
+         final String basic =
+                 &quot;Basic &quot; + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+
+         Request request = chain.request().newBuilder()
+                 .addHeader(&quot;Content-Type&quot;, &quot;application/json&quot;)
+                 .addHeader(&quot;Accept&quot;, &quot;application/json&quot;) //Accept:application/json
+                 .addHeader(&quot;Authorization&quot;, basic)
+                 .build();
+         return chain.proceed(request);
+     }
+ }
+
+private HttpMethod() {
+
+    HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+    httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+    //手动创建一个OkHttpClient并设置超时时间
+    OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+    httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+    httpClientBuilder.addInterceptor(new RequestInterceptor());
+    httpClientBuilder.addInterceptor(httpLoggingInterceptor);
+
+
+    mRetrofit = new Retrofit.Builder()
+            .client(httpClientBuilder.build())
+            .baseUrl(AppConstants.API.BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    mDjangoService = mRetrofit.create(DjangoService.class);
+
+}
+</code></pre><h1 id="retrofit-文件上传"><a href="#retrofit-文件上传" class="headerlink" title="retrofit 文件上传"></a>retrofit 文件上传</h1><blockquote>
+<p>服务器使用 from 表单形式接收 post 请求的时候</p>
+</blockquote>
+<p>接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过 List&lt;MultipartBody.Part&gt; 传入多个part实现多文件上传</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> parts 每个part代表一个</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 状态信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Multipart</span></span><br><span class="line"><span class="meta">@POST</span>(<span class="string">"form/upload/"</span>)</span><br><span class="line"><span class="function">Call&lt;ResponseBody&gt; <span class="title">uploadFilesDjango</span><span class="params">(@Part MultipartBody.Part file2)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>part 创建方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> MultipartBody.<span class="function">Part <span class="title">imageToMultipartBody2</span><span class="params">(List&lt;File&gt; files)</span> </span>&#123;</span><br><span class="line">    RequestBody requestFile = RequestBody.create(MediaType.parse(<span class="string">"multipart/form-data"</span>), files.get(<span class="number">0</span>));</span><br><span class="line">    MultipartBody.Part multipartBody = MultipartBody.Part.createFormData(<span class="string">"my_image"</span>, files.get(<span class="number">0</span>).getName(), requestFile);</span><br><span class="line">    <span class="keyword">return</span> multipartBody;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong><em>注意</em></strong>这里的 <code>my_image</code> 是由服务器对表单的要求决定的</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Retrofit/" rel="tag"># Retrofit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/10/Android/view/ListView/ListView图片复用导致布局更改联动/" rel="next" title="ListView 布局复用导致的问题">
+                <i class="fa fa-chevron-left"></i> ListView 布局复用导致的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/12/Android/UI/Material design/" rel="prev" title="Material design">
+                Material design <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Retrofit-介绍"><span class="nav-number">1.</span> <span class="nav-text">Retrofit 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Retrofit-使用"><span class="nav-number">2.</span> <span class="nav-text">Retrofit 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-导包"><span class="nav-number">2.1.</span> <span class="nav-text">0 导包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建一个接口"><span class="nav-number">2.2.</span> <span class="nav-text">1 创建一个接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-实体类"><span class="nav-number">2.3.</span> <span class="nav-text">2 实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-创建-Retrofit对象"><span class="nav-number">2.4.</span> <span class="nav-text">3 创建 Retrofit对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-自定义转换器"><span class="nav-number">2.4.1.</span> <span class="nav-text">3.1 自定义转换器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Retrofit对象-连接创建的接口"><span class="nav-number">2.5.</span> <span class="nav-text">4 Retrofit对象 连接创建的接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-执行接口中方法获得一个请求"><span class="nav-number">2.6.</span> <span class="nav-text">5 执行接口中方法获得一个请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-开启请求"><span class="nav-number">2.7.</span> <span class="nav-text">6 开启请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-结束"><span class="nav-number">2.8.</span> <span class="nav-text">7 结束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-xml-解析"><span class="nav-number">2.9.</span> <span class="nav-text">8 xml 解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-实体类"><span class="nav-number">2.9.1.</span> <span class="nav-text">0 实体类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-封装一个工具类将接口作为内部接口"><span class="nav-number">2.9.2.</span> <span class="nav-text">1 封装一个工具类将接口作为内部接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用"><span class="nav-number">2.9.3.</span> <span class="nav-text">2 使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何获得string"><span class="nav-number">2.10.</span> <span class="nav-text">如何获得string</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Retrofit-debug-查看请求和返回结果的-raw"><span class="nav-number">3.</span> <span class="nav-text">Retrofit debug 查看请求和返回结果的 raw</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#记一个-500-错误"><span class="nav-number">4.</span> <span class="nav-text">记一个 500 错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加-Authorization"><span class="nav-number">5.</span> <span class="nav-text">添加 Authorization</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#retrofit-文件上传"><span class="nav-number">6.</span> <span class="nav-text">retrofit 文件上传</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1124 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Dialog,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="DialogFragment 不会触发 Activity 的 onPause 方法 onPause: Called when the system is about to start resuming another activity.  onPause() is called when the device goes to sleep or when a dialog appears.   普通">
+<meta name="keywords" content="Dialog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dialog官方文档总结">
+<meta property="og:url" content="http://yoursite.com/2016/03/14/Android/view/DialogFragment/Dialog总结/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="DialogFragment 不会触发 Activity 的 onPause 方法 onPause: Called when the system is about to start resuming another activity.  onPause() is called when the device goes to sleep or when a dialog appears.   普通">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.265Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dialog官方文档总结">
+<meta name="twitter:description" content="DialogFragment 不会触发 Activity 的 onPause 方法 onPause: Called when the system is about to start resuming another activity.  onPause() is called when the device goes to sleep or when a dialog appears.   普通">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/14/Android/view/DialogFragment/Dialog总结/">
+
+
+
+
+
+  <title>Dialog官方文档总结 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/14/Android/view/DialogFragment/Dialog总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dialog官方文档总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-14T21:38:14+08:00">
+                2016-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="DialogFragment-不会触发-Activity-的-onPause-方法"><a href="#DialogFragment-不会触发-Activity-的-onPause-方法" class="headerlink" title="DialogFragment 不会触发 Activity 的 onPause 方法"></a>DialogFragment 不会触发 Activity 的 onPause 方法</h1><ol>
+<li>onPause: Called when the system is about to start resuming another activity. </li>
+<li>onPause() is called when the device goes to sleep or when a dialog appears. </li>
+</ol>
+<p>普通的 Dialog 创建的时候是基于 透明Activity 的所以会触发 onPause 方法</p>
+<p>但是 DialogFragment 不会创建 透明Activity 所以不会触发 onPause 方法</p>
+<h1 id="Dialog官方文档总结"><a href="#Dialog官方文档总结" class="headerlink" title="Dialog官方文档总结"></a>Dialog官方文档总结</h1><blockquote>
+<p>file:///C:/MyProgram/androidprogram/adt-bundle-windows-x86_64-20140702/sdk/docs/guide/topics/ui/dialogs.html</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="使用-DialogFragment-来管理Dialog"><a href="#使用-DialogFragment-来管理Dialog" class="headerlink" title="使用 DialogFragment 来管理Dialog"></a>使用 DialogFragment 来管理Dialog</h2><ol>
+<li>创建一个类继承DialogFragment</li>
+<li><p>重写onCreateDialog()方法，这个方法内创建Dialog，并将创建好的Dialog返回</p>
+<pre><code>public Dialog onCreateDialog(Bundle savedInstanceState)
+</code></pre></li>
+<li><p>在需要的地方(activity)创建这个类的实例，调用<code>show()</code>方法就可以让DialogFragment出现。</p>
+</li>
+</ol>
+<h2 id="创建Dialog的方法"><a href="#创建Dialog的方法" class="headerlink" title="创建Dialog的方法"></a>创建Dialog的方法</h2><h3 id="AlertDialog-Builder"><a href="#AlertDialog-Builder" class="headerlink" title="AlertDialog.Builder"></a>AlertDialog.Builder</h3><ol>
+<li><p>Dialog分三个区域</p>
+<ol>
+<li>Title</li>
+<li>Content area：不能同时放message和list</li>
+<li>Action buttons:最多三个</li>
+</ol>
+</li>
+<li><p>创建AlertDialog.Builder对象</p>
+<pre><code>AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+</code></pre></li>
+<li><p>AlertDialog.Builder里面的方法</p>
+<ol>
+<li>setTitle()</li>
+<li>setMessage()</li>
+<li>setPositiveButton()</li>
+<li>setNegativeButton()</li>
+<li>setNeutralButton()</li>
+<li>create()</li>
+</ol>
+</li>
+<li><p>添加Button</p>
+<ol>
+<li>setPositiveButton()</li>
+<li>setNegativeButton()</li>
+<li>setNeutralButton()</li>
+</ol>
+</li>
+<li><p>添加List</p>
+<ol>
+<li><p>A traditional single-choice list <strong>单选</strong></p>
+<ol>
+<li><p>setItems()</p>
+<p> .setItems(R.array.colors_array, new DialogInterface.OnClickListener() {</p>
+<pre><code>    public void onClick(DialogInterface dialog, int which) {
+    // The &apos;which&apos; argument contains the index position
+    // of the selected item
+}
+</code></pre></li>
+<li><p>setAdapter(),可能还需要<code>Loader</code>异步加载数据</p>
+<pre><code>public Builder setAdapter(final ListAdapter adapter, final OnClickListener listener)
+</code></pre></li>
+</ol>
+</li>
+<li>A persistent single-choice list (radio buttons) <strong>单选</strong><ol>
+<li>setSingleChoiceItems()</li>
+</ol>
+</li>
+<li>A persistent multiple-choice list (checkboxes) <strong>多选</strong><ol>
+<li>setMultiChoiceItems()</li>
+<li>这里需要创建一个属性，存储点击的项目</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>private ArrayList mSelectedItems;
+
+.setMultiChoiceItems(R.array.toppings, null,
+                          new DialogInterface.OnMultiChoiceClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which,
+                           boolean isChecked) {
+                       if (isChecked) {
+                           // If the user checked the item, add it to the selected items
+                           mSelectedItems.add(which);
+                       } else if (mSelectedItems.contains(which)) {
+                           // Else, if the item is already in the array, remove it 
+                           mSelectedItems.remove(Integer.valueOf(which));
+                       }
+                   }
+               })
+</code></pre><h3 id="创建自定义布局"><a href="#创建自定义布局" class="headerlink" title="创建自定义布局"></a>创建自定义布局</h3><p>方法一：</p>
+<ol>
+<li>创建xml布局文件</li>
+<li>使用LayoutInflater创建布局文件的View</li>
+<li><p><code>setView(..)</code></p>
+<pre><code>LayoutInflater inflater = getActivity().getLayoutInflater();
+builder.setView(inflater.inflate(R.layout.dialog_signin, null))
+</code></pre></li>
+</ol>
+<p>方法二：将activity作为dialog</p>
+<ol>
+<li>创建一个activity</li>
+<li><p>设置activity的xml属性</p>
+ <activity android:theme="@android:style/Theme.Holo.Dialog">
+
+</activity></li>
+</ol>
+<h2 id="Passing-Events-Back-to-the-Dialog’s-Host，-Fragment的接口回调"><a href="#Passing-Events-Back-to-the-Dialog’s-Host，-Fragment的接口回调" class="headerlink" title="Passing Events Back to the Dialog’s Host， Fragment的接口回调"></a>Passing Events Back to the Dialog’s Host， Fragment的接口回调</h2><ol>
+<li><p>创建的DialogFragment子类要创建一个内部接口</p>
+<pre><code>public interface NoticeDialogListener {
+    public void onDialogPositiveClick(DialogFragment dialog);
+       public void onDialogNegativeClick(DialogFragment dialog);
+   }
+</code></pre></li>
+<li><p>DialogFragment子类的成员属性</p>
+<pre><code>NoticeDialogListener mListener;
+</code></pre></li>
+<li><p>重写onAttach()方法(注意选择正确的方法)，这里的接口回调没有用构造方法的形式，而是将activity作为实现类利用DialogFragment的特点传入。</p>
+<pre><code>// Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+@Override
+public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    // Verify that the host activity implements the callback interface
+    try {
+        // Instantiate the NoticeDialogListener so we can send events to the host
+        mListener = (NoticeDialogListener) activity;
+    } catch (ClassCastException e) {
+        // The activity doesn&apos;t implement the interface, throw exception
+        throw new ClassCastException(activity.toString()
+                + &quot; must implement NoticeDialogListener&quot;);
+    }
+}
+</code></pre></li>
+<li><p>使用这个DialogFragment的activity需要写的代码</p>
+<p> 接口方法重写    </p>
+<pre><code>@Override
+public void onDialogPositiveClick(DialogFragment dialog) {
+    // User touched the dialog&apos;s positive button
+    ...
+}
+
+@Override
+public void onDialogNegativeClick(DialogFragment dialog) {
+    // User touched the dialog&apos;s negative button
+    ...
+}
+</code></pre><p> 不必要的方法</p>
+<pre><code>public void showNoticeDialog() {
+    // Create an instance of the dialog fragment and show it
+    DialogFragment dialog = new NoticeDialogFragment();
+    dialog.show(getSupportFragmentManager(), &quot;NoticeDialogFragment&quot;);
+}
+</code></pre></li>
+<li><p>在DialogFragment子类中分配接口的方法</p>
+<pre><code>mListener.onDialogPositiveClick(NoticeDialogFragment.this);
+</code></pre></li>
+</ol>
+<h2 id="Showing-a-Dialog-显示Dialog"><a href="#Showing-a-Dialog-显示Dialog" class="headerlink" title="Showing a Dialog 显示Dialog"></a>Showing a Dialog 显示Dialog</h2><ol>
+<li>在需要调用的地方创建DialogFragment的子类实例</li>
+<li>调用<code>show(FragmentManager,Tag)</code>方法</li>
+</ol>
+<h3 id="FragmentManager-getFragmentManager"><a href="#FragmentManager-getFragmentManager" class="headerlink" title="FragmentManager:getFragmentManager()"></a>FragmentManager:<code>getFragmentManager()</code></h3><h3 id="Tag-string-类型"><a href="#Tag-string-类型" class="headerlink" title="Tag:string 类型"></a>Tag:string 类型</h3><p>作用：</p>
+<ol>
+<li><code>findFragmentByTag()</code>，在fragment中获取<code>fragmentManager</code>，通过<code>FragmentManager</code>的<code>findFragmentByTag(“。。。”)</code>获取另一个fragment实例达到两个fragment通信的功能。</li>
+<li>在activity中启动dialog的时候调用这个方法，<code>tag</code>设置后可以在<code>DialogFragment</code>中通过<code>getTag()</code>方法获取tag从而知道是谁启动了这个dialogfragment。通过判断不同的tag，<code>DialogFragment</code>可以在<code>onCreateDialog()</code>方法中初始化不同界面的<code>Dialog</code></li>
+</ol>
+<h2 id="Showing-a-Dialog-Fullscreen-or-as-an-Embedded-Fragment-全屏显示Dialog，内嵌Dialog"><a href="#Showing-a-Dialog-Fullscreen-or-as-an-Embedded-Fragment-全屏显示Dialog，内嵌Dialog" class="headerlink" title="Showing a Dialog Fullscreen or as an Embedded Fragment 全屏显示Dialog，内嵌Dialog"></a>Showing a Dialog Fullscreen or as an Embedded Fragment 全屏显示Dialog，内嵌Dialog</h2><pre><code>public void showDialog() {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    CustomDialogFragment newFragment = new CustomDialogFragment();
+
+    if (mIsLargeLayout) {
+        // The device is using a large layout, so show the fragment as a dialog
+        newFragment.show(fragmentManager, &quot;dialog&quot;);
+    } else {
+        // The device is smaller, so show the fragment fullscreen
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        // For a little polish, specify a transition animation
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        // To make it fullscreen, use the &apos;content&apos; root view as the container
+        // for the fragment, which is always the root view for the activity
+        transaction.add(android.R.id.content, newFragment)
+                   .addToBackStack(null).commit();
+    }
+}
+</code></pre><ol>
+<li>注意里面<code>android.R.id.content</code></li>
+<li><p>屏幕大小问题</p>
+<ol>
+<li><p>在values下创建xml</p>
+<pre><code>        &lt;!-- Default boolean values --&gt;
+&lt;resources&gt;
+    &lt;bool name=&quot;large_layout&quot;&gt;false&lt;/bool&gt;
+&lt;/resources&gt;
+</code></pre></li>
+<li><p>在values-w820dp下创建xml</p>
+<pre><code>        &lt;!-- Large screen boolean values --&gt;
+&lt;resources&gt;
+    &lt;bool name=&quot;large_layout&quot;&gt;true&lt;/bool&gt;
+&lt;/resources&gt;
+</code></pre></li>
+<li><p>java代码</p>
+<pre><code>boolean mIsLargeLayout;
+
+@Override
+public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
+}
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h2 id="Showing-an-activity-as-a-dialog-on-large-screens"><a href="#Showing-an-activity-as-a-dialog-on-large-screens" class="headerlink" title="Showing an activity as a dialog on large screens"></a>Showing an activity as a dialog on large screens</h2><p>在大屏幕手机上把一个activity作为对话框形式出现的方法</p>
+<p>设置清单文件:</p>
+<pre><code>&lt;activity android:theme=&quot;@android:style/Theme.Holo.DialogWhenLarge&quot; &gt;
+</code></pre><h2 id="Dismissing-a-Dialog-Dialog消失"><a href="#Dismissing-a-Dialog-Dialog消失" class="headerlink" title="Dismissing a Dialog Dialog消失"></a>Dismissing a Dialog Dialog消失</h2><ol>
+<li><p>正常消失</p>
+<ol>
+<li>点击了对话框中的button</li>
+<li>单选的时候点击了List</li>
+</ol>
+</li>
+<li><p>调用DialogFragment的<code>dismiss()</code>方法</p>
+<ol>
+<li>会执行回调方法<code>onDismiss()</code></li>
+</ol>
+</li>
+<li><p>调用DialogFragment的<code>cancel()</code>方法</p>
+<ol>
+<li>会执行回调方法<code>onCancel()</code></li>
+</ol>
+</li>
+<li><p>当我们要在DialogFragment消失的时候做一些操作的时候</p>
+<ol>
+<li>重写<code>onDissmiss()</code>方法</li>
+</ol>
+</li>
+<li><p><code>onCancel()方法</code>调用时机</p>
+<ol>
+<li>点击Dialog外面</li>
+<li><p>点击手机back键</p>
+<p>注意:点击PositiveButton的时候不会调用<code>onCancel()</code>方法</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="Fragment和Activity交互"><a href="#Fragment和Activity交互" class="headerlink" title="Fragment和Activity交互"></a>Fragment和Activity交互</h2><p>比较好的方式是：接口回调</p>
+<ol>
+<li><p>定义一个接口</p>
+<pre><code>public interface DataCallback {
+
+    public void getData(String data);
+}
+</code></pre></li>
+<li><p>让使用这个fragment的activity实现这个接口</p>
+</li>
+<li><p>在fragment中使用接口方法</p>
+<pre><code>@Override
+public void onAttach(Activity activity) {
+// onAttach()是合适的早期阶段进行检查MyActivity是否真的实现了接口。
+// 采用接口的方式，dialog无需详细了解MyActivity，只需了解其所需的接口函数，这是真正项目中应采用的方式。
+if (!(activity instanceof DataCallback)) {
+    throw new IllegalStateException(&quot;fragment所在的Activity必须实现Callbacks接口&quot;);
+}
+super.onAttach(activity);
+}
+
+@Override
+public void onClick(DialogInterface dialog, int which) {
+DataCallback callback = (DataCallback) getActivity();
+callback.getData(&quot;test&quot;);
+}
+</code></pre></li>
+</ol>
+<h2 id="用DialogFragment实现二次弹窗"><a href="#用DialogFragment实现二次弹窗" class="headerlink" title="用DialogFragment实现二次弹窗"></a>用DialogFragment实现二次弹窗</h2><pre><code>FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+    /*
+     * 如果不执行remove()，对话框即不会进入onDismiss()状态。会被显示在新的对话框下方，是可见的。
+     * 主要考虑美观的问题，如果下面的对话框大于上面的对话框就很难看了。 对于Dialog，container为0或者null。
+     */
+    ft.remove(this);
+    /*
+     * 将当前的PromptDialogFragment加入到回退堆栈，当用户按返回键，或者通过按帮助框的Close按钮dismiss帮助框是，
+     * 重新显示提示框。 对于back stack的处理，系统具有一定的智能。例如：执行两次addToStackStack()，实际不会重复压栈。
+     * 有例如：注释掉remove()语句，即提示框不消失，而是在帮助框的下面。
+     * 但是在实验中发现是否有addToBackStack()都不会结果有影响，系统能够分析到对象存在，不需要压栈。没有去查源代码，
+     * 猜测通过mBackStackId比对来进行智能处理。
+     */
+    ft.addToBackStack(null);
+
+    new OhterDialogFragment()
+    .show(getFragmentManager(), &quot;dialog_fragment&quot;);
+</code></pre><h2 id="设置出现动画"><a href="#设置出现动画" class="headerlink" title="设置出现动画"></a>设置出现动画</h2><pre><code>alertDialog.getWindow().getAttributes().windowAnimations = R.style.dialogAnim;
+</code></pre><p>style文件：</p>
+<pre><code>&lt;style name=&quot;dialogAnim&quot; mce_bogus=&quot;1&quot; parent=&quot;android:Animation&quot;&gt;
+    &lt;item name=&quot;android:windowEnterAnimation&quot;&gt;@anim/dialog_push_in&lt;/item&gt;
+    &lt;item name=&quot;android:windowExitAnimation&quot;&gt;@anim/dialog_push_out&lt;/item&gt;
+&lt;/style&gt;
+</code></pre><p>动画xml文件：dialog_push_in</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+
+    &lt;translate
+    android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+    android:fromYDelta=&quot;100%p&quot;
+    android:toYDelta=&quot;0%p&quot; /&gt;
+
+    &lt;alpha
+    android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+    android:fromAlpha=&quot;0.0&quot;
+    android:toAlpha=&quot;1.0&quot; /&gt;
+
+&lt;/set&gt;
+</code></pre><p>动画xml文件：dialog_push_out</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;translate
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromYDelta=&quot;0%p&quot;
+        android:toYDelta=&quot;100%p&quot; /&gt;
+
+    &lt;alpha
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromAlpha=&quot;1.0&quot;
+        android:toAlpha=&quot;0.3&quot; /&gt;
+&lt;/set&gt;
+</code></pre><h2 id="自定义DialogFragment出现位置和宽高"><a href="#自定义DialogFragment出现位置和宽高" class="headerlink" title="自定义DialogFragment出现位置和宽高"></a>自定义DialogFragment出现位置和宽高</h2><pre><code>Window window = dialog.getWindow();
+WindowManager.LayoutParams wlp = window.getAttributes();
+wlp.gravity = Gravity.BOTTOM;
+wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+window.setAttributes(wlp);
+</code></pre><h2 id="dialog-宽度占满屏幕实例，设置-dialog-宽高"><a href="#dialog-宽度占满屏幕实例，设置-dialog-宽高" class="headerlink" title="dialog 宽度占满屏幕实例，设置 dialog 宽高"></a>dialog 宽度占满屏幕实例，设置 dialog 宽高</h2><pre><code>@NonNull
+@Override
+public Dialog onCreateDialog(Bundle savedInstanceState) {
+    AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+    dialog.show();
+    Window window = dialog.getWindow();
+    window.setBackgroundDrawable(null);
+    window.setContentView(R.layout.share_fragment);
+    window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);     // 设置宽高
+    WindowManager.LayoutParams attributes = window.getAttributes();
+    attributes.windowAnimations = R.style.dialogAnim;    // 出现动画
+    attributes.gravity = Gravity.BOTTOM;
+    window.setAttributes(attributes);
+    return dialog;
+}
+</code></pre><p>or</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onStart();</span><br><span class="line"></span><br><span class="line">    Dialog dialog = getDialog();</span><br><span class="line">    dialog.show();</span><br><span class="line">    Window window = dialog.getWindow();</span><br><span class="line">    window.setBackgroundDrawable(<span class="keyword">null</span>);</span><br><span class="line">    WindowManager.LayoutParams wlp = window.getAttributes();</span><br><span class="line">    wlp.gravity = Gravity.BOTTOM;</span><br><span class="line">    wlp.width = WindowManager.LayoutParams.MATCH_PARENT;</span><br><span class="line">    wlp.windowAnimations = R.style.dialogAnim;</span><br><span class="line">    window.setAttributes(wlp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果高度不能占满屏幕，试试把跟控件改成 RelativeLayout</p>
+</blockquote>
+<h2 id="DialogFragment里面EditText调出键盘"><a href="#DialogFragment里面EditText调出键盘" class="headerlink" title="DialogFragment里面EditText调出键盘"></a>DialogFragment里面EditText调出键盘</h2><pre><code>//只用下面这一行弹出对话框时需要点击输入框才能弹出软键盘  
+alert_leaveMsg.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);  
+//加上下面这一行弹出对话框时软键盘随之弹出  
+alert_leaveMsg.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);  
+</code></pre><h2 id="设置圆角Dialog"><a href="#设置圆角Dialog" class="headerlink" title="设置圆角Dialog"></a>设置圆角Dialog</h2><pre><code>public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+    View view = LayoutInflater.from(getContext()).inflate(R.layout.meida_dialog, null);
+    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+
+    alertDialog.show();
+    Window window = alertDialog.getWindow();
+        window.setBackgroundDrawable(null);
+        window.setContentView(view);
+。。。
+}
+</code></pre><p>shape：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+       android:shape=&quot;rectangle&quot;&gt;
+
+    &lt;corners android:radius=&quot;10dp&quot;/&gt;
+
+    &lt;stroke
+    android:width=&quot;1dp&quot;
+    android:color=&quot;@color/colorPrimary&quot;/&gt;
+
+    &lt;solid android:color=&quot;@android:color/white&quot;/&gt;
+
+
+&lt;/shape&gt;
+</code></pre><h2 id="点击外面不取消Dialog"><a href="#点击外面不取消Dialog" class="headerlink" title="点击外面不取消Dialog"></a>点击外面不取消Dialog</h2><pre><code>alertDialog.setCanceledOnTouchOutside(false);
+</code></pre><p>方法二:</p>
+<pre><code>@Override      
+ public void onCreate(Bundle icicle)  
+ {  
+    super.onCreate(icicle);  
+    this.setCancelable(false);// 设置点击屏幕Dialog不消失  
+     int style = DialogFragment.STYLE_NORMAL, theme = 0;  
+     setStyle(style,theme);  
+ }  
+</code></pre><h2 id="点击-Dialog-确定或者取消按钮的时候Dialog不消失"><a href="#点击-Dialog-确定或者取消按钮的时候Dialog不消失" class="headerlink" title="点击 Dialog 确定或者取消按钮的时候Dialog不消失"></a>点击 Dialog 确定或者取消按钮的时候Dialog不消失</h2><pre><code>canCloseDialog(dialogInterface, false);//不关闭对话框  
+canCloseDialog(dialogInterface, true);//关闭对话框  
+
+//  关键部分在这里  
+private void canCloseDialog(DialogInterface dialogInterface, boolean close) {  
+    try {  
+         Field field = dialogInterface.getClass().getSuperclass().getDeclaredField(&quot;mShowing&quot;);  
+         field.setAccessible(true);  
+         field.set(dialogInterface, close);  
+     } catch (Exception e) {  
+         e.printStackTrace();  
+     }  
+ }  
+</code></pre><p>如果报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NoSuchFieldException: No field mShowing in class Landroid/support/v7/app/AppCompatDialog; (declaration of &apos;android.support.v7.app.AppCompatDialog&apos; appears in /data/app/com.rencarehealth.mirhythm-1/split_lib_dependencies_apk.apk:classes19.dex)</span><br></pre></td></tr></table></figure>
+<p>从错误描述可知，mShowing名字的field并不存在AppCompatDialog的class中，所以需要将你代码中引入的Dialog类修改为非support_v7中的Dialog。</p>
+<h2 id="DialogFragment-设置背景透明"><a href="#DialogFragment-设置背景透明" class="headerlink" title="DialogFragment 设置背景透明"></a>DialogFragment 设置背景透明</h2><p>在 onStart 中设置 window 背景透明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onStart() &#123;</span><br><span class="line">    super.onStart();</span><br><span class="line">    Window window = getDialog().getWindow();</span><br><span class="line">    WindowManager.LayoutParams windowParams = window.getAttributes();</span><br><span class="line">    windowParams.dimAmount = 0.0f;</span><br><span class="line">    window.setAttributes(windowParams);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面代码设置 dialog 背景透明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));</span><br></pre></td></tr></table></figure>
+<h2 id="DialogFragment-设置圆角的时候去除白色背景"><a href="#DialogFragment-设置圆角的时候去除白色背景" class="headerlink" title="DialogFragment 设置圆角的时候去除白色背景"></a>DialogFragment 设置圆角的时候去除白色背景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Nullable</span><br><span class="line">@Override</span><br><span class="line">public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">    getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));</span><br><span class="line">    View view = LayoutInflater.from(getActivity()).inflate(R.layout.loading_layout, container, false);</span><br><span class="line">    return view;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dialog/" rel="tag"># Dialog</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/13/Android/view/ListView/ListView分页/" rel="next" title="ListView分页加载数据">
+                <i class="fa fa-chevron-left"></i> ListView分页加载数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/15/program/vim/vim 问题记录/" rel="prev" title="vim -- 问题记录">
+                vim -- 问题记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DialogFragment-不会触发-Activity-的-onPause-方法"><span class="nav-number">1.</span> <span class="nav-text">DialogFragment 不会触发 Activity 的 onPause 方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dialog官方文档总结"><span class="nav-number">2.</span> <span class="nav-text">Dialog官方文档总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-DialogFragment-来管理Dialog"><span class="nav-number">2.1.</span> <span class="nav-text">使用 DialogFragment 来管理Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Dialog的方法"><span class="nav-number">2.2.</span> <span class="nav-text">创建Dialog的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AlertDialog-Builder"><span class="nav-number">2.2.1.</span> <span class="nav-text">AlertDialog.Builder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自定义布局"><span class="nav-number">2.2.2.</span> <span class="nav-text">创建自定义布局</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Passing-Events-Back-to-the-Dialog’s-Host，-Fragment的接口回调"><span class="nav-number">2.3.</span> <span class="nav-text">Passing Events Back to the Dialog’s Host， Fragment的接口回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-显示Dialog"><span class="nav-number">2.4.</span> <span class="nav-text">Showing a Dialog 显示Dialog</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FragmentManager-getFragmentManager"><span class="nav-number">2.4.1.</span> <span class="nav-text">FragmentManager:getFragmentManager()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tag-string-类型"><span class="nav-number">2.4.2.</span> <span class="nav-text">Tag:string 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-a-Dialog-Fullscreen-or-as-an-Embedded-Fragment-全屏显示Dialog，内嵌Dialog"><span class="nav-number">2.5.</span> <span class="nav-text">Showing a Dialog Fullscreen or as an Embedded Fragment 全屏显示Dialog，内嵌Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Showing-an-activity-as-a-dialog-on-large-screens"><span class="nav-number">2.6.</span> <span class="nav-text">Showing an activity as a dialog on large screens</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dismissing-a-Dialog-Dialog消失"><span class="nav-number">2.7.</span> <span class="nav-text">Dismissing a Dialog Dialog消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment和Activity交互"><span class="nav-number">2.8.</span> <span class="nav-text">Fragment和Activity交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用DialogFragment实现二次弹窗"><span class="nav-number">2.9.</span> <span class="nav-text">用DialogFragment实现二次弹窗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置出现动画"><span class="nav-number">2.10.</span> <span class="nav-text">设置出现动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义DialogFragment出现位置和宽高"><span class="nav-number">2.11.</span> <span class="nav-text">自定义DialogFragment出现位置和宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dialog-宽度占满屏幕实例，设置-dialog-宽高"><span class="nav-number">2.12.</span> <span class="nav-text">dialog 宽度占满屏幕实例，设置 dialog 宽高</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment里面EditText调出键盘"><span class="nav-number">2.13.</span> <span class="nav-text">DialogFragment里面EditText调出键盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置圆角Dialog"><span class="nav-number">2.14.</span> <span class="nav-text">设置圆角Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击外面不取消Dialog"><span class="nav-number">2.15.</span> <span class="nav-text">点击外面不取消Dialog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点击-Dialog-确定或者取消按钮的时候Dialog不消失"><span class="nav-number">2.16.</span> <span class="nav-text">点击 Dialog 确定或者取消按钮的时候Dialog不消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment-设置背景透明"><span class="nav-number">2.17.</span> <span class="nav-text">DialogFragment 设置背景透明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DialogFragment-设置圆角的时候去除白色背景"><span class="nav-number">2.18.</span> <span class="nav-text">DialogFragment 设置圆角的时候去除白色背景</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

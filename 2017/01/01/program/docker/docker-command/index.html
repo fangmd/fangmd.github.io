@@ -1,0 +1,767 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Docker,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="查看所有容器查看所有容器(停止运行|正在运行) 1docker container ls -a  在使用镜像启动容器的时候，出现容器名称冲突的时候，可以通过查看所有容器找到重复的并删除  从容器中取出文件1docker cp &amp;lt;containerId&amp;gt;:/file/path/within/container /host/path/target 删除容器/image12345清理容器do">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Command">
+<meta property="og:url" content="http://yoursite.com/2017/01/01/program/docker/docker-command/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="查看所有容器查看所有容器(停止运行|正在运行) 1docker container ls -a  在使用镜像启动容器的时候，出现容器名称冲突的时候，可以通过查看所有容器找到重复的并删除  从容器中取出文件1docker cp &amp;lt;containerId&amp;gt;:/file/path/within/container /host/path/target 删除容器/image12345清理容器do">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.429Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker Command">
+<meta name="twitter:description" content="查看所有容器查看所有容器(停止运行|正在运行) 1docker container ls -a  在使用镜像启动容器的时候，出现容器名称冲突的时候，可以通过查看所有容器找到重复的并删除  从容器中取出文件1docker cp &amp;lt;containerId&amp;gt;:/file/path/within/container /host/path/target 删除容器/image12345清理容器do">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/01/program/docker/docker-command/">
+
+
+
+
+
+  <title>Docker Command | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/01/program/docker/docker-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker Command</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-01T13:18:12+08:00">
+                2017-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="查看所有容器"><a href="#查看所有容器" class="headerlink" title="查看所有容器"></a>查看所有容器</h1><p>查看所有容器(停止运行|正在运行)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls -a</span><br></pre></td></tr></table></figure>
+<ol>
+<li>在使用镜像启动容器的时候，出现容器名称冲突的时候，可以通过查看所有容器找到重复的并删除</li>
+</ol>
+<h1 id="从容器中取出文件"><a href="#从容器中取出文件" class="headerlink" title="从容器中取出文件"></a>从容器中取出文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp &lt;containerId&gt;:/file/path/within/container /host/path/target</span><br></pre></td></tr></table></figure>
+<h1 id="删除容器-image"><a href="#删除容器-image" class="headerlink" title="删除容器/image"></a>删除容器/image</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">清理容器</span><br><span class="line">docker container prune</span><br><span class="line"></span><br><span class="line">删除镜像</span><br><span class="line">docker image rm [image name]</span><br></pre></td></tr></table></figure>
+<p>可以处理下面错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error response from daemon: conflict: unable to remove repository reference &quot;training/webapp&quot; (must force) - container 0bd2b54678c7 is using its referenced image 54bb4e8718e8</span><br></pre></td></tr></table></figure>
+<h1 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h1><p>查看 docker 的信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker info</span><br></pre></td></tr></table></figure>
+<p>查看 docker 占用的硬盘大小：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker system df</span><br></pre></td></tr></table></figure>
+<h1 id="镜像相关"><a href="#镜像相关" class="headerlink" title="镜像相关"></a>镜像相关</h1><p>下载镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</span><br><span class="line"></span><br><span class="line">docker pull [OPTIONS] NAME[:TAG|@DIGEST]</span><br></pre></td></tr></table></figure>
+<p>运行镜像:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 删除不再使用的镜像，比如：none 类型的镜像</span><br><span class="line">docker image prune</span><br></pre></td></tr></table></figure>
+<p>列出镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 列出仓库是 ubuntu 的镜像</span><br><span class="line">docker image ls ubuntu</span><br><span class="line"></span><br><span class="line"># 列出 指定仓库名和标签</span><br><span class="line">docker image ls ubuntu:16.04</span><br><span class="line"></span><br><span class="line"># image ls 支持 过滤</span><br><span class="line">docker image ls -f since=mongo:3.2</span><br><span class="line">docker image ls -f label=com.example.version=0.1</span><br></pre></td></tr></table></figure>
+<p>删除镜像：可以使用 长ID，短ID（前3位或者更长），镜像名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker image rm [选项] &lt;镜像1&gt; [&lt;镜像2&gt; ...]</span><br><span class="line"></span><br><span class="line">docker image rm 501</span><br><span class="line">docker image rm centos</span><br><span class="line"></span><br><span class="line"># 配合 ls 删除镜像</span><br><span class="line">docker image rm $(docker image ls -q redis)</span><br></pre></td></tr></table></figure>
+<h2 id="镜像修改"><a href="#镜像修改" class="headerlink" title="镜像修改"></a>镜像修改</h2><ul>
+<li>commit    （禁止使用）</li>
+<li>Dockerfile：推荐</li>
+</ul>
+<h2 id="Dockerfile-构建镜像"><a href="#Dockerfile-构建镜像" class="headerlink" title="Dockerfile 构建镜像"></a>Dockerfile 构建镜像</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker build [选项] &lt;上下文路径/URL/-&gt;</span><br><span class="line"></span><br><span class="line">docker build -t nginx:v3 .</span><br></pre></td></tr></table></figure>
+<h1 id="Dockerfile-语法"><a href="#Dockerfile-语法" class="headerlink" title="Dockerfile 语法"></a>Dockerfile 语法</h1><h2 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h2><p><code>FROM</code>: 指定基础镜像，必备指令，且必须是第一行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM nginx</span><br></pre></td></tr></table></figure>
+<p>空镜像为基础：一些使用 Go 开发的应用可能会以空镜像为基础</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FROM scratch</span><br></pre></td></tr></table></figure>
+<h2 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h2><p><code>RUN</code>： 执行命令</p>
+<ul>
+<li>shell 格式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RUN &lt;命令&gt;</span><br><span class="line"></span><br><span class="line">RUN echo &apos;&lt;h1&gt;Hello, Docker!&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br></pre></td></tr></table></figure>
+<ul>
+<li>exec 格式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RUN [&quot;可执行文件&quot;, &quot;参数1&quot;, &quot;参数2&quot;]</span><br><span class="line"></span><br><span class="line">RUN apt-get update</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="docker-ps"><a href="#docker-ps" class="headerlink" title="docker ps"></a>docker ps</h1><p>进程处理，查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker ps --help</span><br><span class="line"></span><br><span class="line">docker ps -l</span><br><span class="line"></span><br><span class="line">docker kill [CONTAINER ID]</span><br><span class="line">docker rm [CONTAINER ID]</span><br></pre></td></tr></table></figure>
+<h1 id="docker-images"><a href="#docker-images" class="headerlink" title="docker images"></a>docker images</h1><p>查看 docker 中的镜像</p>
+<h1 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h1><p>给 Image 命名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker tag [id] [new image tag]</span><br><span class="line">docker tag [id] [account name/image tag:latest]</span><br></pre></td></tr></table></figure>
+<h1 id="login"><a href="#login" class="headerlink" title="login"></a>login</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login</span><br></pre></td></tr></table></figure>
+<h1 id="push"><a href="#push" class="headerlink" title="push"></a>push</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push [image tag]</span><br></pre></td></tr></table></figure>
+<h1 id="rm-image"><a href="#rm-image" class="headerlink" title="rm image"></a>rm image</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi -f [image tag or image id]</span><br></pre></td></tr></table></figure>
+<h1 id="remove-container"><a href="#remove-container" class="headerlink" title="remove container"></a>remove container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm [container name]</span><br></pre></td></tr></table></figure>
+<h1 id="stop-container"><a href="#stop-container" class="headerlink" title="stop container"></a>stop container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop [container id or names]</span><br></pre></td></tr></table></figure>
+<h1 id="restart-container"><a href="#restart-container" class="headerlink" title="restart container"></a>restart container</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start [container name]</span><br></pre></td></tr></table></figure>
+<h1 id="查看-docker-machine-ip"><a href="#查看-docker-machine-ip" class="headerlink" title="查看 docker machine ip"></a>查看 docker machine ip</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ip</span><br></pre></td></tr></table></figure>
+<h1 id="docker-compose"><a href="#docker-compose" class="headerlink" title="docker compose"></a>docker compose</h1><h2 id="start-compose"><a href="#start-compose" class="headerlink" title="start compose"></a>start compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up</span><br></pre></td></tr></table></figure>
+<h2 id="update-code"><a href="#update-code" class="headerlink" title="update code"></a>update code</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose build</span><br></pre></td></tr></table></figure>
+<h2 id="停止-compose"><a href="#停止-compose" class="headerlink" title="停止 compose"></a>停止 compose</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker-compose ps</span><br><span class="line"></span><br><span class="line">docker-compose rm -all</span><br></pre></td></tr></table></figure>
+<h1 id="SEE-FILE-IN-CONTAINER"><a href="#SEE-FILE-IN-CONTAINER" class="headerlink" title="SEE FILE IN CONTAINER"></a>SEE FILE IN CONTAINER</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export dockerblog_web_1 &gt; contents.tar</span><br></pre></td></tr></table></figure>
+<h1 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it [container-name] sh</span><br><span class="line"></span><br><span class="line">docker exec -it api-redoc sh</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/31/Python/django/offical-doc/django-Performance and optimization/" rel="next" title="django Performance and optimization">
+                <i class="fa fa-chevron-left"></i> django Performance and optimization
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/01/program/docker/docker-learn/" rel="prev" title="Docker Learn">
+                Docker Learn <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#查看所有容器"><span class="nav-number">1.</span> <span class="nav-text">查看所有容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从容器中取出文件"><span class="nav-number">2.</span> <span class="nav-text">从容器中取出文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除容器-image"><span class="nav-number">3.</span> <span class="nav-text">删除容器/image</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本"><span class="nav-number">4.</span> <span class="nav-text">基本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像相关"><span class="nav-number">5.</span> <span class="nav-text">镜像相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像修改"><span class="nav-number">5.1.</span> <span class="nav-text">镜像修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile-构建镜像"><span class="nav-number">5.2.</span> <span class="nav-text">Dockerfile 构建镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile-语法"><span class="nav-number">6.</span> <span class="nav-text">Dockerfile 语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FROM"><span class="nav-number">6.1.</span> <span class="nav-text">FROM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RUN"><span class="nav-number">6.2.</span> <span class="nav-text">RUN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-ps"><span class="nav-number">7.</span> <span class="nav-text">docker ps</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-images"><span class="nav-number">8.</span> <span class="nav-text">docker images</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tag"><span class="nav-number">9.</span> <span class="nav-text">tag</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#login"><span class="nav-number">10.</span> <span class="nav-text">login</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#push"><span class="nav-number">11.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rm-image"><span class="nav-number">12.</span> <span class="nav-text">rm image</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#remove-container"><span class="nav-number">13.</span> <span class="nav-text">remove container</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#stop-container"><span class="nav-number">14.</span> <span class="nav-text">stop container</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#restart-container"><span class="nav-number">15.</span> <span class="nav-text">restart container</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看-docker-machine-ip"><span class="nav-number">16.</span> <span class="nav-text">查看 docker machine ip</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose"><span class="nav-number">17.</span> <span class="nav-text">docker compose</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#start-compose"><span class="nav-number">17.1.</span> <span class="nav-text">start compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#update-code"><span class="nav-number">17.2.</span> <span class="nav-text">update code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止-compose"><span class="nav-number">17.3.</span> <span class="nav-text">停止 compose</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SEE-FILE-IN-CONTAINER"><span class="nav-number">18.</span> <span class="nav-text">SEE FILE IN CONTAINER</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进入容器"><span class="nav-number">19.</span> <span class="nav-text">进入容器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

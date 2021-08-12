@@ -1,0 +1,847 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Django,Forms,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Core field argumentsclass Field(**kwargs)当创建一个 Form class 的时候，最重要的是定义 form 的 fields。 每个 field 有自己的验证逻辑。 Filed.clean(value)每个 Field 实例都有 clean() 方法：接收一个数据参数，数据非法就抛出 django.forms.ValidationError 异常，数据正常">
+<meta name="keywords" content="Django,Forms">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Forms - Built-in fields">
+<meta property="og:url" content="http://yoursite.com/2016/12/14/Python/django/offical-doc/Django Forms - Built-in fields/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Core field argumentsclass Field(**kwargs)当创建一个 Form class 的时候，最重要的是定义 form 的 fields。 每个 field 有自己的验证逻辑。 Filed.clean(value)每个 Field 实例都有 clean() 方法：接收一个数据参数，数据非法就抛出 django.forms.ValidationError 异常，数据正常">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.320Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django Forms - Built-in fields">
+<meta name="twitter:description" content="Core field argumentsclass Field(**kwargs)当创建一个 Form class 的时候，最重要的是定义 form 的 fields。 每个 field 有自己的验证逻辑。 Filed.clean(value)每个 Field 实例都有 clean() 方法：接收一个数据参数，数据非法就抛出 django.forms.ValidationError 异常，数据正常">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/14/Python/django/offical-doc/Django Forms - Built-in fields/">
+
+
+
+
+
+  <title>Django Forms - Built-in fields | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/14/Python/django/offical-doc/Django Forms - Built-in fields/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Django Forms - Built-in fields</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T13:18:12+08:00">
+                2016-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Core-field-arguments"><a href="#Core-field-arguments" class="headerlink" title="Core field arguments"></a>Core field arguments</h1><h3 id="class-Field-kwargs"><a href="#class-Field-kwargs" class="headerlink" title="class Field(**kwargs)"></a>class Field(**kwargs)</h3><p>当创建一个 Form class 的时候，最重要的是定义 form 的 fields。</p>
+<p>每个 field 有自己的验证逻辑。</p>
+<h3 id="Filed-clean-value"><a href="#Filed-clean-value" class="headerlink" title="Filed.clean(value)"></a>Filed.clean(value)</h3><p>每个 Field 实例都有 <code>clean()</code> 方法：接收一个数据参数，数据非法就抛出 <code>django.forms.ValidationError</code> 异常，数据正常就返回数据：</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; f = forms.EmailField()
+&gt;&gt;&gt; f.clean(&apos;foo@example.com&apos;)
+&apos;foo@example.com&apos;
+&gt;&gt;&gt; f.clean(&apos;invalid email address&apos;)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;Enter a valid email address.&apos;]
+</code></pre><h2 id="Core-field-arguments-1"><a href="#Core-field-arguments-1" class="headerlink" title="Core field arguments"></a>Core field arguments</h2><p>Field 类的构造方法通常需要下面的参数</p>
+<h2 id="required"><a href="#required" class="headerlink" title="required"></a>required</h2><h3 id="Field-required"><a href="#Field-required" class="headerlink" title="Field.required"></a>Field.required</h3><p>默认 <code>required=True</code></p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; f = forms.CharField()
+&gt;&gt;&gt; f.clean(&apos;foo&apos;)
+&apos;foo&apos;
+&gt;&gt;&gt; f.clean(&apos;&apos;)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;This field is required.&apos;]
+&gt;&gt;&gt; f.clean(None)
+Traceback (most recent call last):
+...
+ValidationError: [&apos;This field is required.&apos;]
+&gt;&gt;&gt; f.clean(&apos; &apos;)
+&apos; &apos;
+&gt;&gt;&gt; f.clean(0)
+&apos;0&apos;
+&gt;&gt;&gt; f.clean(True)
+&apos;True&apos;
+&gt;&gt;&gt; f.clean(False)
+&apos;False&apos;
+</code></pre><p>定义参数可为空：</p>
+<pre><code>&gt;&gt;&gt; f = forms.CharField(required=False)
+&gt;&gt;&gt; f.clean(&apos;foo&apos;)
+&apos;foo&apos;
+&gt;&gt;&gt; f.clean(&apos;&apos;)
+&apos;&apos;
+&gt;&gt;&gt; f.clean(None)
+&apos;&apos;
+&gt;&gt;&gt; f.clean(0)
+&apos;0&apos;
+&gt;&gt;&gt; f.clean(True)
+&apos;True&apos;
+&gt;&gt;&gt; f.clean(False)
+&apos;False&apos;
+</code></pre><p>表示 field 可以不填</p>
+<h2 id="label"><a href="#label" class="headerlink" title="label"></a>label</h2><h3 id="Field-label"><a href="#Field-label" class="headerlink" title="Field.label"></a>Field.label</h3><p>The label argument lets you specify the “human-friendly” label for this field. This is used when the Field is displayed in a Form.</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; class CommentForm(forms.Form):
+...     name = forms.CharField(label=&apos;Your name&apos;)
+...     url = forms.URLField(label=&apos;Your website&apos;, required=False)
+...     comment = forms.CharField()
+&gt;&gt;&gt; f = CommentForm(auto_id=False)
+&gt;&gt;&gt; print(f)
+&lt;tr&gt;&lt;th&gt;Your name:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;name&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Your website:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;url&quot; name=&quot;url&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Comment:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;comment&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+</code></pre><h2 id="label-suffix"><a href="#label-suffix" class="headerlink" title="label_suffix"></a>label_suffix</h2><h3 id="Field-label-suffix"><a href="#Field-label-suffix" class="headerlink" title="Field.label_suffix"></a>Field.label_suffix</h3><pre><code>&gt;&gt;&gt; class ContactForm(forms.Form):
+...     age = forms.IntegerField()
+...     nationality = forms.CharField()
+...     captcha_answer = forms.IntegerField(label=&apos;2 + 2&apos;, label_suffix=&apos; =&apos;)
+&gt;&gt;&gt; f = ContactForm(label_suffix=&apos;?&apos;)
+&gt;&gt;&gt; print(f.as_p())
+&lt;p&gt;&lt;label for=&quot;id_age&quot;&gt;Age?&lt;/label&gt; &lt;input id=&quot;id_age&quot; name=&quot;age&quot; type=&quot;number&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_nationality&quot;&gt;Nationality?&lt;/label&gt; &lt;input id=&quot;id_nationality&quot; name=&quot;nationality&quot; type=&quot;text&quot; required /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;label for=&quot;id_captcha_answer&quot;&gt;2 + 2 =&lt;/label&gt; &lt;input id=&quot;id_captcha_answer&quot; name=&quot;captcha_answer&quot; type=&quot;number&quot; required /&gt;&lt;/p&gt;
+</code></pre><h2 id="initial"><a href="#initial" class="headerlink" title="initial"></a>initial</h2><h3 id="Field-initial"><a href="#Field-initial" class="headerlink" title="Field.initial"></a>Field.initial</h3><p>该参数会被使用，当 Field 是在一个 unbound Form 的时候。</p>
+<pre><code>&gt;&gt;&gt; from django import forms
+&gt;&gt;&gt; class CommentForm(forms.Form):
+...     name = forms.CharField(initial=&apos;Your name&apos;)
+...     url = forms.URLField(initial=&apos;http://&apos;)
+...     comment = forms.CharField()
+&gt;&gt;&gt; f = CommentForm(auto_id=False)
+&gt;&gt;&gt; print(f)
+&lt;tr&gt;&lt;th&gt;Name:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;Your name&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Url:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;url&quot; name=&quot;url&quot; value=&quot;http://&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;Comment:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;comment&quot; required /&gt;&lt;/td&gt;&lt;/tr&gt;
+</code></pre><p>为什么不把 initial 直接作为 data 传入？</p>
+<blockquote>
+<p>因为作为 data 就会触发数据验证，initial 里的数据通常是非法的可能会报错</p>
+</blockquote>
+<p>可以使用方法作为 initial：</p>
+<pre><code>&gt;&gt;&gt; import datetime
+&gt;&gt;&gt; class DateForm(forms.Form):
+...     day = forms.DateField(initial=datetime.date.today)
+&gt;&gt;&gt; print(DateForm())
+&lt;tr&gt;&lt;th&gt;Day:&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;day&quot; value=&quot;12/23/2008&quot; required /&gt;&lt;td&gt;&lt;/tr&gt;
+</code></pre><h2 id="widget"><a href="#widget" class="headerlink" title="widget"></a>widget</h2><h3 id="Field-widget"><a href="#Field-widget" class="headerlink" title="Field.widget"></a>Field.widget</h3><h2 id="help-text"><a href="#help-text" class="headerlink" title="help_text"></a>help_text</h2><h3 id="Field-help-text"><a href="#Field-help-text" class="headerlink" title="Field.help_text"></a>Field.help_text</h3><h2 id="error-messages"><a href="#error-messages" class="headerlink" title="error_messages"></a>error_messages</h2><h3 id="Field-error-messages"><a href="#Field-error-messages" class="headerlink" title="Field.error_messages"></a>Field.error_messages</h3><pre><code>&gt;&gt;&gt; name = forms.CharField(error_messages={&apos;required&apos;: &apos;Please enter your name&apos;})
+&gt;&gt;&gt; name.clean(&apos;&apos;)
+Traceback (most recent call last):
+  ...
+ValidationError: [&apos;Please enter your name&apos;]
+</code></pre><h2 id="validators"><a href="#validators" class="headerlink" title="validators"></a>validators</h2><h3 id="Field-validators"><a href="#Field-validators" class="headerlink" title="Field.validators"></a>Field.validators</h3><h2 id="localize"><a href="#localize" class="headerlink" title="localize"></a>localize</h2><h3 id="Field-localize"><a href="#Field-localize" class="headerlink" title="Field.localize"></a>Field.localize</h3><h2 id="disabled"><a href="#disabled" class="headerlink" title="disabled"></a>disabled</h2><h3 id="Field-disabled"><a href="#Field-disabled" class="headerlink" title="Field.disabled"></a>Field.disabled</h3><h1 id="Checking-if-the-field-data-has-changed"><a href="#Checking-if-the-field-data-has-changed" class="headerlink" title="Checking if the field data has changed"></a>Checking if the field data has changed</h1><h2 id="has-changed"><a href="#has-changed" class="headerlink" title="has_changed()"></a>has_changed()</h2><h3 id="Field-has-changed-）"><a href="#Field-has-changed-）" class="headerlink" title="Field.has_changed(）"></a>Field.has_changed(）</h3><h1 id="Built-in-Field-classes"><a href="#Built-in-Field-classes" class="headerlink" title="Built-in Field classes"></a>Built-in Field classes</h1><h2 id="BooleanField"><a href="#BooleanField" class="headerlink" title="BooleanField"></a>BooleanField</h2><h3 id="class-BooleanField-kwargs"><a href="#class-BooleanField-kwargs" class="headerlink" title="class BooleanField(**kwargs)"></a>class BooleanField(**kwargs)</h3><ul>
+<li>Default widget: CheckboxInput</li>
+<li>Empty value: False</li>
+<li>Normalizes to: A Python True or False value.</li>
+<li>Validates that the value is True (e.g. the check box is checked) if the field has required=True.</li>
+<li>Error message keys: required</li>
+</ul>
+<h2 id="CharField"><a href="#CharField" class="headerlink" title="CharField"></a>CharField</h2><ul>
+<li>Default widget: TextInput</li>
+<li>Empty value: ‘’ (an empty string)</li>
+<li>Normalizes to: A Unicode object.</li>
+<li>Validates max_length or min_length, if they are provided. Otherwise, all inputs are valid.</li>
+<li>Error message keys: required, max_length, min_length</li>
+</ul>
+<p>三个用于验证的参数：</p>
+<ul>
+<li>max_length</li>
+<li>min_length</li>
+<li>strip</li>
+</ul>
+<h2 id="ChoiceField"><a href="#ChoiceField" class="headerlink" title="ChoiceField"></a>ChoiceField</h2><ul>
+<li>Default widget: Select</li>
+<li>Empty value: ‘’ (an empty string)</li>
+<li>Normalizes to: A Unicode object.</li>
+<li>Validates that the given value exists in the list of choices.</li>
+<li>Error message keys: required, invalid_choice</li>
+</ul>
+<h2 id="TypedChoiceField"><a href="#TypedChoiceField" class="headerlink" title="TypedChoiceField"></a>TypedChoiceField</h2><ul>
+<li>Default widget: Select</li>
+<li>Empty value: Whatever you’ve given as empty_value.</li>
+<li>Normalizes to: A value of the type provided by the coerce argument.</li>
+<li>Validates that the given value exists in the list of choices and can be coerced.</li>
+<li>Error message keys: required, invalid_choice</li>
+</ul>
+<h2 id="DateField"><a href="#DateField" class="headerlink" title="DateField"></a>DateField</h2><h2 id="DateTimeField"><a href="#DateTimeField" class="headerlink" title="DateTimeField"></a>DateTimeField</h2><h2 id="DecimalField"><a href="#DecimalField" class="headerlink" title="DecimalField"></a>DecimalField</h2><h2 id="DurationField"><a href="#DurationField" class="headerlink" title="DurationField"></a>DurationField</h2><h2 id="EmailField"><a href="#EmailField" class="headerlink" title="EmailField"></a>EmailField</h2><h2 id="FileField"><a href="#FileField" class="headerlink" title="FileField"></a>FileField</h2><ul>
+<li>Default widget: ClearableFileInput</li>
+<li>Empty value: None</li>
+<li>Normalizes to: An UploadedFile object that wraps the file content and file name into a single object.</li>
+<li>Can validate that non-empty file data has been bound to the form.</li>
+<li>Error message keys: required, invalid, missing, empty, max_length</li>
+</ul>
+<h2 id="FilePathField"><a href="#FilePathField" class="headerlink" title="FilePathField"></a>FilePathField</h2><h2 id="FloatField"><a href="#FloatField" class="headerlink" title="FloatField"></a>FloatField</h2><h2 id="ImageField"><a href="#ImageField" class="headerlink" title="ImageField"></a>ImageField</h2><h2 id="IntegerField"><a href="#IntegerField" class="headerlink" title="IntegerField"></a>IntegerField</h2><h2 id="GenericIPAddressField"><a href="#GenericIPAddressField" class="headerlink" title="GenericIPAddressField"></a>GenericIPAddressField</h2><h2 id="MultipleChoiceField"><a href="#MultipleChoiceField" class="headerlink" title="MultipleChoiceField"></a>MultipleChoiceField</h2><h2 id="TypedMultipleChoiceField"><a href="#TypedMultipleChoiceField" class="headerlink" title="TypedMultipleChoiceField"></a>TypedMultipleChoiceField</h2><h2 id="NullBooleanField"><a href="#NullBooleanField" class="headerlink" title="NullBooleanField"></a>NullBooleanField</h2><h2 id="RegexField"><a href="#RegexField" class="headerlink" title="RegexField"></a>RegexField</h2><h2 id="SlugField"><a href="#SlugField" class="headerlink" title="SlugField"></a>SlugField</h2><h2 id="TimeField"><a href="#TimeField" class="headerlink" title="TimeField"></a>TimeField</h2><h2 id="URLField"><a href="#URLField" class="headerlink" title="URLField"></a>URLField</h2><h2 id="UUIDField"><a href="#UUIDField" class="headerlink" title="UUIDField"></a>UUIDField</h2><h1 id="Slightly-complex-built-in-Field-classes"><a href="#Slightly-complex-built-in-Field-classes" class="headerlink" title="Slightly complex built-in Field classes"></a>Slightly complex built-in Field classes</h1><h2 id="ComboField"><a href="#ComboField" class="headerlink" title="ComboField"></a>ComboField</h2><h2 id="MultiValueField"><a href="#MultiValueField" class="headerlink" title="MultiValueField"></a>MultiValueField</h2><h2 id="SplitDateTimeField"><a href="#SplitDateTimeField" class="headerlink" title="SplitDateTimeField"></a>SplitDateTimeField</h2><h1 id="Fields-which-handle-relationships"><a href="#Fields-which-handle-relationships" class="headerlink" title="Fields which handle relationships"></a>Fields which handle relationships</h1><h1 id="Creating-custom-fields"><a href="#Creating-custom-fields" class="headerlink" title="Creating custom fields"></a>Creating custom fields</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/Forms/" rel="tag"># Forms</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/14/Python/django/offical-doc/Django-Forms-Built-in widgets/" rel="next" title="Django Forms - Built-in Widgets">
+                <i class="fa fa-chevron-left"></i> Django Forms - Built-in Widgets
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/17/Python/django/Django-File-Upload/" rel="prev" title="使用 Django 创建一个文件上传的服务器">
+                使用 Django 创建一个文件上传的服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Core-field-arguments"><span class="nav-number">1.</span> <span class="nav-text">Core field arguments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#class-Field-kwargs"><span class="nav-number">1.0.1.</span> <span class="nav-text">class Field(**kwargs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filed-clean-value"><span class="nav-number">1.0.2.</span> <span class="nav-text">Filed.clean(value)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-field-arguments-1"><span class="nav-number">1.1.</span> <span class="nav-text">Core field arguments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#required"><span class="nav-number">1.2.</span> <span class="nav-text">required</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-required"><span class="nav-number">1.2.1.</span> <span class="nav-text">Field.required</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label"><span class="nav-number">1.3.</span> <span class="nav-text">label</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-label"><span class="nav-number">1.3.1.</span> <span class="nav-text">Field.label</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label-suffix"><span class="nav-number">1.4.</span> <span class="nav-text">label_suffix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-label-suffix"><span class="nav-number">1.4.1.</span> <span class="nav-text">Field.label_suffix</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initial"><span class="nav-number">1.5.</span> <span class="nav-text">initial</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-initial"><span class="nav-number">1.5.1.</span> <span class="nav-text">Field.initial</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#widget"><span class="nav-number">1.6.</span> <span class="nav-text">widget</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-widget"><span class="nav-number">1.6.1.</span> <span class="nav-text">Field.widget</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#help-text"><span class="nav-number">1.7.</span> <span class="nav-text">help_text</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-help-text"><span class="nav-number">1.7.1.</span> <span class="nav-text">Field.help_text</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#error-messages"><span class="nav-number">1.8.</span> <span class="nav-text">error_messages</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-error-messages"><span class="nav-number">1.8.1.</span> <span class="nav-text">Field.error_messages</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#validators"><span class="nav-number">1.9.</span> <span class="nav-text">validators</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-validators"><span class="nav-number">1.9.1.</span> <span class="nav-text">Field.validators</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#localize"><span class="nav-number">1.10.</span> <span class="nav-text">localize</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-localize"><span class="nav-number">1.10.1.</span> <span class="nav-text">Field.localize</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#disabled"><span class="nav-number">1.11.</span> <span class="nav-text">disabled</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-disabled"><span class="nav-number">1.11.1.</span> <span class="nav-text">Field.disabled</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Checking-if-the-field-data-has-changed"><span class="nav-number">2.</span> <span class="nav-text">Checking if the field data has changed</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#has-changed"><span class="nav-number">2.1.</span> <span class="nav-text">has_changed()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-has-changed-）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Field.has_changed(）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Built-in-Field-classes"><span class="nav-number">3.</span> <span class="nav-text">Built-in Field classes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BooleanField"><span class="nav-number">3.1.</span> <span class="nav-text">BooleanField</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#class-BooleanField-kwargs"><span class="nav-number">3.1.1.</span> <span class="nav-text">class BooleanField(**kwargs)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CharField"><span class="nav-number">3.2.</span> <span class="nav-text">CharField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChoiceField"><span class="nav-number">3.3.</span> <span class="nav-text">ChoiceField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TypedChoiceField"><span class="nav-number">3.4.</span> <span class="nav-text">TypedChoiceField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DateField"><span class="nav-number">3.5.</span> <span class="nav-text">DateField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DateTimeField"><span class="nav-number">3.6.</span> <span class="nav-text">DateTimeField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DecimalField"><span class="nav-number">3.7.</span> <span class="nav-text">DecimalField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DurationField"><span class="nav-number">3.8.</span> <span class="nav-text">DurationField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EmailField"><span class="nav-number">3.9.</span> <span class="nav-text">EmailField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FileField"><span class="nav-number">3.10.</span> <span class="nav-text">FileField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FilePathField"><span class="nav-number">3.11.</span> <span class="nav-text">FilePathField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FloatField"><span class="nav-number">3.12.</span> <span class="nav-text">FloatField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImageField"><span class="nav-number">3.13.</span> <span class="nav-text">ImageField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntegerField"><span class="nav-number">3.14.</span> <span class="nav-text">IntegerField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GenericIPAddressField"><span class="nav-number">3.15.</span> <span class="nav-text">GenericIPAddressField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MultipleChoiceField"><span class="nav-number">3.16.</span> <span class="nav-text">MultipleChoiceField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TypedMultipleChoiceField"><span class="nav-number">3.17.</span> <span class="nav-text">TypedMultipleChoiceField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NullBooleanField"><span class="nav-number">3.18.</span> <span class="nav-text">NullBooleanField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RegexField"><span class="nav-number">3.19.</span> <span class="nav-text">RegexField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SlugField"><span class="nav-number">3.20.</span> <span class="nav-text">SlugField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TimeField"><span class="nav-number">3.21.</span> <span class="nav-text">TimeField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URLField"><span class="nav-number">3.22.</span> <span class="nav-text">URLField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UUIDField"><span class="nav-number">3.23.</span> <span class="nav-text">UUIDField</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Slightly-complex-built-in-Field-classes"><span class="nav-number">4.</span> <span class="nav-text">Slightly complex built-in Field classes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ComboField"><span class="nav-number">4.1.</span> <span class="nav-text">ComboField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MultiValueField"><span class="nav-number">4.2.</span> <span class="nav-text">MultiValueField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SplitDateTimeField"><span class="nav-number">4.3.</span> <span class="nav-text">SplitDateTimeField</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Fields-which-handle-relationships"><span class="nav-number">5.</span> <span class="nav-text">Fields which handle relationships</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Creating-custom-fields"><span class="nav-number">6.</span> <span class="nav-text">Creating custom fields</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

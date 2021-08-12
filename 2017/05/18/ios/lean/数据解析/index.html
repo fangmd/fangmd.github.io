@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="ios,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="json 和 model 直接转换ObjectMapper - 推荐使用 GitHub start:5661  https://github.com/Hearst-DD/ObjectMapper 使用让 Model 实现 Mappable, 重写下面两个方法 12init?(map: Map)mutating func mapping(map: Map)">
+<meta name="keywords" content="ios">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据解析">
+<meta property="og:url" content="http://yoursite.com/2017/05/18/ios/lean/数据解析/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="json 和 model 直接转换ObjectMapper - 推荐使用 GitHub start:5661  https://github.com/Hearst-DD/ObjectMapper 使用让 Model 实现 Mappable, 重写下面两个方法 12init?(map: Map)mutating func mapping(map: Map)">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.388Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据解析">
+<meta name="twitter:description" content="json 和 model 直接转换ObjectMapper - 推荐使用 GitHub start:5661  https://github.com/Hearst-DD/ObjectMapper 使用让 Model 实现 Mappable, 重写下面两个方法 12init?(map: Map)mutating func mapping(map: Map)">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/18/ios/lean/数据解析/">
+
+
+
+
+
+  <title>数据解析 | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/ios/lean/数据解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-18T13:18:12+08:00">
+                2017-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ios/" itemprop="url" rel="index">
+                    <span itemprop="name">ios</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="json-和-model-直接转换"><a href="#json-和-model-直接转换" class="headerlink" title="json 和 model 直接转换"></a>json 和 model 直接转换</h1><h2 id="ObjectMapper-推荐使用"><a href="#ObjectMapper-推荐使用" class="headerlink" title="ObjectMapper - 推荐使用"></a>ObjectMapper - 推荐使用</h2><blockquote>
+<p>GitHub start:5661</p>
+</blockquote>
+<p><a href="https://github.com/Hearst-DD/ObjectMapper" target="_blank" rel="noopener">https://github.com/Hearst-DD/ObjectMapper</a></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>让 <code>Model</code> 实现 <code>Mappable</code>, 重写下面两个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">init?(map: Map)</span><br><span class="line">mutating func mapping(map: Map)</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">class User: Mappable &#123;</span><br><span class="line">    var username: String?</span><br><span class="line">    var age: Int?</span><br><span class="line">    var weight: Double!</span><br><span class="line">    var array: [AnyObject]?</span><br><span class="line">    var dictionary: [String : AnyObject] = [:]</span><br><span class="line">    var bestFriend: User?                       // Nested User object</span><br><span class="line">    var friends: [User]?                        // Array of Users</span><br><span class="line">    var birthday: Date?</span><br><span class="line"></span><br><span class="line">    required init?(map: Map) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Mappable</span><br><span class="line">    func mapping(map: Map) &#123;</span><br><span class="line">        username    &lt;- map[&quot;username&quot;]</span><br><span class="line">        age         &lt;- map[&quot;age&quot;]</span><br><span class="line">        weight      &lt;- map[&quot;weight&quot;]</span><br><span class="line">        array       &lt;- map[&quot;arr&quot;]</span><br><span class="line">        dictionary  &lt;- map[&quot;dict&quot;]</span><br><span class="line">        bestFriend  &lt;- map[&quot;best_friend&quot;]</span><br><span class="line">        friends     &lt;- map[&quot;friends&quot;]</span><br><span class="line">        birthday    &lt;- (map[&quot;birthday&quot;], DateTransform())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct Temperature: Mappable &#123;</span><br><span class="line">    var celsius: Double?</span><br><span class="line">    var fahrenheit: Double?</span><br><span class="line"></span><br><span class="line">    init?(map: Map) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mutating func mapping(map: Map) &#123;</span><br><span class="line">        celsius 	&lt;- map[&quot;celsius&quot;]</span><br><span class="line">        fahrenheit 	&lt;- map[&quot;fahrenheit&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let user = User(JSONString: JSONString)</span><br><span class="line"></span><br><span class="line">let JSONString = user.toJSONString(prettyPrint: true)</span><br></pre></td></tr></table></figure>
+<h2 id="HandyJSON"><a href="#HandyJSON" class="headerlink" title="HandyJSON"></a>HandyJSON</h2><p>阿里的开源库</p>
+<blockquote>
+<p>GitHub start:949</p>
+</blockquote>
+<p><a href="https://github.com/alibaba/HandyJSON" target="_blank" rel="noopener">https://github.com/alibaba/HandyJSON</a></p>
+<h2 id="EVReflection"><a href="#EVReflection" class="headerlink" title="EVReflection"></a>EVReflection</h2><blockquote>
+<p>GitHub start:663</p>
+</blockquote>
+<p><a href="https://github.com/evermeer/EVReflection" target="_blank" rel="noopener">https://github.com/evermeer/EVReflection</a></p>
+<h1 id="第三方解析工具-SwiftyJSON"><a href="#第三方解析工具-SwiftyJSON" class="headerlink" title="第三方解析工具 SwiftyJSON"></a>第三方解析工具 SwiftyJSON</h1><p><a href="https://github.com/SwiftyJSON/SwiftyJSON" target="_blank" rel="noopener">https://github.com/SwiftyJSON/SwiftyJSON</a></p>
+<h1 id="原生解析方式-JSONSerialization"><a href="#原生解析方式-JSONSerialization" class="headerlink" title="原生解析方式 JSONSerialization"></a>原生解析方式 JSONSerialization</h1><p><a href="https://www.cnswift.org/working-with-json-in-swift.html" target="_blank" rel="noopener">https://www.cnswift.org/working-with-json-in-swift.html</a></p>
+<h2 id="JSOB-gt-Object"><a href="#JSOB-gt-Object" class="headerlink" title="JSOB -&gt; Object"></a>JSOB -&gt; Object</h2><p>Object:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct Restaurant&#123;</span><br><span class="line">	enum Meal: String&#123;</span><br><span class="line">		case breakfast, lunch, dinner</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	let name: String</span><br><span class="line">	let location: (latitude: Double, longtitude: Double)</span><br><span class="line">	let meals: Set&lt;Meal&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>json:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;name&quot;: &quot;Caffè Macs&quot;,</span><br><span class="line">	&quot;coordinates&quot;: &#123;</span><br><span class="line">		&quot;lat&quot;: 37.330576,</span><br><span class="line">		&quot;lng&quot;: -122.029739</span><br><span class="line">	&#125;,</span><br><span class="line">	&quot;meals&quot;: [&quot;breakfast&quot;, &quot;lunch&quot;, &quot;dinner&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="从-JSON-中取值"><a href="#从-JSON-中取值" class="headerlink" title="从 JSON 中取值"></a>从 JSON 中取值</h2><p>方法 jsonObject(with:options:) 返回类型为 Any 的值并且在不能取得数据时抛出错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import Foundation</span><br><span class="line"> </span><br><span class="line">let data: Data // received from a network request, for example</span><br><span class="line">let json = try? JSONSerialization.jsonObject(with: data, options: [])</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;someKey&quot;: 42.0,</span><br><span class="line">	&quot;anotherKey&quot;: &#123;</span><br><span class="line">		&quot;someNestedKey&quot;: true</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if let dictionary = jsonWithObjectRoot as? [String: Any] &#123;</span><br><span class="line">	if let number = dictionary[&quot;someKey&quot;] as? Double &#123;</span><br><span class="line">		// access individual value in dictionary</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	for (key, value) in dictionary &#123;</span><br><span class="line">		// access all key / value pairs in dictionary</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	if let nestedDictionary = dictionary[&quot;anotherKey&quot;] as? [String: Any] &#123;</span><br><span class="line">		// access nested dictionary values by key</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line">	[</span><br><span class="line">		&quot;hello&quot;, 3, true</span><br><span class="line">	]</span><br><span class="line">*/</span><br><span class="line">if let array = jsonWithArrayRoot as? [Any] &#123;</span><br><span class="line">	if let firstObject = array.first &#123;</span><br><span class="line">		// access individual object in array</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	for object in array &#123;</span><br><span class="line">		// access all objects in array</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	for case let string as String in array &#123;</span><br><span class="line">		// access only string values in array</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ios/" rel="tag"># ios</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/18/ios/lean/002-Swift/" rel="next" title="Swift">
+                <i class="fa fa-chevron-left"></i> Swift
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/18/ios/lean/权限管理/" rel="prev" title="权限管理">
+                权限管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#json-和-model-直接转换"><span class="nav-number">1.</span> <span class="nav-text">json 和 model 直接转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ObjectMapper-推荐使用"><span class="nav-number">1.1.</span> <span class="nav-text">ObjectMapper - 推荐使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">1.1.1.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandyJSON"><span class="nav-number">1.2.</span> <span class="nav-text">HandyJSON</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EVReflection"><span class="nav-number">1.3.</span> <span class="nav-text">EVReflection</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三方解析工具-SwiftyJSON"><span class="nav-number">2.</span> <span class="nav-text">第三方解析工具 SwiftyJSON</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原生解析方式-JSONSerialization"><span class="nav-number">3.</span> <span class="nav-text">原生解析方式 JSONSerialization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JSOB-gt-Object"><span class="nav-number">3.1.</span> <span class="nav-text">JSOB -&gt; Object</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从-JSON-中取值"><span class="nav-number">3.2.</span> <span class="nav-text">从 JSON 中取值</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

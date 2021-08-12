@@ -1,0 +1,1007 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="View,ViewPager,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="android.support.v4.view.ViewPager 不在Android原生包中  ViewPager 类适配器PagerAdapter 不常用,只适合简单的布局">
+<meta name="keywords" content="View,ViewPager">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ViewPager">
+<meta property="og:url" content="http://yoursite.com/2016/03/23/Android/view/ViewPager/ViewPager/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="android.support.v4.view.ViewPager 不在Android原生包中  ViewPager 类适配器PagerAdapter 不常用,只适合简单的布局">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.277Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ViewPager">
+<meta name="twitter:description" content="android.support.v4.view.ViewPager 不在Android原生包中  ViewPager 类适配器PagerAdapter 不常用,只适合简单的布局">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/03/23/Android/view/ViewPager/ViewPager/">
+
+
+
+
+
+  <title>ViewPager | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/03/23/Android/view/ViewPager/ViewPager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ViewPager</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-03-23T12:38:14+08:00">
+                2016-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>android.support.v4.view.ViewPager 不在Android原生包中</p>
+</blockquote>
+<h1 id="ViewPager-类"><a href="#ViewPager-类" class="headerlink" title="ViewPager 类"></a>ViewPager 类</h1><h1 id="适配器PagerAdapter"><a href="#适配器PagerAdapter" class="headerlink" title="适配器PagerAdapter"></a>适配器PagerAdapter</h1><blockquote>
+<p>不常用,只适合简单的布局</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="创建这个适配器需要的属性"><a href="#创建这个适配器需要的属性" class="headerlink" title="创建这个适配器需要的属性"></a>创建这个适配器需要的属性</h2><ul>
+<li>数据源: <code>private List&lt;String&gt; list;</code></li>
+<li><p>池子存放View: <code>private Pools.Pool&lt;View&gt; viewPool;</code></p>
+<p>  作用:</p>
+<pre><code>设置控件池,减少控件的创建次数,复用池中的控件(前提是页面布局相同可以复用)
+</code></pre><p>  池子可以在构造方法中进行初始化:</p>
+<pre><code>viewPool = new Pools.SimplePool&lt;View&gt;(3);
+</code></pre><p>  池子的简单操作:</p>
+<ol>
+<li><p>取</p>
+<pre><code>viewPool.acquire()
+</code></pre></li>
+<li><p>放回</p>
+<pre><code>viewPool.release(((TextView) object));
+</code></pre><p>池子源码中的介绍用法是:单例设计模式</p>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>public class MyPooledClass {
+
+    private static final SynchronizedPool&lt;MyPooledClass&gt; sPool =
+          new SynchronizedPool&lt;MyPooledClass&gt;(10);
+
+    public static MyPooledClass obtain() {
+      MyPooledClass instance = sPool.acquire();
+      return (instance != null) ? instance : new MyPooledClass();
+    }
+
+    public void recycle() {
+       // Clear state if needed.
+       sPool.release(this);
+}
+ . . .
+</code></pre><h2 id="创建这个适配器构造方法"><a href="#创建这个适配器构造方法" class="headerlink" title="创建这个适配器构造方法"></a>创建这个适配器构造方法</h2><pre><code>public MyPagerAdapter(Context context, List&lt;String&gt; list) {
+    this.context = context;
+    this.list = list;
+    viewPool = new Pools.SimplePool&lt;View&gt;(3);
+}
+</code></pre><h2 id="创建这个适配器的子类必须重写的方法："><a href="#创建这个适配器的子类必须重写的方法：" class="headerlink" title="创建这个适配器的子类必须重写的方法："></a>创建这个适配器的子类必须重写的方法：</h2><ul>
+<li><code>public int getCount()</code></li>
+<li><p><code>public boolean isViewFromObject(View view, Object object)</code></p>
+<p>  作用:</p>
+<ol>
+<li>判断<code>View</code>(item)页面视图是否和<code>Key</code>关联了</li>
+<li><p>参数2:<code>instantiateItem</code>方法返回的<code>Object</code></p>
+<ol>
+<li><p>如果<code>Object</code>是数据,方法里面的代码就是:</p>
+<pre><code>Object vo = view.getTag();
+return vo.equals(object);
+</code></pre></li>
+<li><p>如果<code>Object</code>是View对象,方法里面的代码就是:</p>
+<pre><code>return view == object;
+</code></pre></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p><code>public Object instantiateItem(ViewGroup container, int position)</code>：必须去掉<code>super</code></p>
+<p>  作用:</p>
+<ol>
+<li>初始化item,(可能需要从Pool中取)</li>
+<li>并将item加入到<code>ViewGroup</code>中;</li>
+<li>返回<code>Object</code>:<ol>
+<li>数据：setTag(数据) ，返回数据；</li>
+<li>item的布局View</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p><code>public void destroyItem(ViewGroup container, int position, Object object)</code>：必须去掉<code>super</code></p>
+<p>  作用:</p>
+<ol>
+<li>在这个方法内把<code>View</code>从<code>ViewGroup</code>中移除</li>
+<li><p>如果前面使用返回数据方式（Tag）</p>
+<pre><code>if (object != null) {
+        View v = container.findViewWithTag(object);
+        container.removeView(v);
+        mViewPool.release(v);
+   }
+</code></pre></li>
+</ol>
+</li>
+</ul>
+<h2 id="其他方法："><a href="#其他方法：" class="headerlink" title="其他方法："></a>其他方法：</h2><h1 id="子类适配器FragmentPagerAdapter"><a href="#子类适配器FragmentPagerAdapter" class="headerlink" title="子类适配器FragmentPagerAdapter"></a>子类适配器FragmentPagerAdapter</h1><h2 id="准备Fragment-，-创建一个Fragment的子类"><a href="#准备Fragment-，-创建一个Fragment的子类" class="headerlink" title="准备Fragment ， 创建一个Fragment的子类"></a>准备Fragment ， 创建一个Fragment的子类</h2><ul>
+<li>无参构造方法</li>
+<li><p>newInstance(。。)方法可以传入参数，</p>
+<pre><code>public static GalleryFragment newInstance(int id, String title) {
+
+    Bundle args = new Bundle();
+    args.putInt(&quot;id&quot;, id);
+    args.putString(&quot;title&quot;, title);
+    GalleryFragment fragment = new GalleryFragment();
+    fragment.setArguments(args);
+    return fragment;
+}
+</code></pre></li>
+<li><p><code>public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</code>：在这个方法内创建fragment整个布局视图</p>
+</li>
+<li><code>public void onViewCreated(View view, @Nullable Bundle savedInstanceState)</code>：在这里给fragment布局视图中的布局加载数据，这是<code>Adapter</code></li>
+</ul>
+<h2 id="FragmentPagerAdapter子类要写的方法"><a href="#FragmentPagerAdapter子类要写的方法" class="headerlink" title="FragmentPagerAdapter子类要写的方法"></a>FragmentPagerAdapter子类要写的方法</h2><ul>
+<li>构造方法：在构造方法中传入数据源</li>
+<li><code>public Fragment getItem(int position)</code>：根据数据源创建<code>Fragment</code>对象。</li>
+<li><code>public int getCount()</code>：页数</li>
+</ul>
+<h2 id="activity"><a href="#activity" class="headerlink" title="activity"></a>activity</h2><ul>
+<li>在activity中获取<code>ViewPager</code>对象</li>
+<li>创建数据源</li>
+<li>创建<code>FragmentPagerAdapter</code>适配器，参数：<code>FragmentManager</code>和数据源</li>
+<li><code>ViewPager</code>对象设置适配器</li>
+</ul>
+<h1 id="子类适配器FragmentStatePagerAdapter"><a href="#子类适配器FragmentStatePagerAdapter" class="headerlink" title="子类适配器FragmentStatePagerAdapter"></a>子类适配器FragmentStatePagerAdapter</h1><blockquote>
+<p>在有大量页面的时候使用，更省内存使用方法和<code>FragmentPagerAdapter</code>类似</p>
+</blockquote>
+<h1 id="ViewPager监听器"><a href="#ViewPager监听器" class="headerlink" title="ViewPager监听器"></a>ViewPager监听器</h1><ul>
+<li>setOnPageChangeListener:@deprecated</li>
+<li>addOnPageChangeListener</li>
+</ul>
+<h1 id="ViewPager轮播效果"><a href="#ViewPager轮播效果" class="headerlink" title="ViewPager轮播效果"></a>ViewPager轮播效果</h1><h2 id="伪无限循环"><a href="#伪无限循环" class="headerlink" title="伪无限循环"></a>伪无限循环</h2><blockquote>
+<p>不需要监听器</p>
+</blockquote>
+<p>关键代码：</p>
+<pre><code>@Override
+public int getCount() {
+    return Integer.MAX_VALUE;
+}
+
+image.setImageResource(((int) mMaps.get(position % mMaps.size()).get(&quot;imageId&quot;)));
+
+// 在Activity中设置pager到中间并保证是第一页
+pager.setCurrentItem(Integer.MAX_VALUE / 2 / mMaps.size() * mMaps.size());
+</code></pre><h2 id="头尾跳动"><a href="#头尾跳动" class="headerlink" title="头尾跳动"></a>头尾跳动</h2><p>将尾页面复制一份加载第一页,将头页面复制一份加载最后一页</p>
+<pre><code>1 2 3 4 5 --&gt; 5 1 2 3 4 5 1
+</code></pre><p>当页面滑到最后个1时跳动页面到前面的1，当页面滑到前面的5时页面跳动到后面的5，因为页面相同直接跳动是看不出来的。</p>
+<p>关键代码：</p>
+<p>适配器：</p>
+<pre><code>public MyPagerAdapter(Context context, List&lt;String&gt; list) {
+    this.context = context;
+    this.list = list;
+    String first = list.get(0);
+    String last = list.get(list.size() - 1);
+    list.add(0, last);
+    list.add(first);
+    viewPool = new Pools.SimplePool&lt;View&gt;(4);
+}
+</code></pre><p>监听器：</p>
+<pre><code>    @Override
+public void onPageSelected(int position) {
+    if (position == list.size() - 1) {
+        pager.setCurrentItem(1,false);
+    }
+    if (position == 0) {
+        pager.setCurrentItem(list.size() - 2,false);
+    }
+}
+</code></pre><h1 id="重要的滑动监听"><a href="#重要的滑动监听" class="headerlink" title="重要的滑动监听"></a>重要的滑动监听</h1><p>ViewPager.OnPageChangeListener</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ol>
+<li><code>public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)</code></li>
+</ol>
+<p>调用时间：滚动过程中</p>
+<p>参数：(和国家习惯有关系，有的国家习惯从右往左)1. 左侧的页面位置(position小的)；2.  偏移量，右侧(position大的)在屏幕中的占比； 3. 偏移像素</p>
+<p>作用：可以在这方法中利用偏移参数做一些滑动动画</p>
+<ol start="2">
+<li><p><code>public void onPageSelected(int position)</code><br>调用时间：滚动完成后调用，代表我们选择了这个item</p>
+</li>
+<li><p><code>public void onPageScrollStateChanged(int state)</code></p>
+</li>
+</ol>
+<p>调用时间：ViewPager状态改变的时候</p>
+<h1 id="ViewPager-轮播定时器"><a href="#ViewPager-轮播定时器" class="headerlink" title="ViewPager 轮播定时器"></a>ViewPager 轮播定时器</h1><h2 id="导入定时相关代码"><a href="#导入定时相关代码" class="headerlink" title="导入定时相关代码"></a>导入定时相关代码</h2><pre><code>// 定时
+private ScheduledExecutorService scheduledExecutorService;
+
+private void startPlay() {
+    scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    scheduledExecutorService.scheduleAtFixedRate(new SlideShowTask(), 1, 4, TimeUnit.SECONDS);
+}
+
+/**
+ * 停止轮播图切换
+ */
+private void stopPlay() {
+    scheduledExecutorService.shutdown();
+}
+
+/**
+ * 执行轮播图切换任务
+ *
+ * @author caizhiming
+ */
+private class SlideShowTask implements Runnable {
+
+    @Override
+    public void run() {
+        synchronized (&quot;&quot;) {
+            mHandler.obtainMessage().sendToTarget();
+        }
+    }
+
+}
+</code></pre><h2 id="需要让ViewPager开始轮播的时候调用start"><a href="#需要让ViewPager开始轮播的时候调用start" class="headerlink" title="需要让ViewPager开始轮播的时候调用start"></a>需要让ViewPager开始轮播的时候调用start</h2><blockquote>
+<p>比如：当ViewPager作为RecycleView的头的时候，在recyclerView的构造方法中调用下面的方法<br>    startPlay();</p>
+</blockquote>
+<h3 id="在-onBindViewHolder-方法中需要初始化position"><a href="#在-onBindViewHolder-方法中需要初始化position" class="headerlink" title="在 onBindViewHolder 方法中需要初始化position"></a>在 onBindViewHolder 方法中需要初始化position</h3><blockquote>
+<p>或者使用单例模式来防止ViewPager的销毁和创建<br>    mPagePos = 0;</p>
+</blockquote>
+<h1 id="使用代码添加-ViewPager-指示器例子"><a href="#使用代码添加-ViewPager-指示器例子" class="headerlink" title="使用代码添加 ViewPager 指示器例子"></a>使用代码添加 ViewPager 指示器例子</h1><blockquote>
+<p>在ViewPager的布局上覆盖一个 LinearLayout 作为指示器的容器</p>
+</blockquote>
+<pre><code>mCircleImages = new View[size];
+for (int i = 0; i &lt; focusImages.getList().size(); i++) {
+    ImageView imageView = new ImageView(mContext);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (6 * density), (int) (6 * density));
+    params.setMargins((int) (6 * density), 0, (int) (6 * density), 0);
+    imageView.setLayoutParams(params);
+    if (i == 0) {
+        imageView.setBackgroundResource(R.drawable.viewpager_cycle_black);
+    } else {
+        imageView.setBackgroundResource(R.drawable.viewpager_cycle);
+    }
+    mCircleImages[i] = imageView;
+    mLinearLayout.addView(imageView);
+}
+</code></pre><p>下面的代码可优化</p>
+<pre><code>    @Override
+public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    for (int j = 0; j &lt; mCircleImages.length; j++) {
+        if (j == position % size) {
+            mCircleImages[j].setBackgroundResource(R.drawable.viewpager_cycle);
+        } else {
+            mCircleImages[j].setBackgroundResource(R.drawable.viewpager_cycle_black);
+        }
+    }
+
+    //设置全局变量，currentIndex为选中图标的 index
+    //mPagePos = position;
+}
+</code></pre><h2 id="禁止ViewPager滑动"><a href="#禁止ViewPager滑动" class="headerlink" title="禁止ViewPager滑动"></a>禁止ViewPager滑动</h2><blockquote>
+<p>@Override</p>
+</blockquote>
+<blockquote>
+<p>public boolean onTouchEvent(MotionEvent ev) {</p>
+</blockquote>
+<blockquote>
+<p>return false;</p>
+</blockquote>
+<blockquote>
+<p>@Override</p>
+</blockquote>
+<blockquote>
+<p>public boolean onInterceptTouchEvent(MotionEvent ev) {</p>
+</blockquote>
+<blockquote>
+<p>return false;</p>
+</blockquote>
+<h1 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h1><h3 id="GridButton-作为导航"><a href="#GridButton-作为导航" class="headerlink" title="GridButton 作为导航"></a>GridButton 作为导航</h3><h1 id="设置缓存页面"><a href="#设置缓存页面" class="headerlink" title="设置缓存页面"></a>设置缓存页面</h1><pre><code>viewPager.setOffscreenPageLimit(cachePagers);// 设置缓存页面
+</code></pre><h1 id="切换动画实现"><a href="#切换动画实现" class="headerlink" title="切换动画实现"></a>切换动画实现</h1><pre><code>mVP.setPageTransformer(false, new ViewPager.PageTransformer() {
+    @Override
+    public void transformPage(View page, float position) {
+        //page参数代表当前view 或 fragment，position参数就是它的位置的值。
+        // 滑动的时候，起始page和目标page的各自的transformPage()就会被同时触发调用。
+        //position是一个page相对于屏幕中心的位置。
+        //当page填充屏幕完全可见的时候，它的position是0, page位于屏幕右边，它的position是1。page位于屏幕左边，它的position是-1。
+
+
+        // （因为左右是对称的）所以，为了不考虑正负值，我们取position的绝对值：
+        final float abs = Math.abs(Math.abs(position) - 1);
+
+        //淡入淡出效果
+//                page.setAlpha(abs);
+
+        //尺寸大小变化效果
+
+        page.setScaleX(abs / 2 + 0.5f);
+        page.setScaleY(abs / 2 + 0.5f);
+
+        //使page沿Z轴方向旋转30度
+//                page.setRotationY(position * -30);
+    }
+});
+</code></pre><h1 id="现实现实多个页面"><a href="#现实现实多个页面" class="headerlink" title="现实现实多个页面"></a>现实现实多个页面</h1><p>参考：<a href="http://blog.csdn.net/jm_beizi/article/details/51297605" target="_blank" rel="noopener">http://blog.csdn.net/jm_beizi/article/details/51297605</a></p>
+<h2 id="0-设置-android-clipChildren属性为”false”"><a href="#0-设置-android-clipChildren属性为”false”" class="headerlink" title="0 设置 android:clipChildren属性为”false”."></a>0 设置 android:clipChildren属性为”false”.</h2><p><code>android:layerType=”software”</code> 可能需要</p>
+<blockquote>
+<p>注意：setClipChildren(false)在3.0以上版本中，开启了硬件加速后将不能正常工作，所以需要将其设置为软件加速。设置软硬件加速使用 setLayerType(View.LAYER_TYPE_SOFTWARE, null); 也可以在布局文件中添加 android:layerType=”software”</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">RelativeLayout</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:id</span>=<span class="string">"@+id/viewPager_container"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"200dp"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:background</span>=<span class="string">"@android:color/white"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:clipChildren</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layerType</span>=<span class="string">"software"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">android.support.v4.view.ViewPager</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/viewPager"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"110dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginRight</span>=<span class="string">"110dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:clipChildren</span>=<span class="string">"false"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-设置-ViewPapger-缓存页数"><a href="#1-设置-ViewPapger-缓存页数" class="headerlink" title="1 设置 ViewPapger 缓存页数"></a>1 设置 ViewPapger 缓存页数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mViewPager.setOffscreenPageLimit(<span class="number">2</span>);  <span class="comment">// 建议 2</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-设置页与页之间的间距-（可跳过）"><a href="#2-设置页与页之间的间距-（可跳过）" class="headerlink" title="2 设置页与页之间的间距 （可跳过）"></a>2 设置页与页之间的间距 （可跳过）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mViewPager.setPageMargin(<span class="keyword">int</span> marginPixls);  <span class="comment">// setPageMargin表示设置page之间的间距</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-设置滑动，点击事件"><a href="#3-设置滑动，点击事件" class="headerlink" title="3 设置滑动，点击事件"></a>3 设置滑动，点击事件</h2>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/View/" rel="tag"># View</a>
+          
+            <a href="/tags/ViewPager/" rel="tag"># ViewPager</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/22/Android/UI/界面侧滑/" rel="next" title="android 界面侧滑">
+                <i class="fa fa-chevron-left"></i> android 界面侧滑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/23/Android/aidl/AIDL总结/" rel="prev" title="AIDL">
+                AIDL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewPager-类"><span class="nav-number">1.</span> <span class="nav-text">ViewPager 类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#适配器PagerAdapter"><span class="nav-number">2.</span> <span class="nav-text">适配器PagerAdapter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建这个适配器需要的属性"><span class="nav-number">2.1.</span> <span class="nav-text">创建这个适配器需要的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建这个适配器构造方法"><span class="nav-number">2.2.</span> <span class="nav-text">创建这个适配器构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建这个适配器的子类必须重写的方法："><span class="nav-number">2.3.</span> <span class="nav-text">创建这个适配器的子类必须重写的方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他方法："><span class="nav-number">2.4.</span> <span class="nav-text">其他方法：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子类适配器FragmentPagerAdapter"><span class="nav-number">3.</span> <span class="nav-text">子类适配器FragmentPagerAdapter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备Fragment-，-创建一个Fragment的子类"><span class="nav-number">3.1.</span> <span class="nav-text">准备Fragment ， 创建一个Fragment的子类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FragmentPagerAdapter子类要写的方法"><span class="nav-number">3.2.</span> <span class="nav-text">FragmentPagerAdapter子类要写的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#activity"><span class="nav-number">3.3.</span> <span class="nav-text">activity</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子类适配器FragmentStatePagerAdapter"><span class="nav-number">4.</span> <span class="nav-text">子类适配器FragmentStatePagerAdapter</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewPager监听器"><span class="nav-number">5.</span> <span class="nav-text">ViewPager监听器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewPager轮播效果"><span class="nav-number">6.</span> <span class="nav-text">ViewPager轮播效果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#伪无限循环"><span class="nav-number">6.1.</span> <span class="nav-text">伪无限循环</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#头尾跳动"><span class="nav-number">6.2.</span> <span class="nav-text">头尾跳动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#重要的滑动监听"><span class="nav-number">7.</span> <span class="nav-text">重要的滑动监听</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">7.1.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ViewPager-轮播定时器"><span class="nav-number">8.</span> <span class="nav-text">ViewPager 轮播定时器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入定时相关代码"><span class="nav-number">8.1.</span> <span class="nav-text">导入定时相关代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#需要让ViewPager开始轮播的时候调用start"><span class="nav-number">8.2.</span> <span class="nav-text">需要让ViewPager开始轮播的时候调用start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-onBindViewHolder-方法中需要初始化position"><span class="nav-number">8.2.1.</span> <span class="nav-text">在 onBindViewHolder 方法中需要初始化position</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用代码添加-ViewPager-指示器例子"><span class="nav-number">9.</span> <span class="nav-text">使用代码添加 ViewPager 指示器例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#禁止ViewPager滑动"><span class="nav-number">9.1.</span> <span class="nav-text">禁止ViewPager滑动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导航"><span class="nav-number">10.</span> <span class="nav-text">导航</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GridButton-作为导航"><span class="nav-number">10.0.1.</span> <span class="nav-text">GridButton 作为导航</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#设置缓存页面"><span class="nav-number">11.</span> <span class="nav-text">设置缓存页面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#切换动画实现"><span class="nav-number">12.</span> <span class="nav-text">切换动画实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#现实现实多个页面"><span class="nav-number">13.</span> <span class="nav-text">现实现实多个页面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-设置-android-clipChildren属性为”false”"><span class="nav-number">13.1.</span> <span class="nav-text">0 设置 android:clipChildren属性为”false”.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-设置-ViewPapger-缓存页数"><span class="nav-number">13.2.</span> <span class="nav-text">1 设置 ViewPapger 缓存页数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-设置页与页之间的间距-（可跳过）"><span class="nav-number">13.3.</span> <span class="nav-text">2 设置页与页之间的间距 （可跳过）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-设置滑动，点击事件"><span class="nav-number">13.4.</span> <span class="nav-text">3 设置滑动，点击事件</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

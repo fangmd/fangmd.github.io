@@ -1,0 +1,885 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Django,django-rest-framework,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="Serializers提供  Python 对象 –》 xml，json 等格式数据 xml，json等格式数据 –》 Python 对象  Declaring Serializers例子：创建一个简单的 Models： from datetime import datetime  class Comment(object):     def __init__(self, email, conte">
+<meta name="keywords" content="Django,django-rest-framework">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8. django-rest-framework -- Serializers">
+<meta property="og:url" content="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/8. django-rest-framework -- Serializers/index.html">
+<meta property="og:site_name" content="Double">
+<meta property="og:description" content="Serializers提供  Python 对象 –》 xml，json 等格式数据 xml，json等格式数据 –》 Python 对象  Declaring Serializers例子：创建一个简单的 Models： from datetime import datetime  class Comment(object):     def __init__(self, email, conte">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-08-12T14:50:57.317Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8. django-rest-framework -- Serializers">
+<meta name="twitter:description" content="Serializers提供  Python 对象 –》 xml，json 等格式数据 xml，json等格式数据 –》 Python 对象  Declaring Serializers例子：创建一个简单的 Models： from datetime import datetime  class Comment(object):     def __init__(self, email, conte">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/8. django-rest-framework -- Serializers/">
+
+
+
+
+
+  <title>8. django-rest-framework -- Serializers | Double</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Double</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/13/Python/django/django-rest-framework/8. django-rest-framework -- Serializers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Double">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/head1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Double">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">8. django-rest-framework -- Serializers</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-13T13:18:12+08:00">
+                2016-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Serializers"><a href="#Serializers" class="headerlink" title="Serializers"></a>Serializers</h1><p>提供</p>
+<ol>
+<li>Python 对象 –》 xml，json 等格式数据</li>
+<li>xml，json等格式数据 –》 Python 对象</li>
+</ol>
+<h2 id="Declaring-Serializers"><a href="#Declaring-Serializers" class="headerlink" title="Declaring Serializers"></a>Declaring Serializers</h2><h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><p>创建一个简单的 Models：</p>
+<pre><code>from datetime import datetime
+
+class Comment(object):
+    def __init__(self, email, content, created=None):
+        self.email = email
+        self.content = content
+        self.created = created or datetime.now()
+
+comment = Comment(email=&apos;leila@example.com&apos;, content=&apos;foo bar&apos;)
+</code></pre><p>序列化器：</p>
+<pre><code>from rest_framework import serializers
+
+class CommentSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    content = serializers.CharField(max_length=200)
+    created = serializers.DateTimeField()
+</code></pre><h2 id="Serializing-objects-使用-序列化器-对象"><a href="#Serializing-objects-使用-序列化器-对象" class="headerlink" title="Serializing objects 使用 序列化器 对象"></a>Serializing objects 使用 序列化器 对象</h2><pre><code>serializer = CommentSerializer(comment)
+serializer.data
+# {&apos;email&apos;: &apos;leila@example.com&apos;, &apos;content&apos;: &apos;foo bar&apos;, &apos;created&apos;: &apos;2016-01-27T15:17:10.375877&apos;}
+
+from rest_framework.renderers import JSONRenderer
+
+json = JSONRenderer().render(serializer.data)
+json
+# b&apos;{&quot;email&quot;:&quot;leila@example.com&quot;,&quot;content&quot;:&quot;foo bar&quot;,&quot;created&quot;:&quot;2016-01-27T15:17:10.375877&quot;}&apos;
+</code></pre><h2 id="Deserializing-objects-反序列化"><a href="#Deserializing-objects-反序列化" class="headerlink" title="Deserializing objects 反序列化"></a>Deserializing objects 反序列化</h2><pre><code>from django.utils.six import BytesIO
+from rest_framework.parsers import JSONParser
+
+stream = BytesIO(json)
+data = JSONParser().parse(stream)
+
+serializer = CommentSerializer(data=data)
+serializer.is_valid()
+# True
+serializer.validated_data
+# {&apos;content&apos;: &apos;foo bar&apos;, &apos;email&apos;: &apos;leila@example.com&apos;, &apos;created&apos;: datetime.datetime(2012, 08, 22, 16, 20, 09, 822243)}
+</code></pre><h2 id="Saving-instances"><a href="#Saving-instances" class="headerlink" title="Saving instances"></a>Saving instances</h2><p>实现 <code>update</code>,<code>create</code> 方法</p>
+<pre><code>class CommentSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    content = serializers.CharField(max_length=200)
+    created = serializers.DateTimeField()
+
+    def create(self, validated_data):
+        return Comment(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get(&apos;email&apos;, instance.email)
+        instance.content = validated_data.get(&apos;content&apos;, instance.content)
+        instance.created = validated_data.get(&apos;created&apos;, instance.created)
+        return instance
+</code></pre><p>如果这个对象属于 django 中的models：</p>
+<pre><code>def create(self, validated_data):
+    return Comment.objects.create(**validated_data)
+
+def update(self, instance, validated_data):
+    instance.email = validated_data.get(&apos;email&apos;, instance.email)
+    instance.content = validated_data.get(&apos;content&apos;, instance.content)
+    instance.created = validated_data.get(&apos;created&apos;, instance.created)
+    instance.save()
+    return instance
+</code></pre><p>然后可以调用 <code>save()</code> 方法，返回值是 数据对象：</p>
+<pre><code>comment = serializer.save()
+</code></pre><p>调用 <code>save()</code> 方法会创建或者更新一条数据：</p>
+<pre><code># .save() will create a new instance.
+serializer = CommentSerializer(data=data)
+
+# .save() will update the existing `comment` instance.
+serializer = CommentSerializer(comment, data=data)
+</code></pre><p><code>create()</code>, <code>update()</code> 方法都是可选方法，是否要实现取决于 serializer 类</p>
+<h3 id="Passing-additional-attributes-to-save-传递参数到-save-方法中"><a href="#Passing-additional-attributes-to-save-传递参数到-save-方法中" class="headerlink" title="Passing additional attributes to .save() 传递参数到 save() 方法中"></a>Passing additional attributes to .save() 传递参数到 save() 方法中</h3><pre><code>serializer.save(owner=request.user)
+</code></pre><p>这个额外的参数回被添加到 <code>validated_data</code> 中当 <code>.create()</code>,<code>.update()</code>方法被调用的时候</p>
+<h3 id="Overriding-save-directly-重写-save-方法"><a href="#Overriding-save-directly-重写-save-方法" class="headerlink" title="Overriding .save() directly. 重写 save() 方法"></a>Overriding .save() directly. 重写 save() 方法</h3><pre><code>class ContactForm(serializers.Serializer):
+    email = serializers.EmailField()
+    message = serializers.CharField()
+
+    def save(self):
+        email = self.validated_data[&apos;email&apos;]
+        message = self.validated_data[&apos;message&apos;]
+        send_email(from=email, message=message)
+</code></pre><h2 id="Validation-验证"><a href="#Validation-验证" class="headerlink" title="Validation 验证"></a>Validation 验证</h2><p>当反序列化数据的时候需要调用 <code>is_valid()</code> 方法来验证数据的正确性，如果数据有错误调用 <code>.errors</code> 可以获取到错误的具体内容：</p>
+<pre><code>serializer = CommentSerializer(data={&apos;email&apos;: &apos;foobar&apos;, &apos;content&apos;: &apos;baz&apos;})
+serializer.is_valid()
+# False
+serializer.errors
+# {&apos;email&apos;: [u&apos;Enter a valid e-mail address.&apos;], &apos;created&apos;: [u&apos;This field is required.&apos;]}
+</code></pre><p>字典中的那个 key 都是成员变量名， value 就是变量的值</p>
+<h3 id="Raising-an-exception-on-invalid-data-抛出一个错误当数据非法的时候"><a href="#Raising-an-exception-on-invalid-data-抛出一个错误当数据非法的时候" class="headerlink" title="Raising an exception on invalid data 抛出一个错误当数据非法的时候"></a>Raising an exception on invalid data 抛出一个错误当数据非法的时候</h3><pre><code># Return a 400 response if the data was invalid.
+serializer.is_valid(raise_exception=True)
+</code></pre><h3 id="Field-level-validation"><a href="#Field-level-validation" class="headerlink" title="Field-level validation"></a>Field-level validation</h3><p>…</p>
+<h1 id="ModelSerializer"><a href="#ModelSerializer" class="headerlink" title="ModelSerializer"></a>ModelSerializer</h1><p>ModelSerializer 提供了使用 Model fields 创建 Serializer 类的快捷方式</p>
+<p>ModelSerializer 和 Serializer 一般一样除了：</p>
+<ol>
+<li>根据 model 自动创建字段</li>
+<li>自动创建验证器</li>
+<li>实现了 <code>.create()</code>,<code>.update()</code></li>
+</ol>
+<p>创建一个 ModelSerializer:</p>
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = (&apos;id&apos;, &apos;account_name&apos;, &apos;users&apos;, &apos;created&apos;)
+</code></pre><h2 id="Inspecting-a-ModelSerializer-查看一个-ModelSerializer"><a href="#Inspecting-a-ModelSerializer-查看一个-ModelSerializer" class="headerlink" title="Inspecting a ModelSerializer 查看一个 ModelSerializer"></a>Inspecting a ModelSerializer 查看一个 ModelSerializer</h2><pre><code>&gt;&gt;&gt; from myapp.serializers import AccountSerializer
+&gt;&gt;&gt; serializer = AccountSerializer()
+&gt;&gt;&gt; print(repr(serializer))
+AccountSerializer():
+    id = IntegerField(label=&apos;ID&apos;, read_only=True)
+    name = CharField(allow_blank=True, max_length=100, required=False)
+    owner = PrimaryKeyRelatedField(queryset=User.objects.all())
+</code></pre><h2 id="Specifying-which-fields-to-include-定义哪些-fields-被包含在序列化中"><a href="#Specifying-which-fields-to-include-定义哪些-fields-被包含在序列化中" class="headerlink" title="Specifying which fields to include 定义哪些 fields 被包含在序列化中"></a>Specifying which fields to include 定义哪些 fields 被包含在序列化中</h2><p>定义所有fileds：<code>fields = __all__</code></p>
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = &apos;__all__&apos;
+</code></pre><p>指定部分fields：</p>
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = (&apos;id&apos;, &apos;account_name&apos;, &apos;users&apos;, &apos;created&apos;)
+</code></pre><p>使用 <code>exclude</code> 排除部分 fields：</p>
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        exclude = (&apos;users&apos;,)
+</code></pre><h2 id="Specifying-nested-serialization-定义内部-序列化器"><a href="#Specifying-nested-serialization-定义内部-序列化器" class="headerlink" title="Specifying nested serialization 定义内部 序列化器"></a>Specifying nested serialization 定义内部 序列化器</h2><h2 id="Specifying-fields-explicitly-添加额外的字段"><a href="#Specifying-fields-explicitly-添加额外的字段" class="headerlink" title="Specifying fields explicitly 添加额外的字段"></a>Specifying fields explicitly 添加额外的字段</h2><pre><code>class AccountSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(source=&apos;get_absolute_url&apos;, read_only=True)
+    groups = serializers.PrimaryKeyRelatedField(many=True)
+
+    class Meta:
+        model = Account
+</code></pre><h2 id="Specifying-read-only-fields-指定自读字段"><a href="#Specifying-read-only-fields-指定自读字段" class="headerlink" title="Specifying read only fields 指定自读字段"></a>Specifying read only fields 指定自读字段</h2><p>方式一：给字段添加属性 <code>read_only=True</code></p>
+<p>方式二：</p>
+<pre><code>class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = (&apos;id&apos;, &apos;account_name&apos;, &apos;users&apos;, &apos;created&apos;)
+        read_only_fields = (&apos;account_name&apos;,)
+</code></pre><p>Model fields 中如果设置了：<code>editable=False</code>或者<code>AutoField</code> 默认为只读</p>
+<h2 id="Additional-keyword-arguments-添加额外的参数"><a href="#Additional-keyword-arguments-添加额外的参数" class="headerlink" title="Additional keyword arguments 添加额外的参数"></a>Additional keyword arguments 添加额外的参数</h2><p><code>extra_kwargs</code></p>
+<pre><code>class CreateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (&apos;email&apos;, &apos;username&apos;, &apos;password&apos;)
+        extra_kwargs = {&apos;password&apos;: {&apos;write_only&apos;: True}}
+
+    def create(self, validated_data):
+        user = User(
+            email=validated_data[&apos;email&apos;],
+            username=validated_data[&apos;username&apos;]
+        )
+        user.set_password(validated_data[&apos;password&apos;])
+        user.save()
+        return user
+</code></pre><h2 id="Relational-fields"><a href="#Relational-fields" class="headerlink" title="Relational fields"></a>Relational fields</h2><h2 id="Inheritance-of-the-‘Meta’-class"><a href="#Inheritance-of-the-‘Meta’-class" class="headerlink" title="Inheritance of the ‘Meta’ class"></a>Inheritance of the ‘Meta’ class</h2><pre><code>class AccountSerializer(MyBaseSerializer):
+    class Meta(MyBaseSerializer.Meta):
+        model = Account
+</code></pre><h2 id="Customizing-field-mappings"><a href="#Customizing-field-mappings" class="headerlink" title="Customizing field mappings"></a>Customizing field mappings</h2><h1 id="HyperlinkedModelSerializer-超级链接模型序列化器"><a href="#HyperlinkedModelSerializer-超级链接模型序列化器" class="headerlink" title="HyperlinkedModelSerializer 超级链接模型序列化器"></a>HyperlinkedModelSerializer 超级链接模型序列化器</h1><p>HyperlinkedModelSerializer 和 ModelSerializer 相似，除了它使用 hyperlinks 来实现关系网而不是主键。</p>
+<p>默认添加 <code>url</code> 字段，而不是 主键字段。</p>
+<pre><code>class AccountSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Account
+        fields = (&apos;url&apos;, &apos;id&apos;, &apos;account_name&apos;, &apos;users&apos;, &apos;created&apos;)
+</code></pre><h2 id="Absolute-and-relative-URLs-绝对和相对的-URLs"><a href="#Absolute-and-relative-URLs-绝对和相对的-URLs" class="headerlink" title="Absolute and relative URLs 绝对和相对的 URLs"></a>Absolute and relative URLs 绝对和相对的 URLs</h2><pre><code>serializer = AccountSerializer(queryset, context={&apos;request&apos;: request})
+
+http://api.example.com/accounts/1/
+</code></pre><p>If you do want to use relative URLs, you should explicitly pass {‘request’: None} in the serializer context.</p>
+<pre><code>/accounts/1/
+</code></pre><h2 id="How-hyperlinked-views-are-determined"><a href="#How-hyperlinked-views-are-determined" class="headerlink" title="How hyperlinked views are determined"></a>How hyperlinked views are determined</h2><p>。。。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/django-rest-framework/" rel="tag"># django-rest-framework</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/13/Python/django/django-rest-framework/4.django-rest-framework -- ViewSets/" rel="next" title="django-rest-framework -- ViewSets">
+                <i class="fa fa-chevron-left"></i> django-rest-framework -- ViewSets
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/13/Python/django/django-rest-framework/9. django-rest-framework -- Serializers fields/" rel="prev" title="9. django-rest-framework -- Serializers fields">
+                9. django-rest-framework -- Serializers fields <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/head1.jpg" alt="Double">
+          <p class="site-author-name" itemprop="name">Double</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">548</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Serializers"><span class="nav-number">1.</span> <span class="nav-text">Serializers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Declaring-Serializers"><span class="nav-number">1.1.</span> <span class="nav-text">Declaring Serializers</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子："><span class="nav-number">1.1.1.</span> <span class="nav-text">例子：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Serializing-objects-使用-序列化器-对象"><span class="nav-number">1.2.</span> <span class="nav-text">Serializing objects 使用 序列化器 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deserializing-objects-反序列化"><span class="nav-number">1.3.</span> <span class="nav-text">Deserializing objects 反序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Saving-instances"><span class="nav-number">1.4.</span> <span class="nav-text">Saving instances</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Passing-additional-attributes-to-save-传递参数到-save-方法中"><span class="nav-number">1.4.1.</span> <span class="nav-text">Passing additional attributes to .save() 传递参数到 save() 方法中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Overriding-save-directly-重写-save-方法"><span class="nav-number">1.4.2.</span> <span class="nav-text">Overriding .save() directly. 重写 save() 方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Validation-验证"><span class="nav-number">1.5.</span> <span class="nav-text">Validation 验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raising-an-exception-on-invalid-data-抛出一个错误当数据非法的时候"><span class="nav-number">1.5.1.</span> <span class="nav-text">Raising an exception on invalid data 抛出一个错误当数据非法的时候</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Field-level-validation"><span class="nav-number">1.5.2.</span> <span class="nav-text">Field-level validation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ModelSerializer"><span class="nav-number">2.</span> <span class="nav-text">ModelSerializer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Inspecting-a-ModelSerializer-查看一个-ModelSerializer"><span class="nav-number">2.1.</span> <span class="nav-text">Inspecting a ModelSerializer 查看一个 ModelSerializer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specifying-which-fields-to-include-定义哪些-fields-被包含在序列化中"><span class="nav-number">2.2.</span> <span class="nav-text">Specifying which fields to include 定义哪些 fields 被包含在序列化中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specifying-nested-serialization-定义内部-序列化器"><span class="nav-number">2.3.</span> <span class="nav-text">Specifying nested serialization 定义内部 序列化器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specifying-fields-explicitly-添加额外的字段"><span class="nav-number">2.4.</span> <span class="nav-text">Specifying fields explicitly 添加额外的字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Specifying-read-only-fields-指定自读字段"><span class="nav-number">2.5.</span> <span class="nav-text">Specifying read only fields 指定自读字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Additional-keyword-arguments-添加额外的参数"><span class="nav-number">2.6.</span> <span class="nav-text">Additional keyword arguments 添加额外的参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Relational-fields"><span class="nav-number">2.7.</span> <span class="nav-text">Relational fields</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inheritance-of-the-‘Meta’-class"><span class="nav-number">2.8.</span> <span class="nav-text">Inheritance of the ‘Meta’ class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Customizing-field-mappings"><span class="nav-number">2.9.</span> <span class="nav-text">Customizing field mappings</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HyperlinkedModelSerializer-超级链接模型序列化器"><span class="nav-number">3.</span> <span class="nav-text">HyperlinkedModelSerializer 超级链接模型序列化器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Absolute-and-relative-URLs-绝对和相对的-URLs"><span class="nav-number">3.1.</span> <span class="nav-text">Absolute and relative URLs 绝对和相对的 URLs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-hyperlinked-views-are-determined"><span class="nav-number">3.2.</span> <span class="nav-text">How hyperlinked views are determined</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Double</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
